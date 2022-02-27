@@ -1,16 +1,16 @@
 <template>
   <div id="app">
-    <HelloWorld/>
+    <PixelGrid/>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import PixelGrid from './components/PixelGrid.vue'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    PixelGrid
   }
 }
 </script>
@@ -23,4 +23,5 @@ export default {
   text-align: center;
   color: #2c3e50;
 }
+
 </style>
