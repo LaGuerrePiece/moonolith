@@ -33,6 +33,7 @@ export default {
     var position = require("mouse-position");
     var fs = require("fs");
     var PNG = require("pngjs").PNG;
+    var UPNG = require("upng-js");
 
     document.body.style.transition = "0.3s all";
 
@@ -82,6 +83,18 @@ export default {
       toggleDraw = false;
     });
 
+    function clearGrid()
+    {
+      for(i = 0; i < persistentData.length;i++)
+      {
+        persistentData[0][0][0] = 0
+        persistentData[0][0][1] = 0
+        persistentData[0][0][2] = 0
+        persistentData[0][1] = 0
+
+      }
+    }
+    
     function mousePosOnGrid() {
       var screenx = document.documentElement.clientWidth;
       var screeny = document.documentElement.clientHeight;
@@ -94,7 +107,8 @@ export default {
     function pen(color) {
       mousePosOnGrid();
       if (mousex < rows && mousey < columns) {
-        draw_pixel(mousex, mousey, color);
+        //draw_pixel(mousex, mousey, color);
+        erase_pixel(mousex,mousey)
       }
     }
 
@@ -122,84 +136,46 @@ export default {
       }
     }
 
-    // function loadImage(imgURL) {
-    //   //ajouter nbPixel en entrée
+    function loadImage(imgURL, offsetx, offsety) {
+      //ajouter nbPixel en entrée
 
-    //   fetch(imgURL)
-    //     .then((res) => res.blob())
-    //     .then((blob) => {
-    //       // Here's where you get access to the blob
-    //       // And you can use it for whatever you want
-    //       // Like calling ref().put(blob)
-    //       blob.arrayBuffer().then((buffer) => {
-    //         const array = new Uint8Array(buffer);
-    //         console.log(array[0]);
-    //         console.log(blob);
-    //       });
-    //     });
-    // }
+      fetch(imgURL)
+        .then((res) => res.blob())
+        .then((blob) => {
+          blob.arrayBuffer().then((buffer) => {
+            var buff = UPNG.decode(buffer);
+            var array = buff.data;
 
-    function getBase64FromImageUrl(url) {
-      var img = new Image();
-
-      img.setAttribute("crossOrigin", "anonymous");
-
-      img.onload = function () {
-        var canvas = document.createElement("canvas");
-        canvas.width = this.width;
-        canvas.height = this.height;
-
-        var ctx = canvas.getContext("2d");
-        ctx.drawImage(this, 0, 0);
-
-        var dataURL = canvas.toDataURL("image/png");
-
-        var array = (
-          Buffer.from(
-            dataURL.replace(/^data:image\/(png|jpg);base64,/, ""),
-            "base64"
-          )
-        );
-
-        for (let y = 0; y < 32; y++) {
-          for (let x = 0; x < 32; x++) {
-            let idx = 32 * y + x;
-            console.log(
-              "array [" +
-                idx +
-                "] = " +
-                array[idx] +
-                "," +
-                array[idx + 1] +
-                "," +
-                array[idx + 2]
-            );
-            draw_pixel(x, y, {
-              rgba: {
-                r: array[idx],
-                g: array[idx + 1],
-                b: array[idx + 2],
-              },
-            });
-          }
-        }
-      };
-
-      img.src = url;
+            for (let y = 0; y < buff.width; y++) {
+              for (let x = 0; x < buff.height; x++) {
+                let idx = (buff.width * y + x) * 4;
+                if (array[idx + 3] != 0)
+                draw_pixel(x + offsetx, y + offsety, {
+                  rgba: {
+                    r: array[idx],
+                    g: array[idx + 1],
+                    b: array[idx + 2],
+                  },
+                });
+              }
+            }
+          });
+        });
     }
 
-    getBase64FromImageUrl("https://i.imgur.com/qAhwWr9.png");
-    // loadImage("https://i.imgur.com/qAhwWr9.png");
+    loadImage("https://i.imgur.com/qAhwWr9.png", 20, 15);
 
     var component = this;
 
-    pixels.frame(function () {
+
+    pixels.frame(function () { //appelé à chaque frame (6 fois par seconde)
       draw_noise();
       if (toggleDraw) pen(component.currentColor);
       draw_persistent_data();
       pixels.update(data);
     });
     pixels.canvas.style.width = "100%";
+
 
     function draw_pixel(x, y, color) {
       var pos = y * columns + x;
