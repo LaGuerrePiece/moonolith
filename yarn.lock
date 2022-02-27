@@ -5997,6 +5997,11 @@
   dependencies:
     "find-up" "^4.0.0"
 
+"pngjs@^6.0.0":
+  "integrity" "sha512-TRzzuFRRmEoSW/p1KVAmiOgPco2Irlah+bGFCeNfJXxxYGwSw7YwAOAcd7X28K/m5bjBWKsC29KyoMfHbypayg=="
+  "resolved" "https://registry.npmjs.org/pngjs/-/pngjs-6.0.0.tgz"
+  "version" "6.0.0"
+
 "pnp-webpack-plugin@^1.6.4":
   "integrity" "sha512-2Rb3vm+EXble/sMXNSu6eoBx8e79gKqhNq9F5ZWW6ERNCTE/Q0wQNne5541tE5vKjfM8hpNCYL+LGc1YTfI0dg=="
   "resolved" "https://registry.npmmirror.com/pnp-webpack-plugin/-/pnp-webpack-plugin-1.7.0.tgz"
