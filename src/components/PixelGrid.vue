@@ -16,13 +16,15 @@ var rows = 90
 var columns = 60
 
 var data = []
+var persistentData = []
 
 for (var i = 0; i < rows; i++) {
   for (var j = 0; j < columns; j++) {
     data.push([0, 0, 0])
+    persistentData.push([[0, 0, 0], 0])
   }
 }
-console.log(data)
+
 var pixels = grid(data, {
   root: document.body,
   rows: rows,
@@ -40,9 +42,18 @@ var mouse = position(pixels.canvas)
 
 var mousex, mousey, rand, color
 var hue = 0
+var toggleDraw = false
 
+document.body.addEventListener("mousedown", () => {
+  toggleDraw = true
+})
 
-mouse.on('move', function () {
+document.body.addEventListener("mouseup", () => {
+  toggleDraw = false
+})
+
+function pen(color)
+{
   var screenx = document.documentElement.clientWidth
   var screeny = document.documentElement.clientHeight
   var pixelSize = screenx / columns
@@ -50,28 +61,22 @@ mouse.on('move', function () {
   mousex = Math.floor((mouse[0] / screenx) * columns )
   mousey = Math.floor((mouse[1] / screeny) * nbPixely)
 
-  console.log("mousepos: x:" + mouse[0] + "y:"+ mouse[1] + " screen size " +  screeny)
-  console.log("mouseposongrid: x:" + mousex + "y:"+mousey)
   if (mousex < rows && mousey < columns) {
-    hue = (hue + 1) % 360
-    color = parse('hsl(' + hue + ',50, 50)').rgb
-    // document.body.style.background = util.format('rgb(%s,%s,%s)', color[0], color[1], color[2])
-    color = color.map(function (d) { return d / 50 })
-
     draw_pixel(mousex, mousey, color)
-    // EL CQRRE
-    // for (var i = -1; i < 0; i++) {
-    //   for (var j = -1; j < 0; j++) {
-    //     data[Math.min((row + i) * columns + (column + j), data.length)] = color
-    //     data[Math.min((row + i + 1) * columns - (column + j), data.length)] = color
-    //   }
-    // }
   }
-})
+}
+
+function draw_persistent_data()
+{
+    for (var i = 0; i < data.length; i++) {
+      if (persistentData[i][1] != 0)
+        data[i] = persistentData[i][0]
+    }
+}
 
 
-// fonction noise
 pixels.frame(function () {
+  // fonction noise
   for (var i = 0; i < data.length; i++) {
     rand = Math.random() * 0.02
     data[i] = [
@@ -80,13 +85,16 @@ pixels.frame(function () {
       data[i][2] * 0.95 + rand
     ]
   }
+  
+  draw_persistent_data()
   pixels.update(data)
-  draw_pixel(2,2, [0.3,0.8,0.7])
 })
 pixels.canvas.style.width = "100%"
 
 function draw_pixel(x, y, color){
-  data[y * columns + x] = color
+  pos = y * columns + x
+  persistentData[pos][0] = color
+  persistentData[pos][1] = 1 //marqueur "dessiné"
 }
 </script>
 

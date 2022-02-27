@@ -1,16 +1,19 @@
 <template>
   <div id="app">
     <PixelGrid/>
+    <ToolBar/>
   </div>
 </template>
 
 <script>
 import PixelGrid from './components/PixelGrid.vue'
+import ToolBar from './components/ToolBar.vue'
 
 export default {
   name: 'App',
   components: {
-    PixelGrid
+    PixelGrid,
+    ToolBar
   }
 }
 </script>
