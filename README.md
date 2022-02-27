@@ -25,3 +25,4 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 https://github.com/hendrixfan/vue-accessibility-toolbar
 https://github.com/freeman-lab/pixel-grid
+https://github.com/xiaokaike/vue-color

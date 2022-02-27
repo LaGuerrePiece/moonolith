@@ -74,9 +74,7 @@ function draw_persistent_data()
     }
 }
 
-
-pixels.frame(function () {
-  // fonction noise
+function draw_noise(){
   for (var i = 0; i < data.length; i++) {
     rand = Math.random() * 0.02
     data[i] = [
@@ -85,7 +83,12 @@ pixels.frame(function () {
       data[i][2] * 0.95 + rand
     ]
   }
-  
+}
+
+pixels.frame(function () {
+  draw_noise()
+  if (toggleDraw)
+    pen([0.2, 0.3, 0.4])
   draw_persistent_data()
   pixels.update(data)
 })
