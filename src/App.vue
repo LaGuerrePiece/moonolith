@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <PixelGrid />
+    <PixelGrid :currentColor="colors"/>
     <ToolBar />
     <Twitter v-model="colors" /> 
   </div>
@@ -11,7 +11,14 @@ import PixelGrid from "./components/PixelGrid.vue";
 import ToolBar from "./components/ToolBar.vue";
 import { Twitter } from "vue-color";
 
-var colors = { r: 255, g: 0, b: 0 }
+var colors = {
+  hex: '#194d33',
+  hex8: '#194D33A8',
+  hsl: { h: 150, s: 0.5, l: 0.2, a: 1 },
+  hsv: { h: 150, s: 0.66, v: 0.30, a: 1 },
+  rgba: { r: 25, g: 77, b: 51, a: 1 },
+  a: 1
+}
 
 export default {
   name: "App",
