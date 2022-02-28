@@ -64,7 +64,7 @@ export default {
     });
 
     var mouse = position(pixels.canvas);
-    var mousex, mousey, rand;
+    var klonX, klonY, rand;
 
     var toggleDraw = false;
     document.body.addEventListener("mousedown", () => {
@@ -89,23 +89,30 @@ export default {
       var screeny = document.documentElement.clientHeight;
       var pixelSize = screenx / columns;
       var nbPixely = screeny / pixelSize;
-      mousex = Math.floor((mouse[0] / screenx) * columns);
-      mousey = Math.floor((mouse[1] / screeny) * nbPixely);
+      klonX = Math.floor((mouse[0] / screenx) * columns);
+      klonY = Math.floor((mouse[1] / screeny) * nbPixely);
     }
 
     function pen(color) {
       // FONCTION DESSIN
+      console.log(
+        ` mouse x : ${mouse[0]} \n mouse y : ${
+          mouse[1]
+        } \n Klon x : ${klonX} \n Klon y : ${klonY} \n Klon #${
+          klonY * columns + klonX
+        } : ${persistentData[klonY * columns + klonX]}`
+      );
       mousePosOnGrid();
-      if (mousex < rows && mousey < columns) {
-        draw_pixel(mousex, mousey, color);
+      if (klonX < rows && klonY > 0) {
+        draw_pixel(klonX, klonY, color);
       }
     }
 
     function eraser() {
       // FONCTION GOMME
       mousePosOnGrid();
-      if (mousex < rows && mousey < columns) {
-        erase_pixel(mousex, mousey);
+      if (klonX < rows && klonY > 0) {
+        erase_pixel(klonX, klonY);
       }
     }
 
@@ -180,10 +187,26 @@ export default {
     pixels.frame(function () {
       //appelé à chaque frame (60 fois par seconde)
       draw_noise();
-      if (toggleDraw) pen(component.currentColor);
+      if (toggleDraw) currentTool(component.currentColor);
       draw_persistent_data();
       pixels.update(data);
     });
+
+    var toolCode = 1
+    function currentTool(color) {
+      switch (toolCode) {
+        case 0:
+          pen(color);
+          break;
+        case 1:
+          eraser();
+          break;
+        case 2:
+          text();
+          break;
+      }
+    }
+
     pixels.canvas.style.width = "100%";
   },
 };

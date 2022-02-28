@@ -11,7 +11,7 @@
           <li class="item">
             <a class="menu-item" :data-tooltip="invertColorsText" v-bind:class="{ active: accessibilityStates.pen }" @click="toggleState('pen')" :aria-label="invertColorsText">
               <i class="material-icons menu-item-icon">
-                create
+                polymer
               </i>
             </a>
           </li>
