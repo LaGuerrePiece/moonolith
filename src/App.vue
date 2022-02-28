@@ -2,7 +2,7 @@
   <div id="app">
     <PixelGrid :currentColor="colors"/>
     <ToolBar />
-    <!-- <Twitter v-model="colors" />  -->
+    <Twitter v-model="colors" /> 
   </div>
 </template>
 

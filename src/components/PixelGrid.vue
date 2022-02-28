@@ -38,6 +38,7 @@ export default {
     var data = []; // array du dessous (noise)
     var persistentData = this.load(); // array du dessus
     var fillPersitent = false;
+    var pixelDrawnCounter = 0
 
     if (persistentData.length == 0) fillPersitent = true; // est-ce qu'il existe une sauvegarde, si non, tableau vide instancié
 
@@ -72,6 +73,7 @@ export default {
     });
     document.body.addEventListener("mouseup", () => {
       toggleDraw = false;
+      console.log(`Facture : ${pixelDrawnCounter*3}`)
     });
 
     function clearGrid() {
@@ -95,16 +97,10 @@ export default {
 
     function pen(color) {
       // FONCTION DESSIN
-      console.log(
-        ` mouse x : ${mouse[0]} \n mouse y : ${
-          mouse[1]
-        } \n Klon x : ${klonX} \n Klon y : ${klonY} \n Klon #${
-          klonY * columns + klonX
-        } : ${persistentData[klonY * columns + klonX]}`
-      );
+      // console.log(` mouse x : ${mouse[0]} \n mouse y : ${mouse[1]} \n Klon x : ${klonX} \n Klon y : ${klonY} \n Klon #${klonY * columns + klonX} : ${persistentData[klonY * columns + klonX]}`);
       mousePosOnGrid();
       if (klonX < rows && klonY > 0) {
-        draw_pixel(klonX, klonY, color);
+        draw_pixel(klonX, klonY, color, 1);
       }
     }
 
@@ -116,17 +112,23 @@ export default {
       }
     }
 
-    function draw_pixel(x, y, color) {
+    function draw_pixel(x, y, color, author) {
       var pos = y * columns + x;
       color = to_color_array(color);
+      if (persistentData[pos][1] != 2){
       persistentData[pos][0] = color;
-      persistentData[pos][1] = 1; //marqueur "dessiné"
+      persistentData[pos][1] = author; //marqueur "dessiné"
+      pixelDrawnCounter++
+      }
     }
 
     function erase_pixel(x, y) {
       var pos = y * columns + x;
+      if (persistentData[pos][1] == 1){
       persistentData[pos][0] = [0, 0, 0];
       persistentData[pos][1] = 0; //marqueur "dessiné"
+      pixelDrawnCounter--
+      }
     }
 
     function to_color_array(color) {
@@ -167,13 +169,7 @@ export default {
               for (let x = 0; x < buff.height; x++) {
                 let idx = (buff.width * y + x) * 4;
                 if (array[idx + 3] != 0)
-                  draw_pixel(x + offsetx, y + offsety, {
-                    rgba: {
-                      r: array[idx],
-                      g: array[idx + 1],
-                      b: array[idx + 2],
-                    },
-                  });
+                  draw_pixel(x + offsetx, y + offsety, {rgba: {r: array[idx],g: array[idx + 1],b: array[idx + 2]}}, 2);
               }
             }
           });
@@ -192,7 +188,7 @@ export default {
       pixels.update(data);
     });
 
-    var toolCode = 1
+    var toolCode = 0
     function currentTool(color) {
       switch (toolCode) {
         case 0:
