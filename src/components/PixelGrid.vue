@@ -49,7 +49,7 @@ export default {
     for (var i = 0; i < rows; i++) {
       for (var j = 0; j < columns; j++) {
         data.push([0, 0, 0]);
-        if (fillPersitent) persistentData.push([[0, 0, 0], 0]); //[color, valeur "dessiné"]
+        if (fillPersitent) persistentData.push([[0, 0, 0], 0]); //[color, valeur author]
       }
     }
 
@@ -116,9 +116,9 @@ export default {
       var pos = y * columns + x;
       color = to_color_array(color);
       if (persistentData[pos][1] != 2){
+         if (persistentData[pos][1] == 0) pixelDrawnCounter++
       persistentData[pos][0] = color;
       persistentData[pos][1] = author; //marqueur "dessiné"
-      pixelDrawnCounter++
       }
     }
 
@@ -188,7 +188,7 @@ export default {
       pixels.update(data);
     });
 
-    var toolCode = 0
+    var toolCode = 1
     function currentTool(color) {
       switch (toolCode) {
         case 0:
