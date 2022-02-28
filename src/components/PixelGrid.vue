@@ -26,13 +26,8 @@ export default {
     },
   },
   mounted() {
-    var util = require("util");
-    var css = require("dom-css");
     var grid = require("pixel-grid");
-    var parse = require("parse-color");
     var position = require("mouse-position");
-    var fs = require("fs");
-    var PNG = require("pngjs").PNG;
     var UPNG = require("upng-js");
 
     document.body.style.transition = "0.3s all";
@@ -40,11 +35,11 @@ export default {
     var rows = 90;
     var columns = 60;
 
-    var data = [];
-    var persistentData = this.load();
+    var data = []; // array du dessous (noise)
+    var persistentData = this.load(); // array du dessus
     var fillPersitent = false;
 
-    if (persistentData.length == 0) fillPersitent = true;
+    if (persistentData.length == 0) fillPersitent = true; // est-ce qu'il existe une sauvegarde, si non, tableau vide instancié
 
     window.addEventListener("beforeunload", () => {
       this.save(persistentData);
@@ -53,10 +48,12 @@ export default {
     for (var i = 0; i < rows; i++) {
       for (var j = 0; j < columns; j++) {
         data.push([0, 0, 0]);
-        if (fillPersitent) persistentData.push([[0, 0, 0], 0]); //[color, displayed]
+        if (fillPersitent) persistentData.push([[0, 0, 0], 0]); //[color, valeur "dessiné"]
       }
     }
+
     var pixels = grid(data, {
+      // settings de la librairie grille pixel
       root: document.body,
       rows: rows,
       columns: columns,
@@ -66,35 +63,27 @@ export default {
       formatted: true,
     });
 
-    // pixels.canvas.style.marginLeft = (window.innerWidth * 0.03) / 2 + 'px'
-    // pixels.canvas.style.marginTop = (window.innerHeight * 0.04) / 2 + 'px'
-
     var mouse = position(pixels.canvas);
+    var mousex, mousey, rand;
 
-    var mousex, mousey, rand, color;
-    var hue = 0;
     var toggleDraw = false;
-
     document.body.addEventListener("mousedown", () => {
       toggleDraw = true;
     });
-
     document.body.addEventListener("mouseup", () => {
       toggleDraw = false;
     });
 
-    function clearGrid()
-    {
-      for(i = 0; i < persistentData.length;i++)
-      {
-        persistentData[0][0][0] = 0
-        persistentData[0][0][1] = 0
-        persistentData[0][0][2] = 0
-        persistentData[0][1] = 0
-
+    function clearGrid() {
+      // A REPARER
+      for (i = 0; i < persistentData.length; i++) {
+        persistentData[0][0][0] = 0;
+        persistentData[0][0][1] = 0;
+        persistentData[0][0][2] = 0;
+        persistentData[0][1] = 0;
       }
     }
-    
+
     function mousePosOnGrid() {
       var screenx = document.documentElement.clientWidth;
       var screeny = document.documentElement.clientHeight;
@@ -105,21 +94,42 @@ export default {
     }
 
     function pen(color) {
+      // FONCTION DESSIN
       mousePosOnGrid();
       if (mousex < rows && mousey < columns) {
-        //draw_pixel(mousex, mousey, color);
-        erase_pixel(mousex,mousey)
+        draw_pixel(mousex, mousey, color);
       }
     }
 
     function eraser() {
+      // FONCTION GOMME
       mousePosOnGrid();
       if (mousex < rows && mousey < columns) {
         erase_pixel(mousex, mousey);
       }
     }
 
+    function draw_pixel(x, y, color) {
+      var pos = y * columns + x;
+      color = to_color_array(color);
+      persistentData[pos][0] = color;
+      persistentData[pos][1] = 1; //marqueur "dessiné"
+    }
+
+    function erase_pixel(x, y) {
+      var pos = y * columns + x;
+      persistentData[pos][0] = [0, 0, 0];
+      persistentData[pos][1] = 0; //marqueur "dessiné"
+    }
+
+    function to_color_array(color) {
+      color = color.rgba;
+      color = [color.r / 255, color.g / 255, color.b / 255];
+      return color;
+    }
+
     function draw_persistent_data() {
+      // REDRAW GRILLE DU DESSUS
       for (var i = 0; i < data.length; i++) {
         if (persistentData[i][1] != 0) data[i] = persistentData[i][0];
       }
@@ -150,13 +160,13 @@ export default {
               for (let x = 0; x < buff.height; x++) {
                 let idx = (buff.width * y + x) * 4;
                 if (array[idx + 3] != 0)
-                draw_pixel(x + offsetx, y + offsety, {
-                  rgba: {
-                    r: array[idx],
-                    g: array[idx + 1],
-                    b: array[idx + 2],
-                  },
-                });
+                  draw_pixel(x + offsetx, y + offsety, {
+                    rgba: {
+                      r: array[idx],
+                      g: array[idx + 1],
+                      b: array[idx + 2],
+                    },
+                  });
               }
             }
           });
@@ -165,36 +175,16 @@ export default {
 
     loadImage("https://i.imgur.com/qAhwWr9.png", 20, 15);
 
-    var component = this;
+    var component = this; // pour recuperer couleur quelques lignes plus loin
 
-
-    pixels.frame(function () { //appelé à chaque frame (6 fois par seconde)
+    pixels.frame(function () {
+      //appelé à chaque frame (60 fois par seconde)
       draw_noise();
       if (toggleDraw) pen(component.currentColor);
       draw_persistent_data();
       pixels.update(data);
     });
     pixels.canvas.style.width = "100%";
-
-
-    function draw_pixel(x, y, color) {
-      var pos = y * columns + x;
-      color = to_color_array(color);
-      persistentData[pos][0] = color;
-      persistentData[pos][1] = 1; //marqueur "dessiné"
-    }
-
-    function erase_pixel(x, y) {
-      var pos = y * columns + x;
-      persistentData[pos][0] = [0, 0, 0];
-      persistentData[pos][1] = 0; //marqueur "dessiné"
-    }
-
-    function to_color_array(color) {
-      color = color.rgba;
-      color = [color.r / 255, color.g / 255, color.b / 255];
-      return color;
-    }
   },
 };
 </script>
