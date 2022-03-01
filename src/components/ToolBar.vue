@@ -9,23 +9,35 @@
       <div class='toolbar' v-if="showToolbar">
         <ul class="items">
           <li class="item">
-            <a class="menu-item" :data-tooltip="invertColorsText" v-bind:class="{ active: accessibilityStates.pen }" @click="toggleState('pen')" :aria-label="invertColorsText">
+            <a class="menu-item" data-tooltip="Draw" v-bind:class="{ active: accessibilityStates.pen }" @click="toggleState('pen')" :aria-label="pen">
+              <span class="material-icons menu-item-icon">
+                brush
+              </span>
+            </a>
+          </li>
+          <li>
+            <a class="menu-item" data-tooltip="Erase" v-bind:class="{ active: accessibilityStates.highlighted }" @click="toggleState('highlighted')" :aria-label="Eraser">
               <i class="material-icons menu-item-icon">
-                polymer
+                backspace
               </i>
             </a>
           </li>
           <li>
-            <a class="menu-item" :data-tooltip="highlightLinksText" v-bind:class="{ active: accessibilityStates.highlighted }" @click="toggleState('highlighted')" :aria-label="highlightLinksText">
+            <a class="menu-item" data-tooltip="Text" v-bind:class="{ active: accessibilityStates.accessibileFontSize }" @click="toggleState('accessibileFontSize')" :aria-label="Text">
               <i class="material-icons menu-item-icon">
-                highlight
+                font_download
               </i>
             </a>
           </li>
+           <li>
+            <a class="menu-item" data-tooltip="Delete" v-bind:class="{ active: accessibilityStates.deleteTool}" @click="toggleState('deleteTool')" :aria-label="Delete">
+              <i class="material-icons menu-item-icon">delete</i>
+            </a>
+          </li>
           <li>
-            <a class="menu-item" :data-tooltip="accessibileFontSizeText" v-bind:class="{ active: accessibilityStates.accessibileFontSize }" @click="toggleState('accessibileFontSize')" :aria-label="accessibileFontSizeText">
+            <a class="menu-item" data-tooltip="Buy" v-bind:class="{ active: accessibilityStates.done }" @click="toggleState('done')" :aria-label="Buy">
               <i class="material-icons menu-item-icon">
-                format_size
+                shopping_cart
               </i>
             </a>
           </li>
@@ -48,13 +60,17 @@ export default {
       type: String,
       default: "Highlight Links"
     },
-    grayscaleText: {
+    done: {
       type: String,
-      default: "Desaturate"
+      default: "Done"
     },
     accessibileFontSizeText: {
       type: String,
       default: "Increase Text Size"
+    },
+    toolCode: {
+      type: Number,
+      default: "ToolCode"
     }
   },
   data() {
@@ -63,9 +79,10 @@ export default {
         pen: false,
         highlighted: false,
         accessibileFontSize: false,
-        greyscaled: false
+        done: false
       },
       showToolbar: false,
+      toolCode: 0,
     }
   },
   methods: {
@@ -74,7 +91,6 @@ export default {
       this.applyState(state)
     },
     applyState(state) {
-      var toolCode = 0
       if (state === "pen") {
         toolCode = 0
       } else if (state === "highlighted") {
@@ -82,30 +98,8 @@ export default {
       } else if (state === "accessibileFontSize") {
         toolCode = 2
       }
-    },
-    resetInvertContrast() {
-      this.accessibilityStates.pen = false
-      document.body.classList.remove("contrast")
-    },
-    resetGrayscale() {
-      this.accessibilityStates.greyscaled = false
-      document.body.classList.remove("greyscale")
-    },
-    resetHighlightLinks() {
-      this.accessibilityStates.highlighted = false
-      this.hightlightLinks()
-    },
-    hightlightLinks() {
-      for (let link of this.links) {
-        if (!link.classList.contains("menu-item")) {
-          this.accessibilityStates.highlighted ? link.classList.add("highlight-link") : link.classList.remove("highlight-link")
-        }
-      }
-    },
-    invertContrast(percent) {
-      document.body.style.setProperty('filter', `invert(${percent})`)
-    }
-  },
+ 
+    }},
   computed: {
     links() {
       return [...document.querySelectorAll('a')]
@@ -187,7 +181,8 @@ export default {
     content: " ";
     font-size: 0;
     line-height: 0;
-  }
+  } 
+ 
 
   /* Show tooltip content on hover */
   [data-tooltip]:hover:before,
@@ -242,24 +237,6 @@ export default {
   .font {
     font-size: 1.25em;
     font-size: 1.25rem;
-  }
-  .greyscale {
-    -webkit-filter: grayscale(100%);
-    -moz-filter: grayscale(100%);
-    filter: grayscale(100%);
-    min-height: 100vh;
-  }
-  .contrast {
-    -webkit-filter: invert(100%);
-    -moz-filter: invert(100%);
-    filter: invert(100%);
-    min-height: 100vh;
-  }
-  .highlight-link {
-    padding: 3px;
-    background-color: black !important;
-    color: yellow !important;
-    text-decoration: underline !important;
   }
 </style>
 
