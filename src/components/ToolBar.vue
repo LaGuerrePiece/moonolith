@@ -84,15 +84,25 @@ export default {
   },
   methods: {
     toggleState(state) {
-      this.accessibilityStates[state] = !this.accessibilityStates[state];
-      this.applyState(state)
-      if (this.accessibilityStates.pen = true) {
+      
+      if (state === "pen") {
+        console.log("c le stylo");
         this.accessibilityStates.erase = false;
         this.accessibilityStates.text = false;
+        this.accessibilityStates[state] = !this.accessibilityStates[state];
+      this.applyState(state)
       }
-      else if (this.accessibilityStates.erase = true) {
+      else if (state === "erase") {
         this.accessibilityStates.pen = false;
         this.accessibilityStates.text = false;
+        this.accessibilityStates[state] = !this.accessibilityStates[state];
+      this.applyState(state)
+      }
+      else if (state === "text") {
+        this.accessibilityStates.pen = false;
+        this.accessibilityStates.erase = false;
+        this.accessibilityStates[state] = !this.accessibilityStates[state];
+      this.applyState(state)
       }
       
       
