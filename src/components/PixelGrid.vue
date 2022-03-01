@@ -91,6 +91,7 @@ export default {
       return [number2x, number2y]
     }
 
+    // klonHex(3, 9)
     function klonHex(x, y)        //prends un Klon @ x,y et retourne sa valeur RGBA
     {
       let r = persistentData[XY2Number(x, y)][0][0]
@@ -102,7 +103,6 @@ export default {
       let output = r + g + b + 'FF'
       return output
     }
-    klonHex(3, 9)
 
     function clearGrid() 
     {
@@ -200,9 +200,13 @@ export default {
 
     function save()
     {
-      getHighLow()
+      let highLow = getHighLow()
+      let longueur = highLow[2] - highLow[0] + 1
+      let largeur = highLow[3] - highLow[1] + 1
+      console.log(longueur + ' ' + largeur)
     }
 
+    
     save()
 
     function draw_persistent_data() {
