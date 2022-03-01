@@ -1,5 +1,5 @@
 <template>
-  <div class="fab">
+    <div id="moveBar" class="fab">
     <span class="fab-action-button" @click="showToolbar = !showToolbar">
       <i class="material-icons fab-action-button-icon">
         create
@@ -16,14 +16,14 @@
             </a>
           </li>
           <li>
-            <a class="menu-item" data-tooltip="Erase" v-bind:class="{ active: accessibilityStates.highlighted }" @click="toggleState('highlighted')" :aria-label="Eraser">
+            <a class="menu-item" data-tooltip="Erase" v-bind:class="{ active: accessibilityStates.erase }" @click="toggleState('erase')" :aria-label="Eraser">
               <i class="material-icons menu-item-icon">
                 backspace
               </i>
             </a>
           </li>
           <li>
-            <a class="menu-item" data-tooltip="Text" v-bind:class="{ active: accessibilityStates.accessibileFontSize }" @click="toggleState('accessibileFontSize')" :aria-label="Text">
+            <a class="menu-item" data-tooltip="Text" v-bind:class="{ active: accessibilityStates.text }" @click="toggleState('text')" :aria-label="Text">
               <i class="material-icons menu-item-icon">
                 font_download
               </i>
@@ -32,13 +32,6 @@
            <li>
             <a class="menu-item" data-tooltip="Delete" v-bind:class="{ active: accessibilityStates.deleteTool}" @click="toggleState('deleteTool')" :aria-label="Delete">
               <i class="material-icons menu-item-icon">delete</i>
-            </a>
-          </li>
-          <li>
-            <a class="menu-item" data-tooltip="Buy" v-bind:class="{ active: accessibilityStates.done }" @click="toggleState('done')" :aria-label="Buy">
-              <i class="material-icons menu-item-icon">
-                shopping_cart
-              </i>
             </a>
           </li>
         </ul>
@@ -52,11 +45,11 @@
 export default {
   name: 'ToolBar',
   props: {
-    invertColorsText: {
+    pen: {
       type: String,
       default: "Invert Colors"
     },
-    highlightLinksText: {
+    erase: {
       type: String,
       default: "Highlight Links"
     },
@@ -64,7 +57,7 @@ export default {
       type: String,
       default: "Done"
     },
-    accessibileFontSizeText: {
+    textText: {
       type: String,
       default: "Increase Text Size"
     },
@@ -77,29 +70,86 @@ export default {
     return {
       accessibilityStates: {
         pen: false,
-        highlighted: false,
-        accessibileFontSize: false,
+        erase: false,
+        text: false,
         done: false
       },
       showToolbar: false,
       toolCode: 0,
+      pos1 : 0, 
+      pos2 : 0, 
+      pos3 : 0, 
+      pos4 : 0
     }
   },
   methods: {
     toggleState(state) {
-      this.accessibilityStates[state] = !this.accessibilityStates[state]
+      this.accessibilityStates[state] = !this.accessibilityStates[state];
       this.applyState(state)
+      if (this.accessibilityStates.pen = true) {
+        this.accessibilityStates.erase = false;
+        this.accessibilityStates.text = false;
+      }
+      else if (this.accessibilityStates.erase = true) {
+        this.accessibilityStates.pen = false;
+        this.accessibilityStates.text = false;
+      }
+      
+      
+
+
+
+      
+      
     },
     applyState(state) {
       if (state === "pen") {
         toolCode = 0
-      } else if (state === "highlighted") {
+      } else if (state === "erase") {
         toolCode = 1
-      } else if (state === "accessibileFontSize") {
+      } else if (state === "text") {
         toolCode = 2
-      }
- 
-    }},
+      }},
+      
+
+
+
+    dragElement(moveBar) {
+  if (document.getElementById("moveBar")) {
+    moveBar.onmousedown = dragMouseDown;
+  }},
+
+  dragMouseDown(e) {
+    e = e || window.event;
+    e.preventDefault();
+    // get the mouse cursor position at startup:
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    document.onmouseup = closeDragElement;
+    // call a function whenever the cursor moves:
+    document.onmousemove = elementDrag;
+  },
+
+  elementDrag(e) {
+    e = e || window.event;
+    e.preventDefault();
+    // calculate the new cursor position:
+    pos1 = pos3 - e.clientX;
+    pos2 = pos4 - e.clientY;
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    // set the element's new position:
+    moveBar.style.top = (moveBar.offsetTop - pos2) + "px";
+    moveBar.style.left = (moveBar.offsetLeft - pos1) + "px";
+  },
+
+  closeDragElement() {
+    // stop moving when mouse button is released:
+    document.onmouseup = null;
+    document.onmousemove = null;
+  }
+
+},
   computed: {
     links() {
       return [...document.querySelectorAll('a')]
@@ -202,7 +252,8 @@ export default {
     left: 65px;
     bottom: 50%;
     margin-bottom: 2px;
-  }
+  } 
+
   .menu-item-icon {
     position: absolute;
     top: 50%;
@@ -238,6 +289,7 @@ export default {
     font-size: 1.25em;
     font-size: 1.25rem;
   }
+
 </style>
 
 
@@ -275,7 +327,6 @@ export default {
   .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
     opacity: 0;
   }
-
 </style>
 
 <style scoped>

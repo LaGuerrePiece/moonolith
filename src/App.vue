@@ -3,6 +3,7 @@
     <PixelGrid :currentColor="colors"/>
     <ToolBar />
     <Twitter v-model="colors" /> 
+    <ToolBar2/>
   </div>
 </template>
 
@@ -10,6 +11,7 @@
 import PixelGrid from "./components/PixelGrid.vue";
 import ToolBar from "./components/ToolBar.vue";
 import { Twitter } from "vue-color";
+import ToolBar2 from "./components/ToolBar2.vue"
 
 var colors = {
   hex: '#194d33',
@@ -26,6 +28,7 @@ export default {
     PixelGrid,
     ToolBar,
     Twitter,
+    ToolBar2,
   },
   data() {
     return {
