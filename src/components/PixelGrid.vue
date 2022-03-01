@@ -32,8 +32,8 @@ export default {
 
     document.body.style.transition = "0.3s all";
 
-    var rows = 90;
-    var columns = 60;
+    var rows = 256;
+    var columns = 128;
 
     var data = []; // array du dessous (noise)
     var persistentData = this.load(); // array du dessus
@@ -70,7 +70,6 @@ export default {
     var toggleDraw = false;
     document.body.addEventListener("mousedown", () => {
       toggleDraw = true;
-      // console.log(number2XY(65) + '\n' + XY2Number(5, 1))
     });
     document.body.addEventListener("mouseup", () => {
       toggleDraw = false;
@@ -80,7 +79,7 @@ export default {
     function XY2Number(x, y)
     {
       let number = y * columns + x
-      console.log(`Klon #${number} => x : ${x} | y : ${y}`)
+      // console.log(`Klon #${number} => x : ${x} | y : ${y}`)
       return number
     }
 
@@ -92,8 +91,21 @@ export default {
       return [number2x, number2y]
     }
 
+    function klonHex(x, y)        //prends un Klon @ x,y et retourne sa valeur RGBA
+    {
+      let r = persistentData[XY2Number(x, y)][0][0]
+      let g = persistentData[XY2Number(x, y)][0][1]
+      let b = persistentData[XY2Number(x, y)][0][2]
+      r = (r * 255).toString(16)
+      g = (g * 255).toString(16)
+      b = (b * 255).toString(16)
+      let output = r + g + b + 'FF'
+      return output
+    }
+    klonHex(3, 9)
 
-    function clearGrid() {
+    function clearGrid() 
+    {
       for (i = 0; i < persistentData.length; i++) {
         persistentData[i][0][0] = 0;
         persistentData[i][0][1] = 0;
@@ -103,8 +115,8 @@ export default {
       pixelDrawnCounter = 0
     }
 
-
-    function mousePosOnGrid() {
+    function mousePosOnGrid() 
+    {
       var screenx = document.documentElement.clientWidth;
       var screeny = document.documentElement.clientHeight;
       var pixelSize = screenx / columns;
@@ -113,16 +125,17 @@ export default {
       klonY = Math.floor((mouse[1] / screeny) * nbPixely);
     }
 
-    function pen(color) {
+    function pen(color) 
+    {
       mousePosOnGrid();
-      if (klonX < rows && klonY >= 0) {
+      if (klonX < columns && klonY < rows) {
         draw_pixel(klonX, klonY, color, 1);
       }
     }
 
     function eraser() {
       mousePosOnGrid();
-      if (klonX < rows && klonY >= 0) {
+      if (klonX < columns && klonY < rows) {
         erase_pixel(klonX, klonY);
       }
     }
@@ -169,7 +182,7 @@ export default {
       return color;
     }
 
-    function saveCarre() 
+    function getHighLow() 
     {
       let lowX = persistentData.length, lowY = persistentData.length, highX = 0, highY = 0
       for (let i = 0; i < persistentData.length; i++) 
@@ -182,9 +195,15 @@ export default {
         }
       }
       console.log(`lowX : ${lowX} | lowY : ${lowY} | highX : ${highX} | highY : ${highY} | `)
+      return [lowX, lowY, highX, highY] 
     }
 
-    saveCarre()
+    function save()
+    {
+      getHighLow()
+    }
+
+    save()
 
     function draw_persistent_data() {
       // REDRAW GRILLE DU DESSUS
@@ -226,6 +245,7 @@ export default {
     }
 
     loadImage("https://i.imgur.com/qAhwWr9.png", 20, 15);
+    // clearGrid()
 
     var component = this; // pour recuperer couleur quelques lignes plus loin
 
