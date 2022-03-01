@@ -74,26 +74,13 @@ export default {
       this.applyState(state)
     },
     applyState(state) {
+      var toolCode = 0
       if (state === "pen") {
-        this.resetHighlightLinks()
-        this.resetGrayscale()
-        this.accessibilityStates[state] ?
-          document.body.classList.add("contrast") :
-          document.body.classList.remove("contrast")
-      } else if (state === "greyscaled") {
-        this.resetHighlightLinks()
-        this.resetInvertContrast()
-        this.accessibilityStates[state] ?
-          document.body.classList.add("greyscale") :
-          document.body.classList.remove("greyscale")
+        toolCode = 0
       } else if (state === "highlighted") {
-        this.resetGrayscale()
-        this.resetInvertContrast()
-        this.hightlightLinks()
+        toolCode = 1
       } else if (state === "accessibileFontSize") {
-        this.accessibilityStates[state] ?
-          document.body.classList.add("font") :
-          document.body.classList.remove("font")
+        toolCode = 2
       }
     },
     resetInvertContrast() {

@@ -70,11 +70,28 @@ export default {
     var toggleDraw = false;
     document.body.addEventListener("mousedown", () => {
       toggleDraw = true;
+      // console.log(number2XY(65) + '\n' + XY2Number(5, 1))
     });
     document.body.addEventListener("mouseup", () => {
       toggleDraw = false;
-      console.log(`Facture : ${pixelDrawnCounter*3}`)
+      console.log(`Facture : ${pixelDrawnCounter * 3}`)
     });
+
+    function XY2Number(x, y)
+    {
+      let number = y * columns + x
+      console.log(`Klon #${number} => x : ${x} | y : ${y}`)
+      return number
+    }
+
+    function number2XY(number)
+    {
+      let number2x = number % columns
+      let number2y = Math.floor(number / columns)
+      // console.log(`Klon #${number} => x : ${number2x} | y : ${number2y}`)
+      return [number2x, number2y]
+    }
+
 
     function clearGrid() {
       for (i = 0; i < persistentData.length; i++) {
@@ -83,7 +100,9 @@ export default {
         persistentData[i][0][2] = 0;
         persistentData[i][1] = 0;
       }
+      pixelDrawnCounter = 0
     }
+
 
     function mousePosOnGrid() {
       var screenx = document.documentElement.clientWidth;
@@ -95,22 +114,20 @@ export default {
     }
 
     function pen(color) {
-      // FONCTION DESSIN
       mousePosOnGrid();
-      if (klonX < rows && klonY > 0) {
+      if (klonX < rows && klonY >= 0) {
         draw_pixel(klonX, klonY, color, 1);
       }
     }
 
     function eraser() {
-      // FONCTION GOMME
       mousePosOnGrid();
-      if (klonX < rows && klonY > 0) {
+      if (klonX < rows && klonY >= 0) {
         erase_pixel(klonX, klonY);
       }
     }
 
-                                                                    var toolCode = 0
+    var toolCode = 0                      //PEN = 0, GOMME = 1, TEXT = 2                                  <<<<<<<<<<||||||||||||||||||||||||||||||||||||||||||||||||
     function currentTool(color) {
       switch (toolCode) {
         case 0:
@@ -131,24 +148,43 @@ export default {
       if (persistentData[pos][1] != 2){
          if (persistentData[pos][1] == 0) pixelDrawnCounter++
       persistentData[pos][0] = color;
-      persistentData[pos][1] = author; //marqueur "dessiné"
+      persistentData[pos][1] = author; //marqueur "author"
       }
     }
 
-    function erase_pixel(x, y) {
+    function erase_pixel(x, y) 
+    {
       var pos = y * columns + x;
       if (persistentData[pos][1] == 1){
       persistentData[pos][0] = [0, 0, 0];
-      persistentData[pos][1] = 0; //marqueur "dessiné"
+      persistentData[pos][1] = 0; //marqueur "author"
       pixelDrawnCounter--
       }
     }
 
-    function to_color_array(color) {
+    function to_color_array(color) 
+    {
       color = color.rgba;
       color = [color.r / 255, color.g / 255, color.b / 255];
       return color;
     }
+
+    function saveCarre() 
+    {
+      let lowX = persistentData.length, lowY = persistentData.length, highX = 0, highY = 0
+      for (let i = 0; i < persistentData.length; i++) 
+      {
+        if(persistentData[i][1] == 1){
+          if(number2XY(i)[0] < lowX){lowX = number2XY(i)[0]}
+          if(number2XY(i)[0] > highX){highX = number2XY(i)[0]}
+          if(number2XY(i)[1] < lowY){lowY = number2XY(i)[1]}
+          if(number2XY(i)[1] > highY){highY = number2XY(i)[1]}
+        }
+      }
+      console.log(`lowX : ${lowX} | lowY : ${lowY} | highX : ${highX} | highY : ${highY} | `)
+    }
+
+    saveCarre()
 
     function draw_persistent_data() {
       // REDRAW GRILLE DU DESSUS
