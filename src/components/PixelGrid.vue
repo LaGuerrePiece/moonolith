@@ -3,6 +3,8 @@
 </template>
 
 <script>
+import UPNG from "upng-js";
+
 export default {
   name: "PixelGrid",
   props: {
@@ -227,6 +229,8 @@ export default {
       }
     }
 
+    var array = [];
+
     function loadImage(imgURL, offsetx, offsety) {
       //ajouter nbPixel en entrée
 
@@ -235,7 +239,8 @@ export default {
         .then((blob) => {
           blob.arrayBuffer().then((buffer) => {
             var buff = UPNG.decode(buffer);
-            var array = buff.data;
+            array = buff.data;
+            console.log(buff)
 
             for (let y = 0; y < buff.width; y++) {
               for (let x = 0; x < buff.height; x++) {
@@ -244,18 +249,46 @@ export default {
                   draw_pixel(x + offsetx, y + offsety, {rgba: {r: array[idx],g: array[idx + 1],b: array[idx + 2]}}, 2);
               }
             }
+          }).then(() => { // on attends que l'upload soit fini et on save l'image
+            saveImage();
           });
-        });
+        })
     }
 
     loadImage("https://i.imgur.com/qAhwWr9.png", 20, 15);
     // clearGrid()
+    function _arrayBufferToBase64( buffer ) { // fonction pour encoder en base 64 pour pouvoir télécharger l'image ensuite
+      var binary = '';
+      var bytes = new Uint8Array( buffer );
+      var len = bytes.byteLength;
+      for (var i = 0; i < len; i++) {
+        binary += String.fromCharCode( bytes[ i ] );
+      }
+      return window.btoa( binary );
+    }
+
+    function saveImage()
+    {
+      array = new Uint8Array(array) //on passe au format 8 bit
+      var png = UPNG.encode([array.buffer], 32, 32, 0); // on encode
+      let buffer = _arrayBufferToBase64(png) //on passe au format base64
+
+      var elementA = document.createElement('a'); //On crée un element vide pour forcer le téléchargement
+      elementA.setAttribute('href', 'data:image/png;base64,' + buffer); // on met les données au bon format (base64)
+      elementA.setAttribute('download', +new Date() + ".png"); // le nom du fichier
+      elementA.style.display = 'none'; // on met l'elem invisible
+      document.body.appendChild(elementA); //on crée l 'elem
+      elementA.click(); // on télécharge
+      document.body.removeChild(elementA); // on delete l'elem
+    }
+
+
 
     var component = this; // pour recuperer couleur quelques lignes plus loin
 
     pixels.frame(function () {
       //appelé à chaque frame (60 fois par seconde)
-      draw_noise();
+      //draw_noise();
       if (toggleDraw) currentTool(component.currentColor);
       draw_persistent_data();
       pixels.update(data);
