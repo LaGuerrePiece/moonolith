@@ -3,6 +3,8 @@
 </template>
 
 <script>
+import UPNG from "upng-js";
+
 export default {
   name: "PixelGrid",
   props: {
@@ -198,16 +200,36 @@ export default {
       return [lowX, lowY, highX, highY] 
     }
 
-    function save()
+    function saveGuy()
     {
       let highLow = getHighLow()
       let longueur = highLow[2] - highLow[0] + 1
       let largeur = highLow[3] - highLow[1] + 1
-      console.log(longueur + ' ' + largeur)
+      console.log(`Longueur : ${longueur} | Largeur : ${largeur}`)
+      let saveArray = []
+      // saveArray = new Uint8Array(saveArray)
+      for (let i = 0; i < persistentData.length; i++) {
+        if(number2XY(i)[0] >= highLow[0] && number2XY(i)[0] <= highLow[2] && number2XY(i)[1] >= highLow[1] && number2XY(i)[1] <= highLow[3]){
+          if(persistentData[i][1] == 1){
+            saveArray.push(persistentData[i][0][0] * 255)
+            saveArray.push(persistentData[i][0][1] * 255)
+            saveArray.push(persistentData[i][0][2] * 255)
+            saveArray.push(255)
+          }else{
+            saveArray.push(0)
+            saveArray.push(0)
+            saveArray.push(0)
+            saveArray.push(0)
+          }
+        }
+      }
+      console.log('SAVE ARRAY')
+      console.log(saveArray)
+      saveImage(saveArray, longueur, largeur)
     }
-
+    // clearGrid()
     
-    save()
+    saveGuy()
 
     function draw_persistent_data() {
       // REDRAW GRILLE DU DESSUS
@@ -227,6 +249,7 @@ export default {
       }
     }
 
+    var array = []
     function loadImage(imgURL, offsetx, offsety) {
       //ajouter nbPixel en entrée
 
@@ -235,21 +258,59 @@ export default {
         .then((blob) => {
           blob.arrayBuffer().then((buffer) => {
             var buff = UPNG.decode(buffer);
-            var array = buff.data;
+            array = buff.data;
+            // console.log(array)
+            var oWidth = buff.width
+            var oHeight = buff.height
 
-            for (let y = 0; y < buff.width; y++) {
-              for (let x = 0; x < buff.height; x++) {
-                let idx = (buff.width * y + x) * 4;
+            for (let y = 0; y < oWidth; y++) {
+              for (let x = 0; x < oHeight; x++) {
+                let idx = (oWidth * y + x) * 4;
                 if (array[idx + 3] != 0)
                   draw_pixel(x + offsetx, y + offsety, {rgba: {r: array[idx],g: array[idx + 1],b: array[idx + 2]}}, 2);
               }
             }
+          // saveImage(array, oHeight, oWidth);
+          }).then(() => { // on attends que l'upload soit fini et on save l'image
+          // saveImage(array, oHeight, oWidth);
           });
-        });
+        })
     }
 
-    loadImage("https://i.imgur.com/qAhwWr9.png", 20, 15);
-    // clearGrid()
+    loadImage("https://i.imgur.com/qAhwWr9.png", 20, 15); //image bonhomme
+    loadImage("https://i.imgur.com/Lbd2bji.png", 170, 10); //image test 3x3 
+    loadImage("https://i.imgur.com/iWJ9P2S.png", 140, 7); //image test 3x3 n2
+    loadImage("https://i.imgur.com/Eq4ajRS.png", 120, 5); //image test 4x4
+    loadImage("https://i.imgur.com/bAInSyz.png", 12, 15); //image test 5x5
+
+    function _arrayBufferToBase64( buffer ) { // fonction pour encoder en base 64 pour pouvoir télécharger l'image ensuite
+      var binary = '';
+      var bytes = new Uint8Array( buffer );
+      var len = bytes.byteLength;
+      for (var i = 0; i < len; i++) {
+        binary += String.fromCharCode( bytes[ i ] );
+      }
+      return window.btoa( binary );
+    }
+
+    function saveImage(inputArray, height, width)
+    {
+      inputArray = new Uint8Array(inputArray) //on passe au format 8 bit
+      const sliced = new Uint8Array(inputArray.slice(0, (height * width * 4)));
+      var png = UPNG.encode([sliced.buffer], height, width, 0); // on encode
+      console.log('image saved!')
+      let buffer = _arrayBufferToBase64(png) //on passe au format base64
+      console.log(buffer)
+      var elementA = document.createElement('a'); //On crée un element vide pour forcer le téléchargement
+      elementA.setAttribute('href', 'data:image/png;base64,' + buffer); // on met les données au bon format (base64)
+      elementA.setAttribute('download', +new Date() + ".png"); // le nom du fichier
+      elementA.style.display = 'none'; // on met l'elem invisible
+      document.body.appendChild(elementA); //on crée l 'elem
+      elementA.click(); // on télécharge
+      document.body.removeChild(elementA); // on delete l'elem
+    }
+
+
 
     var component = this; // pour recuperer couleur quelques lignes plus loin
 
