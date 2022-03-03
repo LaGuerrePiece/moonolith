@@ -229,8 +229,7 @@ export default {
       }
     }
 
-    var array = [];
-
+    var array = []
     function loadImage(imgURL, offsetx, offsety) {
       //ajouter nbPixel en entrée
 
@@ -240,23 +239,31 @@ export default {
           blob.arrayBuffer().then((buffer) => {
             var buff = UPNG.decode(buffer);
             array = buff.data;
-            console.log(buff)
+            console.log(array)
+            var oWidth = buff.width
+            var oHeight = buff.height
 
-            for (let y = 0; y < buff.width; y++) {
-              for (let x = 0; x < buff.height; x++) {
-                let idx = (buff.width * y + x) * 4;
+            for (let y = 0; y < oWidth; y++) {
+              for (let x = 0; x < oHeight; x++) {
+                let idx = (oWidth * y + x) * 4;
                 if (array[idx + 3] != 0)
                   draw_pixel(x + offsetx, y + offsety, {rgba: {r: array[idx],g: array[idx + 1],b: array[idx + 2]}}, 2);
               }
             }
+          // saveImage(array, oHeight, oWidth);
           }).then(() => { // on attends que l'upload soit fini et on save l'image
-            saveImage();
+          // saveImage(array, oHeight, oWidth);
           });
         })
     }
 
-    loadImage("https://i.imgur.com/qAhwWr9.png", 20, 15);
-    // clearGrid()
+    loadImage("https://i.imgur.com/qAhwWr9.png", 20, 15); //image bonhomme
+    loadImage("https://i.imgur.com/Lbd2bji.png", 170, 10); //image test 3x3 
+    loadImage("https://i.imgur.com/iWJ9P2S.png", 140, 7); //image test 3x3 n2
+    loadImage("https://i.imgur.com/Eq4ajRS.png", 120, 5); //image test 4x4
+    loadImage("https://i.imgur.com/bAInSyz.png", 12, 15); //image test 5x5
+
+    clearGrid()
     function _arrayBufferToBase64( buffer ) { // fonction pour encoder en base 64 pour pouvoir télécharger l'image ensuite
       var binary = '';
       var bytes = new Uint8Array( buffer );
@@ -267,12 +274,17 @@ export default {
       return window.btoa( binary );
     }
 
-    function saveImage()
+    async function saveImage(inputArray, height, width)
     {
-      array = new Uint8Array(array) //on passe au format 8 bit
-      var png = UPNG.encode([array.buffer], 32, 32, 0); // on encode
+      inputArray = new Uint8Array(inputArray) //on passe au format 8 bit
+      console.log('Height : ' + height)
+      console.log('Width : ' + width)
+      const sliced = new Uint8Array(inputArray.slice(0, (height * width * 4)));
+      console.log(sliced)
+      var png = UPNG.encode([sliced.buffer], height, width, 0); // on encode
+      console.log('image saved!')
       let buffer = _arrayBufferToBase64(png) //on passe au format base64
-
+      console.log(buffer)
       var elementA = document.createElement('a'); //On crée un element vide pour forcer le téléchargement
       elementA.setAttribute('href', 'data:image/png;base64,' + buffer); // on met les données au bon format (base64)
       elementA.setAttribute('download', +new Date() + ".png"); // le nom du fichier
@@ -288,7 +300,7 @@ export default {
 
     pixels.frame(function () {
       //appelé à chaque frame (60 fois par seconde)
-      //draw_noise();
+      draw_noise();
       if (toggleDraw) currentTool(component.currentColor);
       draw_persistent_data();
       pixels.update(data);
