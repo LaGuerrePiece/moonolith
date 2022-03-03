@@ -200,16 +200,36 @@ export default {
       return [lowX, lowY, highX, highY] 
     }
 
-    function save()
+    function saveGuy()
     {
       let highLow = getHighLow()
       let longueur = highLow[2] - highLow[0] + 1
       let largeur = highLow[3] - highLow[1] + 1
-      console.log(longueur + ' ' + largeur)
+      console.log(`Longueur : ${longueur} | Largeur : ${largeur}`)
+      let saveArray = []
+      // saveArray = new Uint8Array(saveArray)
+      for (let i = 0; i < persistentData.length; i++) {
+        if(number2XY(i)[0] >= highLow[0] && number2XY(i)[0] <= highLow[2] && number2XY(i)[1] >= highLow[1] && number2XY(i)[1] <= highLow[3]){
+          if(persistentData[i][1] == 1){
+            saveArray.push(persistentData[i][0][0] * 255)
+            saveArray.push(persistentData[i][0][1] * 255)
+            saveArray.push(persistentData[i][0][2] * 255)
+            saveArray.push(255)
+          }else{
+            saveArray.push(0)
+            saveArray.push(0)
+            saveArray.push(0)
+            saveArray.push(0)
+          }
+        }
+      }
+      console.log('SAVE ARRAY')
+      console.log(saveArray)
+      saveImage(saveArray, longueur, largeur)
     }
-
+    // clearGrid()
     
-    save()
+    saveGuy()
 
     function draw_persistent_data() {
       // REDRAW GRILLE DU DESSUS
@@ -239,7 +259,7 @@ export default {
           blob.arrayBuffer().then((buffer) => {
             var buff = UPNG.decode(buffer);
             array = buff.data;
-            console.log(array)
+            // console.log(array)
             var oWidth = buff.width
             var oHeight = buff.height
 
@@ -263,7 +283,6 @@ export default {
     loadImage("https://i.imgur.com/Eq4ajRS.png", 120, 5); //image test 4x4
     loadImage("https://i.imgur.com/bAInSyz.png", 12, 15); //image test 5x5
 
-    clearGrid()
     function _arrayBufferToBase64( buffer ) { // fonction pour encoder en base 64 pour pouvoir télécharger l'image ensuite
       var binary = '';
       var bytes = new Uint8Array( buffer );
@@ -274,13 +293,10 @@ export default {
       return window.btoa( binary );
     }
 
-    async function saveImage(inputArray, height, width)
+    function saveImage(inputArray, height, width)
     {
       inputArray = new Uint8Array(inputArray) //on passe au format 8 bit
-      console.log('Height : ' + height)
-      console.log('Width : ' + width)
       const sliced = new Uint8Array(inputArray.slice(0, (height * width * 4)));
-      console.log(sliced)
       var png = UPNG.encode([sliced.buffer], height, width, 0); // on encode
       console.log('image saved!')
       let buffer = _arrayBufferToBase64(png) //on passe au format base64
