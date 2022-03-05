@@ -21,6 +21,15 @@ export default class Klon {
         this.color[0] = this.color[0] * 0.95 + rand
         this.color[1] = this.color[1] * 0.95 + rand
         this.color[2] = this.color[2] * 0.95 + rand
+        return this
     }
 
+    get isEditable() {
+        return this.author !== Klon.PAID
+    }
+
+    static get FREE() { return 0 }
+    static get PAINTED() { return 1 }
+    static get PAID() { return 2 }
 }
+
