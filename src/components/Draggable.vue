@@ -1,5 +1,4 @@
 <template >
-    {{ dragging }}
     <div
         :id="id"
         class="draggable"

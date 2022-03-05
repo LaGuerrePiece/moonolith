@@ -9,6 +9,7 @@
   "dependencies": {
     "@ckpack/vue-color": "^1.1.8",
     "express": "^4.17.3",
+    "mouse-position": "^2.1.0",
     "pixel-grid": "^1.0.2",
     "upng-js": "^2.1.0",
     "vue": "^3.2.31"

@@ -72,11 +72,16 @@ const showToolbar = ref(false);
 const toolUsed = ref(Tool.DONE);
 
 function toggleState(tool) {
-    toolUsed.value = tool
+    if(toolUsed.value === tool)
+        toolUsed.value = Tool.DONE
+    else toolUsed.value = tool
 }
 
 watch(toolUsed, (newVal, oldVal) => {
-    if(newVal !== oldVal) emit("toolChanged", toolUsed.value);
+    if(newVal !== oldVal) emit("toolChanged", toolUsed.value)
+})
+watch(showToolbar, () => {
+    if(!showToolbar.value) toolUsed.value = Tool.DONE
 })
 </script>
 

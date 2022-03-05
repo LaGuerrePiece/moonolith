@@ -73,6 +73,13 @@ export default class Grid {
             this.persistent[pos] = klon
     }
 
+    erase_pixel(x, y) {
+        var pos = y * this.nbColumns + x;
+        if (this.persistent[pos] ? this.persistent[pos].isEditable : true)
+            this.persistent[pos] = undefined
+    }
+
+
     convertIndexToXY(number) {
         let x = number % this.nbColumns
         let y = Math.floor(number / this.nbColumns)
