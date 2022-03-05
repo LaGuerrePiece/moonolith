@@ -17,28 +17,32 @@ import Tool from "../models/tools";
 // Definition des props
 const props = defineProps({
     tool: Number,
+    color: String
 });
 const oldMousePosition = reactive({
     x: null,
     y: null
 })
 
-watch(() => props.tool, (code) => {
-    console.log("watch tool ", code)
-    if(code === Tool.DONE) {
-        // stopUsingTool()
-        document.onmousedown = null
-        document.onmousemove = null  
-    } else {
-        document.onmouseup = stopUsingTool
-        document.onmousedown = startUsingTool
-    }
-})
-
 // Gestion de la grille
 let grid = new Grid(128, 256);
 grid.initialize(document.body);
-const position = ref(mousePosition(grid.pixels.canvas))
+let canvas = grid.pixels.canvas
+const position = ref(mousePosition(canvas))
+
+watch(() => props.tool, (code) => {
+    // console.log("watch tool ", code)
+    if(code === Tool.DONE) {
+        // stopUsingTool()
+        canvas.onmousedown = null
+        canvas.onmousemove = null  
+    } else {
+        canvas.onmouseup = stopUsingTool
+        canvas.onmousedown = startUsingTool
+    }
+})
+
+
 
 onMounted(async () => {
 
@@ -74,11 +78,10 @@ function useTool(e) {
     if(props.tool === Tool.DONE) return
     let newMousePosition = mousePositionInGrid(e)
     if(newMousePosition.x === oldMousePosition.x && newMousePosition.y === oldMousePosition.y) return
-    // console.log("useTool", newMousePosition, props.tool) 
 
     switch(props.tool) {
         case Tool.PEN:
-            grid.draw_pixel(newMousePosition.x, newMousePosition.y, new Klon([1,0,0], Klon.PAINTED))
+            grid.draw_pixel(newMousePosition.x, newMousePosition.y, new Klon(props.color, Klon.PAINTED))
             break
         case Tool.ERASER:
             grid.erase_pixel(newMousePosition.x, newMousePosition.y)
@@ -87,20 +90,20 @@ function useTool(e) {
 }
 
 function startUsingTool() {
-    console.log("startUsingTool")
-    document.onmousedown = restartUsingTool
-    document.onmousemove = useTool  
+    // console.log("startUsingTool")
+    canvas.onmousedown = restartUsingTool
+    canvas.onmousemove = useTool  
 }
 
 function restartUsingTool() {
-    console.log("restartUsingTool")
-    document.onmousemove = useTool      
+    // console.log("restartUsingTool")
+    canvas.onmousemove = useTool      
 }
 
 function stopUsingTool() {
-    console.log("stopUsingTool")
+    // console.log("stopUsingTool")
     // document.onmousedown = null
-    document.onmousemove = null    
+    canvas.onmousemove = null    
 }
 
 function mousePositionInGrid() {
