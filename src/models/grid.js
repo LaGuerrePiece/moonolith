@@ -35,7 +35,6 @@ export default class Grid {
         this.noises = Array.from({ length: this.length }, () => new Klon([0, 0, 0]));
         this.persistent = new Array(this.length)
 
-        console.log("Grid constructor called", this)
     }
 
     /**

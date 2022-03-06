@@ -4,8 +4,13 @@ import Klon from "../models/klon"
 function decode(buffer) {
     return new Promise(resolve => {
         let buff = UPNG.decode(buffer)
+        //buff = UPNG.toRGBA8(buff)[0]
         resolve(buff)
     })
+}
+function toRGBA8(buffer) {
+    return new Uint8Array(UPNG.toRGBA8(buffer)[0])
+
 }
 
 function getHighLow(grid) {
@@ -54,9 +59,14 @@ function preEncode(grid) {
             }
         }
         // saveArray = saveArray.slice(0, (highLow.longueur * highLow.largeur * 4))
+        console.log('saveArray preUint8 preEncode', saveArray)
         saveArray = new Uint8Array(saveArray)
-        var png = UPNG.encode([saveArray.buffer], highLow.longueur, highLow.largeur, 0); // on encode    
+        console.log('saveArray.buffer preEncode', saveArray.buffer)
+        var png = UPNG.encode([saveArray.buffer], highLow.longueur, highLow.largeur, 0); // on encode
+        console.log('PNG POST ENCODE PRE 64 :', png)
         let buffer = _arrayBufferToBase64(png) //on passe au format base64
+        console.log('HYPER CLAIR :', _base64ToArrayBuffer(buffer))
+        console.log('saveArray', saveArray, 'buffer', buffer)
         var elementA = document.createElement('a'); //On crée un element vide pour forcer le téléchargement
         elementA.setAttribute('href', 'data:image/png;base64,' + buffer); // on met les données au bon format (base64)
         elementA.setAttribute('download', +new Date() + ".png"); // le nom du fichier
@@ -64,8 +74,8 @@ function preEncode(grid) {
         document.body.appendChild(elementA); //on crée l 'elem
         elementA.click(); // on télécharge
         document.body.removeChild(elementA); // on delete l'elem
-        console.log('highLow.lowX, highLow.lowY', highLow.lowX, highLow.lowY)
-        console.log('RETOUR DE TOUR :', 'POSITION :', firstPix, 'YMAX:', highLow.highY, 'NBPIX', nbPix, 'BUFFER', buffer)
+        // console.log('highLow.lowX, highLow.lowY', highLow.lowX, highLow.lowY)
+        // console.log('RETOUR DE TOUR :', 'POSITION :', firstPix, 'YMAX:', highLow.highY, 'NBPIX', nbPix, 'BUFFER', buffer)
 
         resolve({ position: firstPix, ymax: highLow.highY, nbPix: nbPix, imgURI: buffer})
     })
@@ -81,13 +91,25 @@ function _arrayBufferToBase64(buffer) { // fonction pour encoder en base 64 pour
     return window.btoa(binary);
 }
 
+function _base64ToArrayBuffer(base64) {
+    var binary_string = window.atob(base64);
+    var len = binary_string.length;
+    var bytes = new Uint8Array(len);
+    for (var i = 0; i < len; i++) {
+        bytes[i] = binary_string.charCodeAt(i);
+    }
+    return bytes.buffer;
+}
+
+
+
 function Encode(inputArray, height, width) {
     inputArray = new Uint8Array(inputArray) //on passe au format 8 bit
     const sliced = new Uint8Array(inputArray.slice(0, (height * width * 4)));
     var png = UPNG.encode([sliced.buffer], height, width, 0); // on encode
-    console.log('image saved!')
+    // console.log('image saved!')
     let buffer = _arrayBufferToBase64(png) //on passe au format base64
-    console.log(buffer)
+    // console.log(buffer)
     var elementA = document.createElement('a'); //On crée un element vide pour forcer le téléchargement
     elementA.setAttribute('href', 'data:image/png;base64,' + buffer); // on met les données au bon format (base64)
     elementA.setAttribute('download', +new Date() + ".png"); // le nom du fichier
@@ -102,5 +124,7 @@ function Encode(inputArray, height, width) {
 export {
     decode,
     getHighLow,
-    preEncode
+    preEncode,
+    _base64ToArrayBuffer,
+    toRGBA8
 }
