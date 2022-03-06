@@ -10,7 +10,7 @@ export default class Grid {
      * Le constructeur de la classe Grid
      * @param {nombre de colonnes pour la grille} nbColumns 
      * @param {nombre de ligne pour la grille} nbRows 
-     * @param {les options pour } options 
+     * @param {les options pour } options
      * @throws {erreur si dimensions non transmises}
      */
     constructor(
@@ -44,6 +44,15 @@ export default class Grid {
      */
     get length() {
         return this.nbColumns * this.nbRows
+    }
+
+    /**
+     * Getter permettant de récupérer le tableau de pixels
+     * @returns {le tableau de pixels persistant}
+     */
+    getPersistent()
+    {
+        return this.persistent;
     }
 
     /**

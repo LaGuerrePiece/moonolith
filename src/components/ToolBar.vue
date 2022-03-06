@@ -35,8 +35,8 @@
                     <li>
                         <a
                             class="menu-item"
-                            :class="{ active: toolUsed === Tool.TEXT }"
-                            @click="toggleState(Tool.TEXT)"
+                            :class="{ }"
+                            @click="randomf()"
                             data-tooltip="Text"
                             aria-label="Text"
                         >
@@ -66,7 +66,7 @@
 import { ref, watch } from "vue";
 import Tool from "../models/tools";
 
-const emit = defineEmits(["toolChanged"]);
+const emit = defineEmits(["toolChanged", "saved"]);
 
 const showToolbar = ref(false);
 const toolUsed = ref(Tool.DONE);
@@ -83,6 +83,12 @@ watch(toolUsed, (newVal, oldVal) => {
 watch(showToolbar, () => {
     if(!showToolbar.value) toolUsed.value = Tool.DONE
 })
+
+function randomf(){
+    console.log("acquis de conscience")
+    emit("saved", 1)
+}
+
 </script>
 
 <style scoped>

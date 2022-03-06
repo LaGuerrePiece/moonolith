@@ -13,7 +13,9 @@ function getHighLow(grid) {
         lowY = grid.persistent.length,
         highX = 0,
         highY = 0
-    for (let i in grid.persistent) {
+
+
+        for (let i in grid.persistent) {
         if (grid.persistent[i].author == Klon.PAINTED) {
             if (grid.convertIndexToXY(i).x < lowX) { lowX = grid.convertIndexToXY(i).x }
             if (grid.convertIndexToXY(i).x > highX) { highX = grid.convertIndexToXY(i).x }
@@ -23,7 +25,7 @@ function getHighLow(grid) {
     }
     let longueur = highX - lowX + 1
     let largeur = highY - lowY + 1
-    console.log(`lowX : ${lowX} | lowY : ${lowY} | highX : ${highX} | highY : ${highY} | `)
+    // console.log(`lowX : ${lowX} | lowY : ${lowY} | highX : ${highX} | highY : ${highY} | `)
     return { lowX, lowY, highX, highY, longueur, largeur }
 }
 
@@ -31,14 +33,18 @@ function preEncode(grid) {
     return new Promise(resolve => {
         let highLow = getHighLow(grid)
         let saveArray = []
-        for (let i = grid.convertXYToIndex(highLow.lowX, highLow.lowY); i <= grid.convertXYToIndex(highLow.highX, highLow.highY); i++) {
+        let nbPix = 0
+        let firstPix = -1
+        for (let i = grid.convertXYToIndex(highLow.lowX, highLow.lowY); i <= grid.convertXYToIndex(highLow.highX, highLow.highY); i++) {          
             if (grid.convertIndexToXY(i).x >= highLow.lowX && grid.convertIndexToXY(i).x <= highLow.highX &&
                 grid.convertIndexToXY(i).y >= highLow.lowY && grid.convertIndexToXY(i).y <= highLow.highY) {
                 if (grid.persistent[i] && grid.persistent[i].author == Klon.PAINTED) {
+                    if (firstPix == -1) firstPix = i
                     saveArray.push(grid.persistent[i].color[0] * 255)
                     saveArray.push(grid.persistent[i].color[1] * 255)
                     saveArray.push(grid.persistent[i].color[2] * 255)
                     saveArray.push(255)
+                    nbPix++
                 } else {
                     saveArray.push(0)
                     saveArray.push(0)
@@ -47,7 +53,6 @@ function preEncode(grid) {
                 }
             }
         }
-
         // saveArray = saveArray.slice(0, (highLow.longueur * highLow.largeur * 4))
         saveArray = new Uint8Array(saveArray)
         var png = UPNG.encode([saveArray.buffer], highLow.longueur, highLow.largeur, 0); // on encode    
@@ -59,8 +64,10 @@ function preEncode(grid) {
         document.body.appendChild(elementA); //on crée l 'elem
         elementA.click(); // on télécharge
         document.body.removeChild(elementA); // on delete l'elem
+        console.log('highLow.lowX, highLow.lowY', highLow.lowX, highLow.lowY)
+        console.log('RETOUR DE TOUR :', 'POSITION :', firstPix, 'YMAX:', highLow.highY, 'NBPIX', nbPix, 'BUFFER', buffer)
 
-        resolve({ array: saveArray, longueur: highLow.longueur, largeur: highLow.largeur })
+        resolve({ position: firstPix, ymax: highLow.highY, nbPix: nbPix, imgURI: buffer})
     })
 }
 
