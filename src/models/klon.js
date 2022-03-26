@@ -15,8 +15,7 @@ export default class Klon {
     /**
      * Permet de mettre une nuance de gris aléatoire
      */
-    randGray() {
-        let rand = Math.random() * 0.02;
+    randGray(rand) {
         this.color[0] = this.color[0] * 0.95 + rand;
         this.color[1] = this.color[1] * 0.95 + rand;
         this.color[2] = this.color[2] * 0.95 + rand;
