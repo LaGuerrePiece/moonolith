@@ -1,43 +1,23 @@
 {
   "name": "ethernal",
-  "version": "0.1.0",
-  "private": true,
+  "version": "0.0.0",
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "dev": "vite --host",
+    "build": "vite build",
+    "preview": "vite preview --port 5050"
   },
   "dependencies": {
-    "core-js": "^3.6.5",
-    "dom-css": "^2.1.0",
+    "@ckpack/vue-color": "^1.1.8",
+    "ethers": "^5.5.4",
+    "express": "^4.17.3",
+    "mouse-position": "^2.1.0",
     "pixel-grid": "^1.0.2",
-    "pngjs": "^6.0.0",
-    "tinycolor2": "^1.4.2",
-    "upng": "^1.0.1",
     "upng-js": "^2.1.0",
-    "vue": "^2.6.11",
-    "vue-color": "^2.8.1"
+    "vue": "^3.2.31",
+    "web3": "^1.7.1"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "~4.5.10",
-    "@vue/cli-service": "~4.5.10",
-    "vue-template-compiler": "^2.6.11"
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/essential"
-    ],
-    "rules": {
-      "no-unused-vars": "off"
-    }
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead"
-  ]
+    "@vitejs/plugin-vue": "^2.2.2",
+    "vite": "^2.8.4"
+  }
 }
