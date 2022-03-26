@@ -17,7 +17,7 @@ const hasBought = ref(0);
     <Draggable :defaultPosition="{ bottom: `30px`, left: `30px` }" color="white">
         <ToolBar @toolChanged="tool = $event" @saved="hasBought = $event" />
     </Draggable>
-    <PixelsGrid :tool="tool" :color="color" :hasBought="ref(hasBought)" />
+    <PixelsGrid :tool="tool" :color="color" :hasBought="ref(hasBought)" @boughtBack="hasBought = 0" />
     <Palette v-model:color="color" />
 </template>
 

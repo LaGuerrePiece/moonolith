@@ -29,7 +29,7 @@
                         </a>
                     </li>
                     <li>
-                        <a class="menu-item" :class="{}" @click="randomf()" data-tooltip="Text" aria-label="Text">
+                        <a class="menu-item" :class="{}" @click="triggerSave()" data-tooltip="Text" aria-label="Text">
                             <i class="material-icons menu-item-icon"> font_download </i>
                         </a>
                     </li>
@@ -72,7 +72,7 @@ watch(showToolbar, () => {
     if (!showToolbar.value) toolUsed.value = Tool.DONE;
 });
 
-function randomf() {
+function triggerSave() {
     console.log('acquis de conscience');
     emit('saved', 1);
 }

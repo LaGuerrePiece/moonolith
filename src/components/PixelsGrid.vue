@@ -21,6 +21,9 @@ const props = defineProps({
     color: Array,
     hasBought: Object,
 });
+
+const emit = defineEmits(['boughtBack']);
+
 const oldMousePosition = reactive({
     x: null,
     y: null,
@@ -57,9 +60,10 @@ watch(
                 chunkCreator(res);
             });
         }
-        console.log('boughtInstance AVANT', boughtInstance);
-        props.hasBought.value = 0;
-        console.log('props.hasBought.value APRÉ', props.hasBought.value);
+        // console.log('boughtInstance AVANT', boughtInstance);
+        emit('boughtBack');
+        // props.hasBought.value = 0;
+        // console.log('props.hasBought.value APRÉ', props.hasBought.value);
     }
 );
 
@@ -97,14 +101,15 @@ function useTool() {
 
 function startUsingTool() {
     console.log('startUsingTool');
-    canvas.onmousedown = restartUsingTool;
+	useTool();
+    // canvas.onmousedown = restartUsingTool;
     canvas.onmousemove = useTool;
 }
 
-function restartUsingTool() {
-    console.log('restartUsingTool');
-    canvas.onmousemove = useTool;
-}
+// function restartUsingTool() {
+//     console.log('restartUsingTool');
+//     canvas.onmousemove = useTool;
+// }
 
 function stopUsingTool() {
     console.log('stopUsingTool');
