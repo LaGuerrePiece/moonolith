@@ -29,7 +29,13 @@
 						</a>
 					</li>
 					<li>
-						<a class="menu-item" :class="{}" @click="randomf()" data-tooltip="Text" aria-label="Text">
+						<a
+							class="menu-item"
+							:class="{}"
+							@click="randomf()"
+							data-tooltip="Text"
+							aria-label="Text"
+						>
 							<i class="material-icons menu-item-icon"> font_download </i>
 						</a>
 					</li>
@@ -57,7 +63,7 @@ import Tool from '../models/tools';
 const emit = defineEmits(['toolChanged', 'saved']);
 
 const showToolbar = ref(false);
-const toolUsed = ref(Tool.DONE);
+const toolUsed = ref(Tool.PEN);
 
 function toggleState(tool) {
 	if (toolUsed.value === tool) toolUsed.value = Tool.DONE;
@@ -67,6 +73,7 @@ function toggleState(tool) {
 watch(toolUsed, (newVal, oldVal) => {
 	if (newVal !== oldVal) emit('toolChanged', toolUsed.value);
 });
+
 watch(showToolbar, () => {
 	if (!showToolbar.value) toolUsed.value = Tool.DONE;
 });
@@ -95,7 +102,8 @@ function randomf() {
 	height: 56px;
 	background-color: #2196f3;
 	border-radius: 50%;
-	box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12),
+		0 3px 1px -2px rgba(0, 0, 0, 0.2);
 }
 .fab-action-button-icon {
 	position: absolute;

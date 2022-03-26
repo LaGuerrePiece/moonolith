@@ -73,14 +73,14 @@ function preEncode(grid) {
 			}
 		}
 		// saveArray = saveArray.slice(0, (highLow.longueur * highLow.largeur * 4))
-		console.log('saveArray preUint8 preEncode', saveArray);
+		// console.log('saveArray preUint8 preEncode', saveArray);
 		saveArray = new Uint8Array(saveArray);
-		console.log('saveArray.buffer preEncode', saveArray.buffer);
+		// console.log('saveArray.buffer preEncode', saveArray.buffer);
 		var png = UPNG.encode([saveArray.buffer], highLow.longueur, highLow.largeur, 0); // on encode
-		console.log('PNG POST ENCODE PRE 64 :', png);
+		// console.log('PNG POST ENCODE PRE 64 :', png);
 		let buffer = _arrayBufferToBase64(png); //on passe au format base64
-		console.log('HYPER CLAIR :', _base64ToArrayBuffer(buffer));
-		console.log('saveArray', saveArray, 'buffer', buffer);
+		// console.log('HYPER CLAIR :', _base64ToArrayBuffer(buffer));
+		// console.log('saveArray', saveArray, 'buffer', buffer);
 		var elementA = document.createElement('a'); //On crée un element vide pour forcer le téléchargement
 		elementA.setAttribute('href', 'data:image/png;base64,' + buffer); // on met les données au bon format (base64)
 		elementA.setAttribute('download', +new Date() + '.png'); // le nom du fichier

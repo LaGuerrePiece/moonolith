@@ -8,7 +8,7 @@ import Draggable from './components/Draggable.vue';
 
 import Tool from './models/tools';
 
-const tool = ref(Tool.DONE);
+const tool = ref(Tool.PEN);
 const color = ref('');
 const hasBought = ref(0);
 </script>
@@ -17,7 +17,7 @@ const hasBought = ref(0);
 	<Draggable :defaultPosition="{ bottom: `30px`, left: `30px` }" color="white">
 		<ToolBar @toolChanged="tool = $event" @saved="hasBought = $event" />
 	</Draggable>
-	<PixelsGrid :tool="tool" :color="color" :hasBought="hasBought" />
+	<PixelsGrid :tool="tool" :color="color" :hasBought="ref(hasBought)" />
 	<Palette v-model:color="color" />
 </template>
 
