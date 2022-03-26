@@ -24,68 +24,82 @@ const props = defineProps({
 
 const emit = defineEmits(['boughtBack']);
 
-let leNombreMagiqueVenuDeLaBlockchain = 5000;
-let formuleDeLaMort = 588
-
-const nbLine = formuleDeLaMort;
-const oldMousePosition = reactive({
-    x: null,
-    y: null,
-});
-
-// Gestion de la grille
-let grid = new Grid(128, nbLine);
-grid.initialize(document.body);
-let canvas = grid.pixels.canvas;
-const position = ref(mousePosition(canvas));
-
-canvas.onmouseup = stopUsingTool;
-canvas.onmousedown = startUsingTool;
-
-watch(
-    () => props.tool,
-    (code) => {
-        if (code === Tool.DONE) {
-            // stopUsingTool()
-            canvas.onmousedown = null;
-            canvas.onmousemove = null;
-        } else {
-            canvas.onmouseup = stopUsingTool;
-            canvas.onmousedown = startUsingTool;
-        }
-    }
-);
-
-watch(
-    () => props.hasBought.value,
-    (boughtInstance) => {
-        if (boughtInstance === 1) {
-            preEncode(grid).then((res) => {
-                chunkCreator(res);
-            });
-        }
-        // console.log('boughtInstance AVANT', boughtInstance);
-        emit('boughtBack');
-        // props.hasBought.value = 0;
-        // console.log('props.hasBought.value APRÉ', props.hasBought.value);
-    }
-);
-
-onMounted(async () => {
-    getSupply().then(async (supply) => {
-        let s = supply.toNumber();
-        for (let i = 1; i <= s; i++) {
-            getChunk(i).then((res) => {
-                let index = res[0].toNumber();
-                let x = index % grid.nbColumns;
-                let y = Math.floor(index / grid.nbColumns);
-                let arrBuffer = _base64ToArrayBuffer(res[3]); // devrait etre equivalent a fetchUr
-                displayImageFromArrayBuffer(grid, arrBuffer, x, y);
-            });
-        }
+function getPixelTot() {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve(32000);
+        }, 500);
     });
-});
+}
+let grid;
+let canvas;
+let position;
+const nbColonne = 128;
 
+getPixelTot()
+    .then((leNombreMagiqueVenuDeLaBlockchain) => {
+        const offsetFormule = nbColonne * 64;
+        const pourcentage = 1.3;
+        const formuleDeLaMort = offsetFormule + leNombreMagiqueVenuDeLaBlockchain * pourcentage;
+
+        const nbLine = Math.floor(formuleDeLaMort / 128);
+        const oldMousePosition = reactive({
+            x: null,
+            y: null,
+        });
+
+        // Gestion de la grille
+        grid = new Grid(nbColonne, nbLine);
+        grid.initialize(document.body);
+        canvas = grid.pixels.canvas;
+        position = ref(mousePosition(canvas));
+
+        canvas.onmouseup = stopUsingTool;
+        canvas.onmousedown = startUsingTool;
+
+        watch(
+            () => props.tool,
+            (code) => {
+                if (code === Tool.DONE) {
+                    // stopUsingTool()
+                    canvas.onmousedown = null;
+                    canvas.onmousemove = null;
+                } else {
+                    canvas.onmouseup = stopUsingTool;
+                    canvas.onmousedown = startUsingTool;
+                }
+            }
+        );
+
+        watch(
+            () => props.hasBought.value,
+            (boughtInstance) => {
+                if (boughtInstance === 1) {
+                    preEncode(grid).then((res) => {
+                        chunkCreator(res);
+                    });
+                }
+                // console.log('boughtInstance AVANT', boughtInstance);
+                emit('boughtBack');
+                // props.hasBought.value = 0;
+                // console.log('props.hasBought.value APRÉ', props.hasBought.value);
+            }
+        );
+    })
+    .then((res) => {
+        getSupply().then(async (supply) => {
+            let s = supply.toNumber();
+            for (let i = 1; i <= s; i++) {
+                getChunk(i).then((res) => {
+                    let index = res[0].toNumber();
+                    let x = index % grid.nbColumns;
+                    let y = Math.floor(index / grid.nbColumns);
+                    let arrBuffer = _base64ToArrayBuffer(res[3]); // devrait etre equivalent a fetchUr
+                    displayImageFromArrayBuffer(grid, arrBuffer, x, y);
+                });
+            }
+        });
+    });
 function useTool() {
     if (props.tool === Tool.DONE) return;
     let newMousePosition = mousePositionInGrid();
@@ -105,7 +119,7 @@ function useTool() {
 
 function startUsingTool() {
     // console.log('startUsingTool');
-	useTool();
+    useTool();
     // canvas.onmousedown = restartUsingTool;
     canvas.onmousemove = useTool;
 }
