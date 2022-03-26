@@ -24,13 +24,17 @@ const props = defineProps({
 
 const emit = defineEmits(['boughtBack']);
 
+let leNombreMagiqueVenuDeLaBlockchain = 5000;
+let formuleDeLaMort = 588
+
+const nbLine = formuleDeLaMort;
 const oldMousePosition = reactive({
     x: null,
     y: null,
 });
 
 // Gestion de la grille
-let grid = new Grid(128, 256);
+let grid = new Grid(128, nbLine);
 grid.initialize(document.body);
 let canvas = grid.pixels.canvas;
 const position = ref(mousePosition(canvas));
@@ -100,7 +104,7 @@ function useTool() {
 }
 
 function startUsingTool() {
-    console.log('startUsingTool');
+    // console.log('startUsingTool');
 	useTool();
     // canvas.onmousedown = restartUsingTool;
     canvas.onmousemove = useTool;
@@ -112,7 +116,7 @@ function startUsingTool() {
 // }
 
 function stopUsingTool() {
-    console.log('stopUsingTool');
+    // console.log('stopUsingTool');
     // document.onmousedown = null
     canvas.onmousemove = null;
 }
