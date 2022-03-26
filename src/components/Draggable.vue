@@ -5,10 +5,9 @@
         ref="draggable"
         :class="{ grabbing: dragging }"
         :style="{ ...position, display: 'flex' }"
-        @mousedown="startDragging"
     >
         <!-- @mouseup="stopDragging" -->
-        <span class="material-icons drag-icon" :class="[dragging ? 'grabbing' : 'grabbable']">
+        <span class="material-icons drag-icon" :class="[dragging ? 'grabbing' : 'grabbable']" @mousedown="startDragging">
             <svg width="20px" height="20px" viewBox="0 0 48 48" color="white" xmlns="http://www.w3.org/2000/svg">
                 <rect width="48" height="48" fill="white" fill-opacity="0.01" />
                 <path
