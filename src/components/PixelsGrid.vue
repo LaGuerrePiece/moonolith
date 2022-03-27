@@ -27,7 +27,7 @@ const emit = defineEmits(['boughtBack']);
 function getPixelTot() {
     return new Promise((resolve) => {
         setTimeout(() => {
-            resolve(33000);
+            resolve(33000); // ICI VIENDRA LE NOMBRE DE PIXELS PAYES SUR LA BLOCKCHAIN
         }, 500);
     });
 }
@@ -213,6 +213,7 @@ function displayArrayToImage(array, width, height, grid, offsetx, offsety) {
                     y + offsety,
                     new Klon([array[idx] / 255, array[idx + 1] / 255, array[idx + 2] / 255], Klon.PAID)
                 );
+
         }
     }
 }
