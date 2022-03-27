@@ -7,7 +7,11 @@
         :style="{ ...position, display: 'flex' }"
     >
         <!-- @mouseup="stopDragging" -->
-        <span class="material-icons drag-icon" :class="[dragging ? 'grabbing' : 'grabbable']" @mousedown="startDragging">
+        <span
+            class="material-icons drag-icon"
+            :class="[dragging ? 'grabbing' : 'grabbable']"
+            @mousedown="startDragging"
+        >
             <svg width="20px" height="20px" viewBox="0 0 48 48" color="white" xmlns="http://www.w3.org/2000/svg">
                 <rect width="48" height="48" fill="white" fill-opacity="0.01" />
                 <path
@@ -50,6 +54,11 @@ const startPosition = reactive({
     y: null,
 });
 
+let offset = reactive({
+    x: null,
+    y: null,
+});
+
 function generateID(multiple5 = 1) {
     let id = '';
     for (let i = 0; i < multiple5; i++)
@@ -66,6 +75,12 @@ function startDragging(e) {
     dragging.value = true;
     e.preventDefault();
 
+    offset.x = -12; 
+    offset.y = -28;
+
+    console.log('offset.x', offset.x);
+    console.log('offset.y', offset.y);
+
     startPosition.x = e.clientX;
     startPosition.y = e.clientY;
 
@@ -74,6 +89,7 @@ function startDragging(e) {
 }
 
 function stopDragging(e) {
+    console.log(e);
     e = e || window.event;
     // console.log("stopDragging", e);
     e.preventDefault();
@@ -87,7 +103,7 @@ function elementDrag(e) {
     e = e || window.event;
     e.preventDefault();
 
-    let currentPosition = { x: e.clientX, y: e.clientY };
+    let currentPosition = { x: e.clientX + offset.x, y: e.clientY + offset.y };
     // console.log(draggable.value?.offsetLeft, draggable.value?.offsetTop, currentPosition)
 
     // console.log(window.innerHeight, window.innerWidth)
