@@ -43,6 +43,17 @@ export default class Grid {
         return this.nbColumns * this.nbRows;
     }
 
+
+
+    /**
+     * Getter permettant de récupérer la taille du tableau
+     * @returns {le facteur du nombre de colonnes et lignes}
+     */
+     get drawnPixels() {
+        return this.nbColumns * this.nbRows;
+    }
+
+
     /**
      * Getter permettant de récupérer le tableau de pixels
      * @returns {le tableau de pixels persistant}

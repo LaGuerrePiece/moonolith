@@ -1,25 +1,24 @@
 <template>
-    <Twitter v-model="colorChoice" />
+    <VSwatches v-model="colorChoice" />
 </template>
 
 <script setup>
+
 import { ref, watch } from 'vue';
-import { Twitter } from '@ckpack/vue-color';
+import VSwatches from "vue3-swatches";
 
 const props = defineProps({
-    color: Array,
+    color: String,
 });
-const emit = defineEmits(['update:color']);
 
-const colorChoice = ref(props.color);
+const emit = defineEmits(['update:color']);
+const colorChoice = ref("#1FBC9C");
+emit('update:color', colorChoice.value);
 
 watch(colorChoice, () => {
-    emit('update:color', rgbaToArray(colorChoice.value.rgba));
+    emit('update:color', colorChoice.value);
 });
 
-function rgbaToArray(rgba) {
-    return [rgba.r / 255, rgba.g / 255, rgba.b / 255];
-}
 </script>
 
 <style>
