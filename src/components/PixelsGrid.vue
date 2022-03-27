@@ -27,7 +27,7 @@ const emit = defineEmits(['boughtBack']);
 function getPixelTot() {
     return new Promise((resolve) => {
         setTimeout(() => {
-            resolve(33000);
+            resolve(33000); // ICI VIENDRA LE NOMBRE DE PIXELS PAYES SUR LA BLOCKCHAIN
         }, 500);
     });
 }
@@ -161,14 +161,21 @@ async function displayImageFromArrayBuffer(grid, arrayBuffer, offsetx, offsety) 
 // 	displayDecodedToImage(decoded, grid, offsetx, offsety);
 // }
 
-function displayDecodedToImage(decoded, grid, offsetx, offsety) {
+function displayDecodedToImage(decoded, grid, offsetx, offsety, nbPixelPaid) {
     if (decoded) {
         let array = toRGBA8(decoded);
         // console.log('arrayPixel RECU', array);
         let width = decoded.width;
         let height = decoded.height;
+        let nbPixelPaid = width * height;           // A CHOPPER DE LA BLOCKCHAIN
+        let nbPixelDessine = 0;
         for (let y = 0; y < height; y++) {
             for (let x = 0; x < width; x++) {
+                if (nbPixelDessine > nbPixelPaid) {
+                    x = width;                    // POUR EVITER DE FAIRE 20 BREAKS QUAND ON BREAK
+                    y = height;
+                    break};
+                nbPixelDessine++;
                 let idx = (width * y + x) * 4;
                 if (array[idx + 3] != 0)
                     grid.draw_pixel(
