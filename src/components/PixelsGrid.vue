@@ -27,27 +27,26 @@ const emit = defineEmits(['boughtBack']);
 function getPixelTot() {
     return new Promise((resolve) => {
         setTimeout(() => {
-            resolve(32000);
+            resolve(33000);
         }, 500);
     });
 }
+
 let grid;
 let canvas;
 let position;
 const nbColonne = 128;
+const oldMousePosition = reactive({
+    x: null,
+    y: null,
+});
 
 getPixelTot()
     .then((leNombreMagiqueVenuDeLaBlockchain) => {
         const offsetFormule = nbColonne * 64;
         const pourcentage = 1.3;
         const formuleDeLaMort = offsetFormule + leNombreMagiqueVenuDeLaBlockchain * pourcentage;
-
         const nbLine = Math.floor(formuleDeLaMort / 128);
-        const oldMousePosition = reactive({
-            x: null,
-            y: null,
-        });
-
         // Gestion de la grille
         grid = new Grid(nbColonne, nbLine);
         grid.initialize(document.body);
