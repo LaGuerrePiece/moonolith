@@ -178,7 +178,7 @@ function deleteDrawn() {
 
 function moveDrawing(x, y) {
     deleteDrawn();
-    displayArrayToImage(saveArray, highLow.longueur, highLow.largeur, grid, x, y);
+    displayArrayToImage(saveArray, highLow.longueur, highLow.largeur, grid, x, y, 1);
     console.log('RETOUR', highLow, saveArray, nbPix, firstPix);
 }
 
@@ -187,11 +187,11 @@ async function displayImageFromArrayBuffer(grid, arrayBuffer, offsetx, offsety) 
     // console.log('arrayBuffer du displayImage', arrayBuffer);
     decoded = await decode(arrayBuffer).catch(console.error);
     // console.log('decoded du displayImage', decoded);
-    if (!decoded) return
+    if (!decoded) return;
     let array = toRGBA8(decoded);
     let width = decoded.width;
     let height = decoded.height;
-    displayArrayToImage(array, width, height, grid, offsetx, offsety);
+    displayArrayToImage(array, width, height, grid, offsetx, offsety, 2);
 }
 
 // async function displayImageFromUrl(grid, url, offsetx, offsety) {
@@ -203,7 +203,7 @@ async function displayImageFromArrayBuffer(grid, arrayBuffer, offsetx, offsety) 
 // 	displayArrayToImage(decoded, grid, offsetx, offsety);
 // }
 
-function displayArrayToImage(array, width, height, grid, offsetx, offsety) {
+function displayArrayToImage(array, width, height, grid, offsetx, offsety, author) {
     for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
             let idx = (width * y + x) * 4;
@@ -211,9 +211,8 @@ function displayArrayToImage(array, width, height, grid, offsetx, offsety) {
                 grid.draw_pixel(
                     x + offsetx,
                     y + offsety,
-                    new Klon([array[idx] / 255, array[idx + 1] / 255, array[idx + 2] / 255], Klon.PAID)
+                    new Klon([array[idx] / 255, array[idx + 1] / 255, array[idx + 2] / 255], author)
                 );
-
         }
     }
 }
