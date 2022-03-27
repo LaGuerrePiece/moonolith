@@ -18,7 +18,7 @@ import { chunkCreator, getChunk, getSupply } from '../utils/web3';
 // Definition des props
 const props = defineProps({
     tool: Number,
-    color: Array,
+    color: String,
     hasBought: Object,
 });
 
@@ -89,7 +89,9 @@ function useTool() {
 
     switch (props.tool) {
         case Tool.PEN:
-            grid.draw_pixel(newMousePosition.x, newMousePosition.y, new Klon(props.color, Klon.PAINTED));
+            grid.draw_pixel(newMousePosition.x, newMousePosition.y, new Klon(hexToRGB(props.color), Klon.PAINTED));
+            console.log('color', props.color)
+            console.log('color', hexToRGB(props.color))
             break;
         case Tool.ERASER:
             grid.erase_pixel(newMousePosition.x, newMousePosition.y);
@@ -97,6 +99,13 @@ function useTool() {
         case Tool.TEXT:
             break;
     }
+}
+
+function hexToRGB(hex) {
+    var r = parseInt(hex.slice(1, 3), 16) / 255,
+        g = parseInt(hex.slice(3, 5), 16) / 255,
+        b = parseInt(hex.slice(5, 7), 16) / 255;
+    return [r, g, b];
 }
 
 function startUsingTool() {
