@@ -20,9 +20,21 @@ const props = defineProps({
     tool: Number,
     color: String,
     hasBought: Object,
+    onDelete: Object,
 });
 
-const emit = defineEmits(['boughtBack']);
+const emit = defineEmits(['boughtBack', 'deleteBack']);
+
+watch(
+    () => props.onDelete.value,
+    (deleteInstance) => {
+        if (deleteInstance === 1) {
+            console.log("SUPPRESSION!")
+            grid.delete_user_pixel()
+        }
+        emit('deleteBack');
+    }
+);
 
 function getPixelTot() {
     return new Promise((resolve) => {
@@ -78,10 +90,7 @@ getPixelTot()
                         chunkCreator(res);
                     });
                 }
-                // console.log('boughtInstance AVANT', boughtInstance);
                 emit('boughtBack');
-                // props.hasBought.value = 0;
-                // console.log('props.hasBought.value APRÉ', props.hasBought.value);
             }
         );
     })
@@ -107,8 +116,6 @@ function useTool() {
     switch (props.tool) {
         case Tool.PEN:
             grid.draw_pixel(newMousePosition.x, newMousePosition.y, new Klon(hexToRGB(props.color), Klon.PAINTED));
-            console.log('color', props.color)
-            console.log('color', hexToRGB(props.color))
             break;
         case Tool.ERASER:
             grid.erase_pixel(newMousePosition.x, newMousePosition.y);

@@ -88,6 +88,12 @@ export default class Grid {
         if (this.persistent[pos] ? this.persistent[pos].isEditable : true) this.persistent[pos] = klon;
     }
 
+    delete_user_pixel() {
+        for (let i = 0; i < this.persistent.length; i++) {
+            if (this.persistent[i] && this.persistent[i].isEditable) this.persistent[i] = undefined;
+        }
+    }
+
     erase_pixel(x, y) {
         var pos = y * this.nbColumns + x;
         if (this.persistent[pos] ? this.persistent[pos].isEditable : true) this.persistent[pos] = undefined;
