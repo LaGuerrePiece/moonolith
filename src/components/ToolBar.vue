@@ -32,6 +32,17 @@
                 <li>
                     <a
                         class="menu-item"
+                        :class="{ active: toolUsed === Tool.MOVE }"
+                        @click="toggleState(Tool.MOVE)"
+                        data-tooltip="Move"
+                        aria-label="Move"
+                    >
+                        <i class="material-icons menu-item-icon"> circle </i>
+                    </a>
+                </li>
+                <li>
+                    <a
+                        class="menu-item"
                         :class="{ active: toolUsed === Tool.DELETE }"
                         @click="toggleState(Tool.DELETE)"
                         data-tooltip="Delete"

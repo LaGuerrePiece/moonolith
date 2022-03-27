@@ -42,57 +42,59 @@ function getHighLow(grid) {
 
 function preEncode(grid) {
     return new Promise((resolve) => {
-        let highLow = getHighLow(grid);
-        let saveArray = [];
-        let nbPix = 0;
-        let firstPix = -1;
-        for (
-            let i = grid.convertXYToIndex(highLow.lowX, highLow.lowY);
-            i <= grid.convertXYToIndex(highLow.highX, highLow.highY);
-            i++
-        ) {
-            if (
-                grid.convertIndexToXY(i).x >= highLow.lowX &&
-                grid.convertIndexToXY(i).x <= highLow.highX &&
-                grid.convertIndexToXY(i).y >= highLow.lowY &&
-                grid.convertIndexToXY(i).y <= highLow.highY
-            ) {
-                if (grid.persistent[i] && grid.persistent[i].author == Klon.PAINTED) {
-                    if (firstPix == -1) firstPix = i;
-                    saveArray.push(grid.persistent[i].color[0] * 255);
-                    saveArray.push(grid.persistent[i].color[1] * 255);
-                    saveArray.push(grid.persistent[i].color[2] * 255);
-                    saveArray.push(255);
-                    nbPix++;
-                } else {
-                    saveArray.push(0);
-                    saveArray.push(0);
-                    saveArray.push(0);
-                    saveArray.push(0);
-                }
-            }
-        }
-        // saveArray = saveArray.slice(0, (highLow.longueur * highLow.largeur * 4))
-        // console.log('saveArray preUint8 preEncode', saveArray);
+        let { highLow, saveArray, nbPix, firstPix } = gridToArray(grid);
+
         saveArray = new Uint8Array(saveArray);
-        // console.log('saveArray.buffer preEncode', saveArray.buffer);
         var png = UPNG.encode([saveArray.buffer], highLow.longueur, highLow.largeur, 0); // on encode
-        // console.log('PNG POST ENCODE PRE 64 :', png);
         let buffer = _arrayBufferToBase64(png); //on passe au format base64
-        // console.log('HYPER CLAIR :', _base64ToArrayBuffer(buffer));
-        // console.log('saveArray', saveArray, 'buffer', buffer);
-        var elementA = document.createElement('a'); //On crée un element vide pour forcer le téléchargement
-        elementA.setAttribute('href', 'data:image/png;base64,' + buffer); // on met les données au bon format (base64)
-        elementA.setAttribute('download', +new Date() + '.png'); // le nom du fichier
-        elementA.style.display = 'none'; // on met l'elem invisible
-        document.body.appendChild(elementA); //on crée l 'elem
-        elementA.click(); // on télécharge
-        document.body.removeChild(elementA); // on delete l'elem
-        // console.log('highLow.lowX, highLow.lowY', highLow.lowX, highLow.lowY)
-        // console.log('RETOUR DE TOUR :', 'POSITION :', firstPix, 'YMAX:', highLow.highY, 'NBPIX', nbPix, 'BUFFER', buffer)
+        saveLocally(buffer);
 
         resolve({ position: firstPix, ymax: highLow.highY, nbPix: nbPix, imgURI: buffer });
     });
+}
+
+function gridToArray(grid) {
+    let highLow = getHighLow(grid);
+    let saveArray = [];
+    let nbPix = 0;
+    let firstPix = -1;
+    for (
+        let i = grid.convertXYToIndex(highLow.lowX, highLow.lowY);
+        i <= grid.convertXYToIndex(highLow.highX, highLow.highY);
+        i++
+    ) {
+        if (
+            grid.convertIndexToXY(i).x >= highLow.lowX &&
+            grid.convertIndexToXY(i).x <= highLow.highX &&
+            grid.convertIndexToXY(i).y >= highLow.lowY &&
+            grid.convertIndexToXY(i).y <= highLow.highY
+        ) {
+            if (grid.persistent[i] && grid.persistent[i].author == Klon.PAINTED) {
+                if (firstPix == -1) firstPix = i;
+                saveArray.push(grid.persistent[i].color[0] * 255);
+                saveArray.push(grid.persistent[i].color[1] * 255);
+                saveArray.push(grid.persistent[i].color[2] * 255);
+                saveArray.push(255);
+                nbPix++;
+            } else {
+                saveArray.push(0);
+                saveArray.push(0);
+                saveArray.push(0);
+                saveArray.push(0);
+            }
+        }
+    }
+    return { firstPix: firstPix, highLow: highLow, nbPix: nbPix, saveArray: saveArray };
+}
+
+function saveLocally(buffer) {
+    var elementA = document.createElement('a'); //On crée un element vide pour forcer le téléchargement
+    elementA.setAttribute('href', 'data:image/png;base64,' + buffer); // on met les données au bon format (base64)
+    elementA.setAttribute('download', +new Date() + '.png'); // le nom du fichier
+    elementA.style.display = 'none'; // on met l'elem invisible
+    document.body.appendChild(elementA); //on crée l 'elem
+    elementA.click(); // on télécharge
+    document.body.removeChild(elementA); // on delete l'elem
 }
 
 function _arrayBufferToBase64(buffer) {
@@ -132,4 +134,4 @@ function Encode(inputArray, height, width) {
     document.body.removeChild(elementA); // on delete l'elem
 }
 
-export { decode, getHighLow, preEncode, _base64ToArrayBuffer, toRGBA8 };
+export { decode, getHighLow, preEncode, _base64ToArrayBuffer, toRGBA8, gridToArray };

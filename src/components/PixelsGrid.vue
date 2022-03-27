@@ -10,7 +10,7 @@ import Klon from '../models/klon';
 
 // Imports des fonctionnalités
 import { fetchImgur } from '../utils/network';
-import { decode, getHighLow, preEncode, _base64ToArrayBuffer, toRGBA8 } from '../utils/image-manager';
+import { decode, getHighLow, preEncode, _base64ToArrayBuffer, toRGBA8, gridToArray } from '../utils/image-manager';
 import mousePosition from 'mouse-position';
 import Tool from '../models/tools';
 import { chunkCreator, getChunk, getSupply } from '../utils/web3';
@@ -107,13 +107,16 @@ function useTool() {
     switch (props.tool) {
         case Tool.PEN:
             grid.draw_pixel(newMousePosition.x, newMousePosition.y, new Klon(hexToRGB(props.color), Klon.PAINTED));
-            console.log('color', props.color)
-            console.log('color', hexToRGB(props.color))
+            // console.log('color', props.color)
+            // console.log('color', hexToRGB(props.color))
             break;
         case Tool.ERASER:
             grid.erase_pixel(newMousePosition.x, newMousePosition.y);
             break;
         case Tool.TEXT:
+            break;
+        case Tool.MOVE:
+            moveDrawing(newMousePosition.x, newMousePosition.y);
             break;
     }
 }
@@ -127,7 +130,14 @@ function hexToRGB(hex) {
 
 function startUsingTool() {
     // console.log('startUsingTool');
-    useTool();
+    switch (props.tool) {
+        case Tool.MOVE:
+            startUsingMove();
+            break;
+        default:
+            useTool();
+            break;
+    }
     // canvas.onmousedown = restartUsingTool;
     canvas.onmousemove = useTool;
 }
@@ -152,13 +162,36 @@ function mousePositionInGrid() {
     let y = Math.floor((position.value[1] / screeny) * nbPixely);
     return { x, y };
 }
+let highLow, saveArray, nbPix, firstPix;
+
+function startUsingMove() {
+    let ret = gridToArray(grid);
+    highLow = ret.highLow;
+    saveArray = ret.saveArray;
+    nbPix = ret.nbPix;
+    firstPix = ret.firstPix;
+}
+
+function deleteDrawn() {
+    console.log('boum');
+}
+
+function moveDrawing(x, y) {
+    deleteDrawn();
+    displayArrayToImage(saveArray, highLow.longueur, highLow.largeur, grid, x, y);
+    console.log('RETOUR', highLow, saveArray, nbPix, firstPix);
+}
 
 async function displayImageFromArrayBuffer(grid, arrayBuffer, offsetx, offsety) {
     let decoded;
     // console.log('arrayBuffer du displayImage', arrayBuffer);
     decoded = await decode(arrayBuffer).catch(console.error);
     // console.log('decoded du displayImage', decoded);
-    displayDecodedToImage(decoded, grid, offsetx, offsety);
+    if (!decoded) return
+    let array = toRGBA8(decoded);
+    let width = decoded.width;
+    let height = decoded.height;
+    displayArrayToImage(array, width, height, grid, offsetx, offsety);
 }
 
 // async function displayImageFromUrl(grid, url, offsetx, offsety) {
@@ -167,28 +200,42 @@ async function displayImageFromArrayBuffer(grid, arrayBuffer, offsetx, offsety) 
 // 	console.log('image', image);
 // 	let decoded;
 // 	if (image) decoded = await decode(image).catch(console.error);
-// 	displayDecodedToImage(decoded, grid, offsetx, offsety);
+// 	displayArrayToImage(decoded, grid, offsetx, offsety);
 // }
 
-function displayDecodedToImage(decoded, grid, offsetx, offsety) {
-    if (decoded) {
-        let array = toRGBA8(decoded);
-        // console.log('arrayPixel RECU', array);
-        let width = decoded.width;
-        let height = decoded.height;
-        for (let y = 0; y < height; y++) {
-            for (let x = 0; x < width; x++) {
-                let idx = (width * y + x) * 4;
-                if (array[idx + 3] != 0)
-                    grid.draw_pixel(
-                        x + offsetx,
-                        y + offsety,
-                        new Klon([array[idx] / 255, array[idx + 1] / 255, array[idx + 2] / 255], Klon.PAID)
-                    );
-            }
+function displayArrayToImage(array, width, height, grid, offsetx, offsety) {
+    for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+            let idx = (width * y + x) * 4;
+            if (array[idx + 3] != 0)
+                grid.draw_pixel(
+                    x + offsetx,
+                    y + offsety,
+                    new Klon([array[idx] / 255, array[idx + 1] / 255, array[idx + 2] / 255], Klon.PAID)
+                );
         }
     }
 }
+
+// function displayArrayToImage(decoded, grid, offsetx, offsety) {
+//     if (decoded) {
+//         let array = toRGBA8(decoded);
+//         console.log('arrayPixel RECU', array);
+//         let width = decoded.width;
+//         let height = decoded.height;
+//         for (let y = 0; y < height; y++) {
+//             for (let x = 0; x < width; x++) {
+//                 let idx = (width * y + x) * 4;
+//                 if (array[idx + 3] != 0)
+//                     grid.draw_pixel(
+//                         x + offsetx,
+//                         y + offsety,
+//                         new Klon([array[idx] / 255, array[idx + 1] / 255, array[idx + 2] / 255], Klon.PAID)
+//                     );
+//             }
+//         }
+//     }
+// }
 </script>
 
 <style></style>
