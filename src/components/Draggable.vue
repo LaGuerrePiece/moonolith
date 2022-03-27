@@ -38,14 +38,16 @@ import { reactive, ref, toRefs, watch } from 'vue';
 const props = defineProps({
     active: Boolean,
     id: String,
-    defaultPosition: Object,
     color: String,
 });
 
 // const id = ref(props.id)
 const id = ref(props.id ?? generateID(4));
-const defaultPosition = ref(props.defaultPosition);
-const position = ref(defaultPosition.value);
+const defaultPosition = {
+        bottom: 30 + 'px',
+        left: (window.innerWidth/2 - 140) + 'px',
+    };
+const position = ref(defaultPosition);
 const draggable = ref(null);
 const dragging = ref(false);
 

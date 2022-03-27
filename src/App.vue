@@ -14,7 +14,7 @@ const hasBought = ref(0);
 </script>
 
 <template>
-    <Draggable :defaultPosition="{ bottom: `30px`, left: `30px` }" color="white">
+    <Draggable color="white" style="">
         <ToolBar @toolChanged="tool = $event" @saved="hasBought = $event" />
         <Palette v-model:color="color" show-fallback fallback-input-type="color" popover-x="left" style="margin: auto"/>
     </Draggable>
