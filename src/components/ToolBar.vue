@@ -25,8 +25,8 @@
                     </a>
                 </li>
                 <li>
-                    <a class="menu-item" :class="{}" @click="triggerSave()" data-tooltip="Text" aria-label="Text">
-                        <i class="material-icons menu-item-icon"> font_download </i>
+                    <a class="menu-item" :class="{}" @click="triggerSave()" data-tooltip="Save" aria-label="Save">
+                        <i class="material-icons menu-item-icon"> save_alt </i>
                     </a>
                 </li>
                 <li>
@@ -37,7 +37,7 @@
                         data-tooltip="Move"
                         aria-label="Move"
                     >
-                        <i class="material-icons menu-item-icon"> circle </i>
+                        <i class="material-icons menu-item-icon"> open_with </i>
                     </a>
                 </li>
                 <li>
@@ -123,7 +123,7 @@ function triggerSave() {
 /** DIAL */
 /* Barre d'outils sans le fab button */
 .toolbar {
-    width: 280px;
+    width: 340px;
     position: relative;
     left: 15px;
     /* bottom: 50%; */

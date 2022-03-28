@@ -78,10 +78,7 @@ getPixelTot()
                         chunkCreator(res);
                     });
                 }
-                // console.log('boughtInstance AVANT', boughtInstance);
                 emit('boughtBack');
-                // props.hasBought.value = 0;
-                // console.log('props.hasBought.value APRÉ', props.hasBought.value);
             }
         );
     })
@@ -107,8 +104,6 @@ function useTool() {
     switch (props.tool) {
         case Tool.PEN:
             grid.draw_pixel(newMousePosition.x, newMousePosition.y, new Klon(hexToRGB(props.color), Klon.PAINTED));
-            // console.log('color', props.color)
-            // console.log('color', hexToRGB(props.color))
             break;
         case Tool.ERASER:
             grid.erase_pixel(newMousePosition.x, newMousePosition.y);
@@ -129,7 +124,6 @@ function hexToRGB(hex) {
 }
 
 function startUsingTool() {
-    // console.log('startUsingTool');
     switch (props.tool) {
         case Tool.MOVE:
             startUsingMove();
@@ -138,17 +132,11 @@ function startUsingTool() {
             useTool();
             break;
     }
-    // canvas.onmousedown = restartUsingTool;
     canvas.onmousemove = useTool;
 }
 
-// function restartUsingTool() {
-//     console.log('restartUsingTool');
-//     canvas.onmousemove = useTool;
-// }
 
 function stopUsingTool() {
-    // console.log('stopUsingTool');
     // document.onmousedown = null
     canvas.onmousemove = null;
 }
@@ -184,24 +172,13 @@ function moveDrawing(x, y) {
 
 async function displayImageFromArrayBuffer(grid, arrayBuffer, offsetx, offsety) {
     let decoded;
-    // console.log('arrayBuffer du displayImage', arrayBuffer);
     decoded = await decode(arrayBuffer).catch(console.error);
-    // console.log('decoded du displayImage', decoded);
     if (!decoded) return;
     let array = toRGBA8(decoded);
     let width = decoded.width;
     let height = decoded.height;
     displayArrayToImage(array, width, height, grid, offsetx, offsety, 2);
 }
-
-// async function displayImageFromUrl(grid, url, offsetx, offsety) {
-// 	// a fix
-// 	let image = await fetchImgur(url).catch(console.error);
-// 	console.log('image', image);
-// 	let decoded;
-// 	if (image) decoded = await decode(image).catch(console.error);
-// 	displayArrayToImage(decoded, grid, offsetx, offsety);
-// }
 
 function displayArrayToImage(array, width, height, grid, offsetx, offsety, author) {
     for (let y = 0; y < height; y++) {
@@ -216,26 +193,6 @@ function displayArrayToImage(array, width, height, grid, offsetx, offsety, autho
         }
     }
 }
-
-// function displayArrayToImage(decoded, grid, offsetx, offsety) {
-//     if (decoded) {
-//         let array = toRGBA8(decoded);
-//         console.log('arrayPixel RECU', array);
-//         let width = decoded.width;
-//         let height = decoded.height;
-//         for (let y = 0; y < height; y++) {
-//             for (let x = 0; x < width; x++) {
-//                 let idx = (width * y + x) * 4;
-//                 if (array[idx + 3] != 0)
-//                     grid.draw_pixel(
-//                         x + offsetx,
-//                         y + offsety,
-//                         new Klon([array[idx] / 255, array[idx + 1] / 255, array[idx + 2] / 255], Klon.PAID)
-//                     );
-//             }
-//         }
-//     }
-// }
 </script>
 
 <style></style>
