@@ -9,7 +9,7 @@ const contractAddress = '0xF8E3b3eFee9f7A9d8D03a82eeB5f76AFF55a7875';
 
 const contract = new ethers.Contract(contractAddress, contractABI, signer);
 
-const getSupply = async (id) => {
+const getSupply = async () => {
     await provider.send('eth_requestAccounts', []);
     // console.log('signer :', signer)
     return await contract.totalSupply();
@@ -33,10 +33,10 @@ const getChunk = async (id) => {
     return await contract.chunks(id);
 };
 
-const getTotalPix = async (id) => {
+const getTotalPixs = async () => {
     await provider.send('eth_requestAccounts', []);
     // console.log('signer :', signer)
     return await contract.totalPixs();
 };
 
-export { chunkCreator, getChunk, getSupply, getTotalPix };
+export { chunkCreator, getChunk, getSupply, getTotalPixs };
