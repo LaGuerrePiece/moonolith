@@ -5,7 +5,7 @@ const provider = new ethers.providers.Web3Provider(window.ethereum);
 
 const signer = provider.getSigner();
 
-const contractAddress = '0xc5Db83C04BFb3c7e842f45950C75E156fa6383a7';
+const contractAddress = '0xF8E3b3eFee9f7A9d8D03a82eeB5f76AFF55a7875';
 
 const contract = new ethers.Contract(contractAddress, contractABI, signer);
 
