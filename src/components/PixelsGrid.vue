@@ -37,13 +37,7 @@ watch(
     }
 );
 
-function getPixelTot() {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve(33000); // ICI VIENDRA LE NOMBRE DE PIXELS PAYES SUR LA BLOCKCHAIN
-        }, 500);
-    });
-}
+
 
 let grid;
 let canvas;
@@ -173,14 +167,10 @@ function startUsingMove() {
     firstPix = ret.firstPix;
 }
 
-function deleteDrawn() {
-    console.log('boum');
-}
-
 function moveDrawing(x, y) {
-    deleteDrawn();
+    grid.delete_user_pixel()
     displayArrayToImage(saveArray, highLow.longueur, highLow.largeur, grid, x, y, 1);
-    console.log('RETOUR', highLow, saveArray, nbPix, firstPix);
+    // console.log('RETOUR', highLow, saveArray, nbPix, firstPix);
 }
 
 async function displayImageFromArrayBuffer(grid, arrayBuffer, offsetx, offsety) {
