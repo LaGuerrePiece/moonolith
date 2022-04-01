@@ -26,7 +26,7 @@
                 </li>
                 <li>
                     <a class="menu-item" :class="{}" @click="emit('saved')" data-tooltip="Save" aria-label="Save">
-                        <i class="material-icons menu-item-icon"> save_alt </i>
+                        <i class="material-icons menu-item-icon" style="width: 24px"> save_alt </i>
                     </a>
                 </li>
                 <li>
@@ -37,7 +37,7 @@
                         data-tooltip="Move"
                         aria-label="Move"
                     >
-                        <i class="material-icons menu-item-icon" style="width: 24px"> open_with </i>
+                        <i class="material-icons menu-item-icon"> open_with </i>
                     </a>
                 </li>
                 <li>
