@@ -13,7 +13,7 @@ import { fetchImgur } from '../utils/network';
 import { decode, getHighLow, preEncode, _base64ToArrayBuffer, toRGBA8, gridToArray } from '../utils/image-manager';
 import mousePosition from 'mouse-position';
 import Tool from '../models/tools';
-import { chunkCreator, getChunk, getSupply, getTotalPix } from '../utils/web3';
+import { chunkCreator, getChunk, getSupply, getTotalPixs } from '../utils/web3';
 
 // Definition des props
 const props = defineProps({
@@ -37,7 +37,6 @@ watch(
     }
 );
 
-console.log('Total Pixel Bought :', getTotalPix())
 function getPixelTot() {
     return new Promise((resolve) => {
         setTimeout(() => {
@@ -55,8 +54,9 @@ const oldMousePosition = reactive({
     y: null,
 });
 
-getPixelTot()
-    .then((leNombreMagiqueVenuDeLaBlockchain) => {
+getTotalPixs().then(async (total) => {
+        let leNombreMagiqueVenuDeLaBlockchain = total.toNumber();
+        console.log(leNombreMagiqueVenuDeLaBlockchain)
         const offsetFormule = nbColonne * 64;
         const pourcentage = 1.3;
         const formuleDeLaMort = offsetFormule + leNombreMagiqueVenuDeLaBlockchain * pourcentage;
