@@ -20,9 +20,21 @@ const props = defineProps({
     tool: Number,
     color: String,
     hasBought: Object,
+    onDelete: Object,
 });
 
-const emit = defineEmits(['boughtBack']);
+const emit = defineEmits(['boughtBack', 'deleteBack']);
+
+watch(
+    () => props.onDelete.value,
+    (deleteInstance) => {
+        if (deleteInstance === 1) {
+            console.log("SUPPRESSION!")
+            grid.delete_user_pixel()
+        }
+        emit('deleteBack');
+    }
+);
 
 function getPixelTot() {
     return new Promise((resolve) => {

@@ -25,7 +25,7 @@
                     </a>
                 </li>
                 <li>
-                    <a class="menu-item" :class="{}" @click="triggerSave()" data-tooltip="Save" aria-label="Save">
+                    <a class="menu-item" :class="{}" @click="emit('saved')" data-tooltip="Save" aria-label="Save">
                         <i class="material-icons menu-item-icon"> save_alt </i>
                     </a>
                 </li>
@@ -41,15 +41,10 @@
                     </a>
                 </li>
                 <li>
-                    <a
-                        class="menu-item"
-                        :class="{ active: toolUsed === Tool.DELETE }"
-                        @click="toggleState(Tool.DELETE)"
-                        data-tooltip="Delete"
-                        aria-label="Delete"
-                    >
-                        <i class="material-icons menu-item-icon">delete</i>
+                    <a class="menu-item" :class="{}" @click="emit('delete')" data-tooltip="Delete" aria-label="Delete">
+                        <i class="material-icons menu-item-icon"> delete </i>
                     </a>
+
                 </li>
             </ul>
         </div>
@@ -60,7 +55,7 @@
 import { ref, watch } from 'vue';
 import Tool from '../models/tools';
 
-const emit = defineEmits(['toolChanged', 'saved']);
+const emit = defineEmits(['toolChanged', 'saved', 'delete']);
 
 const showToolbar = ref(false);
 const toolUsed = ref(Tool.PEN);
@@ -78,10 +73,6 @@ watch(showToolbar, () => {
     if (!showToolbar.value) toolUsed.value = Tool.DONE;
 });
 
-function triggerSave() {
-    console.log('acquis de conscience');
-    emit('saved', 1);
-}
 </script>
 
 <style scoped>
