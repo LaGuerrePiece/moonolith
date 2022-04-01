@@ -119,4 +119,8 @@ export default class Grid {
     convertXYToIndex(x, y) {
         return y * this.nbColumns + x;
     }
+
+    addRow(numberOfRow){
+        this.nbRows += numberOfRow
+    }
 }

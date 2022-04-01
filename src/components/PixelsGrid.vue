@@ -13,7 +13,7 @@ import { fetchImgur } from '../utils/network';
 import { decode, getHighLow, preEncode, _base64ToArrayBuffer, toRGBA8, gridToArray } from '../utils/image-manager';
 import mousePosition from 'mouse-position';
 import Tool from '../models/tools';
-import { chunkCreator, getChunk, getSupply } from '../utils/web3';
+import { chunkCreator, getChunk, getSupply, getTotalPix } from '../utils/web3';
 
 // Definition des props
 const props = defineProps({
@@ -25,17 +25,19 @@ const props = defineProps({
 
 const emit = defineEmits(['boughtBack', 'deleteBack']);
 
+
 watch(
     () => props.onDelete.value,
     (deleteInstance) => {
         if (deleteInstance === 1) {
-            console.log("SUPPRESSION!")
-            grid.delete_user_pixel()
+            console.log('SUPPRESSION!');
+            grid.delete_user_pixel();
         }
         emit('deleteBack');
     }
 );
 
+console.log('Total Pixel Bought :', getTotalPix())
 function getPixelTot() {
     return new Promise((resolve) => {
         setTimeout(() => {
@@ -146,7 +148,6 @@ function startUsingTool() {
     }
     canvas.onmousemove = useTool;
 }
-
 
 function stopUsingTool() {
     // document.onmousedown = null
