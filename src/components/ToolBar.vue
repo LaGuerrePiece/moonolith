@@ -37,7 +37,7 @@
                         data-tooltip="Move"
                         aria-label="Move"
                     >
-                        <i class="material-icons menu-item-icon"> open_with </i>
+                        <i class="material-icons menu-item-icon" style="width: 24px"> open_with </i>
                     </a>
                 </li>
                 <li>
