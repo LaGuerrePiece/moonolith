@@ -37,7 +37,8 @@ watch(
     }
 );
 
-console.log('Total Pixel Bought :', getTotalPix())
+console.log('Total Pixel Bought :', getTotalPix().then(async (res) => {res.toNumber()}))
+
 function getPixelTot() {
     return new Promise((resolve) => {
         setTimeout(() => {
@@ -173,14 +174,10 @@ function startUsingMove() {
     firstPix = ret.firstPix;
 }
 
-function deleteDrawn() {
-    console.log('boum');
-}
-
 function moveDrawing(x, y) {
-    deleteDrawn();
+    grid.delete_user_pixel()
     displayArrayToImage(saveArray, highLow.longueur, highLow.largeur, grid, x, y, 1);
-    console.log('RETOUR', highLow, saveArray, nbPix, firstPix);
+    // console.log('RETOUR', highLow, saveArray, nbPix, firstPix);
 }
 
 async function displayImageFromArrayBuffer(grid, arrayBuffer, offsetx, offsety) {
