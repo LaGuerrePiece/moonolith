@@ -19,7 +19,7 @@ function getHighLow(grid) {
         highY = 0;
 
     for (let i in grid.persistent) {
-        if (grid.persistent[i].author == Klon.PAINTED) {
+        if (grid.persistent[i]?.author == Klon.PAINTED) {
             if (grid.convertIndexToXY(i).x < lowX) {
                 lowX = grid.convertIndexToXY(i).x;
             }
