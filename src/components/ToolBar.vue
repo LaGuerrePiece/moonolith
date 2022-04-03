@@ -215,6 +215,7 @@ watch(showToolbar, () => {
     white-space: nowrap;
     word-wrap: normal;
     direction: ltr;
+    font-feature-settings: normal;
     -webkit-font-feature-settings: 'liga';
     -webkit-font-smoothing: antialiased;
 }

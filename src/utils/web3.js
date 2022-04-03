@@ -31,6 +31,7 @@ const chunkCreator = async (res) => {
  * Demande les données d'un chunk
  * @param {numero du dessin} id 
  * @returns {position, ymax, nbPix, string de l'image}
+ *  IL NOUS FAUDRAIT AUSSI PIXEL PAID, EST-CE NBPIX ????
  */
 const getChunk = async (id) => {                                    
     await provider.send('eth_requestAccounts', []);

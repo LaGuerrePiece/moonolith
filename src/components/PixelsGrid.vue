@@ -26,7 +26,6 @@ const props = defineProps({
 
 const emit = defineEmits(['boughtBack', 'deleteBack']);
 
-
 watch(
     () => props.onDelete.value,
     (deleteInstance) => {
@@ -41,13 +40,11 @@ watch(
 watch(
     () => props.importedImage?.value,
     (buffer) => {
-        if (buffer){
-            console.log('buffer ressue', buffer)
-            displayImageFromArrayBuffer(grid, buffer, 60, 91, 'import')
+        if (buffer) {
+            displayImageFromArrayBuffer(grid, buffer, 60, 91, 'import');
         }
     }
-)
-
+);
 
 let grid;
 let canvas;
@@ -58,9 +55,10 @@ const oldMousePosition = reactive({
     y: null,
 });
 
-getTotalPixs().then(async (total) => {
+getTotalPixs()
+    .then(async (total) => {
         let leNombreMagiqueVenuDeLaBlockchain = total.toNumber();
-        console.log(leNombreMagiqueVenuDeLaBlockchain)
+        console.log('leNombreMagiqueVenuDeLaBlockchain :', leNombreMagiqueVenuDeLaBlockchain);
         const offsetFormule = nbColonne * 64;
         const pourcentage = 1.3;
         const formuleDeLaMort = offsetFormule + leNombreMagiqueVenuDeLaBlockchain * pourcentage;
@@ -105,11 +103,12 @@ getTotalPixs().then(async (total) => {
             let s = supply.toNumber();
             for (let i = 1; i <= s; i++) {
                 getChunk(i).then((res) => {
+                    let pixelPaid = res[2].toNumber();
                     let index = res[0].toNumber();
                     let x = index % grid.nbColumns;
                     let y = Math.floor(index / grid.nbColumns);
                     let arrBuffer = _base64ToArrayBuffer(res[3]); // devrait etre equivalent a fetchUr
-                    displayImageFromArrayBuffer(grid, arrBuffer, x, y, 'blockchain');
+                    displayImageFromArrayBuffer(grid, arrBuffer, x, y, 'blockchain', pixelPaid);
                 });
             }
         });
@@ -179,35 +178,38 @@ function startUsingMove() {
 }
 
 function moveDrawing(x, y) {
-    grid.delete_user_pixel()
+    grid.delete_user_pixel();
     displayArrayToImage(saveArray, highLow.longueur, highLow.largeur, grid, x, y, 1);
     // console.log('RETOUR', highLow, saveArray, nbPix, firstPix);
 }
 
-async function displayImageFromArrayBuffer(grid, arrayBuffer, offsetx, offsety, origin) {
+async function displayImageFromArrayBuffer(grid, arrayBuffer, offsetx, offsety, origin, pixelPaid) {
     let decoded;
     decoded = await decode(arrayBuffer).catch(console.error);
     if (!decoded) return;
     let array = toRGBA8(decoded);
     let width = decoded.width;
     let height = decoded.height;
-    let author
-    if (origin == 'import') author = 1
-    if (origin == 'blockchain') author = 2
-    
-    displayArrayToImage(array, width, height, grid, offsetx, offsety, author);
+    let author;
+    if (origin == 'import') author = 1;
+    if (origin == 'blockchain') author = 2;
+
+    displayArrayToImage(array, width, height, grid, offsetx, offsety, author, pixelPaid);
 }
 
-function displayArrayToImage(array, width, height, grid, offsetx, offsety, author) {
+function displayArrayToImage(array, width, height, grid, offsetx, offsety, author, pixelPaid) {
+    let pixelDrawn = 0;
     for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
             let idx = (width * y + x) * 4;
-            if (array[idx + 3] != 0)
+            if (array[idx + 3] != 0 && pixelDrawn < pixelPaid) {
                 grid.draw_pixel(
                     x + offsetx,
                     y + offsety,
                     new Klon([array[idx] / 255, array[idx + 1] / 255, array[idx + 2] / 255], author)
                 );
+                pixelDrawn++;
+            }
         }
     }
 }
