@@ -4,7 +4,6 @@ import Klon from '../models/klon';
 function decode(buffer) {
     return new Promise((resolve) => {
         let buff = UPNG.decode(buffer);
-        //buff = UPNG.toRGBA8(buff)[0]
         resolve(buff);
     });
 }

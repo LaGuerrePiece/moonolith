@@ -2,7 +2,7 @@
 
 <script setup>
 // Imports pour vue 3
-import { reactive, onMounted, toRefs, watch, ref } from 'vue';
+import { reactive, onMounted, watch, ref } from 'vue';
 
 // Imports des composants
 import Grid from '../models/grid';
@@ -21,6 +21,7 @@ const props = defineProps({
     color: String,
     hasBought: Object,
     onDelete: Object,
+    importedImage: ArrayBuffer,
 });
 
 const emit = defineEmits(['boughtBack', 'deleteBack']);
@@ -37,6 +38,14 @@ watch(
     }
 );
 
+watch(
+    () => props.importedImage?.value,
+    (buffer) => {
+        if (buffer){
+            console.log('buffer ressue', buffer)
+        }
+    }
+)
 
 
 let grid;
@@ -104,6 +113,7 @@ getTotalPixs().then(async (total) => {
             }
         });
     });
+    
 function useTool() {
     if (props.tool === Tool.DONE) return;
     let newMousePosition = mousePositionInGrid();

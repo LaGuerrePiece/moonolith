@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import contractABI from '../utils/abi.json'
 
-const provider = new ethers.providers.Web3Provider(window.ethereum);
+const provider = new ethers.providers.Web3Provider(window.ethereum) //|| 'https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161');
 
 const signer = provider.getSigner();
 
@@ -27,7 +27,12 @@ const chunkCreator = async (res) => {
     let tx = contract.mint_One_4d(res.position, res.ymax, res.nbPix, res.imgURI, overrides);
 };
 
-const getChunk = async (id) => {
+/**
+ * Demande les données d'un chunk
+ * @param {numero du dessin} id 
+ * @returns {position, ymax, nbPix, string de l'image}
+ */
+const getChunk = async (id) => {                                    
     await provider.send('eth_requestAccounts', []);
     // console.log('signer :', signer)
     return await contract.chunks(id);

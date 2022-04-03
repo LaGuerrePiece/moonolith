@@ -46,12 +46,19 @@
                     </a>
                 </li>
                 <li>
-                    <a class="menu-item" :class="{}" @click="emit('import')" data-tooltip="import" aria-label="import">
+                    <a class="menu-item" :class="{}" @click="importImage" data-tooltip="import" aria-label="import">
                         <i class="material-icons menu-item-icon"> publish </i>
                     </a>
+                    <input ref="file" v-on:change="importImage()" type="file" />
                 </li>
                 <li>
-                    <a class="menu-item" :class="{}" @click="emit('placeholder2')" data-tooltip="placeholder2" aria-label="placeholder2">
+                    <a
+                        class="menu-item"
+                        :class="{}"
+                        @click="emit('placeholder2')"
+                        data-tooltip="placeholder2"
+                        aria-label="placeholder2"
+                    >
                         <i class="material-icons menu-item-icon"> help_outline </i>
                     </a>
                 </li>
@@ -63,11 +70,41 @@
 <script setup>
 import { ref, watch } from 'vue';
 import Tool from '../models/tools';
+import UPNG from 'upng-js';
 
-const emit = defineEmits(['toolChanged', 'saved', 'delete']);
-
+const file = ref(null);
 const showToolbar = ref(false);
 const toolUsed = ref(Tool.PEN);
+const emit = defineEmits(['toolChanged', 'saved', 'delete', 'import']);
+
+function importImage() {
+    let file2 = file.value.files[0];
+    console.log('file.value.files[0]', file2);
+
+    const readImageBuffer = (file2) =>
+        new Promise((resolve, reject) => {
+            let reader = new FileReader();
+            reader.readAsArrayBuffer(file2);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
+    readImageBuffer(file2).then((res) => {
+        console.log('res', res);
+        emit('import', res);
+        decode(res).then(res => {
+        console.log('res 2 ', res)
+    });
+    });
+
+}
+
+function decode(buffer) {
+    return new Promise((resolve, no) => {
+        let buff = UPNG.decode(buffer);
+        console.log('ok');
+        resolve(buff);
+    });
+}
 
 function toggleState(tool) {
     if (toolUsed.value === tool) toolUsed.value = Tool.DONE;
@@ -81,7 +118,6 @@ watch(toolUsed, (newVal, oldVal) => {
 watch(showToolbar, () => {
     if (!showToolbar.value) toolUsed.value = Tool.DONE;
 });
-
 </script>
 
 <style scoped>
