@@ -46,12 +46,19 @@
                     </a>
                 </li>
                 <li>
-                    <a class="menu-item" :class="{}" @click="emit('import')" data-tooltip="import" aria-label="import">
+                    <a class="menu-item" :class="{}" @click="clickOnButton()" data-tooltip="import" aria-label="import">
                         <i class="material-icons menu-item-icon"> publish </i>
                     </a>
+                    <input class="hidden" id="fileButton" ref="file" v-on:change="importImage()" type="file" />
                 </li>
                 <li>
-                    <a class="menu-item" :class="{}" @click="emit('placeholder2')" data-tooltip="placeholder2" aria-label="placeholder2">
+                    <a
+                        class="menu-item"
+                        :class="{}"
+                        @click="emit('placeholder2')"
+                        data-tooltip="placeholder2"
+                        aria-label="placeholder2"
+                    >
                         <i class="material-icons menu-item-icon"> help_outline </i>
                     </a>
                 </li>
@@ -63,11 +70,32 @@
 <script setup>
 import { ref, watch } from 'vue';
 import Tool from '../models/tools';
+import UPNG from 'upng-js';
 
-const emit = defineEmits(['toolChanged', 'saved', 'delete']);
-
+const file = ref(null);
 const showToolbar = ref(false);
 const toolUsed = ref(Tool.PEN);
+const emit = defineEmits(['toolChanged', 'saved', 'delete', 'import']);
+
+function clickOnButton() {
+    document.getElementById('fileButton').click();
+}
+
+function importImage() {
+    let importedImage = file.value.files[0];
+
+    const readImageBuffer = (img) =>
+        new Promise((resolve, reject) => {
+            let reader = new FileReader();
+            reader.readAsArrayBuffer(img);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = (error) => reject(error);
+        });
+    readImageBuffer(importedImage).then((res) => {
+        // console.log('buffer de ToolBar vers App', res);
+        emit('import', res);
+    });
+}
 
 function toggleState(tool) {
     if (toolUsed.value === tool) toolUsed.value = Tool.DONE;
@@ -81,10 +109,12 @@ watch(toolUsed, (newVal, oldVal) => {
 watch(showToolbar, () => {
     if (!showToolbar.value) toolUsed.value = Tool.DONE;
 });
-
 </script>
 
 <style scoped>
+.hidden {
+    display: none;
+}
 .fab {
     position: relative;
     display: flex;
