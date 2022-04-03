@@ -42,7 +42,7 @@ watch(
     () => props.onAddRow.value,
     () => {
         console.log('add a row !');
-        /////////////////////////////////////////////////////////////////////////////////////////////
+        
         let newGrid = new Grid(nbColonne, grid.nbRows + 1);
         newGrid.initialize(document.body);
         let newCanvas = newGrid.pixels.canvas;
@@ -56,7 +56,7 @@ watch(
         for (let i = 0; i < grid.length; i++) {
             newGrid.persistent[i] = grid.persistent[i]
         }
-        //////////////////////////////////////////////////////////////////////////////////////////
+        
         setTimeout(function(){
             canvas.remove()
             canvas = newCanvas
