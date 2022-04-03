@@ -41,7 +41,7 @@ watch(
     () => props.importedImage?.value,
     (buffer) => {
         if (buffer) {
-            displayImageFromArrayBuffer(grid, buffer, 60, 91, 'import');
+            displayImageFromArrayBuffer(grid, buffer, 60, 422, 'import', 99999);
         }
     }
 );
@@ -60,7 +60,7 @@ getTotalPixs()
         let leNombreMagiqueVenuDeLaBlockchain = total.toNumber();
         console.log('leNombreMagiqueVenuDeLaBlockchain :', leNombreMagiqueVenuDeLaBlockchain);
         const offsetFormule = nbColonne * 64;
-        const pourcentage = 1.3;
+        const pourcentage = 3.5;
         const formuleDeLaMort = offsetFormule + leNombreMagiqueVenuDeLaBlockchain * pourcentage;
         const nbLine = Math.floor(formuleDeLaMort / 128);
         // Gestion de la grille
@@ -179,7 +179,7 @@ function startUsingMove() {
 
 function moveDrawing(x, y) {
     grid.delete_user_pixel();
-    displayArrayToImage(saveArray, highLow.longueur, highLow.largeur, grid, x, y, 1);
+    displayArrayToImage(saveArray, highLow.longueur, highLow.largeur, grid, x, y, 1, 999999);
     // console.log('RETOUR', highLow, saveArray, nbPix, firstPix);
 }
 
