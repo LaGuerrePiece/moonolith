@@ -46,10 +46,10 @@
                     </a>
                 </li>
                 <li>
-                    <a class="menu-item" :class="{}" @click="importImage" data-tooltip="import" aria-label="import">
+                    <a class="menu-item" :class="{}" @click="clickOnButton()" data-tooltip="import" aria-label="import">
                         <i class="material-icons menu-item-icon"> publish </i>
                     </a>
-                    <input ref="file" v-on:change="importImage()" type="file" />
+                    <input class="hidden" id="fileButton" ref="file" v-on:change="importImage()" type="file" />
                 </li>
                 <li>
                     <a
@@ -77,32 +77,23 @@ const showToolbar = ref(false);
 const toolUsed = ref(Tool.PEN);
 const emit = defineEmits(['toolChanged', 'saved', 'delete', 'import']);
 
-function importImage() {
-    let file2 = file.value.files[0];
-    console.log('file.value.files[0]', file2);
-
-    const readImageBuffer = (file2) =>
-        new Promise((resolve, reject) => {
-            let reader = new FileReader();
-            reader.readAsArrayBuffer(file2);
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = error => reject(error);
-        });
-    readImageBuffer(file2).then((res) => {
-        console.log('res', res);
-        emit('import', res);
-        decode(res).then(res => {
-        console.log('res 2 ', res)
-    });
-    });
-
+function clickOnButton() {
+    document.getElementById('fileButton').click();
 }
 
-function decode(buffer) {
-    return new Promise((resolve, no) => {
-        let buff = UPNG.decode(buffer);
-        console.log('ok');
-        resolve(buff);
+function importImage() {
+    let importedImage = file.value.files[0];
+
+    const readImageBuffer = (img) =>
+        new Promise((resolve, reject) => {
+            let reader = new FileReader();
+            reader.readAsArrayBuffer(img);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = (error) => reject(error);
+        });
+    readImageBuffer(importedImage).then((res) => {
+        // console.log('buffer de ToolBar vers App', res);
+        emit('import', res);
     });
 }
 
@@ -121,6 +112,9 @@ watch(showToolbar, () => {
 </script>
 
 <style scoped>
+.hidden {
+    display: none;
+}
 .fab {
     position: relative;
     display: flex;

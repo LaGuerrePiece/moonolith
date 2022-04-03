@@ -21,7 +21,7 @@ const props = defineProps({
     color: String,
     hasBought: Object,
     onDelete: Object,
-    importedImage: ArrayBuffer,
+    importedImage: Object,
 });
 
 const emit = defineEmits(['boughtBack', 'deleteBack']);
@@ -43,6 +43,7 @@ watch(
     (buffer) => {
         if (buffer){
             console.log('buffer ressue', buffer)
+            displayImageFromArrayBuffer(grid, buffer, 60, 91, 'import')
         }
     }
 )
@@ -108,12 +109,12 @@ getTotalPixs().then(async (total) => {
                     let x = index % grid.nbColumns;
                     let y = Math.floor(index / grid.nbColumns);
                     let arrBuffer = _base64ToArrayBuffer(res[3]); // devrait etre equivalent a fetchUr
-                    displayImageFromArrayBuffer(grid, arrBuffer, x, y);
+                    displayImageFromArrayBuffer(grid, arrBuffer, x, y, 'blockchain');
                 });
             }
         });
     });
-    
+
 function useTool() {
     if (props.tool === Tool.DONE) return;
     let newMousePosition = mousePositionInGrid();
@@ -183,14 +184,18 @@ function moveDrawing(x, y) {
     // console.log('RETOUR', highLow, saveArray, nbPix, firstPix);
 }
 
-async function displayImageFromArrayBuffer(grid, arrayBuffer, offsetx, offsety) {
+async function displayImageFromArrayBuffer(grid, arrayBuffer, offsetx, offsety, origin) {
     let decoded;
     decoded = await decode(arrayBuffer).catch(console.error);
     if (!decoded) return;
     let array = toRGBA8(decoded);
     let width = decoded.width;
     let height = decoded.height;
-    displayArrayToImage(array, width, height, grid, offsetx, offsety, 2);
+    let author
+    if (origin == 'import') author = 1
+    if (origin == 'blockchain') author = 2
+    
+    displayArrayToImage(array, width, height, grid, offsetx, offsety, author);
 }
 
 function displayArrayToImage(array, width, height, grid, offsetx, offsety, author) {
