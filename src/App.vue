@@ -9,7 +9,7 @@ import Draggable from './components/Draggable.vue';
 import Tool from './models/tools';
 
 const tool = ref(Tool.PEN);
-const color = ref([]);
+const color = ref("");
 const hasBought = ref(0);
 const onDelete = ref(0);
 

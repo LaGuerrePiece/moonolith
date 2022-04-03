@@ -80,8 +80,8 @@ function startDragging(e) {
     offset.x = -12; 
     offset.y = -28;
 
-    console.log('offset.x', offset.x);
-    console.log('offset.y', offset.y);
+    //console.log('offset.x', offset.x);
+    //console.log('offset.y', offset.y);
 
     startPosition.x = e.clientX;
     startPosition.y = e.clientY;
@@ -91,7 +91,7 @@ function startDragging(e) {
 }
 
 function stopDragging(e) {
-    console.log(e);
+    //console.log(e);
     e = e || window.event;
     // console.log("stopDragging", e);
     e.preventDefault();
