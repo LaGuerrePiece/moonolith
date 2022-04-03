@@ -51,8 +51,8 @@
                     </a>
                 </li>
                 <li>
-                    <a class="menu-item" :class="{}" @click="emit('placeholder2')" data-tooltip="placeholder2" aria-label="placeholder2">
-                        <i class="material-icons menu-item-icon"> help_outline </i>
+                    <a class="menu-item" :class="{}" @click="emit('addRow')" data-tooltip="addRow" aria-label="addRow">
+                        <i class="material-icons menu-item-icon"> add </i>
                     </a>
                 </li>
             </ul>
@@ -64,7 +64,7 @@
 import { ref, watch } from 'vue';
 import Tool from '../models/tools';
 
-const emit = defineEmits(['toolChanged', 'saved', 'delete']);
+const emit = defineEmits(['toolChanged', 'saved', 'delete', 'addRow']);
 
 const showToolbar = ref(false);
 const toolUsed = ref(Tool.PEN);

@@ -4,7 +4,7 @@
         class="draggable"
         ref="draggable"
         :class="{ grabbing: dragging }"
-        :style="{ ...position, display: 'flex' }"
+        :style="{ ...position, display: 'flex', zIndex: '2'}"
     >
         <!-- @mouseup="stopDragging" -->
         <span

@@ -21,6 +21,7 @@ const props = defineProps({
     color: String,
     hasBought: Object,
     onDelete: Object,
+    onAddRow: Object,
 });
 
 const emit = defineEmits(['boughtBack', 'deleteBack']);
@@ -37,6 +38,36 @@ watch(
     }
 );
 
+watch(
+    () => props.onAddRow.value,
+    () => {
+        console.log('add a row !');
+        /////////////////////////////////////////////////////////////////////////////////////////////
+        let newGrid = new Grid(nbColonne, grid.nbRows + 1);
+        newGrid.initialize(document.body);
+        let newCanvas = newGrid.pixels.canvas;
+        position = ref(mousePosition(newCanvas));
+
+        newCanvas.style.position = "absolute"
+        newCanvas.style.top = "0px"
+        newCanvas.style.left = "0px"
+        newCanvas.style["z-index"] = "0"
+
+        for (let i = 0; i < grid.length; i++) {
+            newGrid.persistent[i] = grid.persistent[i]
+        }
+        //////////////////////////////////////////////////////////////////////////////////////////
+        setTimeout(function(){
+            canvas.remove()
+            canvas = newCanvas
+            canvas.style["z-index"] = "1"
+            grid = newGrid
+            canvas.onmouseup = stopUsingTool;
+            canvas.onmousedown = startUsingTool;
+        }, 1000);
+
+    }
+);
 
 
 let grid;
@@ -59,8 +90,13 @@ getTotalPixs().then(async (total) => {
         grid = new Grid(nbColonne, nbLine);
         grid.initialize(document.body);
         canvas = grid.pixels.canvas;
-        position = ref(mousePosition(canvas));
 
+        canvas.style.position = "absolute"
+        canvas.style.top = "0px"
+        canvas.style.left = "0px"
+        canvas.style["z-index"] = "1"
+        
+        position = ref(mousePosition(canvas));
         canvas.onmouseup = stopUsingTool;
         canvas.onmousedown = startUsingTool;
 

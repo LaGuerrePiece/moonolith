@@ -43,17 +43,6 @@ export default class Grid {
         return this.nbColumns * this.nbRows;
     }
 
-
-
-    /**
-     * Getter permettant de récupérer la taille du tableau
-     * @returns {le facteur du nombre de colonnes et lignes}
-     */
-     get drawnPixels() {
-        return this.nbColumns * this.nbRows;
-    }
-
-
     /**
      * Getter permettant de récupérer le tableau de pixels
      * @returns {le tableau de pixels persistant}
@@ -82,13 +71,16 @@ export default class Grid {
         this.pixels.frame(() => {
             frameCounter++;
             if (!(frameCounter % 5 === 0)) return;
-            const randomArray = Array.from({ length: 150 }, () => Math.random() * 0.02);
+            // console.log('this.length', this.length);
+            // console.log('this.persistent.length', this.persistent.length);
+            // console.log('this.noises.length', this.noises.length);
+            const randomArray = Array.from({ length: 50 }, () => Math.random() * 0.02);
             let data = [];
             for (let i = 0; i < this.length; i++) {
                 // Pour chaque klon si il y a une couleur on prend la couleur sinon un gris aléatoire
                 data[i] = this.persistent[i]
                     ? this.persistent[i].color
-                    : this.noises[i].randGray(randomArray[i % 150]).color;
+                    : this.noises[i].randGray(randomArray[i % 50]).color;
             }
             this.pixels.update(data);
         });
@@ -118,9 +110,5 @@ export default class Grid {
 
     convertXYToIndex(x, y) {
         return y * this.nbColumns + x;
-    }
-
-    addRow(numberOfRow){
-        this.nbRows += numberOfRow
     }
 }
