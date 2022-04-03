@@ -71,16 +71,13 @@ export default class Grid {
         this.pixels.frame(() => {
             frameCounter++;
             if (!(frameCounter % 5 === 0)) return;
-            // console.log('this.length', this.length);
-            // console.log('this.persistent.length', this.persistent.length);
-            // console.log('this.noises.length', this.noises.length);
-            const randomArray = Array.from({ length: 50 }, () => Math.random() * 0.02);
+            const randomArray = Array.from({ length: 100 }, () => Math.random() * 0.02);
             let data = [];
             for (let i = 0; i < this.length; i++) {
                 // Pour chaque klon si il y a une couleur on prend la couleur sinon un gris aléatoire
                 data[i] = this.persistent[i]
                     ? this.persistent[i].color
-                    : this.noises[i].randGray(randomArray[i % 50]).color;
+                    : this.noises[i].randGray(randomArray[i % 100]).color;
             }
             this.pixels.update(data);
         });

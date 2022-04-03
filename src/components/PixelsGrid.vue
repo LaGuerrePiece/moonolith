@@ -56,7 +56,7 @@ watch(
         for (let i = 0; i < grid.length; i++) {
             newGrid.persistent[i] = grid.persistent[i]
         }
-        
+
         setTimeout(function(){
             canvas.remove()
             canvas = newCanvas
@@ -78,68 +78,112 @@ const oldMousePosition = reactive({
     x: null,
     y: null,
 });
+var startTime, endTime;
 
+start()
 getTotalPixs().then(async (total) => {
-        let leNombreMagiqueVenuDeLaBlockchain = total.toNumber();
-        console.log(leNombreMagiqueVenuDeLaBlockchain)
-        const offsetFormule = nbColonne * 64;
-        const pourcentage = 1.3;
-        const formuleDeLaMort = offsetFormule + leNombreMagiqueVenuDeLaBlockchain * pourcentage;
-        const nbLine = Math.floor(formuleDeLaMort / 128);
-        // Gestion de la grille
-        grid = new Grid(nbColonne, nbLine);
-        grid.initialize(document.body);
-        canvas = grid.pixels.canvas;
+    console.log('Temps pour getTotalPixs :');
+    end()
+    start()
+    let leNombreMagiqueVenuDeLaBlockchain = total.toNumber();
+    //console.log(leNombreMagiqueVenuDeLaBlockchain)
+    const offsetFormule = nbColonne * 64;
+    const pourcentage = 1.3;
+    const formuleDeLaMort = offsetFormule + leNombreMagiqueVenuDeLaBlockchain * pourcentage;
+    const nbLine = Math.floor(formuleDeLaMort / 128);
+    // Gestion de la grille
+    grid = new Grid(nbColonne, nbLine);
+    grid.initialize(document.body);
+    canvas = grid.pixels.canvas;
 
-        canvas.style.position = "absolute"
-        canvas.style.top = "0px"
-        canvas.style.left = "0px"
-        canvas.style["z-index"] = "1"
-        
-        position = ref(mousePosition(canvas));
-        canvas.onmouseup = stopUsingTool;
-        canvas.onmousedown = startUsingTool;
+    canvas.style.position = "absolute"
+    canvas.style.top = "0px"
+    canvas.style.left = "0px"
+    canvas.style["z-index"] = "1"
+    
+    position = ref(mousePosition(canvas));
+    canvas.onmouseup = stopUsingTool;
+    canvas.onmousedown = startUsingTool;
 
-        watch(
-            () => props.tool,
-            (code) => {
-                if (code === Tool.DONE) {
-                    // stopUsingTool()
-                    canvas.onmousedown = null;
-                    canvas.onmousemove = null;
-                } else {
-                    canvas.onmouseup = stopUsingTool;
-                    canvas.onmousedown = startUsingTool;
-                }
+    console.log('Temps pour initialiser la grille vide :');
+    end()
+    start()
+
+    watch(
+        () => props.tool,
+        (code) => {
+            if (code === Tool.DONE) {
+                // stopUsingTool()
+                canvas.onmousedown = null;
+                canvas.onmousemove = null;
+            } else {
+                canvas.onmouseup = stopUsingTool;
+                canvas.onmousedown = startUsingTool;
             }
-        );
+        }
+    );
 
-        watch(
-            () => props.hasBought.value,
-            (boughtInstance) => {
-                if (boughtInstance === 1) {
-                    preEncode(grid).then((res) => {
-                        chunkCreator(res);
-                    });
-                }
-                emit('boughtBack');
-            }
-        );
-    })
-    .then((res) => {
-        getSupply().then(async (supply) => {
-            let s = supply.toNumber();
-            for (let i = 1; i <= s; i++) {
-                getChunk(i).then((res) => {
-                    let index = res[0].toNumber();
-                    let x = index % grid.nbColumns;
-                    let y = Math.floor(index / grid.nbColumns);
-                    let arrBuffer = _base64ToArrayBuffer(res[3]); // devrait etre equivalent a fetchUr
-                    displayImageFromArrayBuffer(grid, arrBuffer, x, y);
+    watch(
+        () => props.hasBought.value,
+        (boughtInstance) => {
+            if (boughtInstance === 1) {
+                preEncode(grid).then((res) => {
+                    chunkCreator(res);
                 });
             }
-        });
+            emit('boughtBack');
+        }
+    );
+})
+.then(() => {
+    getSupply().then(async (s) => {
+        console.log('Temps pour getSupply :');
+        end()
+        var supply = s.toNumber();
+        for (let i = 1; i <= supply; i++) {
+            getChunk(i).then((res) => {
+                let index = res[0].toNumber();
+                let x = index % grid.nbColumns;
+                let y = Math.floor(index / grid.nbColumns);
+                let arrBuffer = _base64ToArrayBuffer(res[3]); // devrait etre equivalent a fetchUr
+                displayImageFromArrayBuffer(grid, arrBuffer, x, y);
+            });
+        }
     });
+});
+
+// setInterval(function(supply){
+//     //this code runs every 10 seconds
+//     console.log('setInterval test')
+
+//     getSupply().then((s) => {
+//         let newSupply = s.toNumber();
+//         console.log('newSupply', newSupply)
+//         if (newSupply > supply) {
+//             console.log('Il y en a eu des nouveaux !')
+//             for (let i = 0; i < newSupply - supply; i++) {
+
+//                 coutdelatransaction/priPpix = nbPixel
+//                 puis pour chaque pixel l'ajouter à pixeltotal et recalculer YmaxTot et call addRow
+
+//             }
+//         }
+//     })
+
+// }, 3000);
+
+
+function start() {
+  startTime = new Date();
+};
+
+function end() {
+  endTime = new Date();
+  var timeDiff = endTime - startTime;
+  console.log(timeDiff);
+}
+
+
 function useTool() {
     if (props.tool === Tool.DONE) return;
     let newMousePosition = mousePositionInGrid();
@@ -235,3 +279,4 @@ function displayArrayToImage(array, width, height, grid, offsetx, offsety, autho
 </script>
 
 <style></style>
+
