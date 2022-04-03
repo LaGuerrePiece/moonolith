@@ -44,7 +44,16 @@
                     <a class="menu-item" :class="{}" @click="emit('delete')" data-tooltip="Delete" aria-label="Delete">
                         <i class="material-icons menu-item-icon"> delete </i>
                     </a>
-
+                </li>
+                <li>
+                    <a class="menu-item" :class="{}" @click="emit('import')" data-tooltip="import" aria-label="import">
+                        <i class="material-icons menu-item-icon"> publish </i>
+                    </a>
+                </li>
+                <li>
+                    <a class="menu-item" :class="{}" @click="emit('placeholder2')" data-tooltip="placeholder2" aria-label="placeholder2">
+                        <i class="material-icons menu-item-icon"> help_outline </i>
+                    </a>
                 </li>
             </ul>
         </div>
@@ -114,7 +123,7 @@ watch(showToolbar, () => {
 /** DIAL */
 /* Barre d'outils sans le fab button */
 .toolbar {
-    width: 340px;
+    width: 465px;
     position: relative;
     left: 15px;
     /* bottom: 50%; */
