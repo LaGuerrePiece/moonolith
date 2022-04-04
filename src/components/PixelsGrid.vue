@@ -32,59 +32,24 @@ watch(
     (deleteInstance) => {
         if (deleteInstance === 1) {
             console.log('SUPPRESSION!');
-            grid.delete_user_pixel();
+            gridArray.forEach(g => g.delete_user_pixel());
         }
         emit('deleteBack');
     }
 );
 
-watch(
-    () => props.onAddRow.value,
-    () => {
-        console.log('add a row !');
-        
-        let newGrid = new Grid(nbColonne, grid.nbRows + 1);
-        newGrid.initialize(document.body);
-        let newCanvas = newGrid.pixels.canvas;
-        position = ref(mousePosition(newCanvas));
-
-        newCanvas.style.position = "absolute"
-        newCanvas.style.top = "0px"
-        newCanvas.style.left = "0px"
-        newCanvas.style["z-index"] = "0"
-
-        for (let i = 0; i < grid.length; i++) {
-            newGrid.persistent[i] = grid.persistent[i]
-        }
-
-        setTimeout(function(){
-            canvas.remove()
-            canvas = newCanvas
-            canvas.style["z-index"] = "1"
-            grid = newGrid
-            canvas.onmouseup = stopUsingTool;
-            canvas.onmousedown = startUsingTool;
-        }, 1000);
-
-    }
-);
-
-
-let grid;
-let canvas;
+var gridArray = []
 let position;
 const nbColonne = 128;
+const gridsHeight = 15;
 const oldMousePosition = reactive({
     x: null,
     y: null,
+    z: null,
 });
-var startTime, endTime;
 
-start()
+
 getTotalPixs().then(async (total) => {
-    console.log('Temps pour getTotalPixs :');
-    end()
-    start()
     let leNombreMagiqueVenuDeLaBlockchain = total.toNumber();
     //console.log(leNombreMagiqueVenuDeLaBlockchain)
     const offsetFormule = nbColonne * 64;
@@ -92,33 +57,30 @@ getTotalPixs().then(async (total) => {
     const formuleDeLaMort = offsetFormule + leNombreMagiqueVenuDeLaBlockchain * pourcentage;
     const nbLine = Math.floor(formuleDeLaMort / 128);
     // Gestion de la grille
-    grid = new Grid(nbColonne, nbLine);
-    grid.initialize(document.body);
-    canvas = grid.pixels.canvas;
-
-    canvas.style.position = "absolute"
-    canvas.style.top = "0px"
-    canvas.style.left = "0px"
-    canvas.style["z-index"] = "1"
+    for (let i = 0; i < 5; i++) {                               // nbLine/15
+        gridArray[i] = new Grid(nbColonne, gridsHeight);
+        gridArray[i].initialize(document.body);
+        const canvas = gridArray[i].pixels.canvas
+        canvas.style.margin = 0
+        canvas.style.padding = 0
+        canvas.style.display = "flex"
+        canvas.onmouseup = stopUsingTool;
+        canvas.onmousedown = startUsingTool;
+    }
     
-    position = ref(mousePosition(canvas));
-    canvas.onmouseup = stopUsingTool;
-    canvas.onmousedown = startUsingTool;
+    position = ref(mousePosition(document.body));
 
-    console.log('Temps pour initialiser la grille vide :');
-    end()
-    start()
 
     watch(
         () => props.tool,
         (code) => {
             if (code === Tool.DONE) {
                 // stopUsingTool()
-                canvas.onmousedown = null;
-                canvas.onmousemove = null;
+                document.body.onmousedown = null;
+                document.body.onmousemove = null;
             } else {
-                canvas.onmouseup = stopUsingTool;
-                canvas.onmousedown = startUsingTool;
+                document.body.onmouseup = stopUsingTool;
+                document.body.onmousedown = startUsingTool;
             }
         }
     );
@@ -137,64 +99,34 @@ getTotalPixs().then(async (total) => {
 })
 .then(() => {
     getSupply().then(async (s) => {
-        console.log('Temps pour getSupply :');
-        end()
         var supply = s.toNumber();
         for (let i = 1; i <= supply; i++) {
-            getChunk(i).then((res) => {
-                let index = res[0].toNumber();
-                let x = index % grid.nbColumns;
-                let y = Math.floor(index / grid.nbColumns);
-                let arrBuffer = _base64ToArrayBuffer(res[3]); // devrait etre equivalent a fetchUr
-                displayImageFromArrayBuffer(grid, arrBuffer, x, y);
-            });
+            // getChunk(i).then((res) => {
+            //     let index = res[0].toNumber();
+            //     let x = index % grid.nbColumns;
+            //     let y = Math.floor(index / grid.nbColumns);
+            //     let arrBuffer = _base64ToArrayBuffer(res[3]); // devrait etre equivalent a fetchUr
+            //     displayImageFromArrayBuffer(grid, arrBuffer, x, y);
+            // });
         }
     });
 });
 
-// setInterval(function(supply){
-//     //this code runs every 10 seconds
-//     console.log('setInterval test')
-
-//     getSupply().then((s) => {
-//         let newSupply = s.toNumber();
-//         console.log('newSupply', newSupply)
-//         if (newSupply > supply) {
-//             console.log('Il y en a eu des nouveaux !')
-//             for (let i = 0; i < newSupply - supply; i++) {
-
-//                 coutdelatransaction/priPpix = nbPixel
-//                 puis pour chaque pixel l'ajouter à pixeltotal et recalculer YmaxTot et call addRow
-
-//             }
-//         }
-//     })
-
-// }, 3000);
-
-
-function start() {
-  startTime = new Date();
-};
-
-function end() {
-  endTime = new Date();
-  var timeDiff = endTime - startTime;
-  console.log(timeDiff);
-}
-
-
 function useTool() {
+    console.log("useTool")
     if (props.tool === Tool.DONE) return;
     let newMousePosition = mousePositionInGrid();
-    if (newMousePosition.x === oldMousePosition.x && newMousePosition.y === oldMousePosition.y) return;
+    if (newMousePosition.x === oldMousePosition.x
+    && newMousePosition.y === oldMousePosition.y
+    && newMousePosition.z === oldMousePosition.z) return;
 
     switch (props.tool) {
         case Tool.PEN:
-            grid.draw_pixel(newMousePosition.x, newMousePosition.y, new Klon(hexToRGB(props.color), Klon.PAINTED));
+            console.log('case Tool.PEN')
+            gridArray[newMousePosition.z].draw_pixel(newMousePosition.x, newMousePosition.y, new Klon(hexToRGB(props.color), Klon.PAINTED));
             break;
         case Tool.ERASER:
-            grid.erase_pixel(newMousePosition.x, newMousePosition.y);
+            gridArray[newMousePosition.z].erase_pixel(newMousePosition.x, newMousePosition.y);
             break;
         case Tool.TEXT:
             break;
@@ -220,22 +152,25 @@ function startUsingTool() {
             useTool();
             break;
     }
-    canvas.onmousemove = useTool;
+    document.body.onmousemove = useTool;
 }
 
 function stopUsingTool() {
     // document.onmousedown = null
-    canvas.onmousemove = null;
+    document.body.onmousemove = null;
 }
 
 function mousePositionInGrid() {
     let screenx = document.documentElement.clientWidth;
     let screeny = document.documentElement.clientHeight;
-    let pixelSize = screenx / grid.nbColumns;
+    let pixelSize = screenx / nbColonne;
     let nbPixely = screeny / pixelSize;
-    let x = Math.floor((position.value[0] / screenx) * grid.nbColumns);
+    let x = Math.floor((position.value[0] / screenx) * nbColonne);
     let y = Math.floor((position.value[1] / screeny) * nbPixely);
-    return { x, y };
+    let z = Math.floor(y/gridsHeight)
+    y = y % gridsHeight
+    console.log(x, y, z)
+    return { x, y , z};
 }
 let highLow, saveArray, nbPix, firstPix;
 
@@ -277,6 +212,3 @@ function displayArrayToImage(array, width, height, grid, offsetx, offsety, autho
     }
 }
 </script>
-
-<style></style>
-
