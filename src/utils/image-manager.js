@@ -1,6 +1,13 @@
 import UPNG from 'upng-js';
 import Klon from '../models/klon';
 
+function hexToRGB(hex) {
+    var r = parseInt(hex.slice(1, 3), 16) / 255,
+        g = parseInt(hex.slice(3, 5), 16) / 255,
+        b = parseInt(hex.slice(5, 7), 16) / 255;
+    return [r, g, b];
+}
+
 function decode(buffer) {
     return new Promise((resolve) => {
         let buff = UPNG.decode(buffer);
@@ -117,20 +124,4 @@ function _base64ToArrayBuffer(base64) {
     return bytes.buffer;
 }
 
-function Encode(inputArray, height, width) {
-    inputArray = new Uint8Array(inputArray); //on passe au format 8 bit
-    const sliced = new Uint8Array(inputArray.slice(0, height * width * 4));
-    var png = UPNG.encode([sliced.buffer], height, width, 0); // on encode
-    // console.log('image saved!')
-    let buffer = _arrayBufferToBase64(png); //on passe au format base64
-    // console.log(buffer)
-    var elementA = document.createElement('a'); //On crée un element vide pour forcer le téléchargement
-    elementA.setAttribute('href', 'data:image/png;base64,' + buffer); // on met les données au bon format (base64)
-    elementA.setAttribute('download', +new Date() + '.png'); // le nom du fichier
-    elementA.style.display = 'none'; // on met l'elem invisible
-    document.body.appendChild(elementA); //on crée l 'elem
-    elementA.click(); // on télécharge
-    document.body.removeChild(elementA); // on delete l'elem
-}
-
-export { decode, getHighLow, preEncode, _base64ToArrayBuffer, toRGBA8, gridToArray };
+export { decode, getHighLow, preEncode, _base64ToArrayBuffer, toRGBA8, gridToArray, hexToRGB };

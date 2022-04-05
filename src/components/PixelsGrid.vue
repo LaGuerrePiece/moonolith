@@ -8,7 +8,7 @@ import Klon from '../models/klon';
 
 // Imports des fonctionnalités
 import { fetchImgur } from '../utils/network';
-import { decode, getHighLow, preEncode, _base64ToArrayBuffer, toRGBA8, gridToArray } from '../utils/image-manager';
+import { decode, preEncode, _base64ToArrayBuffer, toRGBA8, gridToArray, hexToRGB } from '../utils/image-manager';
 import mousePosition from 'mouse-position';
 import Tool from '../models/tools';
 import { chunkCreator, getChunk, getSupply, getTotalPixs } from '../utils/web3';
@@ -66,7 +66,7 @@ getTotalPixs()
         let leNombreMagiqueVenuDeLaBlockchain = total.toNumber();
         console.log('leNombreMagiqueVenuDeLaBlockchain :', leNombreMagiqueVenuDeLaBlockchain);
         const offsetFormule = nbColonne * 64;
-        const pourcentage = 3.5;
+        const pourcentage = 3;
         const formuleDeLaMort = offsetFormule + leNombreMagiqueVenuDeLaBlockchain * pourcentage;
         const nbLine = Math.floor(formuleDeLaMort / 128);
         // Gestion de la grille
@@ -121,10 +121,8 @@ getTotalPixs()
     });
 
 function useTool() {
-    if (props.tool === Tool.DONE) return;
     let newMousePosition = mousePositionInGrid();
     if (newMousePosition.x === oldMousePosition.x && newMousePosition.y === oldMousePosition.y) return;
-
     switch (props.tool) {
         case Tool.PEN:
             grid.draw_pixel(newMousePosition.x, newMousePosition.y, new Klon(hexToRGB(props.color), Klon.PAINTED));
@@ -140,26 +138,12 @@ function useTool() {
     }
 }
 
-function hexToRGB(hex) {
-    var r = parseInt(hex.slice(1, 3), 16) / 255,
-        g = parseInt(hex.slice(3, 5), 16) / 255,
-        b = parseInt(hex.slice(5, 7), 16) / 255;
-    return [r, g, b];
-}
-
 function startUsingTool(e) {
-    switch (props.tool) {
-        case Tool.MOVE:
-            startUsingMove();
-            break;
-        default:
-            if (e.button == 0) {
-                canvas.onmousemove = useTool;
-            }
-            if (e.button == 2) {
-                canvas.onmousemove = startDeleteTool;
-            }
-            break;
+    if (e.button == 0) {
+        canvas.onmousemove = useTool;
+    }
+    if (e.button == 2) {
+        canvas.onmousemove = startDeleteTool;
     }
 }
 
@@ -184,25 +168,21 @@ function mousePositionInGrid() {
     return { x, y };
 }
 
-let highLow, saveArray, nbPix, firstPix;
-
-function startUsingMove() {
+function moveDrawing(x, y) {
+    let highLow, saveArray, nbPix, firstPix;
     let ret = gridToArray(grid);
     highLow = ret.highLow;
     saveArray = ret.saveArray;
     nbPix = ret.nbPix;
     firstPix = ret.firstPix;
-}
-
-function moveDrawing(x, y) {
+    grid.delete_user_pixel();
     console.log('l', highLow.largeur);
     console.log('L', highLow.longueur);
     console.log('lowx', highLow.lowX);
-    let outx = x - highLow.longueur / 2;
-    let outy = y - highLow.largeur / 2;
+    let outx = x;
+    let outy = y;
     if (outx > 127) outx = 127;
     if (outx < 0) outx = 0;
-    grid.delete_user_pixel();
     displayArrayToImage(saveArray, highLow.longueur, highLow.largeur, grid, outx, outy, 1, 999999);
 }
 
