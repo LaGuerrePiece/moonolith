@@ -39,16 +39,39 @@ watch(
 );
 
 var gridArray = []
-let position;
+let position = ref(mousePosition(document.body));
 const nbColonne = 128;
-const gridsHeight = 200;
-const nbGrids = 3;
+const gridsHeight = 100;
 const oldMousePosition = reactive({
     x: null,
     y: null,
     z: null,
 });
+
 window.scroll(0, 2000);
+
+gridArray[0] = new Grid(nbColonne, gridsHeight, 0);
+gridArray[0].initialize(document.body);
+const canvas0 = gridArray[0].pixels.canvas
+canvas0.style.position = "absolute"
+canvas0.id = "canvas0"
+canvas0.style.top = 0 + "px"
+canvas0.style.left = 0
+let gridOneHeight = document.getElementById('canvas0').clientHeight
+
+gridArray[1] = new Grid(nbColonne, gridsHeight, 1);
+gridArray[1].initialize(document.body);
+const canvas1 = gridArray[1].pixels.canvas
+canvas1.style.position = "absolute"
+console.log(gridOneHeight)
+canvas1.style.top = ref(gridOneHeight) + "px"
+canvas1.style.left = 0
+
+
+
+document.body.onmouseup = stopUsingTool;
+document.body.onmousedown = startUsingTool;
+
 // setInterval(() => {
 //     console.log("VERIFICATION")
 //     console.log(window.scrollY)
@@ -75,19 +98,6 @@ getTotalPixs().then(async (total) => {
     const formuleDeLaMort = offsetFormule + leNombreMagiqueVenuDeLaBlockchain * pourcentage;
     const nbLine = Math.floor(formuleDeLaMort / 128);
     // Gestion de la grille
-    for (let i = 0; i < nbGrids; i++) {                               // nbLine/15
-        gridArray[i] = new Grid(nbColonne, gridsHeight, i);
-        gridArray[i].initialize(document.body);
-        const canvas = gridArray[i].pixels.canvas
-        canvas.style.margin = 0
-        canvas.style.padding = 0
-        canvas.style.display = "flex"
-        canvas.onmouseup = stopUsingTool;
-        canvas.onmousedown = startUsingTool;
-    }
-    
-    position = ref(mousePosition(document.body));
-
 
     watch(
         () => props.tool,
