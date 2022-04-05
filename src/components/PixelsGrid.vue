@@ -77,7 +77,7 @@ getTotalPixs().then(async (total) => {
     const formuleDeLaMort = offsetFormule + leNombreMagiqueVenuDeLaBlockchain * pourcentage;
     const nbLine = Math.floor(formuleDeLaMort / 128);
     // Gestion de la grille
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 5; i++) {
         divArray[i] = document.createElement('div');
         divArray[i].id = "canvasContainer"
         divArray[i].classList.add(i);
@@ -85,15 +85,15 @@ getTotalPixs().then(async (total) => {
         // elemDiv.style.cssText = 'position:absolute;width:100%;height:100%;opacity:0.3;background:#000;';
         document.body.appendChild(divArray[i]);
 
-        // gridArray[i] = new Grid(nbColonne, gridsHeight, i);
-        // gridArray[i].initialize(divArray[i]);
-        // const canvas = gridArray[i].pixels.canvas
-        // canvas.style.margin = 0
-        // canvas.style["margin-top"] = -1
-        // canvas.style.padding = 0
-        // canvas.style.display = "flex"
-        // canvas.onmouseup = stopUsingTool;
-        // canvas.onmousedown = startUsingTool;
+        gridArray[i] = new Grid(nbColonne, gridsHeight, i);
+        gridArray[i].initialize(divArray[i]);
+        const canvas = gridArray[i].pixels.canvas
+        canvas.style.margin = 0
+        canvas.style["margin-top"] = -1
+        canvas.style.padding = 0
+        canvas.style.display = "flex"
+        canvas.onmouseup = stopUsingTool;
+        canvas.onmousedown = startUsingTool;
         //2049, 1601
     }
     // setTimeout(()=> {
@@ -117,26 +117,21 @@ getTotalPixs().then(async (total) => {
                 console.log("on vient d'entrer dans :", entry.target)
                 id = parseInt(entry.target.className)
                 console.log("id :", id)
-                gridArray[id] = new Grid(nbColonne, gridsHeight, id);
-                if (entry.target.children[0]) entry.target.children[0].remove()
-                gridArray[id].initialize(entry.target);
-                const canvas = gridArray[id].pixels.canvas
-                canvas.style.cssText = "margin:0;padding:0;display:flex;"
-                // canvas.style.margin = 0
-                // canvas.style.padding = 0
-                // canvas.style.display = "flex"
-                canvas.style["margin-top"] = -1
-
+                if (entry.target.children[0]?.className === "filler") entry.target.children[0].remove()
+                entry.target.appendChild(gridArray[id].pixels.canvas)
+                // const canvas = gridArray[id].pixels.canvas
+                // canvas.style.cssText = "margin:0;padding:0;display:flex;"
+                // canvas.style["margin-top"] = -1
             } else {
                 console.log("on vient de sortir de :", entry.target)
                 id = parseInt(entry.target.className)
                 console.log("id :", id)
-                gridArray[id] = document.createElement("canvas");
-                gridArray[id].style.cssText = entry.target.children[0].style.cssText
-                gridArray[id].height = entry.target.children[0].height
-                gridArray[id].width = entry.target.children[0].width
-                entry.target.children[0].replaceWith(gridArray[id])
-                //console.log(entry.target.children[0])
+                const filler = document.createElement("canvas");
+                filler.style.cssText = entry.target.children[0].style.cssText
+                filler.height = entry.target.children[0].height
+                filler.width = entry.target.children[0].width
+                filler.classList.add("filler")
+                entry.target.children[0].replaceWith(filler)
             }
         })
     })
