@@ -1,5 +1,3 @@
-<template></template>
-
 <script setup>
 // Imports pour vue 3
 import { reactive, onMounted, watch, ref } from 'vue';
@@ -25,6 +23,15 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['boughtBack', 'deleteBack']);
+
+// DISABLE RIGHT CLICK
+document.addEventListener(
+    'contextmenu',
+    function (e) {
+        e.preventDefault();
+    },
+    false
+);
 
 watch(
     () => props.onDelete.value,
@@ -106,7 +113,7 @@ getTotalPixs()
                     let index = res[0].toNumber();
                     let x = index % grid.nbColumns;
                     let y = Math.floor(index / grid.nbColumns);
-                    let arrBuffer = _base64ToArrayBuffer(res[3]); // devrait etre equivalent a fetchUr
+                    let arrBuffer = _base64ToArrayBuffer(res[3]);
                     displayImageFromArrayBuffer(grid, arrBuffer, x, y, 'blockchain', pixelPaid);
                 });
             }
@@ -140,16 +147,26 @@ function hexToRGB(hex) {
     return [r, g, b];
 }
 
-function startUsingTool() {
+function startUsingTool(e) {
     switch (props.tool) {
         case Tool.MOVE:
             startUsingMove();
             break;
         default:
-            useTool();
+            if (e.button == 0) {
+                canvas.onmousemove = useTool;
+            }
+            if (e.button == 2) {
+                canvas.onmousemove = startDeleteTool;
+            }
             break;
     }
-    canvas.onmousemove = useTool;
+}
+
+function startDeleteTool() {
+    let newMousePosition = mousePositionInGrid();
+    if (newMousePosition.x === oldMousePosition.x && newMousePosition.y === oldMousePosition.y) return;
+    grid.erase_pixel(newMousePosition.x, newMousePosition.y);
 }
 
 function stopUsingTool() {
@@ -166,6 +183,7 @@ function mousePositionInGrid() {
     let y = Math.floor((position.value[1] / screeny) * nbPixely);
     return { x, y };
 }
+
 let highLow, saveArray, nbPix, firstPix;
 
 function startUsingMove() {
@@ -177,8 +195,15 @@ function startUsingMove() {
 }
 
 function moveDrawing(x, y) {
+    console.log('l', highLow.largeur);
+    console.log('L', highLow.longueur);
+    console.log('lowx', highLow.lowX);
+    let outx = x - highLow.longueur / 2;
+    let outy = y - highLow.largeur / 2;
+    if (outx > 127) outx = 127;
+    if (outx < 0) outx = 0;
     grid.delete_user_pixel();
-    displayArrayToImage(saveArray, highLow.longueur, highLow.largeur, grid, x, y, 1, 999999);
+    displayArrayToImage(saveArray, highLow.longueur, highLow.largeur, grid, outx, outy, 1, 999999);
 }
 
 async function displayImageFromArrayBuffer(grid, arrayBuffer, offsetx, offsety, origin, pixelPaid) {
@@ -198,12 +223,13 @@ async function displayImageFromArrayBuffer(grid, arrayBuffer, offsetx, offsety, 
 function displayArrayToImage(array, width, height, grid, offsetx, offsety, author, pixelPaid) {
     let pixelDrawn = 0;
     let decallage = 0;
-    let rowDebloqueEpok = 100000;                               // <========= A REMPLACER AVEC DONNEES BLOCKCHAIN
+    let rowDebloqueEpok = 100000; // <========= A REMPLACER AVEC DONNEES BLOCKCHAIN
     for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
             let idx = (width * y + x) * 4;
-            if (array[idx + 3] != 0 && pixelDrawn < pixelPaid && offsety <= rowDebloqueEpok) { // << IDEM PLACEHOLDER
-                if (pixelDrawn === 0) decallage = x ;
+            if (array[idx + 3] != 0 && pixelDrawn < pixelPaid && offsety <= rowDebloqueEpok) {
+                // ^^ IDEM PLACEHOLDER ^^
+                if (pixelDrawn === 0) decallage = x;
                 grid.draw_pixel(
                     x + offsetx - decallage,
                     y + offsety,

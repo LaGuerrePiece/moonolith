@@ -21,7 +21,7 @@ const importedImage = ref()
         <ToolBar @toolChanged="tool = $event" @import="importedImage = $event" @saved="hasBought++" @delete="onDelete++"/>
         <Palette v-model:color="color" show-fallback fallback-input-type="color" popover-x="left" style="margin: auto"/>
     </Draggable>
-    <PixelsGrid :tool="tool" :color="color" :importedImage="ref(importedImage)" :hasBought="ref(hasBought)" @boughtBack="hasBought = 0" :onDelete="ref(onDelete)" @deleteBack="onDelete = 0"/>
+    <PixelsGrid @contextmenu.prevent :tool="tool" :color="color" :importedImage="ref(importedImage)" :hasBought="ref(hasBought)" @boughtBack="hasBought = 0" :onDelete="ref(onDelete)" @deleteBack="onDelete = 0"/>
     
 </template>
 
