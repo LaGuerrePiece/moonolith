@@ -25,4 +25,10 @@ const onAddRow = ref(0);
     
 </template>
 
-<style></style>
+<style>
+
+body {
+    overflow: visible;
+}
+
+</style>

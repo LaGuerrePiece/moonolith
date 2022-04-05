@@ -15,6 +15,7 @@ export default class Grid {
     constructor(
         nbColumns,
         nbRows,
+        id,
         options = {
             size: 15,
             padding: 1,
@@ -26,12 +27,13 @@ export default class Grid {
         this.nbColumns = nbColumns;
         this.nbRows = nbRows;
         this.options = options;
+        this.id = id;
 
         // la future instance de PixelGrid
         this.pixels = null;
 
         // Initialisation des tableaux avec le noise (en-dessous) et les dessins au-dessus
-        this.noises = Array.from({ length: this.length }, () => new Klon([0, 0, 0]));
+        this.noises = Array.from({ length: this.length }, () => new Klon([0.3, 0.7, 0.4]));
         this.persistent = new Array(this.length);
     }
 
@@ -70,17 +72,29 @@ export default class Grid {
         let frameCounter = 0;
         this.pixels.frame(() => {
             frameCounter++;
-            if (!(frameCounter % 5 === 0)) return;
-            const randomArray = Array.from({ length: 100 }, () => Math.random() * 0.02);
+            if (!(frameCounter % 10 === 0)) return;
+            const firstGridLookedAt = Math.floor(window.scrollY / (200 * 11));
+            if (this.id !== firstGridLookedAt && this.id !== firstGridLookedAt + 1) return;
+            if (frameCounter % 60 === 0) console.log('updating grid :', this.id);
+            const randomArray = Array.from({ length: 150 }, () => Math.random() * 0.02);
             let data = [];
             for (let i = 0; i < this.length; i++) {
                 // Pour chaque klon si il y a une couleur on prend la couleur sinon un gris aléatoire
                 data[i] = this.persistent[i]
                     ? this.persistent[i].color
-                    : this.noises[i].randGray(randomArray[i % 100]).color;
+                    : this.noises[i].randGray(randomArray[i % 150]).color;
             }
             this.pixels.update(data);
         });
+
+        // setTimeout(() => {
+        //     let data = [];
+        //     for (let i = 0; i < this.length; i++) {
+        //         // Pour chaque klon si il y a une couleur on prend la couleur sinon un gris aléatoire
+        //         data[i] = this.persistent[i] ? this.persistent[i].color : [0.8, 0.3, 0.5];
+        //     }
+        //     this.pixels.update(data);
+        // }, 3000);
     }
 
     draw_pixel(x, y, klon) {

@@ -41,13 +41,31 @@ watch(
 var gridArray = []
 let position;
 const nbColonne = 128;
-const gridsHeight = 15;
+const gridsHeight = 200;
+const nbGrids = 3;
 const oldMousePosition = reactive({
     x: null,
     y: null,
     z: null,
 });
+window.scroll(0, 2000);
+// setInterval(() => {
+//     console.log("VERIFICATION")
+//     console.log(window.scrollY)
+//     var firstGridToLoad = Math.floor(window.scrollY / (gridsHeight*11))
+//     var secondGridToLoad = firstGridToLoad + 1
+//     if (firstGridToLoad == 9) {
+//         firstGridToLoad = 8
+//         secondGridToLoad = 9
+//     }
+//     loadgrid(firstGridToLoad)
+//     loadgrid(secondGridToLoad)
+//     //console.log(firstGridToLoad, secondGridToLoad)
 
+// }, 3000,);
+
+const firstGridLookedAt = Math.floor(window.scrollY / (100 * 11));
+console.log('grids being seen :', firstGridLookedAt, firstGridLookedAt + 1)
 
 getTotalPixs().then(async (total) => {
     let leNombreMagiqueVenuDeLaBlockchain = total.toNumber();
@@ -57,8 +75,8 @@ getTotalPixs().then(async (total) => {
     const formuleDeLaMort = offsetFormule + leNombreMagiqueVenuDeLaBlockchain * pourcentage;
     const nbLine = Math.floor(formuleDeLaMort / 128);
     // Gestion de la grille
-    for (let i = 0; i < 5; i++) {                               // nbLine/15
-        gridArray[i] = new Grid(nbColonne, gridsHeight);
+    for (let i = 0; i < nbGrids; i++) {                               // nbLine/15
+        gridArray[i] = new Grid(nbColonne, gridsHeight, i);
         gridArray[i].initialize(document.body);
         const canvas = gridArray[i].pixels.canvas
         canvas.style.margin = 0
