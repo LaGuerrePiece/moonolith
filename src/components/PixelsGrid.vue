@@ -30,7 +30,6 @@ watch(
     () => props.onDelete.value,
     (deleteInstance) => {
         if (deleteInstance === 1) {
-            console.log('SUPPRESSION!');
             grid.delete_user_pixel();
         }
         emit('deleteBack');
@@ -180,7 +179,6 @@ function startUsingMove() {
 function moveDrawing(x, y) {
     grid.delete_user_pixel();
     displayArrayToImage(saveArray, highLow.longueur, highLow.largeur, grid, x, y, 1, 999999);
-    // console.log('RETOUR', highLow, saveArray, nbPix, firstPix);
 }
 
 async function displayImageFromArrayBuffer(grid, arrayBuffer, offsetx, offsety, origin, pixelPaid) {
@@ -199,12 +197,14 @@ async function displayImageFromArrayBuffer(grid, arrayBuffer, offsetx, offsety, 
 
 function displayArrayToImage(array, width, height, grid, offsetx, offsety, author, pixelPaid) {
     let pixelDrawn = 0;
+    let decallage = 0;
     for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
             let idx = (width * y + x) * 4;
             if (array[idx + 3] != 0 && pixelDrawn < pixelPaid) {
+                if (pixelDrawn === 0) decallage = x ;
                 grid.draw_pixel(
-                    x + offsetx,
+                    x + offsetx - decallage,
                     y + offsety,
                     new Klon([array[idx] / 255, array[idx + 1] / 255, array[idx + 2] / 255], author)
                 );
