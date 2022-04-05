@@ -41,8 +41,8 @@ watch(
 var gridArray = []
 let position;
 const nbColonne = 128;
-const gridsHeight = 200;
-const nbGrids = 3;
+const gridsHeight = 100;
+const nbGrids = 10;
 const oldMousePosition = reactive({
     x: null,
     y: null,

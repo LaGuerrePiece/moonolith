@@ -72,17 +72,19 @@ export default class Grid {
         let frameCounter = 0;
         this.pixels.frame(() => {
             frameCounter++;
-            if (!(frameCounter % 10 === 0)) return;
-            const firstGridLookedAt = Math.floor(window.scrollY / (200 * 11));
+            if (!(frameCounter % 3 === 0)) return;
+            const firstGridLookedAt = Math.floor(window.scrollY / (100 * 11));
             if (this.id !== firstGridLookedAt && this.id !== firstGridLookedAt + 1) return;
             if (frameCounter % 60 === 0) console.log('updating grid :', this.id);
-            const randomArray = Array.from({ length: 150 }, () => Math.random() * 0.02);
+            const randomArray = Array.from({ length: 15 }, () => Math.random() * 0.02);
             let data = [];
             for (let i = 0; i < this.length; i++) {
                 // Pour chaque klon si il y a une couleur on prend la couleur sinon un gris aléatoire
                 data[i] = this.persistent[i]
                     ? this.persistent[i].color
-                    : this.noises[i].randGray(randomArray[i % 150]).color;
+                    : (i + Math.floor(Math.random() * 5)) % 5 === 0
+                    ? this.noises[i].randGray(randomArray[i % 15]).color
+                    : this.noises[i].color;
             }
             this.pixels.update(data);
         });
