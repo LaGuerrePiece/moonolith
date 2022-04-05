@@ -39,10 +39,12 @@ watch(
 );
 
 var gridArray = []
+var divArray = []
+var id;
 let position;
 const nbColonne = 128;
 const gridsHeight = 100;
-const nbGrids = 10;
+const nbGrids = 3;
 const oldMousePosition = reactive({
     x: null,
     y: null,
@@ -75,17 +77,84 @@ getTotalPixs().then(async (total) => {
     const formuleDeLaMort = offsetFormule + leNombreMagiqueVenuDeLaBlockchain * pourcentage;
     const nbLine = Math.floor(formuleDeLaMort / 128);
     // Gestion de la grille
-    for (let i = 0; i < nbGrids; i++) {                               // nbLine/15
-        gridArray[i] = new Grid(nbColonne, gridsHeight, i);
-        gridArray[i].initialize(document.body);
-        const canvas = gridArray[i].pixels.canvas
-        canvas.style.margin = 0
-        canvas.style.padding = 0
-        canvas.style.display = "flex"
-        canvas.onmouseup = stopUsingTool;
-        canvas.onmousedown = startUsingTool;
+    for (let i = 0; i < 3; i++) {
+        divArray[i] = document.createElement('div');
+        divArray[i].id = "canvasContainer"
+        divArray[i].classList.add(i);
+        divArray[i].style.cssText = 'height:100%';
+        // elemDiv.style.cssText = 'position:absolute;width:100%;height:100%;opacity:0.3;background:#000;';
+        document.body.appendChild(divArray[i]);
+
+        // gridArray[i] = new Grid(nbColonne, gridsHeight, i);
+        // gridArray[i].initialize(divArray[i]);
+        // const canvas = gridArray[i].pixels.canvas
+        // canvas.style.margin = 0
+        // canvas.style["margin-top"] = -1
+        // canvas.style.padding = 0
+        // canvas.style.display = "flex"
+        // canvas.onmouseup = stopUsingTool;
+        // canvas.onmousedown = startUsingTool;
+        //2049, 1601
     }
-    
+    // setTimeout(()=> {
+    //     console.log(gridArray[1].pixels.canvas.height)
+    //     console.log(gridArray[1].pixels.canvas.clientHeight)
+    //     let fillingCanvas = document.createElement("canvas");
+    //     fillingCanvas.style.cssText = gridArray[0].pixels.canvas.style.cssText
+    //     fillingCanvas.height = gridArray[1].pixels.canvas.height
+    //     fillingCanvas.width = gridArray[1].pixels.canvas.width
+    //     gridArray[0].pixels.canvas.replaceWith(fillingCanvas)
+    //     // fillingCanvas.height = gridArray[1].pixels.canvas.height + 'px'
+    //     // fillingCanvas.width = gridArray[1].pixels.canvas.width + 'px'
+    //     // divArray[0].style.cssText = 'height:' + (gridArray[0].pixels.canvas.height) + 'px'
+    // }, 3000)
+
+    const divs = document.querySelectorAll("#canvasContainer");
+
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach((entry) => {
+            if (entry.intersectionRatio > 0) {
+                console.log("on vient d'entrer dans :", entry.target)
+                id = parseInt(entry.target.className)
+                console.log("id :", id)
+                gridArray[id] = new Grid(nbColonne, gridsHeight, id);
+                if (entry.target.children[0]) entry.target.children[0].remove()
+                gridArray[id].initialize(entry.target);
+                const canvas = gridArray[id].pixels.canvas
+                canvas.style.cssText = "margin:0;padding:0;display:flex;"
+                // canvas.style.margin = 0
+                // canvas.style.padding = 0
+                // canvas.style.display = "flex"
+                canvas.style["margin-top"] = -1
+
+            } else {
+                console.log("on vient de sortir de :", entry.target)
+                id = parseInt(entry.target.className)
+                console.log("id :", id)
+                gridArray[id] = document.createElement("canvas");
+                gridArray[id].style.cssText = entry.target.children[0].style.cssText
+                gridArray[id].height = entry.target.children[0].height
+                gridArray[id].width = entry.target.children[0].width
+                entry.target.children[0].replaceWith(gridArray[id])
+                //console.log(entry.target.children[0])
+            }
+        })
+    })
+
+    divs.forEach(div => {
+        observer.observe(div)
+    })
+
+
+
+
+
+
+
+
+
+
+
     position = ref(mousePosition(document.body));
 
 
