@@ -27,8 +27,5 @@ const onAddRow = ref(0);
 
 <style>
 
-body {
-    overflow: visible;
-}
 
 </style>

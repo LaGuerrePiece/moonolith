@@ -73,30 +73,21 @@ export default class Grid {
         this.pixels.frame(() => {
             frameCounter++;
             if (!(frameCounter % 3 === 0)) return;
-            //const firstGridLookedAt = Math.floor(window.scrollY / (100 * 11));
-            //if (this.id !== firstGridLookedAt && this.id !== firstGridLookedAt + 1) return;
-            //if (frameCounter % 60 === 0) console.log('updating grid :', this.id);
+            const div = document.getElementsByClassName(this.id)[0];
+            //if (!div.classList.contains('show')) return;
+            //if (!(frameCounter % 120 === 0)) console.log(this.pixels.canvas.parentNode);
             const randomArray = Array.from({ length: 150 }, () => Math.random() * 0.02);
             let data = [];
             for (let i = 0; i < this.length; i++) {
                 // Pour chaque klon si il y a une couleur on prend la couleur sinon un gris aléatoire
                 data[i] = this.persistent[i]
                     ? this.persistent[i].color
-                    : (i + Math.floor(Math.random() * 2)) % 2 === 0
+                    : (i + Math.floor(Math.random() * 2)) % 2 === 0 //Met à jour le random de 1 klon sur 2 chaque frame
                     ? this.noises[i].randGray(randomArray[i % 15]).color
                     : this.noises[i].color;
             }
             this.pixels.update(data);
         });
-
-        // setTimeout(() => {
-        //     let data = [];
-        //     for (let i = 0; i < this.length; i++) {
-        //         // Pour chaque klon si il y a une couleur on prend la couleur sinon un gris aléatoire
-        //         data[i] = this.persistent[i] ? this.persistent[i].color : [0.8, 0.3, 0.5];
-        //     }
-        //     this.pixels.update(data);
-        // }, 3000);
     }
 
     draw_pixel(x, y, klon) {

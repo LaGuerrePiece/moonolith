@@ -40,115 +40,59 @@ watch(
 
 var gridArray = []
 var divArray = []
-var id;
 let position;
+var start
 const nbColonne = 128;
 const gridsHeight = 100;
-const nbGrids = 3;
+const nbGrids = 10;
 const oldMousePosition = reactive({
     x: null,
     y: null,
     z: null,
 });
-window.scroll(0, 2000);
-// setInterval(() => {
-//     console.log("VERIFICATION")
-//     console.log(window.scrollY)
-//     var firstGridToLoad = Math.floor(window.scrollY / (gridsHeight*11))
-//     var secondGridToLoad = firstGridToLoad + 1
-//     if (firstGridToLoad == 9) {
-//         firstGridToLoad = 8
-//         secondGridToLoad = 9
-//     }
-//     loadgrid(firstGridToLoad)
-//     loadgrid(secondGridToLoad)
-//     //console.log(firstGridToLoad, secondGridToLoad)
-
-// }, 3000,);
-
-const firstGridLookedAt = Math.floor(window.scrollY / (100 * 11));
-console.log('grids being seen :', firstGridLookedAt, firstGridLookedAt + 1)
 
 getTotalPixs().then(async (total) => {
     let leNombreMagiqueVenuDeLaBlockchain = total.toNumber();
-    //console.log(leNombreMagiqueVenuDeLaBlockchain)
     const offsetFormule = nbColonne * 64;
     const pourcentage = 1.3;
     const formuleDeLaMort = offsetFormule + leNombreMagiqueVenuDeLaBlockchain * pourcentage;
     const nbLine = Math.floor(formuleDeLaMort / 128);
-    // Gestion de la grille
-    for (let i = 0; i < 5; i++) {
+
+    // INITIALISATION DES GRILLES
+    let bigDiv = document.createElement('div');
+    //bigDiv.style.display = "flex"
+    document.body.appendChild(bigDiv);
+
+    start = new Date()
+    for (let i = 0; i < nbGrids; i++) {
         divArray[i] = document.createElement('div');
-        divArray[i].id = "canvasContainer"
-        divArray[i].classList.add(i);
-        divArray[i].style.cssText = 'height:100%';
-        // elemDiv.style.cssText = 'position:absolute;width:100%;height:100%;opacity:0.3;background:#000;';
-        document.body.appendChild(divArray[i]);
+        divArray[i].id = i
+        divArray[i].classList.add("canvasContainer");
+        bigDiv.appendChild(divArray[i]);
 
         gridArray[i] = new Grid(nbColonne, gridsHeight, i);
         gridArray[i].initialize(divArray[i]);
         const canvas = gridArray[i].pixels.canvas
-        canvas.style.margin = 0
-        canvas.style["margin-top"] = -1
-        canvas.style.padding = 0
+        canvas.classList.add("canvas");
         canvas.style.display = "flex"
         canvas.onmouseup = stopUsingTool;
         canvas.onmousedown = startUsingTool;
-        //2049, 1601
     }
-    // setTimeout(()=> {
-    //     console.log(gridArray[1].pixels.canvas.height)
-    //     console.log(gridArray[1].pixels.canvas.clientHeight)
-    //     let fillingCanvas = document.createElement("canvas");
-    //     fillingCanvas.style.cssText = gridArray[0].pixels.canvas.style.cssText
-    //     fillingCanvas.height = gridArray[1].pixels.canvas.height
-    //     fillingCanvas.width = gridArray[1].pixels.canvas.width
-    //     gridArray[0].pixels.canvas.replaceWith(fillingCanvas)
-    //     // fillingCanvas.height = gridArray[1].pixels.canvas.height + 'px'
-    //     // fillingCanvas.width = gridArray[1].pixels.canvas.width + 'px'
-    //     // divArray[0].style.cssText = 'height:' + (gridArray[0].pixels.canvas.height) + 'px'
-    // }, 3000)
-
-    const divs = document.querySelectorAll("#canvasContainer");
+    console.log('temps pour initialisation des grilles :', new Date() - start)
+    //INTERSECTION OBSERVER
+    const divs = document.querySelectorAll(".canvasContainer");
 
     const observer = new IntersectionObserver(entries => {
         entries.forEach((entry) => {
-            if (entry.intersectionRatio > 0) {
-                console.log("on vient d'entrer dans :", entry.target)
-                id = parseInt(entry.target.className)
-                console.log("id :", id)
-                if (entry.target.children[0]?.className === "filler") entry.target.children[0].remove()
-                entry.target.appendChild(gridArray[id].pixels.canvas)
-                // const canvas = gridArray[id].pixels.canvas
-                // canvas.style.cssText = "margin:0;padding:0;display:flex;"
-                // canvas.style["margin-top"] = -1
-            } else {
-                console.log("on vient de sortir de :", entry.target)
-                id = parseInt(entry.target.className)
-                console.log("id :", id)
-                const filler = document.createElement("canvas");
-                filler.style.cssText = entry.target.children[0].style.cssText
-                filler.height = entry.target.children[0].height
-                filler.width = entry.target.children[0].width
-                filler.classList.add("filler")
-                entry.target.children[0].replaceWith(filler)
-            }
+            entry.target.classList.toggle("show", entry.isIntersecting)
         })
+    }, {
+        rootMargin: "500px"
     })
-
+    
     divs.forEach(div => {
         observer.observe(div)
     })
-
-
-
-
-
-
-
-
-
-
 
     position = ref(mousePosition(document.body));
 
@@ -157,7 +101,6 @@ getTotalPixs().then(async (total) => {
         () => props.tool,
         (code) => {
             if (code === Tool.DONE) {
-                // stopUsingTool()
                 document.body.onmousedown = null;
                 document.body.onmousemove = null;
             } else {
@@ -195,7 +138,6 @@ getTotalPixs().then(async (total) => {
 });
 
 function useTool() {
-    console.log("useTool")
     if (props.tool === Tool.DONE) return;
     let newMousePosition = mousePositionInGrid();
     if (newMousePosition.x === oldMousePosition.x
@@ -294,3 +236,20 @@ function displayArrayToImage(array, width, height, grid, offsetx, offsety, autho
     }
 }
 </script>
+<style>
+
+.canvasContainer {
+    transform: translateX(1000px);
+    visibility: hidden;
+    transition: 300ms;
+}
+.canvasContainer.show {
+    transform: translateX(0);
+    visibility: visible;
+}
+
+.canvas {
+    margin-top: -1px;
+}
+</style>
+
