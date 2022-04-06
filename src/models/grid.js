@@ -70,12 +70,11 @@ export default class Grid {
         this.pixels.canvas.style.width = width;
 
         let frameCounter = 0;
+
         this.pixels.frame(() => {
             frameCounter++;
             if (!(frameCounter % 3 === 0)) return;
-            const div = document.getElementsByClassName(this.id)[0];
-            //if (!div.classList.contains('show')) return;
-            //if (!(frameCounter % 120 === 0)) console.log(this.pixels.canvas.parentNode);
+            if (!this.pixels.canvas.parentElement.classList.contains('show')) return;
             const randomArray = Array.from({ length: 150 }, () => Math.random() * 0.02);
             let data = [];
             for (let i = 0; i < this.length; i++) {
