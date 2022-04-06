@@ -47,7 +47,7 @@ watch(
     () => props.importedImage?.value,
     (buffer) => {
         if (buffer) {
-            displayImageFromArrayBuffer(grid, buffer, 60, 422, 'import', 99999);
+            displayImageFromArrayBuffer(grid, buffer, 60, 422, 999999);
         }
     }
 );
@@ -114,7 +114,7 @@ getTotalPixs()
                     let x = index % grid.nbColumns;
                     let y = Math.floor(index / grid.nbColumns);
                     let arrBuffer = _base64ToArrayBuffer(res[3]);
-                    displayImageFromArrayBuffer(grid, arrBuffer, x, y, 'blockchain', pixelPaid);
+                    displayImageFromArrayBuffer(grid, arrBuffer, x, y, pixelPaid, i);
                 });
             }
         });
@@ -125,7 +125,7 @@ function useTool() {
     if (newMousePosition.x === oldMousePosition.x && newMousePosition.y === oldMousePosition.y) return;
     switch (props.tool) {
         case Tool.PEN:
-            grid.draw_pixel(newMousePosition.x, newMousePosition.y, new Klon(hexToRGB(props.color), Klon.PAINTED));
+            grid.draw_pixel(newMousePosition.x, newMousePosition.y, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
             break;
         case Tool.ERASER:
             grid.erase_pixel(newMousePosition.x, newMousePosition.y);
@@ -140,14 +140,16 @@ function useTool() {
 
 function startUsingTool(e) {
     if (e.button == 0) {
+        useTool();
         canvas.onmousemove = useTool;
     }
     if (e.button == 2) {
-        canvas.onmousemove = startDeleteTool;
+        useDeleteTool();
+        canvas.onmousemove = useDeleteTool;
     }
 }
 
-function startDeleteTool() {
+function useDeleteTool() {
     let newMousePosition = mousePositionInGrid();
     if (newMousePosition.x === oldMousePosition.x && newMousePosition.y === oldMousePosition.y) return;
     grid.erase_pixel(newMousePosition.x, newMousePosition.y);
@@ -183,37 +185,35 @@ function moveDrawing(x, y) {
     let outy = y;
     if (outx > 127) outx = 127;
     if (outx < 0) outx = 0;
-    displayArrayToImage(saveArray, highLow.longueur, highLow.largeur, grid, outx, outy, 1, 999999);
+    displayArrayToImage(saveArray, highLow.longueur, highLow.largeur, grid, outx, outy, 1, 999999, USERPAINTED);
 }
 
-async function displayImageFromArrayBuffer(grid, arrayBuffer, offsetx, offsety, origin, pixelPaid) {
+async function displayImageFromArrayBuffer(grid, arrayBuffer, offsetx, offsety, pixelPaid, zIndex) {
     let decoded;
     decoded = await decode(arrayBuffer).catch(console.error);
     if (!decoded) return;
     let array = toRGBA8(decoded);
     let width = decoded.width;
     let height = decoded.height;
-    let author;
-    if (origin == 'import') author = 1;
-    if (origin == 'blockchain') author = 2;
 
-    displayArrayToImage(array, width, height, grid, offsetx, offsety, author, pixelPaid);
+    displayArrayToImage(array, width, height, grid, offsetx, offsety, pixelPaid, zIndex);
 }
 
-function displayArrayToImage(array, width, height, grid, offsetx, offsety, author, pixelPaid) {
+function displayArrayToImage(array, width, height, grid, offsetx, offsety, pixelPaid, zIndex) {
     let pixelDrawn = 0;
     let decallage = 0;
     let rowDebloqueEpok = 100000; // <========= A REMPLACER AVEC DONNEES BLOCKCHAIN
     for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
             let idx = (width * y + x) * 4;
-            if (array[idx + 3] != 0 && pixelDrawn < pixelPaid && offsety <= rowDebloqueEpok) {
+            if (array[idx + 3] != 0 && array[idx + 3] != 0 && pixelDrawn < pixelPaid && offsety <= rowDebloqueEpok) {
                 // ^^ IDEM PLACEHOLDER ^^
                 if (pixelDrawn === 0) decallage = x;
                 grid.draw_pixel(
                     x + offsetx - decallage,
                     y + offsety,
-                    new Klon([array[idx] / 255, array[idx + 1] / 255, array[idx + 2] / 255], author)
+                    zIndex,
+                    new Klon([array[idx] / 255, array[idx + 1] / 255, array[idx + 2] / 255], zIndex)
                 );
                 pixelDrawn++;
             }
