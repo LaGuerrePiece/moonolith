@@ -63,7 +63,6 @@ export default class Grid {
             {
                 rows: this.nbRows,
                 columns: this.nbColumns,
-                root,
                 ...this.options,
             }
         );
@@ -74,7 +73,7 @@ export default class Grid {
         this.pixels.frame(() => {
             frameCounter++;
             if (!(frameCounter % 3 === 0)) return;
-            if (!this.pixels.canvas.parentElement.classList.contains('show')) return;
+            if (!this.pixels.canvas.parentElement) return;
             const randomArray = Array.from({ length: 150 }, () => Math.random() * 0.02);
             let data = [];
             for (let i = 0; i < this.length; i++) {

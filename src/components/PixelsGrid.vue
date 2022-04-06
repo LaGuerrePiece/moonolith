@@ -40,10 +40,11 @@ watch(
 
 var gridArray = []
 var divArray = []
+var fillerArray = []
 let position;
 var start
 const nbColonne = 128;
-const gridsHeight = 100;
+const gridsHeight = 200;
 const nbGrids = 10;
 const oldMousePosition = reactive({
     x: null,
@@ -77,14 +78,30 @@ getTotalPixs().then(async (total) => {
         canvas.style.display = "flex"
         canvas.onmouseup = stopUsingTool;
         canvas.onmousedown = startUsingTool;
+
+        fillerArray[i] = document.createElement("canvas");
+        fillerArray[i].style.cssText = gridArray[i].pixels.canvas.style.cssText
+        fillerArray[i].height = gridArray[i].pixels.canvas.height
+        fillerArray[i].width = gridArray[i].pixels.canvas.width
+        fillerArray[i].classList.add("filler")
+
+        divArray[i].append(fillerArray[i])
     }
     console.log('temps pour initialisation des grilles :', new Date() - start)
     //INTERSECTION OBSERVER
     const divs = document.querySelectorAll(".canvasContainer");
 
     const observer = new IntersectionObserver(entries => {
-        entries.forEach((entry) => {
-            entry.target.classList.toggle("show", entry.isIntersecting)
+        entries.forEach((entry) => { 
+            //entry.target.classList.toggle("show", entry.isIntersecting)           //Si tu intersect, montre le
+            if (entry.isIntersecting) {
+                document.getElementById(entry.target.id).children[0]
+                .replaceWith(gridArray[parseInt(entry.target.id)].pixels.canvas)       //Si tu intersect, append-lui cet élément de gridArray
+            } else {
+                document.getElementById(entry.target.id).children[0]
+                .replaceWith(fillerArray[parseInt(entry.target.id)])       //Sinon, append-lui cet élément de fillerArray
+            }
+            //console.log(typeof entry.target.id)
         })
     }, {
         rootMargin: "500px"
@@ -239,12 +256,6 @@ function displayArrayToImage(array, width, height, grid, offsetx, offsety, autho
 <style>
 
 .canvasContainer {
-    transform: translateX(1000px);
-    visibility: hidden;
-    transition: 300ms;
-}
-.canvasContainer.show {
-    transform: translateX(0);
     visibility: visible;
 }
 
