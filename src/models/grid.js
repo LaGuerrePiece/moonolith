@@ -43,16 +43,13 @@ export default class Grid {
         return this.nbColumns * this.nbRows;
     }
 
-
-
     /**
      * Getter permettant de récupérer la taille du tableau
      * @returns {le facteur du nombre de colonnes et lignes}
      */
-     get drawnPixels() {
+    get drawnPixels() {
         return this.nbColumns * this.nbRows;
     }
-
 
     /**
      * Getter permettant de récupérer le tableau de pixels
@@ -94,20 +91,20 @@ export default class Grid {
         });
     }
 
-    draw_pixel(x, y, klon) {
-        var pos = y * this.nbColumns + x;
-        if (this.persistent[pos] ? this.persistent[pos].isEditable : true) this.persistent[pos] = klon;
+    draw_pixel(x, y, zIndex, klon) {
+        let pos = y * this.nbColumns + x;
+        if (this.persistent[pos] ? this.persistent[pos].isEditable(zIndex) : true) this.persistent[pos] = klon;
     }
 
     delete_user_pixel() {
-        for (let i = 0; i < this.persistent.length; i++) {
-            if (this.persistent[i] && this.persistent[i].isEditable) this.persistent[i] = undefined;
+        for (let pos = 0; pos < this.persistent.length; pos++) {
+            if (this.persistent[pos] && !this.persistent[pos].zIndex) this.persistent[pos] = undefined;
         }
     }
 
     erase_pixel(x, y) {
-        var pos = y * this.nbColumns + x;
-        if (this.persistent[pos] ? this.persistent[pos].isEditable : true) this.persistent[pos] = undefined;
+        let pos = y * this.nbColumns + x;
+        if (this.persistent[pos] ? !this.persistent[pos].zIndex : true) this.persistent[pos] = undefined;
     }
 
     convertIndexToXY(number) {
@@ -120,7 +117,7 @@ export default class Grid {
         return y * this.nbColumns + x;
     }
 
-    addRow(numberOfRow){
-        this.nbRows += numberOfRow
+    addRow(numberOfRow) {
+        this.nbRows += numberOfRow;
     }
 }

@@ -25,7 +25,7 @@ function getHighLow(grid) {
         highY = 0;
 
     for (let i in grid.persistent) {
-        if (grid.persistent[i]?.author == Klon.PAINTED) {
+        if (grid.persistent[i]?.zIndex == Klon.USERPAINTED) {
             if (grid.convertIndexToXY(i).x < lowX) {
                 lowX = grid.convertIndexToXY(i).x;
             }
@@ -75,7 +75,7 @@ function gridToArray(grid) {
             grid.convertIndexToXY(i).y >= highLow.lowY &&
             grid.convertIndexToXY(i).y <= highLow.highY
         ) {
-            if (grid.persistent[i] && grid.persistent[i].author == Klon.PAINTED) {
+            if (grid.persistent[i] && grid.persistent[i].zIndex == Klon.USERPAINTED) {
                 if (firstPix == -1) firstPix = i;
                 saveArray.push(grid.persistent[i].color[0] * 255);
                 saveArray.push(grid.persistent[i].color[1] * 255);

@@ -5,11 +5,11 @@ export default class Klon {
     /**
      * Constructeur d'un klon
      * @param {la couleur du pixel/klon (array/string/number)} color
-     * @param {le mode du klon = 0 pour libre, 1 pour l'utilisateur et 2 inaltérable } author
+     * @param {le zIndex du klon, qui détermine la priorité d'affichage. 0 pour utilisateur} zIndex
      */
-    constructor(color, author) {
+    constructor(color, zIndex) {
         this.color = color;
-        this.author = author;
+        this.zIndex = zIndex;
     }
 
     /**
@@ -21,18 +21,14 @@ export default class Klon {
         this.color[2] = this.color[2] * 0.95 + rand;
         return this;
     }
-
-    get isEditable() {
-        return this.author !== Klon.PAID;
+    /**
+     * Rend true si le klon est éditable, false sinon
+     */
+    isEditable(zIndex) {
+        return zIndex ? this.zIndex >= zIndex : !this.zIndex;
     }
 
-    static get FREE() {
+    static get USERPAINTED() {
         return 0;
-    }
-    static get PAINTED() {
-        return 1;
-    }
-    static get PAID() {
-        return 2;
     }
 }
