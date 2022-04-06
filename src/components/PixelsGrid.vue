@@ -239,9 +239,9 @@ function displayArrayToImage(array, width, height, grid, offsetx, offsety, autho
 <style>
 
 .canvasContainer {
-    transform: translateX(1000px);
+    transform: translateX(100px);
     visibility: hidden;
-    transition: 300ms;
+    transition: 10ms;
 }
 .canvasContainer.show {
     transform: translateX(0);
