@@ -1,4 +1,4 @@
-import pixelgrid from 'pixel-grid';
+import pixelgrid from '../utils/pixel-grid-custom/index';
 import Klon from './klon';
 
 /**

@@ -44,7 +44,7 @@ let position;
 var start
 const nbColonne = 128;
 const gridsHeight = 100;
-const nbGrids = 10;
+const nbGrids = 1;
 const oldMousePosition = reactive({
     x: null,
     y: null,
