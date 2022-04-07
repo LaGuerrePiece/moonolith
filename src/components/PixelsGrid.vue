@@ -82,7 +82,6 @@ getTotalPixs()
             () => props.tool,
             (code) => {
                 if (code === Tool.DONE) {
-                    // stopUsingTool()
                     canvas.onmousedown = null;
                     canvas.onmousemove = null;
                 } else {
@@ -123,17 +122,47 @@ getTotalPixs()
 function useTool() {
     let newMousePosition = mousePositionInGrid();
     if (newMousePosition.x === oldMousePosition.x && newMousePosition.y === oldMousePosition.y) return;
+    // prettier-ignore
     switch (props.tool) {
-        case Tool.PEN:
+        case Tool.SMOL:
             grid.draw_pixel(newMousePosition.x, newMousePosition.y, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
             break;
-        case Tool.ERASER:
-            grid.erase_pixel(newMousePosition.x, newMousePosition.y);
-            break;
-        case Tool.TEXT:
+        case Tool.BIG:
+            grid.draw_pixel(newMousePosition.x, newMousePosition.y, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x+1, newMousePosition.y, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x-1, newMousePosition.y, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x, newMousePosition.y+1, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x+1, newMousePosition.y+1, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x-1, newMousePosition.y+1, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x, newMousePosition.y-1, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x+1, newMousePosition.y-1, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x-1, newMousePosition.y-1, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
             break;
         case Tool.MOVE:
             moveDrawing(newMousePosition.x, newMousePosition.y);
+            break;
+    }
+}
+
+function useDeleteTool() {
+        console.log('props.tool', props.tool);
+    let newMousePosition = mousePositionInGrid();
+    if (newMousePosition.x === oldMousePosition.x && newMousePosition.y === oldMousePosition.y) return;
+    // prettier-ignore
+    switch (props.tool) {
+        case Tool.SMOL:
+            grid.erase_pixel(newMousePosition.x, newMousePosition.y);
+            break;
+        case Tool.BIG:
+            grid.erase_pixel(newMousePosition.x, newMousePosition.y);
+            grid.erase_pixel(newMousePosition.x+1, newMousePosition.y);
+            grid.erase_pixel(newMousePosition.x-1, newMousePosition.y);
+            grid.erase_pixel(newMousePosition.x, newMousePosition.y+1);
+            grid.erase_pixel(newMousePosition.x+1, newMousePosition.y+1);
+            grid.erase_pixel(newMousePosition.x-1, newMousePosition.y+1);
+            grid.erase_pixel(newMousePosition.x, newMousePosition.y-1);
+            grid.erase_pixel(newMousePosition.x+1, newMousePosition.y-1);
+            grid.erase_pixel(newMousePosition.x-1, newMousePosition.y-1);
             break;
     }
 }
@@ -149,11 +178,6 @@ function startUsingTool(e) {
     }
 }
 
-function useDeleteTool() {
-    let newMousePosition = mousePositionInGrid();
-    if (newMousePosition.x === oldMousePosition.x && newMousePosition.y === oldMousePosition.y) return;
-    grid.erase_pixel(newMousePosition.x, newMousePosition.y);
-}
 
 function stopUsingTool() {
     // document.onmousedown = null

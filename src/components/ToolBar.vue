@@ -5,8 +5,8 @@
                 <li class="item">
                     <a
                         class="menu-item"
-                        :class="{ active: toolUsed === Tool.PEN }"
-                        @click="toggleState(Tool.PEN)"
+                        :class="{ active: toolUsed === Tool.SMOL }"
+                        @click="toggleState(Tool.SMOL)"
                         data-tooltip="Draw"
                         aria-label="Pen"
                     >
@@ -16,8 +16,9 @@
                 <li>
                     <a
                         class="menu-item"
-                        :class="{ active: toolUsed === Tool.ERASER }"
-                        @click="toggleState(Tool.ERASER)"
+                        :class="{ active: toolUsed === Tool.BIG }"
+                        @click="toggleState(Tool.BIG)"
+                        @keyup.tab="toggleState(Tool.BIG)"
                         data-tooltip="Erase"
                         aria-label="Eraser"
                     >
@@ -26,7 +27,7 @@
                 </li>
                 <li>
                     <a class="menu-item" :class="{}" @click="emit('saved')" data-tooltip="Save" aria-label="Save">
-                        <i class="material-icons menu-item-icon" style="width: 24px"> save_alt </i>
+                        <i class="material-icons menu-item-icon" style="width: 48px"> save_alt </i>
                     </a>
                 </li>
                 <li>
@@ -70,7 +71,6 @@
 <script setup>
 import { ref, watch } from 'vue';
 import Tool from '../models/tools';
-import UPNG from 'upng-js';
 
 const file = ref(null);
 const showToolbar = ref(false);
@@ -130,7 +130,7 @@ watch(showToolbar, () => {
     display: inline-block;
     width: 56px;
     height: 56px;
-    background-color: #2196f3;
+    background-color: #6c5671;
     border-radius: 50%;
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
 }
@@ -140,7 +140,7 @@ watch(showToolbar, () => {
     left: 50%;
     transform: translate(-50%, -50%);
     font-size: 37px !important;
-    color: white;
+    color: #fff7e4;
 }
 /** FADE */
 .fade-enter-active,
@@ -153,7 +153,7 @@ watch(showToolbar, () => {
 /** DIAL */
 /* Barre d'outils sans le fab button */
 .toolbar {
-    width: 465px;
+    width: 750px;
     position: relative;
     left: 15px;
     /* bottom: 50%; */
@@ -165,21 +165,21 @@ watch(showToolbar, () => {
 }
 .menu-item {
     border-radius: 100px;
-    border: 2px solid #2196f3;
+    border: 2px solid #6c5671;
     text-align: center;
     /* float: left; */
     display: block;
-    width: 50px;
-    height: 50px;
+    width: 90px;
+    height: 90px;
     transition: all 0.3s ease;
-    background: white;
-    color: black;
+    background: #fff7e4;
+    color: #28282e;
     font-size: 30px;
     cursor: pointer;
     margin-right: 10px;
 }
 .menu-item:hover {
-    background: #2196f3;
+    background: #6c5671;
 }
 .menu-item-icon {
     position: absolute;
@@ -188,7 +188,7 @@ watch(showToolbar, () => {
     transform: translate(-50%, -50%);
 }
 .active {
-    background-color: #2196f3;
+    background-color: #6c5671;
 }
 .font {
     font-size: 1.25em;
@@ -207,7 +207,7 @@ watch(showToolbar, () => {
     font-family: 'Material Icons';
     font-weight: normal;
     font-style: normal;
-    font-size: 24px;
+    font-size: 62px;
     line-height: 1;
     letter-spacing: normal;
     text-transform: none;

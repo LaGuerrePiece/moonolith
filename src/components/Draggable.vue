@@ -33,7 +33,7 @@
 </template>
 
 <script setup>
-import { reactive, ref, toRefs, watch } from 'vue';
+import { reactive, ref } from 'vue';
 
 const props = defineProps({
     active: Boolean,
