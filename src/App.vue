@@ -40,6 +40,7 @@ const importedImage = ref();
         @boughtBack="hasBought = 0"
         :onDelete="ref(onDelete)"
         @deleteBack="onDelete = 0"
+        @changeColor="color"
     />
 </template>
 
