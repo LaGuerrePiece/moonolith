@@ -1,8 +1,12 @@
-<template></template>
+<template>
+    <GridComponent />
+    <GridComponent />
+</template>
 
 <script setup>
 // Imports pour vue 3
 import { reactive, onMounted, toRefs, watch, ref } from 'vue';
+import GridComponent from './GridComponent.vue';
 
 // Imports des composants
 import Grid from '../models/grid';
@@ -44,7 +48,7 @@ let position;
 var start
 const nbColonne = 128;
 const gridsHeight = 100;
-const nbGrids = 10;
+const nbGrids = 2;
 const oldMousePosition = reactive({
     x: null,
     y: null,
