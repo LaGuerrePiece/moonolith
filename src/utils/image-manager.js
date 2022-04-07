@@ -8,6 +8,18 @@ function hexToRGB(hex) {
     return [r, g, b];
 }
 
+function componentToHex(c) {
+    let hex = c.toString(16);
+    return hex.length == 1 ? '0' + hex : hex;
+}
+
+function RGBToHex(r, g, b) {
+    r = Math.floor(r * 255)
+    g = Math.floor(g * 255)
+    b = Math.floor(b * 255)
+    return '#' + componentToHex(r) + componentToHex(g) + componentToHex(b);
+}
+
 function decode(buffer) {
     return new Promise((resolve) => {
         let buff = UPNG.decode(buffer);
@@ -124,4 +136,4 @@ function _base64ToArrayBuffer(base64) {
     return bytes.buffer;
 }
 
-export { decode, getHighLow, preEncode, _base64ToArrayBuffer, toRGBA8, gridToArray, hexToRGB };
+export { decode, getHighLow, preEncode, _base64ToArrayBuffer, toRGBA8, gridToArray, hexToRGB, RGBToHex };

@@ -55,10 +55,10 @@
                 <li>
                     <a
                         class="menu-item"
-                        :class="{}"
-                        @click="emit('placeholder2')"
-                        data-tooltip="placeholder2"
-                        aria-label="placeholder2"
+                        :class="{ active: toolUsed === Tool.HUGE }"
+                        @click="toggleState(Tool.HUGE)"
+                        data-tooltip="Huge"
+                        aria-label="Huge"
                     >
                         <i class="material-icons menu-item-icon"> help_outline </i>
                     </a>
@@ -74,7 +74,7 @@ import Tool from '../models/tools';
 
 const file = ref(null);
 const showToolbar = ref(false);
-const toolUsed = ref(Tool.PEN);
+const toolUsed = ref(Tool.SMOL);
 const emit = defineEmits(['toolChanged', 'saved', 'delete', 'import']);
 
 function clickOnButton() {

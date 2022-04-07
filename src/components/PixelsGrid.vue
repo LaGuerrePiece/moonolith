@@ -8,7 +8,15 @@ import Klon from '../models/klon';
 
 // Imports des fonctionnalités
 import { fetchImgur } from '../utils/network';
-import { decode, preEncode, _base64ToArrayBuffer, toRGBA8, gridToArray, hexToRGB } from '../utils/image-manager';
+import {
+    decode,
+    preEncode,
+    _base64ToArrayBuffer,
+    toRGBA8,
+    gridToArray,
+    hexToRGB,
+    RGBToHex,
+} from '../utils/image-manager';
 import mousePosition from 'mouse-position';
 import Tool from '../models/tools';
 import { chunkCreator, getChunk, getSupply, getTotalPixs } from '../utils/web3';
@@ -55,7 +63,7 @@ watch(
 let grid;
 let canvas;
 let position;
-const nbColonne = 128;
+const nbColonne = 170;
 const oldMousePosition = reactive({
     x: null,
     y: null,
@@ -68,7 +76,7 @@ getTotalPixs()
         const offsetFormule = nbColonne * 64;
         const pourcentage = 3;
         const formuleDeLaMort = offsetFormule + leNombreMagiqueVenuDeLaBlockchain * pourcentage;
-        const nbLine = Math.floor(formuleDeLaMort / 128);
+        const nbLine = Math.floor(formuleDeLaMort / nbColonne);
         // Gestion de la grille
         grid = new Grid(nbColonne, nbLine);
         grid.initialize(document.body);
@@ -138,6 +146,57 @@ function useTool() {
             grid.draw_pixel(newMousePosition.x+1, newMousePosition.y-1, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
             grid.draw_pixel(newMousePosition.x-1, newMousePosition.y-1, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
             break;
+        case Tool.HUGE:
+            grid.draw_pixel(newMousePosition.x, newMousePosition.y, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x+1, newMousePosition.y, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x-1, newMousePosition.y, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x, newMousePosition.y+1, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x+1, newMousePosition.y+1, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x-1, newMousePosition.y+1, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x, newMousePosition.y-1, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x+1, newMousePosition.y-1, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x-1, newMousePosition.y-1, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x, newMousePosition.y+2, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x+1, newMousePosition.y+2, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x-1, newMousePosition.y+2, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x, newMousePosition.y-2, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x+1, newMousePosition.y-2, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x-1, newMousePosition.y-2, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x, newMousePosition.y+3, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x+1, newMousePosition.y+3, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x-1, newMousePosition.y+3, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x, newMousePosition.y-3, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x+1, newMousePosition.y-3, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x-1, newMousePosition.y-3, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x+2, newMousePosition.y+2, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x-2, newMousePosition.y+2, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x+3, newMousePosition.y+2, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x+2, newMousePosition.y-2, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x-2, newMousePosition.y-2, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x+3, newMousePosition.y-2, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x+2, newMousePosition.y+3, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x-2, newMousePosition.y+3, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x+3, newMousePosition.y+3, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x+2, newMousePosition.y-3, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x-2, newMousePosition.y-3, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x+3, newMousePosition.y-3, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x-2, newMousePosition.y, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x-2, newMousePosition.y+1, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x-2, newMousePosition.y-1, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x+2, newMousePosition.y+1, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x+2, newMousePosition.y, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x+2, newMousePosition.y-1, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x+3, newMousePosition.y-1, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x+3, newMousePosition.y, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x+3, newMousePosition.y+1, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x-3, newMousePosition.y-3, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x-3, newMousePosition.y-2, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x-3, newMousePosition.y-1, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x-3, newMousePosition.y, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x-3, newMousePosition.y+1, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x-3, newMousePosition.y+2, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x-3, newMousePosition.y+3, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            break;
         case Tool.MOVE:
             moveDrawing(newMousePosition.x, newMousePosition.y);
             break;
@@ -145,7 +204,6 @@ function useTool() {
 }
 
 function useDeleteTool() {
-        console.log('props.tool', props.tool);
     let newMousePosition = mousePositionInGrid();
     if (newMousePosition.x === oldMousePosition.x && newMousePosition.y === oldMousePosition.y) return;
     // prettier-ignore
@@ -164,6 +222,65 @@ function useDeleteTool() {
             grid.erase_pixel(newMousePosition.x+1, newMousePosition.y-1);
             grid.erase_pixel(newMousePosition.x-1, newMousePosition.y-1);
             break;
+        case Tool.HUGE:
+            grid.erase_pixel(newMousePosition.x, newMousePosition.y, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x+1, newMousePosition.y, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x-1, newMousePosition.y, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x, newMousePosition.y+1, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x+1, newMousePosition.y+1, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x-1, newMousePosition.y+1, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x, newMousePosition.y-1, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x+1, newMousePosition.y-1, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x-1, newMousePosition.y-1, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x, newMousePosition.y+2, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x+1, newMousePosition.y+2, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x-1, newMousePosition.y+2, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x, newMousePosition.y-2, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x+1, newMousePosition.y-2, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x-1, newMousePosition.y-2, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x, newMousePosition.y+3, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x+1, newMousePosition.y+3, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x-1, newMousePosition.y+3, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x, newMousePosition.y-3, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x+1, newMousePosition.y-3, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x-1, newMousePosition.y-3, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x+2, newMousePosition.y+2, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x-2, newMousePosition.y+2, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x+3, newMousePosition.y+2, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x+2, newMousePosition.y-2, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x-2, newMousePosition.y-2, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x+3, newMousePosition.y-2, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x+2, newMousePosition.y+3, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x-2, newMousePosition.y+3, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x+3, newMousePosition.y+3, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x+2, newMousePosition.y-3, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x-2, newMousePosition.y-3, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x+3, newMousePosition.y-3, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x-2, newMousePosition.y, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x-2, newMousePosition.y+1, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x-2, newMousePosition.y-1, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x+2, newMousePosition.y+1, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x+2, newMousePosition.y, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x+2, newMousePosition.y-1, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x+3, newMousePosition.y-1, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x+3, newMousePosition.y, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x+3, newMousePosition.y+1, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x-3, newMousePosition.y-3, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x-3, newMousePosition.y-2, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x-3, newMousePosition.y-1, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x-3, newMousePosition.y, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x-3, newMousePosition.y+1, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x-3, newMousePosition.y+2, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.erase_pixel(newMousePosition.x-3, newMousePosition.y+3, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+    }
+}
+
+function useColorPicker() {
+    let newMousePosition = mousePositionInGrid();
+    let colorPicked = grid.get_color(newMousePosition.x, newMousePosition.y);
+    console.log(colorPicked);
+    if (colorPicked !== undefined) {
+        emit('changeColor', RGBToHex(colorPicked[0], colorPicked[1], colorPicked[2]));
     }
 }
 
@@ -176,8 +293,11 @@ function startUsingTool(e) {
         useDeleteTool();
         canvas.onmousemove = useDeleteTool;
     }
+    if (e.button == 1) {
+        useColorPicker();
+        canvas.onmousemove = useColorPicker;
+    }
 }
-
 
 function stopUsingTool() {
     // document.onmousedown = null
