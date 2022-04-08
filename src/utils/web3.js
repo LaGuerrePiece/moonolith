@@ -36,12 +36,9 @@ const getChunk = async (id) => {
     let data = await contract.queryFilter(contract.filters.Chunk(id));
     let topics = data[0].topics;
     data = data[0].data;
-    //console.log(iface.parseLog({data, topics}));
     let res = iface.parseLog({data, topics}).args;
     res = res.slice(1);
-    //console.log(res);
     return res;                   
-    //return await contract.chunks(id);
 };
 
 const getTotalPixs = async () => {
