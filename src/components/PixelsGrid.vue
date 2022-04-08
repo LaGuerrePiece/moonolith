@@ -55,7 +55,7 @@ watch(
     () => props.importedImage?.value,
     (buffer) => {
         if (buffer) {
-            displayImageFromArrayBuffer(grid, buffer, 60, 422, 999999);
+            displayImageFromArrayBuffer(grid, buffer, 1, 1, 999999, 0);
         }
     }
 );
@@ -76,7 +76,8 @@ getTotalPixs()
         const offsetFormule = nbColonne * 64;
         const pourcentage = 3;
         const formuleDeLaMort = offsetFormule + leNombreMagiqueVenuDeLaBlockchain * pourcentage;
-        const nbLine = Math.floor(formuleDeLaMort / nbColonne);
+        // const nbLine = Math.floor(formuleDeLaMort / nbColonne);
+        const nbLine = 107;
         // Gestion de la grille
         grid = new Grid(nbColonne, nbLine);
         grid.initialize(document.body);
@@ -329,7 +330,7 @@ function moveDrawing(x, y) {
     let outy = y;
     if (outx > 127) outx = 127;
     if (outx < 0) outx = 0;
-    displayArrayToImage(saveArray, highLow.longueur, highLow.largeur, grid, outx, outy, 1, 999999, USERPAINTED);
+    displayArrayToImage(saveArray, highLow.longueur, highLow.largeur, grid, outx, outy, 999999, 0);
 }
 
 async function displayImageFromArrayBuffer(grid, arrayBuffer, offsetx, offsety, pixelPaid, zIndex) {
@@ -345,14 +346,14 @@ async function displayImageFromArrayBuffer(grid, arrayBuffer, offsetx, offsety, 
 
 function displayArrayToImage(array, width, height, grid, offsetx, offsety, pixelPaid, zIndex) {
     let pixelDrawn = 0;
-    let decallage = 0;
+    let decallage = -1;
     let rowDebloqueEpok = 100000; // <========= A REMPLACER AVEC DONNEES BLOCKCHAIN
     for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
             let idx = (width * y + x) * 4;
             if (array[idx + 3] != 0 && array[idx + 3] != 0 && pixelDrawn < pixelPaid && offsety <= rowDebloqueEpok) {
                 // ^^ IDEM PLACEHOLDER ^^
-                if (pixelDrawn === 0) decallage = x;
+                if (pixelDrawn === 0) decallage = x + 1;
                 grid.draw_pixel(
                     x + offsetx - decallage,
                     y + offsety,

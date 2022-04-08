@@ -17,7 +17,7 @@ export default class Grid {
         nbRows,
         options = {
             size: 15,
-            padding: 1,
+            padding: 0,
             background: [0, 0, 0],
             formatted: true,
         }
