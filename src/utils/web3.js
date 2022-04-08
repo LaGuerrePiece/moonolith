@@ -6,12 +6,13 @@ const provider = new ethers.providers.InfuraProvider('rinkeby');
 const metamaskProvider = new ethers.providers.Web3Provider(window.ethereum)
 const iface = new Interface(contractABI);
 const contractAddress = '0xC4774A5360fdA9a2d3244bAAD1eff9B5760032B1';
+const contractAddressCaly = '0x2a1068d93BF2aD8a2b93b6DF8a6B607B3A648570';
 
 var metamaskContract;
-const contract = new ethers.Contract(contractAddress, contractABI, provider);
+const contract = new ethers.Contract(contractAddressCaly, contractABI, provider);
 if(window.ethereum){
     const signer = metamaskProvider.getSigner();
-    metamaskContract = new ethers.Contract(contractAddress, contractABI, signer);
+    metamaskContract = new ethers.Contract(contractAddressCaly, contractABI, signer);
 }
 
 const getSupply = async () => {
