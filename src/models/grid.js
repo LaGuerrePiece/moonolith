@@ -96,7 +96,7 @@ export default class Grid {
         if (this.persistent[pos] ? this.persistent[pos].isEditable(zIndex) : true) this.persistent[pos] = klon;
     }
 
-    get_color(x, y) {
+    get_color(x, y, grid) {
         let pos = y * this.nbColumns + x;
         if (this.persistent[pos] !== undefined){
         return this.persistent[pos].color}

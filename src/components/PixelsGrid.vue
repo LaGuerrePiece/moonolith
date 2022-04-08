@@ -30,7 +30,7 @@ const props = defineProps({
     importedImage: Object,
 });
 
-const emit = defineEmits(['boughtBack', 'deleteBack']);
+const emit = defineEmits(['boughtBack', 'deleteBack', 'changeColor']);
 
 // DISABLE RIGHT CLICK
 document.addEventListener(
@@ -134,6 +134,7 @@ function useTool() {
     // prettier-ignore
     switch (props.tool) {
         case Tool.SMOL:
+            console.log(props.color)
             grid.draw_pixel(newMousePosition.x, newMousePosition.y, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
             break;
         case Tool.BIG:
@@ -146,7 +147,7 @@ function useTool() {
         case Tool.HUGE:
             for (let i = -4; i <= 4; i++) {
                 for (let j = -4; j <= 4; j++) {
-                    grid.draw_pixel(newMousePosition.x + i, newMousePosition.y + j, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));                    
+                    grid.draw_pixel(newMousePosition.x + i, newMousePosition.y + j, Klon.USERPAINTED, new Klon(hexToRGB(colorPicked), Klon.USERPAINTED));                    
                     }
             }            
             break;
@@ -167,26 +168,29 @@ function useDeleteTool() {
         case Tool.BIG:
             for (let i = -1; i <= 1; i++) {
                 for (let j = -1; j <= 1; j++) {
-                    grid.erase_pixel(newMousePosition.x + i, newMousePosition.y + j, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));                    
+                    grid.erase_pixel(newMousePosition.x + i, newMousePosition.y + j);                    
                     }
             }
             break;
         case Tool.HUGE:
             for (let i = -4; i <= 4; i++) {
                 for (let j = -4; j <= 4; j++) {
-                    grid.erase_pixel(newMousePosition.x + i, newMousePosition.y + j, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));                    
+                    grid.erase_pixel(newMousePosition.x + i, newMousePosition.y + j);                    
                     }
             }
             break;
     }
 }
 
+let colorPicked = ''
+
 function useColorPicker() {
     let newMousePosition = mousePositionInGrid();
-    let colorPicked = grid.get_color(newMousePosition.x, newMousePosition.y);
+    colorPicked = grid.get_color(newMousePosition.x, newMousePosition.y, grid);
+    colorPicked = RGBToHex(colorPicked[0], colorPicked[1], colorPicked[2])
     console.log(colorPicked);
     if (colorPicked !== undefined) {
-        emit('changeColor', RGBToHex(colorPicked[0], colorPicked[1], colorPicked[2]));
+        emit('changeColor', colorPicked);
     }
 }
 
