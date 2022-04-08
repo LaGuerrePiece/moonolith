@@ -1,10 +1,12 @@
 import { ethers } from 'ethers';
-import contractABI from '../utils/abi.json'
+import contractABIOld from '../utils/abi.json'
+import contractABI from '../utils/abi2.json'
 
 const provider = new ethers.providers.InfuraProvider('rinkeby');
 const metamaskProvider = new ethers.providers.Web3Provider(window.ethereum)
 
-const contractAddress = '0x22968DBDD0469d5b4513dAbd9b4F23b8CB5d2270';
+const contractAddressOld = '0x22968DBDD0469d5b4513dAbd9b4F23b8CB5d2270';
+const contractAddress = '0x68c1B2ddd4A84D570ee7A84dc21bB1E354e88E6D';
 
 var metamaskContract;
 const contract = new ethers.Contract(contractAddress, contractABI, provider);
