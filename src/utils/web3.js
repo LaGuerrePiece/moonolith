@@ -1,10 +1,13 @@
 import { ethers } from 'ethers';
+import { Interface } from 'ethers/lib/utils';
 import contractABI from '../utils/abi.json'
 
 const provider = new ethers.providers.InfuraProvider('rinkeby');
 const metamaskProvider = new ethers.providers.Web3Provider(window.ethereum)
+const contractAddress = '0xa43aef9A701087685F243a19A5F9b40Dd154558D';
+const iface = new Interface(contractABI);
 
-const contractAddress = '0x22968DBDD0469d5b4513dAbd9b4F23b8CB5d2270';
+
 
 var metamaskContract;
 const contract = new ethers.Contract(contractAddress, contractABI, provider);
@@ -31,12 +34,20 @@ const chunkCreator = async (res) => {
  * @param {numero du dessin} id 
  * @returns {position, ymax, nbPix, string de l'image}
  */
-const getChunk = async (id) => {                                    
-    return await contract.chunks(id);
+const getChunk = async (id) => {
+    let data = await contract.queryFilter(contract.filters.Chunk(id));
+    let topics = data[0].topics;
+    data = data[0].data;
+    //console.log(iface.parseLog({data, topics}));
+    let res = iface.parseLog({data, topics}).args;
+    res = res.slice(1);
+    //console.log(res);
+    return res;                   
+    //return await contract.chunks(id);
 };
 
 const getTotalPixs = async () => {
-    return await contract.totalPixs();
+    return await contract.klonSum();
 };
 
 export { chunkCreator, getChunk, getSupply, getTotalPixs };
