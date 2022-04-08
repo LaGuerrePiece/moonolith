@@ -101,6 +101,14 @@ getTotalPixs()
         );
 
         watch(
+            () => props.color,
+            (color) => {
+                console.log(color);
+                colorPicked = props.color;
+            }
+        );
+
+        watch(
             () => props.hasBought.value,
             (boughtInstance) => {
                 if (boughtInstance === 1) {
@@ -134,22 +142,21 @@ function useTool() {
     // prettier-ignore
     switch (props.tool) {
         case Tool.SMOL:
-            console.log(props.color)
-            grid.draw_pixel(newMousePosition.x, newMousePosition.y, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x, newMousePosition.y, Klon.USERPAINTED, new Klon(hexToRGB(colorPicked), Klon.USERPAINTED));
             break;
         case Tool.BIG:
             for (let i = -1; i <= 1; i++) {
                 for (let j = -1; j <= 1; j++) {
-                    grid.draw_pixel(newMousePosition.x + i, newMousePosition.y + j, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));                    
+                    grid.draw_pixel(newMousePosition.x + i, newMousePosition.y + j, Klon.USERPAINTED, new Klon(hexToRGB(colorPicked), Klon.USERPAINTED));
                     }
-            }            
+            }
             break;
         case Tool.HUGE:
             for (let i = -4; i <= 4; i++) {
                 for (let j = -4; j <= 4; j++) {
-                    grid.draw_pixel(newMousePosition.x + i, newMousePosition.y + j, Klon.USERPAINTED, new Klon(hexToRGB(colorPicked), Klon.USERPAINTED));                    
+                    grid.draw_pixel(newMousePosition.x + i, newMousePosition.y + j, Klon.USERPAINTED, new Klon(hexToRGB(colorPicked), Klon.USERPAINTED));
                     }
-            }            
+            }
             break;
         case Tool.MOVE:
             moveDrawing(newMousePosition.x, newMousePosition.y);
@@ -168,26 +175,26 @@ function useDeleteTool() {
         case Tool.BIG:
             for (let i = -1; i <= 1; i++) {
                 for (let j = -1; j <= 1; j++) {
-                    grid.erase_pixel(newMousePosition.x + i, newMousePosition.y + j);                    
+                    grid.erase_pixel(newMousePosition.x + i, newMousePosition.y + j);
                     }
             }
             break;
         case Tool.HUGE:
             for (let i = -4; i <= 4; i++) {
                 for (let j = -4; j <= 4; j++) {
-                    grid.erase_pixel(newMousePosition.x + i, newMousePosition.y + j);                    
+                    grid.erase_pixel(newMousePosition.x + i, newMousePosition.y + j);
                     }
             }
             break;
     }
 }
 
-let colorPicked = ''
+let colorPicked = '#b3e3da';
 
 function useColorPicker() {
     let newMousePosition = mousePositionInGrid();
     colorPicked = grid.get_color(newMousePosition.x, newMousePosition.y, grid);
-    colorPicked = RGBToHex(colorPicked[0], colorPicked[1], colorPicked[2])
+    colorPicked = RGBToHex(colorPicked[0], colorPicked[1], colorPicked[2]);
     console.log(colorPicked);
     if (colorPicked !== undefined) {
         emit('changeColor', colorPicked);
