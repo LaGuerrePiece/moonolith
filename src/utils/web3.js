@@ -5,7 +5,7 @@ import contractABI from '../utils/abi.json'
 const provider = new ethers.providers.InfuraProvider('rinkeby');
 const metamaskProvider = new ethers.providers.Web3Provider(window.ethereum)
 const iface = new Interface(contractABI);
-const contractAddress = '0x4aCE842967b27DB664009B44FD19569847448793';
+const contractAddress = '0x304e3a37092Cf9C42fd41Cb60c76961B4950f050';
 //const contractAddressCaly = '0x2a1068d93BF2aD8a2b93b6DF8a6B607B3A648570';
 
 var metamaskContract;
