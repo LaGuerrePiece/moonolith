@@ -60,14 +60,36 @@ watch(
     }
 );
 
+
 let grid;
 let canvas;
 let position;
 const nbColonne = 170;
+const width = window.innerWidth
+const height = window.innerHeight
+const pixelSize = width / nbColonne
+const gridsHeight = Math.floor(height/pixelSize) + 2;
 const oldMousePosition = reactive({
     x: null,
     y: null,
 });
+
+
+grid = new Grid(nbColonne, gridsHeight);
+grid.initialize(document.body);
+canvas = grid.pixels.canvas;
+position = ref(mousePosition(canvas));
+
+canvas.onmouseup = stopUsingTool;
+canvas.onmousedown = startUsingTool;
+
+window.onwheel = function (e) {
+    grid.offset = grid.offset + e.deltaY * -0.06;
+    if (grid.offset < 0) grid.offset = 0;
+    if (grid.offset > 70) grid.offset = 70;
+    console.log('grid.offset', grid.offset);
+};
+
 
 getTotalPixs()
     .then(async (total) => {
@@ -77,15 +99,7 @@ getTotalPixs()
         const pourcentage = 3;
         const formuleDeLaMort = offsetFormule + leNombreMagiqueVenuDeLaBlockchain * pourcentage;
         // const nbLine = Math.floor(formuleDeLaMort / nbColonne);
-        const nbLine = 107;
-        // Gestion de la grille
-        grid = new Grid(nbColonne, nbLine);
-        grid.initialize(document.body);
-        canvas = grid.pixels.canvas;
-        position = ref(mousePosition(canvas));
-
-        canvas.onmouseup = stopUsingTool;
-        canvas.onmousedown = startUsingTool;
+        //Là, nbline est censé être déterminé pour la construction du grid.persistent/grid.noise
 
         watch(
             () => props.tool,
@@ -141,7 +155,7 @@ function useTool() {
             for (let i = -1; i <= 1; i++) {
                 for (let j = -1; j <= 1; j++) {
                     grid.draw_pixel(newMousePosition.x + i, newMousePosition.y + j, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));                    
-                    }
+                }
             }            
             break;
         case Tool.HUGE:
@@ -149,7 +163,7 @@ function useTool() {
                 for (let j = -4; j <= 4; j++) {
                     grid.draw_pixel(newMousePosition.x + i, newMousePosition.y + j, Klon.USERPAINTED, new Klon(hexToRGB(colorPicked), Klon.USERPAINTED));                    
                     }
-            }            
+            }
             break;
         case Tool.MOVE:
             moveDrawing(newMousePosition.x, newMousePosition.y);
@@ -276,4 +290,8 @@ function displayArrayToImage(array, width, height, grid, offsetx, offsety, pixel
 }
 </script>
 
-<style></style>
+<style>
+html, body {
+    overflow: hidden;
+}
+</style>

@@ -26,13 +26,14 @@ export default class Grid {
         this.nbColumns = nbColumns;
         this.nbRows = nbRows;
         this.options = options;
+        this.offset = 0;
 
         // la future instance de PixelGrid
         this.pixels = null;
 
         // Initialisation des tableaux avec le noise (en-dessous) et les dessins au-dessus
-        this.noises = Array.from({ length: this.length }, () => new Klon([0, 0, 0]));
-        this.persistent = new Array(this.length);
+        this.noises = Array.from({ length: this.length * 3 }, () => new Klon([0, 0, 0]));
+        this.persistent = new Array(this.length * 3);
     }
 
     /**
@@ -75,15 +76,22 @@ export default class Grid {
         );
         this.pixels.canvas.style.width = width;
 
+        console.log('this.persistent.length', this.persistent.length);
+        console.log('this.length', this.length);
+
         let frameCounter = 0;
         this.pixels.frame(() => {
             frameCounter++;
-            if (!(frameCounter % 5 === 0)) return;
+            if (!(frameCounter % 3 === 0)) return;
             const randomArray = Array.from({ length: 150 }, () => Math.random() * 0.02);
             let data = [];
-            for (let i = 0; i < this.length; i++) {
+            for (
+                let i = this.length - this.offset * this.nbColumns;
+                i < this.persistent.length - this.offset * this.nbColumns;
+                i++
+            ) {
                 // Pour chaque klon si il y a une couleur on prend la couleur sinon un gris aléatoire
-                data[i] = this.persistent[i]
+                data[i - this.length + this.offset * this.nbColumns] = this.persistent[i]
                     ? this.persistent[i].color
                     : this.noises[i].randGray(randomArray[i % 150]).color;
             }
@@ -92,14 +100,15 @@ export default class Grid {
     }
 
     draw_pixel(x, y, zIndex, klon) {
-        let pos = y * this.nbColumns + x;
+        let pos = y * this.nbColumns + x + this.length - this.offset * this.nbColumns;
         if (this.persistent[pos] ? this.persistent[pos].isEditable(zIndex) : true) this.persistent[pos] = klon;
     }
 
     get_color(x, y, grid) {
         let pos = y * this.nbColumns + x;
-        if (this.persistent[pos] !== undefined){
-        return this.persistent[pos].color}
+        if (this.persistent[pos] !== undefined) {
+            return this.persistent[pos].color;
+        }
     }
 
     delete_user_pixel() {
@@ -123,7 +132,9 @@ export default class Grid {
         return y * this.nbColumns + x;
     }
 
-    addRow(numberOfRow) {
-        this.nbRows += numberOfRow;
+    addRow() {
+        this.persistent.unshift(...Array(this.nbColumns).fill(undefined));
+        this.noises.unshift(...Array(this.nbColumns).fill(new Klon([0, 0, 0])));
+        this.offset++;
     }
 }
