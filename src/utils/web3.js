@@ -5,7 +5,7 @@ import contractABI from '../utils/abi.json'
 const provider = new ethers.providers.InfuraProvider('rinkeby');
 const metamaskProvider = new ethers.providers.Web3Provider(window.ethereum)
 const iface = new Interface(contractABI);
-const contractAddress = '0xC4774A5360fdA9a2d3244bAAD1eff9B5760032B1';
+const contractAddress = '0x4aCE842967b27DB664009B44FD19569847448793';
 
 var metamaskContract;
 const contract = new ethers.Contract(contractAddress, contractABI, provider);
@@ -45,4 +45,8 @@ const getTotalPixs = async () => {
     return await contract.klonSum();
 };
 
-export { chunkCreator, getChunk, getSupply, getTotalPixs };
+const getThreshold = async () => {
+    return await contract.threshold();
+};
+
+export { chunkCreator, getChunk, getSupply, getTotalPixs, getThreshold };

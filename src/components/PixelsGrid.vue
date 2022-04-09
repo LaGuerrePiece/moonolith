@@ -19,7 +19,7 @@ import {
 } from '../utils/image-manager';
 import mousePosition from 'mouse-position';
 import Tool from '../models/tools';
-import { chunkCreator, getChunk, getSupply, getTotalPixs } from '../utils/web3';
+import { chunkCreator, getChunk, getSupply, getTotalPixs, getThreshold } from '../utils/web3';
 
 // Definition des props
 const props = defineProps({
@@ -55,7 +55,7 @@ watch(
     () => props.importedImage?.value,
     (buffer) => {
         if (buffer) {
-            displayImageFromArrayBuffer(grid, buffer, 60, 422, 999999);
+            displayImageFromArrayBuffer(grid, buffer, 1, 1, 999999);
         }
     }
 );
@@ -71,45 +71,47 @@ const oldMousePosition = reactive({
 
 getTotalPixs()
     .then(async (total) => {
-        let leNombreMagiqueVenuDeLaBlockchain = total.toNumber();
-        console.log('leNombreMagiqueVenuDeLaBlockchain :', leNombreMagiqueVenuDeLaBlockchain);
+        let klonSum = total.toNumber();
         const offsetFormule = nbColonne * 64;
-        const pourcentage = 3;
-        const formuleDeLaMort = offsetFormule + leNombreMagiqueVenuDeLaBlockchain * pourcentage;
-        const nbLine = Math.floor(formuleDeLaMort / nbColonne);
-        // Gestion de la grille
-        grid = new Grid(nbColonne, nbLine);
-        grid.initialize(document.body);
-        canvas = grid.pixels.canvas;
-        position = ref(mousePosition(canvas));
+        const threshold = 3;
+        getThreshold().then(async(threshold) => {
+            const formuleDeLaMort = offsetFormule + klonSum * threshold / 1000000;
+            console.log(formuleDeLaMort);
+            const nbLine = Math.floor(formuleDeLaMort / nbColonne);
+            //const nbLine = 107;
+            // Gestion de la grille
+            grid = new Grid(nbColonne, nbLine);
+            grid.initialize(document.body);
+            canvas = grid.pixels.canvas;
+            position = ref(mousePosition(canvas));
 
-        canvas.onmouseup = stopUsingTool;
-        canvas.onmousedown = startUsingTool;
+            canvas.onmouseup = stopUsingTool;
+            canvas.onmousedown = startUsingTool;
 
-        watch(
-            () => props.tool,
-            (code) => {
-                if (code === Tool.DONE) {
-                    canvas.onmousedown = null;
-                    canvas.onmousemove = null;
-                } else {
-                    canvas.onmouseup = stopUsingTool;
-                    canvas.onmousedown = startUsingTool;
+            watch(
+                () => props.tool,
+                (code) => {
+                    if (code === Tool.DONE) {
+                        canvas.onmousedown = null;
+                        canvas.onmousemove = null;
+                    } else {
+                        canvas.onmouseup = stopUsingTool;
+                        canvas.onmousedown = startUsingTool;
+                    }
                 }
-            }
-        );
-
-        watch(
-            () => props.hasBought.value,
-            (boughtInstance) => {
-                if (boughtInstance === 1) {
-                    preEncode(grid).then((res) => {
-                        chunkCreator(res);
-                    });
+            );
+            watch(
+                () => props.hasBought.value,
+                (boughtInstance) => {
+                    if (boughtInstance === 1) {
+                        preEncode(grid).then((res) => {
+                            chunkCreator(res);
+                        });
+                    }
+                    emit('boughtBack');
                 }
-                emit('boughtBack');
-            }
-        );
+            );
+        })
     })
     .then((res) => {
         getSupply().then(async (supply) => {
