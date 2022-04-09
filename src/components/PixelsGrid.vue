@@ -74,8 +74,8 @@ getTotalPixs()
         let klonSum = total.toNumber();
         const offsetFormule = nbColonne * 64;
         const threshold = 3;
-        getThreshold().then(async(threshold) => {
-            const formuleDeLaMort = offsetFormule + klonSum * threshold / 1000000;
+        getThreshold().then(async (threshold) => {
+            const formuleDeLaMort = offsetFormule + (klonSum * threshold) / 1000000;
             console.log(formuleDeLaMort);
             const nbLine = Math.floor(formuleDeLaMort / nbColonne);
             //const nbLine = 107;
@@ -99,27 +99,27 @@ getTotalPixs()
                         canvas.onmousedown = startUsingTool;
                     }
                 }
-            
-        );
+            );
 
-        watch(
-            () => props.color,
-            (color) => {
-                console.log(color);
-                colorPicked = props.color;
-            }
-        );
-
-        watch(
-            () => props.hasBought.value,
-            (boughtInstance) => {
-                if (boughtInstance === 1) {
-                    preEncode(grid).then((res) => {
-                        chunkCreator(res);
-                    });
+            watch(
+                () => props.color,
+                (color) => {
+                    console.log(color);
+                    colorPicked = props.color;
                 }
-            });
-        })
+            );
+
+            watch(
+                () => props.hasBought.value,
+                (boughtInstance) => {
+                    if (boughtInstance === 1) {
+                        preEncode(grid).then((res) => {
+                            chunkCreator(res);
+                        });
+                    }
+                }
+            );
+        });
     })
     .then((res) => {
         getSupply().then(async (supply) => {
@@ -128,15 +128,16 @@ getTotalPixs()
                 getChunk(i).then((res) => {
                     let pixelPaid = res[2].toNumber();
                     let index = res[0].toNumber();
+                    let yMaxLegal = res[1].toNumber();
+                    console.log('ymaxLegal', yMaxLegal);
                     let x = index % grid.nbColumns;
                     let y = Math.floor(index / grid.nbColumns);
                     let arrBuffer = _base64ToArrayBuffer(res[3]);
-                    displayImageFromArrayBuffer(grid, arrBuffer, x, y, pixelPaid, i);
+                    displayImageFromArrayBuffer(grid, arrBuffer, x, y, pixelPaid, yMaxLegal, i);
                 });
             }
         });
     });
-    
 
 function useTool() {
     let newMousePosition = mousePositionInGrid();
@@ -248,10 +249,10 @@ function moveDrawing(x, y) {
     let outy = y;
     if (outx > 127) outx = 127;
     if (outx < 0) outx = 0;
-    displayArrayToImage(saveArray, highLow.longueur, highLow.largeur, grid, outx, outy, 999999, 0);
+    displayArrayToImage(saveArray, highLow.longueur, highLow.largeur, grid, outx, outy, 999999, 999999, 0);
 }
 
-async function displayImageFromArrayBuffer(grid, arrayBuffer, offsetx, offsety, pixelPaid, zIndex) {
+async function displayImageFromArrayBuffer(grid, arrayBuffer, offsetx, offsety, pixelPaid, yMaxLegal, zIndex) {
     let decoded;
     decoded = await decode(arrayBuffer).catch(console.error);
     if (!decoded) return;
@@ -259,17 +260,17 @@ async function displayImageFromArrayBuffer(grid, arrayBuffer, offsetx, offsety, 
     let width = decoded.width;
     let height = decoded.height;
 
-    displayArrayToImage(array, width, height, grid, offsetx, offsety, pixelPaid, zIndex);
+    displayArrayToImage(array, width, height, grid, offsetx, offsety, pixelPaid, yMaxLegal, zIndex);
 }
 
-function displayArrayToImage(array, width, height, grid, offsetx, offsety, pixelPaid, zIndex) {
+function displayArrayToImage(array, width, height, grid, offsetx, offsety, pixelPaid, yMaxLegal, zIndex) {
     let pixelDrawn = 0;
     let decallage = -1;
-    let rowDebloqueEpok = 100000; // <========= A REMPLACER AVEC DONNEES BLOCKCHAIN
+    // let yMaxLegal = 100000; // <========= A REMPLACER AVEC DONNEES BLOCKCHAIN
     for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
             let idx = (width * y + x) * 4;
-            if (array[idx + 3] != 0 && array[idx + 3] != 0 && pixelDrawn < pixelPaid && offsety <= rowDebloqueEpok) {
+            if (array[idx + 3] != 0 && array[idx + 3] != 0 && pixelDrawn < pixelPaid && offsety <= yMaxLegal) {
                 // ^^ IDEM PLACEHOLDER ^^
                 if (pixelDrawn === 0) decallage = x + 1;
                 grid.draw_pixel(

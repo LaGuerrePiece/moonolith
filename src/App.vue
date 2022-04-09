@@ -10,7 +10,7 @@ import Api from './Api.vue'
 
 import Tool from './models/tools';
 
-const tool = ref(Tool.SMOL);
+const tool = ref(Tool.HUGE);
 const color = ref('');
 const hasBought = ref(0);
 const onDelete = ref(0);
