@@ -129,7 +129,6 @@ getTotalPixs()
                     let pixelPaid = res[2].toNumber();
                     let index = res[0].toNumber();
                     let yMaxLegal = res[1].toNumber();
-                    console.log('ymaxLegal', yMaxLegal);
                     let x = index % grid.nbColumns;
                     let y = Math.floor(index / grid.nbColumns);
                     let arrBuffer = _base64ToArrayBuffer(res[3]);
@@ -267,10 +266,10 @@ function displayArrayToImage(array, width, height, grid, offsetx, offsety, pixel
     let pixelDrawn = 0;
     let decallage = 0;
     // let yMaxLegal = 100000; // <========= A REMPLACER AVEC DONNEES BLOCKCHAIN
-    for (let y = 0; y < height; y++) {
+    for (let y = 0; y < yMaxLegal; y++) {
         for (let x = 0; x < width; x++) {
             let idx = (width * y + x) * 4;
-            if (array[idx + 3] != 0 && array[idx + 3] != 0 && pixelDrawn < pixelPaid && offsety <= yMaxLegal) {
+            if (array[idx + 3] != 0 && array[idx + 3] != 0 && pixelDrawn < pixelPaid) {
                 // ^^ IDEM PLACEHOLDER ^^
                 if (pixelDrawn === 0) decallage = x;
                 grid.draw_pixel(
