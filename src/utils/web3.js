@@ -23,7 +23,7 @@ const chunkCreator = async (res) => {
     await metamaskProvider.send('eth_requestAccounts', []);
     const oneGwei = ethers.BigNumber.from('1000000000');
     let overrides = {
-        value: oneGwei.mul(res.nbPix).mul(100000),
+        value: oneGwei.mul(res.nbPix),
     };
     let tx = metamaskContract.mint_One_4d(res.position, res.ymax, res.nbPix, res.imgURI, overrides);
 };
