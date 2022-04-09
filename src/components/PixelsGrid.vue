@@ -265,14 +265,14 @@ async function displayImageFromArrayBuffer(grid, arrayBuffer, offsetx, offsety, 
 
 function displayArrayToImage(array, width, height, grid, offsetx, offsety, pixelPaid, yMaxLegal, zIndex) {
     let pixelDrawn = 0;
-    let decallage = -1;
+    let decallage = 0;
     // let yMaxLegal = 100000; // <========= A REMPLACER AVEC DONNEES BLOCKCHAIN
     for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
             let idx = (width * y + x) * 4;
             if (array[idx + 3] != 0 && array[idx + 3] != 0 && pixelDrawn < pixelPaid && offsety <= yMaxLegal) {
                 // ^^ IDEM PLACEHOLDER ^^
-                if (pixelDrawn === 0) decallage = x + 1;
+                if (pixelDrawn === 0) decallage = x;
                 grid.draw_pixel(
                     x + offsetx - decallage,
                     y + offsety,
