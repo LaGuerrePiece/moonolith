@@ -1,4 +1,3 @@
-import pixelgrid from 'pixel-grid';
 import Klon from './klon';
 
 /**
@@ -9,47 +8,16 @@ export default class Grid {
      * Le constructeur de la classe Grid
      * @param {nombre de colonnes pour la grille} nbColumns
      * @param {nombre de ligne pour la grille} nbRows
-     * @param {les options pour } options
      * @throws {erreur si dimensions non transmises}
      */
-    constructor(
-        nbColumns,
-        nbRows,
-        options = {
-            size: 15,
-            padding: 0,
-            background: [0, 0, 0],
-            formatted: true,
-        }
-    ) {
+    constructor(nbColumns, nbRows) {
         if (!nbColumns || !nbRows) throw new Error('Grid constructor needs number of columns and rows');
         this.nbColumns = nbColumns;
         this.nbRows = nbRows;
-        this.options = options;
-        this.offset = 0;
-
-        // la future instance de PixelGrid
-        this.pixels = null;
 
         // Initialisation des tableaux avec le noise (en-dessous) et les dessins au-dessus
-        this.noises = Array.from({ length: this.length * 3 }, () => new Klon([0, 0, 0]));
-        this.persistent = new Array(this.length * 3);
-    }
-
-    /**
-     * Getter permettant de récupérer la taille du tableau
-     * @returns {le facteur du nombre de colonnes et lignes}
-     */
-    get length() {
-        return this.nbColumns * this.nbRows;
-    }
-
-    /**
-     * Getter permettant de récupérer la taille du tableau
-     * @returns {le facteur du nombre de colonnes et lignes}
-     */
-    get drawnPixels() {
-        return this.nbColumns * this.nbRows;
+        this.noises = Array.from({ length: this.length }, () => new Klon([0, 0, 0]));
+        this.persistent = new Array(this.length);
     }
 
     /**
@@ -60,47 +28,8 @@ export default class Grid {
         return this.persistent;
     }
 
-    /**
-     * Initialise PixelGrid
-     * @param {l'élement du DOM dans lequel est affiché pixel} root
-     */
-    initialize(root, width = '100%') {
-        this.pixels = pixelgrid(
-            this.noises.map((klon) => klon.color),
-            {
-                rows: this.nbRows,
-                columns: this.nbColumns,
-                root,
-                ...this.options,
-            }
-        );
-        this.pixels.canvas.style.width = width;
-
-        console.log('this.persistent.length', this.persistent.length);
-        console.log('this.length', this.length);
-
-        let frameCounter = 0;
-        this.pixels.frame(() => {
-            frameCounter++;
-            if (!(frameCounter % 3 === 0)) return;
-            const randomArray = Array.from({ length: 150 }, () => Math.random() * 0.02);
-            let data = [];
-            for (
-                let i = this.length - this.offset * this.nbColumns;
-                i < this.persistent.length - this.offset * this.nbColumns;
-                i++
-            ) {
-                // Pour chaque klon si il y a une couleur on prend la couleur sinon un gris aléatoire
-                data[i - this.length + this.offset * this.nbColumns] = this.persistent[i]
-                    ? this.persistent[i].color
-                    : this.noises[i].randGray(randomArray[i % 150]).color;
-            }
-            this.pixels.update(data);
-        });
-    }
-
     draw_pixel(x, y, zIndex, klon) {
-        let pos = y * this.nbColumns + x + this.length - this.offset * this.nbColumns;
+        let pos = y * this.nbColumns + x;
         if (this.persistent[pos] ? this.persistent[pos].isEditable(zIndex) : true) this.persistent[pos] = klon;
     }
 
@@ -132,9 +61,9 @@ export default class Grid {
         return y * this.nbColumns + x;
     }
 
-    addRow() {
-        this.persistent.unshift(...Array(this.nbColumns).fill(undefined));
-        this.noises.unshift(...Array(this.nbColumns).fill(new Klon([0, 0, 0])));
-        this.offset++;
-    }
+    // addRow() {
+    //     this.persistent.unshift(...Array(this.nbColumns).fill(undefined));
+    //     this.noises.unshift(...Array(this.nbColumns).fill(new Klon([0, 0, 0])));
+    //     this.viewPos++;
+    // }
 }

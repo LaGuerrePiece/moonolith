@@ -4,6 +4,7 @@ import { reactive, onMounted, watch, ref } from 'vue';
 
 // Imports des composants
 import Grid from '../models/grid';
+import DisplayGrid from '../models/displayGrid';
 import Klon from '../models/klon';
 
 // Imports des fonctionnalités
@@ -29,6 +30,8 @@ const props = defineProps({
     onDelete: Object,
     importedImage: Object,
 });
+
+var grid
 
 const emit = defineEmits(['boughtBack', 'deleteBack', 'changeColor']);
 
@@ -60,46 +63,93 @@ watch(
     }
 );
 
-
-let grid;
-let canvas;
-let position;
-const nbColonne = 170;
-const width = window.innerWidth
-const height = window.innerHeight
-const pixelSize = width / nbColonne
-const gridsHeight = Math.floor(height/pixelSize) + 2;
 const oldMousePosition = reactive({
     x: null,
     y: null,
 });
 
+// SETUP OF DISPLAYGRID
+let displayGrid;
+let canvas;
+let position;
+var viewPos = 0
+var data;
+const nbColonneDisplay = 170;
+const width = window.innerWidth
+const height = window.innerHeight
+const pixelSize = width / nbColonneDisplay
+const displayGridHeight = Math.floor(height/pixelSize) + 2;
 
-grid = new Grid(nbColonne, gridsHeight);
-grid.initialize(document.body);
-canvas = grid.pixels.canvas;
+displayGrid = new DisplayGrid(nbColonneDisplay, displayGridHeight);
+displayGrid.initialize(document.body);
+canvas = displayGrid.pixels.canvas;
 position = ref(mousePosition(canvas));
 
 canvas.onmouseup = stopUsingTool;
 canvas.onmousedown = startUsingTool;
 
+
 window.onwheel = function (e) {
-    grid.offset = grid.offset + e.deltaY * -0.06;
-    if (grid.offset < 0) grid.offset = 0;
-    if (grid.offset > 70) grid.offset = 70;
-    console.log('grid.offset', grid.offset);
+    viewPos += e.deltaY * -0.06;
+    if (viewPos < 0) viewPos = 0;
+    if (viewPos > 70) viewPos = 70;
+    console.log('viewPos', viewPos);
+    // update()
 };
+
+// Quand il faut remettre à jour la grille, on call :
+
+// let landscape = Array.from({ length: displayGrid.length * 2 }, () => [50, 205, 50]);
+// let landscapeStartY
+
+function update() {
+    // landscapeStartY = landscape.length - displayGrid.length - viewPos * nbColonneDisplay;
+    data = Array.from({ length: displayGrid.length }, () => [0.2, 0.8, 0.2]);
+
+    // for (let i = landscapeStartY; i < displayGrid.length + landscapeStartY; i++) {
+    //     data[i - landscapeStartY] = landscape[i];
+    // }
+    
+    // ASSEMBLEUR : Il utilise grid.persistent et viewPos et boucle displayGrid.length fois pour générer data
+
+    // for (
+    //     let i = grid.length - viewPos * grid.nbColumns;
+    //     i < grid.persistent.length - viewPos * grid.nbColumns;
+    //     i++
+    // ) {
+    //     // Pour chaque klon si il y a une couleur on prend la couleur sinon un gris aléatoire
+    //     data[i - grid.length + viewPos * grid.nbColumns] = grid.persistent[i]
+    //         ? grid.persistent[i].color
+    //         : grid.noises[i].randGray(randomArray[i % 150]).color;
+    // }
+
+    displayGrid.updateDisplay(data)
+}
+
+setInterval(update, 3000);
+
+
+
+
+
+
+
+
 
 
 getTotalPixs()
     .then(async (total) => {
         let leNombreMagiqueVenuDeLaBlockchain = total.toNumber();
         console.log('leNombreMagiqueVenuDeLaBlockchain :', leNombreMagiqueVenuDeLaBlockchain);
+        const nbColonne = 128
         const offsetFormule = nbColonne * 64;
         const pourcentage = 3;
         const formuleDeLaMort = offsetFormule + leNombreMagiqueVenuDeLaBlockchain * pourcentage;
-        // const nbLine = Math.floor(formuleDeLaMort / nbColonne);
-        //Là, nbline est censé être déterminé pour la construction du grid.persistent/grid.noise
+        const nbLine = Math.floor(formuleDeLaMort / nbColonne);
+        console.log('nbLine :', nbLine);
+
+        // SETUP OF GRID
+        grid = new Grid(nbColonne, nbLine);
 
         watch(
             () => props.tool,
@@ -127,19 +177,19 @@ getTotalPixs()
         );
     })
     .then((res) => {
-        getSupply().then(async (supply) => {
-            let s = supply.toNumber();
-            for (let i = 1; i <= s; i++) {
-                getChunk(i).then((res) => {
-                    let pixelPaid = res[2].toNumber();
-                    let index = res[0].toNumber();
-                    let x = index % grid.nbColumns;
-                    let y = Math.floor(index / grid.nbColumns);
-                    let arrBuffer = _base64ToArrayBuffer(res[3]);
-                    displayImageFromArrayBuffer(grid, arrBuffer, x, y, pixelPaid, i);
-                });
-            }
-        });
+        // getSupply().then(async (supply) => {
+        //     let s = supply.toNumber();
+        //     for (let i = 1; i <= s; i++) {
+        //         getChunk(i).then((res) => {
+        //             let pixelPaid = res[2].toNumber();
+        //             let index = res[0].toNumber();
+        //             let x = index % grid.nbColumns;
+        //             let y = Math.floor(index / grid.nbColumns);
+        //             let arrBuffer = _base64ToArrayBuffer(res[3]);
+        //             displayImageFromArrayBuffer(grid, arrBuffer, x, y, pixelPaid, i);
+        //         });
+        //     }
+        // });
     });
 
 function useTool() {
