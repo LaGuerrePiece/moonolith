@@ -96,7 +96,6 @@ export default class Grid {
         if (pos > 0 && pos < this.persistent.length) {
             if (this.persistent[pos] ? this.persistent[pos].isEditable(zIndex) : true)
                 this.persistent[pos] = klon;
-            console.log(this.persistent.length);
         }
     }
     get_color(x, y, grid) {

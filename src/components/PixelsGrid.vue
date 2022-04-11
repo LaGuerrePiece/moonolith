@@ -147,6 +147,7 @@ function useTool() {
         case Tool.BIG:
             for (let i = -1; i <= 1; i++) {
                 for (let j = -1; j <= 1; j++) {
+                    if (newMousePosition.x + i < nbColonne && newMousePosition.x + i > -1)
                     grid.draw_pixel(newMousePosition.x + i, newMousePosition.y + j, Klon.USERPAINTED, new Klon(hexToRGB(colorPicked), Klon.USERPAINTED));
                     }
             }
@@ -154,6 +155,7 @@ function useTool() {
         case Tool.HUGE:
             for (let i = -4; i <= 4; i++) {
                 for (let j = -4; j <= 4; j++) {
+                    if (newMousePosition.x + i < nbColonne && newMousePosition.x + i > -1)
                     grid.draw_pixel(newMousePosition.x + i, newMousePosition.y + j, Klon.USERPAINTED, new Klon(hexToRGB(colorPicked), Klon.USERPAINTED));
                     }
             }
@@ -255,23 +257,19 @@ async function displayImageFromArrayBuffer(grid, arrayBuffer, offsetx, offsety, 
     if (!decoded) return;
     let array = toRGBA8(decoded);
     let width = decoded.width;
-    let height = decoded.height;
-
-    displayArrayToImage(array, width, height, grid, offsetx, offsety, pixelPaid, yMaxLegal, zIndex);
+    displayArrayToImage(array, width, grid, offsetx, offsety, pixelPaid, yMaxLegal, zIndex);
 }
 
-function displayArrayToImage(array, width, height, grid, offsetx, offsety, pixelPaid, yMaxLegal, zIndex) {
+function displayArrayToImage(array, width, grid, offsetx, offsety, pixelPaid, yMaxLegal, zIndex) {
     let pixelDrawn = 0;
-    let decallage = 0;
-    // let yMaxLegal = 100000; // <========= A REMPLACER AVEC DONNEES BLOCKCHAIN
+    let decalage = 0;
     for (let y = 0; y < yMaxLegal; y++) {
         for (let x = 0; x < width; x++) {
             let idx = (width * y + x) * 4;
             if (array[idx + 3] != 0 && array[idx + 3] != 0 && pixelDrawn < pixelPaid) {
-                // ^^ IDEM PLACEHOLDER ^^
-                if (pixelDrawn === 0) decallage = x;
+                if (pixelDrawn === 0) decalage = x;
                 grid.draw_pixel(
-                    x + offsetx - decallage,
+                    x + offsetx - decalage,
                     y + offsety,
                     zIndex,
                     new Klon([array[idx] / 255, array[idx + 1] / 255, array[idx + 2] / 255], zIndex)
