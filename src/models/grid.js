@@ -93,16 +93,20 @@ export default class Grid {
 
     draw_pixel(x, y, zIndex, klon) {
         let pos = y * this.nbColumns + x;
-        if (this.persistent[pos] ? this.persistent[pos].isEditable(zIndex) : true) this.persistent[pos] = klon;
+        if (pos > 0 && pos < this.persistent.length) {
+            if (this.persistent[pos] ? this.persistent[pos].isEditable(zIndex) : true)
+                this.persistent[pos] = klon;
+            console.log(this.persistent.length);
+        }
     }
-
     get_color(x, y, grid) {
         let pos = y * this.nbColumns + x;
-        if (this.persistent[pos] !== undefined){
-        return this.persistent[pos].color}
+        if (this.persistent[pos] !== undefined) {
+            return this.persistent[pos].color;
+        }
     }
 
-    delete_user_pixel() {
+    erase_all_pixel() {
         for (let pos = 0; pos < this.persistent.length; pos++) {
             if (this.persistent[pos] && !this.persistent[pos].zIndex) this.persistent[pos] = undefined;
         }

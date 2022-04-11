@@ -45,7 +45,7 @@ watch(
     () => props.onDelete.value,
     (deleteInstance) => {
         if (deleteInstance === 1) {
-            grid.delete_user_pixel();
+            grid.erase_all_pixel();
         }
         emit('deleteBack');
     }
@@ -73,10 +73,8 @@ getTotalPixs()
     .then(async (total) => {
         let klonSum = total.toNumber();
         const offsetFormule = nbColonne * 64;
-        const threshold = 3;
         getThreshold().then(async (threshold) => {
             const formuleDeLaMort = offsetFormule + (klonSum * threshold) / 1000000;
-            console.log(formuleDeLaMort);
             const nbLine = Math.floor(formuleDeLaMort / nbColonne);
             //const nbLine = 107;
             // Gestion de la grille
@@ -240,7 +238,7 @@ function moveDrawing(x, y) {
     saveArray = ret.saveArray;
     nbPix = ret.nbPix;
     firstPix = ret.firstPix;
-    grid.delete_user_pixel();
+    grid.erase_all_pixel();
     console.log('l', highLow.largeur);
     console.log('L', highLow.longueur);
     console.log('lowx', highLow.lowX);
