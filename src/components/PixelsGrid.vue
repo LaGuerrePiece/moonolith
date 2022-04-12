@@ -55,7 +55,7 @@ watch(
     () => props.importedImage?.value,
     (buffer) => {
         if (buffer) {
-            displayImageFromArrayBuffer(grid, buffer, 1, 1, 999999, 0);
+            displayImageFromArrayBuffer(grid, buffer, 1, 1, 999999, 99999, 0);
         }
     }
 );
@@ -76,7 +76,7 @@ getTotalPixs()
         getThreshold().then(async (threshold) => {
             const formuleDeLaMort = offsetFormule + (klonSum * threshold) / 1000000;
             // const nbLine = Math.floor(formuleDeLaMort / nbColonne);
-            const nbLine = 400;
+            const nbLine = 362;
             console.log(`nbLine : ${nbLine}, nbColonne : ${nbColonne}`)
             // Gestion de la grille
             grid = new Grid(nbColonne, nbLine);

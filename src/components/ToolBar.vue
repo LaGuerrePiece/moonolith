@@ -99,7 +99,7 @@ function importImage() {
 }
 
 function toggleState(tool) {
-    console.log(assemble(256, 400, 256, 400, 0, 0));
+    console.log(assemble(256, 362, 256, 362, 0, 0));
     if (toolUsed.value === tool) toolUsed.value = Tool.DONE;
     else toolUsed.value = tool;
 }
