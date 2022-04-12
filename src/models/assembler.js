@@ -31,35 +31,35 @@ function landscape(renderWidth, renderHeight, nbColumns, nbLine, viewPosX, viewP
 }
 
 export function assemble(renderWidth, renderHeight, nbColumns, nbLine, viewPosX, viewPosY) {
-    // 256,     400,        256,        400,        0,       0
+    // ................      256,     400,           256,        400,       0,      0
     let displayArray = [];
     let writtenLines = 0;
     while (writtenLines < renderHeight * 4) {
-        let currentLine = viewPosY + renderHeight * 4 - writtenLines;
+        let currentLine = viewPosY + renderHeight - writtenLines;
         let landscapeArray = landscape(renderWidth, renderHeight, nbColumns, nbLine, viewPosX, viewPosY);
         let monolithArray = monolith(renderWidth, renderHeight, nbColumns, nbLine, viewPosX, viewPosY);
         // for (let i = 0; i < renderWidth * 4; i++) {
         //             displayArray[writtenLines * nbColumns + i] = landscapeArray[writtenLines * nbColumns + i];
         //         }
-        
+
         if (currentLine < 32) {
             // console.log('bot');
             for (let i = 0; i < renderWidth * 4; i++) {
-                displayArray[writtenLines * nbColumns + i] = landscapeArray[writtenLines * nbColumns + i];
+                displayArray[writtenLines * nbColumns * 4 + i] = landscapeArray[writtenLines * nbColumns * 4 + i];
             }
-        } else if (currentLine > (nbLine - 48) * 4) {
+        } else if (currentLine > nbLine - 48) {
             // console.log('top');
             for (let i = 0; i < renderWidth * 4; i++) {
-                displayArray[writtenLines * nbColumns + i] = landscapeArray[writtenLines * nbColumns + i];
+                displayArray[writtenLines * nbColumns * 4 + i] = landscapeArray[writtenLines * nbColumns * 4 + i];
             }
         } else {
             // console.log('mid');
             for (let i = 0; i < renderWidth * 4; i++) {
-                if (currentLine == 50) console.log(i);
                 if (i > 51 * 4) {
-                    displayArray[writtenLines * nbColumns + i] = monolithArray[writtenLines * nbColumns + i];
-                } else if (i < 51 * 4) {
-                    displayArray[writtenLines * nbColumns + i] = landscapeArray[writtenLines * nbColumns + i];
+                    if (currentLine == 50) console.log(i);
+                    displayArray[writtenLines * nbColumns * 4 + i] = monolithArray[writtenLines * nbColumns * 4 + i];
+                } else if (i <= 51 * 4) {
+                    displayArray[writtenLines * nbColumns * 4 + i] = landscapeArray[writtenLines * nbColumns * 4 + i];
                 }
             }
         }
