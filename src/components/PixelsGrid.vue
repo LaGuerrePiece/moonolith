@@ -19,7 +19,7 @@ import {
 } from '../utils/image-manager';
 import mousePosition from 'mouse-position';
 import Tool from '../models/tools';
-import { chunkCreator, getChunk, getSupply, getTotalPixs, getThreshold } from '../utils/web3';
+import { chunkCreator, getChunk, getChunksFromPosition, getSupply, getTotalPixs, getThreshold } from '../utils/web3';
 
 // Definition des props
 const props = defineProps({
@@ -121,9 +121,21 @@ getTotalPixs()
         });
     })
     .then((res) => {
-        getSupply().then(async (supply) => {
-            let s = supply.toNumber();
-            for (let i = 1; i <= s; i++) {
+        //getSupply().then(async (supply) => {
+            //let s = supply.toNumber();
+            console.log("ici");
+            getChunksFromPosition(0, 15).then((chunks) => {
+                for(let i = 0; i< chunks.length; i++) {
+                    let pixelPaid = chunks[i][2].toNumber();
+                    let index = chunks[i][0].toNumber();
+                    let yMaxLegal = chunks[i][1].toNumber();
+                    let x = index % grid.nbColumns;
+                    let y = Math.floor(index / grid.nbColumns);
+                    let arrBuffer = _base64ToArrayBuffer(chunks[i][3]);
+                    displayImageFromArrayBuffer(grid, arrBuffer, x, y, pixelPaid, yMaxLegal, i);
+                }
+            });
+           /* for (let i = 1; i <= s; i++) {
                 getChunk(i).then((res) => {
                     let pixelPaid = res[2].toNumber();
                     let index = res[0].toNumber();
@@ -133,9 +145,9 @@ getTotalPixs()
                     let arrBuffer = _base64ToArrayBuffer(res[3]);
                     displayImageFromArrayBuffer(grid, arrBuffer, x, y, pixelPaid, yMaxLegal, i);
                 });
-            }
+            }*/
         });
-    });
+    //});
 
 function useTool() {
     let newMousePosition = mousePositionInGrid();
