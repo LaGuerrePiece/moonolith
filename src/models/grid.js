@@ -1,6 +1,6 @@
 import pixelgrid from 'pixel-grid';
 import Klon from './klon';
-import { addToCurrentEvent, addGridToCurrentEvent } from '../models/stack';
+import { addToCurrentEvent, closeCurrentEvent } from '../models/stack';
 
 /**
  * Classe de la Grille
@@ -113,8 +113,12 @@ export default class Grid {
 
     erase_all_pixel() {
         for (let pos = 0; pos < this.persistent.length; pos++) {
-            if (this.persistent[pos] && !this.persistent[pos].zIndex) this.persistent[pos] = undefined;
+            if (this.persistent[pos] && !this.persistent[pos].zIndex) {
+                addToCurrentEvent(pos, this.persistent[pos]);
+                this.persistent[pos] = undefined;
+            }
         }
+        closeCurrentEvent();
     }
 
     erase_pixel(x, y) {

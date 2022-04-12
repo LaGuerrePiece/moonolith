@@ -5,7 +5,7 @@ import { reactive, watch, ref } from 'vue';
 // Imports des composants
 import Grid from '../models/grid';
 import Klon from '../models/klon';
-import { addGridToCurrentEvent, closeCurrentEvent, undo, redo} from '../models/stack';
+import { closeCurrentEvent, undo, redo} from '../models/stack';
 
 // Imports des fonctionnalités
 import { fetchImgur } from '../utils/network';
@@ -45,10 +45,7 @@ document.addEventListener(
 watch(
     () => props.onDelete.value,
     (deleteInstance) => {
-        if (deleteInstance === 1) {
-            addGridToCurrentEvent(structuredClone(grid.persistent))
-            grid.erase_all_pixel()
-        }
+        if (deleteInstance === 1) grid.erase_all_pixel()
         emit('deleteBack');
     }
 );
@@ -56,9 +53,7 @@ watch(
 watch(
     () => props.importedImage?.value,
     (buffer) => {
-        if (buffer) {
-            displayImageFromArrayBuffer(grid, buffer, 1, 1, 999999, 0);
-        }
+        if (buffer) displayImageFromArrayBuffer(grid, buffer, 1, 1, 999999, 0);
     }
 );
 
@@ -72,12 +67,8 @@ const oldMousePosition = reactive({
 });
 
 document.addEventListener('keydown', function(e) {
-    if (e.ctrlKey && e.key === 'z') {
-        grid = undo(grid)
-    }
-    if (e.ctrlKey && e.key === 'Z') {
-        grid = redo(grid)
-    }
+    if (e.ctrlKey && e.key === 'z') grid = undo(grid)
+    if (e.ctrlKey && e.key === 'Z') grid = redo(grid)
 });
 
 getTotalPixs()
@@ -189,14 +180,14 @@ function useDeleteTool() {
             for (let i = -1; i <= 1; i++) {
                 for (let j = -1; j <= 1; j++) {
                     grid.erase_pixel(newMousePosition.x + i, newMousePosition.y + j);
-                    }
+                }
             }
             break;
         case Tool.HUGE:
             for (let i = -4; i <= 4; i++) {
                 for (let j = -4; j <= 4; j++) {
                     grid.erase_pixel(newMousePosition.x + i, newMousePosition.y + j);
-                    }
+                }
             }
             break;
     }
@@ -216,7 +207,6 @@ function useColorPicker() {
 
 function startUsingTool(e) {
     if (e.button == 0) {
-        // if (props.tool === Tool.MOVE) addGridToCurrentEvent(grid)
         useTool();
         canvas.onmousemove = useTool;
     }
@@ -232,7 +222,6 @@ function startUsingTool(e) {
 
 function stopUsingTool() {
     closeCurrentEvent()
-    // document.onmousedown = null
     canvas.onmousemove = null;
 }
 
