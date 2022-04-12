@@ -63,7 +63,7 @@ watch(
 let grid;
 let canvas;
 let position;
-const nbColonne = 170;
+const nbColonne = 256;
 const oldMousePosition = reactive({
     x: null,
     y: null,
@@ -75,8 +75,9 @@ getTotalPixs()
         const offsetFormule = nbColonne * 64;
         getThreshold().then(async (threshold) => {
             const formuleDeLaMort = offsetFormule + (klonSum * threshold) / 1000000;
-            const nbLine = Math.floor(formuleDeLaMort / nbColonne);
-            //const nbLine = 107;
+            // const nbLine = Math.floor(formuleDeLaMort / nbColonne);
+            const nbLine = 400;
+            console.log(`nbLine : ${nbLine}, nbColonne : ${nbColonne}`)
             // Gestion de la grille
             grid = new Grid(nbColonne, nbLine);
             grid.initialize(document.body);
