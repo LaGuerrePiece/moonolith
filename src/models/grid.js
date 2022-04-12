@@ -1,5 +1,6 @@
 import pixelgrid from 'pixel-grid';
 import Klon from './klon';
+import { addToCurrentEvent, addGridToCurrentEvent } from '../models/stack';
 
 /**
  * Classe de la Grille
@@ -94,10 +95,15 @@ export default class Grid {
     draw_pixel(x, y, zIndex, klon) {
         let pos = y * this.nbColumns + x;
         if (pos > 0 && pos < this.persistent.length) {
-            if (this.persistent[pos] ? this.persistent[pos].isEditable(zIndex) : true)
-                this.persistent[pos] = klon;
+            if (this.persistent[pos] ? this.persistent[pos].isEditable(zIndex) : true) {
+                if (!this.klonsAreEqual(this.persistent[pos], klon)) {
+                    if (zIndex === 0) addToCurrentEvent(pos, this.persistent[pos]);
+                    this.persistent[pos] = klon;
+                }
+            }
         }
     }
+
     get_color(x, y, grid) {
         let pos = y * this.nbColumns + x;
         if (this.persistent[pos] !== undefined) {
@@ -113,7 +119,10 @@ export default class Grid {
 
     erase_pixel(x, y) {
         let pos = y * this.nbColumns + x;
-        if (this.persistent[pos] ? !this.persistent[pos].zIndex : true) this.persistent[pos] = undefined;
+        if (this.persistent[pos] ? !this.persistent[pos].zIndex : true) {
+            if (this.persistent[pos]) addToCurrentEvent(pos, this.persistent[pos]);
+            this.persistent[pos] = undefined;
+        }
     }
 
     convertIndexToXY(number) {
@@ -128,5 +137,14 @@ export default class Grid {
 
     addRow(numberOfRow) {
         this.nbRows += numberOfRow;
+    }
+
+    klonsAreEqual(klon1, klon2) {
+        return (
+            klon1?.color[0] == klon2?.color[0] &&
+            klon1?.color[1] == klon2?.color[1] &&
+            klon1?.color[2] == klon2?.color[2] &&
+            klon1?.zIndex == klon2?.zIndex
+        );
     }
 }

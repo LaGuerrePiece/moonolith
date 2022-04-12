@@ -1,10 +1,11 @@
 <script setup>
 // Imports pour vue 3
-import { reactive, onMounted, watch, ref } from 'vue';
+import { reactive, watch, ref } from 'vue';
 
 // Imports des composants
 import Grid from '../models/grid';
 import Klon from '../models/klon';
+import { addGridToCurrentEvent, closeCurrentEvent, undo, redo} from '../models/stack';
 
 // Imports des fonctionnalités
 import { fetchImgur } from '../utils/network';
@@ -45,7 +46,8 @@ watch(
     () => props.onDelete.value,
     (deleteInstance) => {
         if (deleteInstance === 1) {
-            grid.erase_all_pixel();
+            addGridToCurrentEvent(structuredClone(grid.persistent))
+            grid.erase_all_pixel()
         }
         emit('deleteBack');
     }
@@ -67,6 +69,15 @@ const nbColonne = 170;
 const oldMousePosition = reactive({
     x: null,
     y: null,
+});
+
+document.addEventListener('keydown', function(e) {
+    if (e.ctrlKey && e.key === 'z') {
+        grid = undo(grid)
+    }
+    if (e.ctrlKey && e.key === 'Z') {
+        grid = redo(grid)
+    }
 });
 
 getTotalPixs()
@@ -205,6 +216,7 @@ function useColorPicker() {
 
 function startUsingTool(e) {
     if (e.button == 0) {
+        // if (props.tool === Tool.MOVE) addGridToCurrentEvent(grid)
         useTool();
         canvas.onmousemove = useTool;
     }
@@ -219,6 +231,7 @@ function startUsingTool(e) {
 }
 
 function stopUsingTool() {
+    closeCurrentEvent()
     // document.onmousedown = null
     canvas.onmousemove = null;
 }
@@ -248,7 +261,7 @@ function moveDrawing(x, y) {
     let outy = y;
     if (outx > 127) outx = 127;
     if (outx < 0) outx = 0;
-    displayArrayToImage(saveArray, highLow.longueur, highLow.largeur, grid, outx, outy, 999999, 999999, 0);
+    displayArrayToImage(saveArray, highLow.largeur, grid, outx, outy, 999999, 999999, 0);
 }
 
 async function displayImageFromArrayBuffer(grid, arrayBuffer, offsetx, offsety, pixelPaid, yMaxLegal, zIndex) {
@@ -279,6 +292,8 @@ function displayArrayToImage(array, width, grid, offsetx, offsety, pixelPaid, yM
         }
     }
 }
+
 </script>
+
 
 <style></style>
