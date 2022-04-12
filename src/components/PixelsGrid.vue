@@ -1,10 +1,11 @@
 <script setup>
 // Imports pour vue 3
-import { reactive, onMounted, watch, ref } from 'vue';
+import { reactive, watch, ref } from 'vue';
 
 // Imports des composants
 import Grid from '../models/grid';
 import Klon from '../models/klon';
+import { closeCurrentEvent, undo, redo} from '../models/stack';
 
 // Imports des fonctionnalités
 import { fetchImgur } from '../utils/network';
@@ -44,9 +45,7 @@ document.addEventListener(
 watch(
     () => props.onDelete.value,
     (deleteInstance) => {
-        if (deleteInstance === 1) {
-            grid.erase_all_pixel();
-        }
+        if (deleteInstance === 1) grid.erase_all_pixel()
         emit('deleteBack');
     }
 );
@@ -54,9 +53,7 @@ watch(
 watch(
     () => props.importedImage?.value,
     (buffer) => {
-        if (buffer) {
-            displayImageFromArrayBuffer(grid, buffer, 1, 1, 999999, 0);
-        }
+        if (buffer) displayImageFromArrayBuffer(grid, buffer, 1, 1, 999999, 0);
     }
 );
 
@@ -67,6 +64,11 @@ const nbColonne = 170;
 const oldMousePosition = reactive({
     x: null,
     y: null,
+});
+
+document.addEventListener('keydown', function(e) {
+    if (e.ctrlKey && e.key === 'z') grid = undo(grid)
+    if (e.ctrlKey && e.key === 'Z') grid = redo(grid)
 });
 
 getTotalPixs()
@@ -178,14 +180,14 @@ function useDeleteTool() {
             for (let i = -1; i <= 1; i++) {
                 for (let j = -1; j <= 1; j++) {
                     grid.erase_pixel(newMousePosition.x + i, newMousePosition.y + j);
-                    }
+                }
             }
             break;
         case Tool.HUGE:
             for (let i = -4; i <= 4; i++) {
                 for (let j = -4; j <= 4; j++) {
                     grid.erase_pixel(newMousePosition.x + i, newMousePosition.y + j);
-                    }
+                }
             }
             break;
     }
@@ -219,7 +221,7 @@ function startUsingTool(e) {
 }
 
 function stopUsingTool() {
-    // document.onmousedown = null
+    closeCurrentEvent()
     canvas.onmousemove = null;
 }
 
@@ -248,7 +250,7 @@ function moveDrawing(x, y) {
     let outy = y;
     if (outx > 127) outx = 127;
     if (outx < 0) outx = 0;
-    displayArrayToImage(saveArray, highLow.longueur, highLow.largeur, grid, outx, outy, 999999, 999999, 0);
+    displayArrayToImage(saveArray, highLow.largeur, grid, outx, outy, 999999, 999999, 0);
 }
 
 async function displayImageFromArrayBuffer(grid, arrayBuffer, offsetx, offsety, pixelPaid, yMaxLegal, zIndex) {
@@ -279,6 +281,8 @@ function displayArrayToImage(array, width, grid, offsetx, offsety, pixelPaid, yM
         }
     }
 }
+
 </script>
+
 
 <style></style>
