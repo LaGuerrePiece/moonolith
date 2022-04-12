@@ -121,10 +121,10 @@ getTotalPixs()
         });
     })
     .then((res) => {
-        //getSupply().then(async (supply) => {
-            //let s = supply.toNumber();
+        getSupply().then(async (supply) => {
+            let s = supply.toNumber();
             console.log("ici");
-            getChunksFromPosition(0, 15).then((chunks) => {
+           /* getChunksFromPosition(0, 15).then((chunks) => {
                 for(let i = 0; i< chunks.length; i++) {
                     let pixelPaid = chunks[i][2].toNumber();
                     let index = chunks[i][0].toNumber();
@@ -134,8 +134,8 @@ getTotalPixs()
                     let arrBuffer = _base64ToArrayBuffer(chunks[i][3]);
                     displayImageFromArrayBuffer(grid, arrBuffer, x, y, pixelPaid, yMaxLegal, i);
                 }
-            });
-           /* for (let i = 1; i <= s; i++) {
+            });*/
+           for (let i = 1; i <= s; i++) {
                 getChunk(i).then((res) => {
                     let pixelPaid = res[2].toNumber();
                     let index = res[0].toNumber();
@@ -145,9 +145,9 @@ getTotalPixs()
                     let arrBuffer = _base64ToArrayBuffer(res[3]);
                     displayImageFromArrayBuffer(grid, arrBuffer, x, y, pixelPaid, yMaxLegal, i);
                 });
-            }*/
+            }
         });
-    //});
+    });
 
 function useTool() {
     let newMousePosition = mousePositionInGrid();
