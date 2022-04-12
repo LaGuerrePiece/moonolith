@@ -55,12 +55,11 @@ export function assemble(renderWidth, renderHeight, nbColumns, nbLine, viewPosX,
         } else {
             // console.log('mid');
             for (let i = 0; i < renderWidth * 4; i++) {
-                if (i > 51 * 4) {
-                    if (currentLine == 50) console.log(i);
+                if (i >= 51 * 4 && i < 205 * 4){
                     displayArray[writtenLines * nbColumns * 4 + i] = monolithArray[writtenLines * nbColumns * 4 + i];
-                } else if (i <= 51 * 4) {
+                } else {
                     displayArray[writtenLines * nbColumns * 4 + i] = landscapeArray[writtenLines * nbColumns * 4 + i];
-                }
+                } 
             }
         }
         writtenLines++;
