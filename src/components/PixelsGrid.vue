@@ -5,7 +5,7 @@ import { reactive, watch, ref } from 'vue';
 // Imports des composants
 import Grid from '../models/grid';
 import Klon from '../models/klon';
-import { closeCurrentEvent, undo, redo} from '../models/stack';
+import { closeCurrentEvent, undo, redo } from '../models/stack';
 
 // Imports des fonctionnalités
 import { fetchImgur } from '../utils/network';
@@ -45,7 +45,7 @@ document.addEventListener(
 watch(
     () => props.onDelete.value,
     (deleteInstance) => {
-        if (deleteInstance === 1) grid.erase_all_pixel()
+        if (deleteInstance === 1) grid.erase_all_pixel();
         emit('deleteBack');
     }
 );
@@ -66,9 +66,13 @@ const oldMousePosition = reactive({
     y: null,
 });
 
-document.addEventListener('keydown', function(e) {
-    if (e.ctrlKey && e.key === 'z') grid = undo(grid)
-    if (e.ctrlKey && e.key === 'Z') grid = redo(grid)
+document.addEventListener('keydown', function (e) {
+    if (e.ctrlKey && e.key === 'z') grid = undo(grid);
+    if (e.metaKey && e.key === 'z') grid = undo(grid);
+    if (e.ctrlKey && e.key === 'Z') grid = redo(grid);
+    if (e.metaKey && e.key === 'Z') grid = redo(grid);
+    if (e.ctrlKey && e.key === 'y') grid = redo(grid);
+    if (e.metaKey && e.key === 'y') grid = redo(grid);
 });
 
 getTotalPixs()
@@ -221,7 +225,7 @@ function startUsingTool(e) {
 }
 
 function stopUsingTool() {
-    closeCurrentEvent()
+    closeCurrentEvent();
     canvas.onmousemove = null;
 }
 
@@ -281,8 +285,6 @@ function displayArrayToImage(array, width, grid, offsetx, offsety, pixelPaid, yM
         }
     }
 }
-
 </script>
-
 
 <style></style>
