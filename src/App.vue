@@ -6,8 +6,6 @@ import ToolBar from './components/ToolBar.vue';
 import Palette from './components/Palette.vue';
 import Draggable from './components/Draggable.vue';
 
-import Api from './Api.vue'
-
 import Tool from './models/tools';
 
 const tool = ref(Tool.HUGE);

@@ -14,15 +14,17 @@ function componentToHex(c) {
 }
 
 function RGBToHex(r, g, b) {
-    r = Math.floor(r * 255)
-    g = Math.floor(g * 255)
-    b = Math.floor(b * 255)
+    r = Math.floor(r * 255);
+    g = Math.floor(g * 255);
+    b = Math.floor(b * 255);
     return '#' + componentToHex(r) + componentToHex(g) + componentToHex(b);
 }
 
 function decode(buffer) {
     return new Promise((resolve) => {
         let buff = UPNG.decode(buffer);
+        console.log(buff.width, buff.height);
+        console.log(buff.data);
         resolve(buff);
     });
 }
@@ -70,6 +72,16 @@ function preEncode(grid) {
         resolve({ position: firstPix, ymax: highLow.highY, nbPix: nbPix, imgURI: buffer });
     });
 }
+function preEncodeSpecialK(displayArray, renderWidth, renderHeight) {
+    return new Promise((resolve) => {
+        displayArray = new Uint8Array(displayArray);
+        var png = UPNG.encode([displayArray.buffer], renderWidth, renderHeight, 0); // on encode
+        let buffer = _arrayBufferToBase64(png); //on passe au format base64
+        saveLocally(buffer);
+
+        resolve({ imgURI: buffer });
+    });
+}
 
 function gridToArray(grid) {
     let highLow = getHighLow(grid);
@@ -80,28 +92,28 @@ function gridToArray(grid) {
         let i = grid.convertXYToIndex(highLow.lowX, highLow.lowY);
         i <= grid.convertXYToIndex(highLow.highX, highLow.highY);
         i++
-    ) {
-        if (
-            grid.convertIndexToXY(i).x >= highLow.lowX &&
-            grid.convertIndexToXY(i).x <= highLow.highX &&
+        ) {
+            if (
+                grid.convertIndexToXY(i).x >= highLow.lowX &&
+                grid.convertIndexToXY(i).x <= highLow.highX &&
             grid.convertIndexToXY(i).y >= highLow.lowY &&
             grid.convertIndexToXY(i).y <= highLow.highY
-        ) {
-            if (grid.persistent[i] && grid.persistent[i].zIndex == Klon.USERPAINTED) {
-                if (firstPix == -1) firstPix = i;
-                saveArray.push(grid.persistent[i].color[0] * 255);
-                saveArray.push(grid.persistent[i].color[1] * 255);
-                saveArray.push(grid.persistent[i].color[2] * 255);
-                saveArray.push(255);
-                nbPix++;
-            } else {
-                saveArray.push(0);
-                saveArray.push(0);
-                saveArray.push(0);
-                saveArray.push(0);
+            ) {
+                if (grid.persistent[i] && grid.persistent[i].zIndex == Klon.USERPAINTED) {
+                    if (firstPix == -1) firstPix = i;
+                    saveArray.push(grid.persistent[i].color[0] * 255);
+                    saveArray.push(grid.persistent[i].color[1] * 255);
+                    saveArray.push(grid.persistent[i].color[2] * 255);
+                    saveArray.push(255);
+                    nbPix++;
+                } else {
+                    saveArray.push(0);
+                    saveArray.push(0);
+                    saveArray.push(0);
+                    saveArray.push(0);
+                }
             }
         }
-    }
     return { firstPix: firstPix, highLow: highLow, nbPix: nbPix, saveArray: saveArray };
 }
 
@@ -136,4 +148,4 @@ function _base64ToArrayBuffer(base64) {
     return bytes.buffer;
 }
 
-export { decode, getHighLow, preEncode, _base64ToArrayBuffer, toRGBA8, gridToArray, hexToRGB, RGBToHex };
+export { decode, getHighLow, preEncode, preEncodeSpecialK, _base64ToArrayBuffer, toRGBA8, gridToArray, hexToRGB, RGBToHex };

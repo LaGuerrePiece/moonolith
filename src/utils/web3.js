@@ -42,6 +42,23 @@ const getChunk = async (id) => {
     return res;
 };
 
+const getChunksFromPosition = async (min, max) => {
+    let res = [];
+    for(let i = min; i <= max; i++){
+        let data = await contract.queryFilter(contract.filters.Chunk(null, i));
+        if(data.length > 0){
+            let topics = data[0].topics;
+            data = data[0].data;
+            let chunk = iface.parseLog({data, topics}).args;
+            console.log(chunk);
+            chunk = chunk.slice(1);
+            res.push(chunk);
+        }
+    }
+    console.log(res);
+    return res;                   
+};
+
 const getTotalPixs = async () => {
     return await contract.klonSum();
 };
@@ -50,4 +67,4 @@ const getThreshold = async () => {
     return await contract.threshold();
 };
 
-export { chunkCreator, getChunk, getSupply, getTotalPixs, getThreshold };
+export { chunkCreator, getChunk, getChunksFromPosition, getSupply, getTotalPixs, getThreshold };

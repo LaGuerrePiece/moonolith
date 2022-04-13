@@ -20,7 +20,8 @@ import {
 } from '../utils/image-manager';
 import mousePosition from 'mouse-position';
 import Tool from '../models/tools';
-import { chunkCreator, getChunk, getSupply, getTotalPixs, getThreshold } from '../utils/web3';
+import { chunkCreator, getChunk, getChunksFromPosition, getSupply, getTotalPixs, getThreshold } from '../utils/web3';
+import { assemble } from '../models/assembler.js';
 
 // Definition des props
 const props = defineProps({
@@ -53,14 +54,16 @@ watch(
 watch(
     () => props.importedImage?.value,
     (buffer) => {
-        if (buffer) displayImageFromArrayBuffer(grid, buffer, 1, 1, 999999, 0);
+        if (buffer) {
+            displayImageFromArrayBuffer(grid, buffer, 1, 1, 999999, 99999, 0);
+        }
     }
 );
 
 let grid;
 let canvas;
 let position;
-const nbColonne = 170;
+const nbColonne = 256;
 const oldMousePosition = reactive({
     x: null,
     y: null,
@@ -73,6 +76,9 @@ document.addEventListener('keydown', function (e) {
     if (e.metaKey && e.key === 'Z') grid = redo(grid);
     if (e.ctrlKey && e.key === 'y') grid = redo(grid);
     if (e.metaKey && e.key === 'y') grid = redo(grid);
+    if (e.key === 't') console.log(assemble(256, 362, 256, 362, 0, 0));
+;
+
 });
 
 getTotalPixs()
@@ -81,8 +87,9 @@ getTotalPixs()
         const offsetFormule = nbColonne * 64;
         getThreshold().then(async (threshold) => {
             const formuleDeLaMort = offsetFormule + (klonSum * threshold) / 1000000;
-            const nbLine = Math.floor(formuleDeLaMort / nbColonne);
-            //const nbLine = 107;
+            // const nbLine = Math.floor(formuleDeLaMort / nbColonne);
+            const nbLine = 362;
+            console.log(`nbLine : ${nbLine}, nbColonne : ${nbColonne}`);
             // Gestion de la grille
             grid = new Grid(nbColonne, nbLine);
             grid.initialize(document.body);
@@ -128,6 +135,18 @@ getTotalPixs()
     .then((res) => {
         getSupply().then(async (supply) => {
             let s = supply.toNumber();
+            console.log('ici');
+            /* getChunksFromPosition(0, 15).then((chunks) => {
+                for(let i = 0; i< chunks.length; i++) {
+                    let pixelPaid = chunks[i][2].toNumber();
+                    let index = chunks[i][0].toNumber();
+                    let yMaxLegal = chunks[i][1].toNumber();
+                    let x = index % grid.nbColumns;
+                    let y = Math.floor(index / grid.nbColumns);
+                    let arrBuffer = _base64ToArrayBuffer(chunks[i][3]);
+                    displayImageFromArrayBuffer(grid, arrBuffer, x, y, pixelPaid, yMaxLegal, i);
+                }
+            });*/
             for (let i = 1; i <= s; i++) {
                 getChunk(i).then((res) => {
                     let pixelPaid = res[2].toNumber();
@@ -148,13 +167,13 @@ function useTool() {
     // prettier-ignore
     switch (props.tool) {
         case Tool.SMOL:
-            grid.draw_pixel(newMousePosition.x, newMousePosition.y, Klon.USERPAINTED, new Klon(hexToRGB(colorPicked), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x, newMousePosition.y, Klon.USERPAINTED, new Klon(hexToRGB(colorPicked), Klon.USERPAINTED, 'Monolith'));
             break;
         case Tool.BIG:
             for (let i = -1; i <= 1; i++) {
                 for (let j = -1; j <= 1; j++) {
                     if (newMousePosition.x + i < nbColonne && newMousePosition.x + i > -1)
-                    grid.draw_pixel(newMousePosition.x + i, newMousePosition.y + j, Klon.USERPAINTED, new Klon(hexToRGB(colorPicked), Klon.USERPAINTED));
+                    grid.draw_pixel(newMousePosition.x + i, newMousePosition.y + j, Klon.USERPAINTED, new Klon(hexToRGB(colorPicked), Klon.USERPAINTED, 'Monolith'));
                     }
             }
             break;
@@ -162,7 +181,7 @@ function useTool() {
             for (let i = -4; i <= 4; i++) {
                 for (let j = -4; j <= 4; j++) {
                     if (newMousePosition.x + i < nbColonne && newMousePosition.x + i > -1)
-                    grid.draw_pixel(newMousePosition.x + i, newMousePosition.y + j, Klon.USERPAINTED, new Klon(hexToRGB(colorPicked), Klon.USERPAINTED));
+                    grid.draw_pixel(newMousePosition.x + i, newMousePosition.y + j, Klon.USERPAINTED, new Klon(hexToRGB(colorPicked), Klon.USERPAINTED, 'Monolith'));
                     }
             }
             break;
