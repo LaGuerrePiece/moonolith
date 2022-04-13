@@ -77,7 +77,7 @@ getTotalPixs()
             const formuleDeLaMort = offsetFormule + (klonSum * threshold) / 1000000;
             // const nbLine = Math.floor(formuleDeLaMort / nbColonne);
             const nbLine = 362;
-            console.log(`nbLine : ${nbLine}, nbColonne : ${nbColonne}`)
+            console.log(`nbLine : ${nbLine}, nbColonne : ${nbColonne}`);
             // Gestion de la grille
             grid = new Grid(nbColonne, nbLine);
             grid.initialize(document.body);
@@ -123,8 +123,8 @@ getTotalPixs()
     .then((res) => {
         getSupply().then(async (supply) => {
             let s = supply.toNumber();
-            console.log("ici");
-           /* getChunksFromPosition(0, 15).then((chunks) => {
+            console.log('ici');
+            /* getChunksFromPosition(0, 15).then((chunks) => {
                 for(let i = 0; i< chunks.length; i++) {
                     let pixelPaid = chunks[i][2].toNumber();
                     let index = chunks[i][0].toNumber();
@@ -135,7 +135,7 @@ getTotalPixs()
                     displayImageFromArrayBuffer(grid, arrBuffer, x, y, pixelPaid, yMaxLegal, i);
                 }
             });*/
-           for (let i = 1; i <= s; i++) {
+            for (let i = 1; i <= s; i++) {
                 getChunk(i).then((res) => {
                     let pixelPaid = res[2].toNumber();
                     let index = res[0].toNumber();
@@ -155,13 +155,13 @@ function useTool() {
     // prettier-ignore
     switch (props.tool) {
         case Tool.SMOL:
-            grid.draw_pixel(newMousePosition.x, newMousePosition.y, Klon.USERPAINTED, new Klon(hexToRGB(colorPicked), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x, newMousePosition.y, Klon.USERPAINTED, new Klon(hexToRGB(colorPicked), Klon.USERPAINTED, 'Monolith'));
             break;
         case Tool.BIG:
             for (let i = -1; i <= 1; i++) {
                 for (let j = -1; j <= 1; j++) {
                     if (newMousePosition.x + i < nbColonne && newMousePosition.x + i > -1)
-                    grid.draw_pixel(newMousePosition.x + i, newMousePosition.y + j, Klon.USERPAINTED, new Klon(hexToRGB(colorPicked), Klon.USERPAINTED));
+                    grid.draw_pixel(newMousePosition.x + i, newMousePosition.y + j, Klon.USERPAINTED, new Klon(hexToRGB(colorPicked), Klon.USERPAINTED, 'Monolith'));
                     }
             }
             break;
@@ -169,7 +169,7 @@ function useTool() {
             for (let i = -4; i <= 4; i++) {
                 for (let j = -4; j <= 4; j++) {
                     if (newMousePosition.x + i < nbColonne && newMousePosition.x + i > -1)
-                    grid.draw_pixel(newMousePosition.x + i, newMousePosition.y + j, Klon.USERPAINTED, new Klon(hexToRGB(colorPicked), Klon.USERPAINTED));
+                    grid.draw_pixel(newMousePosition.x + i, newMousePosition.y + j, Klon.USERPAINTED, new Klon(hexToRGB(colorPicked), Klon.USERPAINTED, 'Monolith'));
                     }
             }
             break;
