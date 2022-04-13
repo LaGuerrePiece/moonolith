@@ -6,19 +6,26 @@ import ToolBar from './components/ToolBar.vue';
 import Palette from './components/Palette.vue';
 import Draggable from './components/Draggable.vue';
 
-import Api from './Api.vue'
-
 import Tool from './models/tools';
 
-const tool = ref(Tool.SMOL);
+const tool = ref(Tool.HUGE);
 const color = ref('');
 const hasBought = ref(0);
 const onDelete = ref(0);
 const importedImage = ref();
+console.log(window.location.pathname);
+const urlData = window.location.pathname.split("/");
+const canva = false;
+if(urlData[1] == 'runes')
+{
+    console.log("It's canva");
+    canva = true;
+}
+
 </script>
 
 <template>
-    <Draggable color="white" style="">
+    <Draggable color="white" style=""  v-if="!canva">
         <ToolBar
             @toolChanged="tool = $event"
             @import="importedImage = $event"
@@ -33,7 +40,7 @@ const importedImage = ref();
             style="margin: auto"
         />
     </Draggable>
-    <PixelsGrid
+    <PixelsGrid v-if="!canva"
         @contextmenu.prevent
         :tool="tool"
         :color="color"

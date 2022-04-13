@@ -6,10 +6,12 @@ export default class Klon {
      * Constructeur d'un klon
      * @param {la couleur du pixel/klon (array/string/number)} color
      * @param {le zIndex du klon, qui détermine la priorité d'affichage. 0 pour utilisateur} zIndex
+     * @param {le type du klon : Monolith, Landscape, GUI} type
      */
-    constructor(color, zIndex) {
+    constructor(color, zIndex, type) {
         this.color = color;
         this.zIndex = zIndex;
+        this.type = type;
     }
 
     /**

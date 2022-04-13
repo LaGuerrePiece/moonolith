@@ -1,16 +1,16 @@
 import { ethers } from 'ethers';
 import { Interface } from 'ethers/lib/utils';
-import contractABI from '../utils/abi.json'
+import contractABI from '../utils/abi.json';
 
 const provider = new ethers.providers.InfuraProvider('rinkeby');
-const metamaskProvider = new ethers.providers.Web3Provider(window.ethereum)
+const metamaskProvider = new ethers.providers.Web3Provider(window.ethereum);
 const iface = new Interface(contractABI);
-const contractAddress = '0xC4774A5360fdA9a2d3244bAAD1eff9B5760032B1';
-const contractAddressCaly = '0x2a1068d93BF2aD8a2b93b6DF8a6B607B3A648570';
+const contractAddress = '0x304e3a37092Cf9C42fd41Cb60c76961B4950f050';
+//const contractAddressCaly = '0x2a1068d93BF2aD8a2b93b6DF8a6B607B3A648570';
 
 var metamaskContract;
 const contract = new ethers.Contract(contractAddress, contractABI, provider);
-if(window.ethereum){
+if (window.ethereum) {
     const signer = metamaskProvider.getSigner();
     metamaskContract = new ethers.Contract(contractAddress, contractABI, signer);
 }
@@ -23,22 +23,39 @@ const chunkCreator = async (res) => {
     await metamaskProvider.send('eth_requestAccounts', []);
     const oneGwei = ethers.BigNumber.from('1000000000');
     let overrides = {
-        value: oneGwei.mul(res.nbPix).mul(100000),
+        value: oneGwei.mul(res.nbPix),
     };
     let tx = metamaskContract.mint_One_4d(res.position, res.ymax, res.nbPix, res.imgURI, overrides);
 };
 
 /**
  * Demande les données d'un chunk
- * @param {numero du dessin} id 
+ * @param {numero du dessin} id
  * @returns {position, ymax, nbPix, string de l'image}
  */
 const getChunk = async (id) => {
     let data = await contract.queryFilter(contract.filters.Chunk(id));
     let topics = data[0].topics;
     data = data[0].data;
-    let res = iface.parseLog({data, topics}).args;
+    let res = iface.parseLog({ data, topics }).args;
     res = res.slice(1);
+    return res;
+};
+
+const getChunksFromPosition = async (min, max) => {
+    let res = [];
+    for(let i = min; i <= max; i++){
+        let data = await contract.queryFilter(contract.filters.Chunk(null, i));
+        if(data.length > 0){
+            let topics = data[0].topics;
+            data = data[0].data;
+            let chunk = iface.parseLog({data, topics}).args;
+            console.log(chunk);
+            chunk = chunk.slice(1);
+            res.push(chunk);
+        }
+    }
+    console.log(res);
     return res;                   
 };
 
@@ -46,4 +63,8 @@ const getTotalPixs = async () => {
     return await contract.klonSum();
 };
 
-export { chunkCreator, getChunk, getSupply, getTotalPixs };
+const getThreshold = async () => {
+    return await contract.threshold();
+};
+
+export { chunkCreator, getChunk, getChunksFromPosition, getSupply, getTotalPixs, getThreshold };

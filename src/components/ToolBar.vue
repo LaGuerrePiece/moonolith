@@ -74,7 +74,7 @@ import Tool from '../models/tools';
 
 const file = ref(null);
 const showToolbar = ref(false);
-const toolUsed = ref(Tool.SMOL);
+const toolUsed = ref(Tool.HUGE);
 const emit = defineEmits(['toolChanged', 'saved', 'delete', 'import']);
 
 function clickOnButton() {

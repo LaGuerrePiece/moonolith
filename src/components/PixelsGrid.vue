@@ -1,11 +1,12 @@
 <script setup>
 // Imports pour vue 3
-import { reactive, onMounted, watch, ref } from 'vue';
+import { reactive, watch, ref } from 'vue';
 
 // Imports des composants
 import Grid from '../models/grid';
 import DisplayGrid from '../models/displayGrid';
 import Klon from '../models/klon';
+import { closeCurrentEvent, undo, redo } from '../models/stack';
 
 // Imports des fonctionnalités
 import { fetchImgur } from '../utils/network';
@@ -20,7 +21,8 @@ import {
 } from '../utils/image-manager';
 import mousePosition from 'mouse-position';
 import Tool from '../models/tools';
-import { chunkCreator, getChunk, getSupply, getTotalPixs } from '../utils/web3';
+import { chunkCreator, getChunk, getChunksFromPosition, getSupply, getTotalPixs, getThreshold } from '../utils/web3';
+import { assemble } from '../models/assembler.js';
 
 // Definition des props
 const props = defineProps({
@@ -47,9 +49,7 @@ document.addEventListener(
 watch(
     () => props.onDelete.value,
     (deleteInstance) => {
-        if (deleteInstance === 1) {
-            grid.delete_user_pixel();
-        }
+        if (deleteInstance === 1) grid.erase_all_pixel();
         emit('deleteBack');
     }
 );
@@ -58,7 +58,7 @@ watch(
     () => props.importedImage?.value,
     (buffer) => {
         if (buffer) {
-            displayImageFromArrayBuffer(grid, buffer, 1, 1, 999999, 0);
+            displayImageFromArrayBuffer(grid, buffer, 1, 1, 999999, 99999, 0);
         }
     }
 );
@@ -74,7 +74,7 @@ let canvas;
 let position;
 var viewPos = 0
 var data;
-const nbColonneDisplay = 170;
+const nbColonneDisplay = 256;
 const width = window.innerWidth
 const height = window.innerHeight
 const pixelSize = width / nbColonneDisplay
@@ -88,6 +88,15 @@ position = ref(mousePosition(canvas));
 canvas.onmouseup = stopUsingTool;
 canvas.onmousedown = startUsingTool;
 
+document.addEventListener('keydown', function (e) {
+    if (e.ctrlKey && e.key === 'z') grid = undo(grid);
+    if (e.metaKey && e.key === 'z') grid = undo(grid);
+    if (e.ctrlKey && e.key === 'Z') grid = redo(grid);
+    if (e.metaKey && e.key === 'Z') grid = redo(grid);
+    if (e.ctrlKey && e.key === 'y') grid = redo(grid);
+    if (e.metaKey && e.key === 'y') grid = redo(grid);
+    if (e.key === 't') console.log(assemble(256, 362, 256, 362, 0, 0));
+});
 
 window.onwheel = function (e) {
     //viewPos += e.deltaY * -0.06;
@@ -130,57 +139,83 @@ setInterval(update, 30);
 
 getTotalPixs()
     .then(async (total) => {
-        let leNombreMagiqueVenuDeLaBlockchain = total.toNumber();
-        console.log('leNombreMagiqueVenuDeLaBlockchain :', leNombreMagiqueVenuDeLaBlockchain);
-        const nbColonne = 128
+        let klonSum = total.toNumber();
         const offsetFormule = nbColonne * 64;
-        const pourcentage = 3;
-        const formuleDeLaMort = offsetFormule + leNombreMagiqueVenuDeLaBlockchain * pourcentage;
-        const nbLine = Math.floor(formuleDeLaMort / nbColonne);
-        console.log('nbLine :', nbLine);
+        getThreshold().then(async (threshold) => {
+            const formuleDeLaMort = offsetFormule + (klonSum * threshold) / 1000000;
+            // const nbLine = Math.floor(formuleDeLaMort / nbColonne);
+            const nbLine = 362;
+            console.log(`nbLine : ${nbLine}, nbColonne : ${nbColonne}`);
+            // Gestion de la grille
+            grid = new Grid(nbColonne, nbLine);
+            // grid.initialize(document.body);
+            // canvas = grid.pixels.canvas;
+            // position = ref(mousePosition(canvas));
 
-        // SETUP OF GRID
-        grid = new Grid(nbColonne, nbLine);
+            // canvas.onmouseup = stopUsingTool;
+            // canvas.onmousedown = startUsingTool;
 
-        watch(
-            () => props.tool,
-            (code) => {
-                if (code === Tool.DONE) {
-                    canvas.onmousedown = null;
-                    canvas.onmousemove = null;
-                } else {
-                    canvas.onmouseup = stopUsingTool;
-                    canvas.onmousedown = startUsingTool;
+            watch(
+                () => props.tool,
+                (code) => {
+                    if (code === Tool.DONE) {
+                        canvas.onmousedown = null;
+                        canvas.onmousemove = null;
+                    } else {
+                        canvas.onmouseup = stopUsingTool;
+                        canvas.onmousedown = startUsingTool;
+                    }
                 }
-            }
-        );
+            );
 
-        watch(
-            () => props.hasBought.value,
-            (boughtInstance) => {
-                if (boughtInstance === 1) {
-                    preEncode(grid).then((res) => {
-                        chunkCreator(res);
-                    });
+            watch(
+                () => props.color,
+                (color) => {
+                    console.log(color);
+                    colorPicked = props.color;
                 }
-                emit('boughtBack');
-            }
-        );
+            );
+
+            watch(
+                () => props.hasBought.value,
+                (boughtInstance) => {
+                    if (boughtInstance === 1) {
+                        preEncode(grid).then((res) => {
+                            chunkCreator(res);
+                        });
+                    }
+                }
+            );
+        });
     })
     .then((res) => {
-        // getSupply().then(async (supply) => {
-        //     let s = supply.toNumber();
-        //     for (let i = 1; i <= s; i++) {
-        //         getChunk(i).then((res) => {
-        //             let pixelPaid = res[2].toNumber();
-        //             let index = res[0].toNumber();
-        //             let x = index % grid.nbColumns;
-        //             let y = Math.floor(index / grid.nbColumns);
-        //             let arrBuffer = _base64ToArrayBuffer(res[3]);
-        //             displayImageFromArrayBuffer(grid, arrBuffer, x, y, pixelPaid, i);
-        //         });
-        //     }
-        // });
+        getSupply().then(async (supply) => {
+            let s = supply.toNumber();
+            console.log('ici');
+            /* getChunksFromPosition(0, 15).then((chunks) => {
+                for(let i = 0; i< chunks.length; i++) {
+                    let pixelPaid = chunks[i][2].toNumber();
+                    let index = chunks[i][0].toNumber();
+                    let yMaxLegal = chunks[i][1].toNumber();
+                    let x = index % grid.nbColumns;
+                    let y = Math.floor(index / grid.nbColumns);
+                    let arrBuffer = _base64ToArrayBuffer(chunks[i][3]);
+                    displayImageFromArrayBuffer(grid, arrBuffer, x, y, pixelPaid, yMaxLegal, i);
+                }
+            });*/
+
+            // for (let i = 1; i <= s; i++) {
+            //     getChunk(i).then((res) => {
+            //         let pixelPaid = res[2].toNumber();
+            //         let index = res[0].toNumber();
+            //         let yMaxLegal = res[1].toNumber();
+            //         let x = index % grid.nbColumns;
+            //         let y = Math.floor(index / grid.nbColumns);
+            //         let arrBuffer = _base64ToArrayBuffer(res[3]);
+            //         displayImageFromArrayBuffer(grid, arrBuffer, x, y, pixelPaid, yMaxLegal, i);
+            //     });
+            // }
+        });
     });
 
 function useTool() {
@@ -189,20 +224,21 @@ function useTool() {
     // prettier-ignore
     switch (props.tool) {
         case Tool.SMOL:
-            console.log(props.color)
-            grid.draw_pixel(newMousePosition.x, newMousePosition.y, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));
+            grid.draw_pixel(newMousePosition.x, newMousePosition.y, Klon.USERPAINTED, new Klon(hexToRGB(colorPicked), Klon.USERPAINTED, 'Monolith'));
             break;
         case Tool.BIG:
             for (let i = -1; i <= 1; i++) {
                 for (let j = -1; j <= 1; j++) {
-                    grid.draw_pixel(newMousePosition.x + i, newMousePosition.y + j, Klon.USERPAINTED, new Klon(hexToRGB(props.color), Klon.USERPAINTED));                    
-                }
-            }            
+                    if (newMousePosition.x + i < nbColonne && newMousePosition.x + i > -1)
+                    grid.draw_pixel(newMousePosition.x + i, newMousePosition.y + j, Klon.USERPAINTED, new Klon(hexToRGB(colorPicked), Klon.USERPAINTED, 'Monolith'));
+                    }
+            }
             break;
         case Tool.HUGE:
             for (let i = -4; i <= 4; i++) {
                 for (let j = -4; j <= 4; j++) {
-                    grid.draw_pixel(newMousePosition.x + i, newMousePosition.y + j, Klon.USERPAINTED, new Klon(hexToRGB(colorPicked), Klon.USERPAINTED));                    
+                    if (newMousePosition.x + i < nbColonne && newMousePosition.x + i > -1)
+                    grid.draw_pixel(newMousePosition.x + i, newMousePosition.y + j, Klon.USERPAINTED, new Klon(hexToRGB(colorPicked), Klon.USERPAINTED, 'Monolith'));
                     }
             }
             break;
@@ -223,26 +259,26 @@ function useDeleteTool() {
         case Tool.BIG:
             for (let i = -1; i <= 1; i++) {
                 for (let j = -1; j <= 1; j++) {
-                    grid.erase_pixel(newMousePosition.x + i, newMousePosition.y + j);                    
-                    }
+                    grid.erase_pixel(newMousePosition.x + i, newMousePosition.y + j);
+                }
             }
             break;
         case Tool.HUGE:
             for (let i = -4; i <= 4; i++) {
                 for (let j = -4; j <= 4; j++) {
-                    grid.erase_pixel(newMousePosition.x + i, newMousePosition.y + j);                    
-                    }
+                    grid.erase_pixel(newMousePosition.x + i, newMousePosition.y + j);
+                }
             }
             break;
     }
 }
 
-let colorPicked = ''
+let colorPicked = '#b3e3da';
 
 function useColorPicker() {
     let newMousePosition = mousePositionInGrid();
     colorPicked = grid.get_color(newMousePosition.x, newMousePosition.y, grid);
-    colorPicked = RGBToHex(colorPicked[0], colorPicked[1], colorPicked[2])
+    colorPicked = RGBToHex(colorPicked[0], colorPicked[1], colorPicked[2]);
     console.log(colorPicked);
     if (colorPicked !== undefined) {
         emit('changeColor', colorPicked);
@@ -265,7 +301,7 @@ function startUsingTool(e) {
 }
 
 function stopUsingTool() {
-    // document.onmousedown = null
+    closeCurrentEvent();
     canvas.onmousemove = null;
 }
 
@@ -286,7 +322,7 @@ function moveDrawing(x, y) {
     saveArray = ret.saveArray;
     nbPix = ret.nbPix;
     firstPix = ret.firstPix;
-    grid.delete_user_pixel();
+    grid.erase_all_pixel();
     console.log('l', highLow.largeur);
     console.log('L', highLow.longueur);
     console.log('lowx', highLow.lowX);
@@ -294,32 +330,28 @@ function moveDrawing(x, y) {
     let outy = y;
     if (outx > 127) outx = 127;
     if (outx < 0) outx = 0;
-    displayArrayToImage(saveArray, highLow.longueur, highLow.largeur, grid, outx, outy, 999999, 0);
+    displayArrayToImage(saveArray, highLow.largeur, grid, outx, outy, 999999, 999999, 0);
 }
 
-async function displayImageFromArrayBuffer(grid, arrayBuffer, offsetx, offsety, pixelPaid, zIndex) {
+async function displayImageFromArrayBuffer(grid, arrayBuffer, offsetx, offsety, pixelPaid, yMaxLegal, zIndex) {
     let decoded;
     decoded = await decode(arrayBuffer).catch(console.error);
     if (!decoded) return;
     let array = toRGBA8(decoded);
     let width = decoded.width;
-    let height = decoded.height;
-
-    displayArrayToImage(array, width, height, grid, offsetx, offsety, pixelPaid, zIndex);
+    displayArrayToImage(array, width, grid, offsetx, offsety, pixelPaid, yMaxLegal, zIndex);
 }
 
-function displayArrayToImage(array, width, height, grid, offsetx, offsety, pixelPaid, zIndex) {
+function displayArrayToImage(array, width, grid, offsetx, offsety, pixelPaid, yMaxLegal, zIndex) {
     let pixelDrawn = 0;
-    let decallage = -1;
-    let rowDebloqueEpok = 100000; // <========= A REMPLACER AVEC DONNEES BLOCKCHAIN
-    for (let y = 0; y < height; y++) {
+    let decalage = 0;
+    for (let y = 0; y < yMaxLegal; y++) {
         for (let x = 0; x < width; x++) {
             let idx = (width * y + x) * 4;
-            if (array[idx + 3] != 0 && array[idx + 3] != 0 && pixelDrawn < pixelPaid && offsety <= rowDebloqueEpok) {
-                // ^^ IDEM PLACEHOLDER ^^
-                if (pixelDrawn === 0) decallage = x + 1;
+            if (array[idx + 3] != 0 && array[idx + 3] != 0 && pixelDrawn < pixelPaid) {
+                if (pixelDrawn === 0) decalage = x;
                 grid.draw_pixel(
-                    x + offsetx - decallage,
+                    x + offsetx - decalage,
                     y + offsety,
                     zIndex,
                     new Klon([array[idx] / 255, array[idx + 1] / 255, array[idx + 2] / 255], zIndex)
