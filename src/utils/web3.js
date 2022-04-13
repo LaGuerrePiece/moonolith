@@ -67,4 +67,4 @@ const getThreshold = async () => {
     return await contract.threshold();
 };
 
-export { chunkCreator, getChunk, getChunksFromPosition, getSupply, getTotalPixs, getThreshold };
+export {contract, iface, chunkCreator, getChunk, getChunksFromPosition, getSupply, getTotalPixs, getThreshold};

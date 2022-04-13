@@ -19,7 +19,9 @@ import {
 } from '../utils/image-manager';
 import mousePosition from 'mouse-position';
 import Tool from '../models/tools';
-import { chunkCreator, getChunk, getChunksFromPosition, getSupply, getTotalPixs, getThreshold } from '../utils/web3';
+import { ethers } from 'ethers';
+import {contract, iface, chunkCreator, getChunk, getChunksFromPosition, getSupply, getTotalPixs, getThreshold } from '../utils/web3';
+
 
 // Definition des props
 const props = defineProps({
@@ -148,6 +150,17 @@ getTotalPixs()
             }
         });
     });
+
+function displayTempChunk(chunk) {
+    console.log(chunk);
+    let pixelPaid = chunk[2].toNumber();
+    let index = chunk[0].toNumber();
+    let yMaxLegal = chunk[1].toNumber();
+    let x = index % grid.nbColumns;
+    let y = Math.floor(index / grid.nbColumns);
+    let arrBuffer = _base64ToArrayBuffer(chunk[3]);
+    displayImageFromArrayBuffer(grid, arrBuffer, x, y, pixelPaid, yMaxLegal, 1);
+}
 
 function useTool() {
     let newMousePosition = mousePositionInGrid();
@@ -292,6 +305,43 @@ function displayArrayToImage(array, width, grid, offsetx, offsety, pixelPaid, yM
         }
     }
 }
+let listen = async () => {
+
+    let url = "wss://rinkeby.infura.io/ws/v3/49f373294ecd4358abd6a39d55521529";
+    let customWsProvider = new ethers.providers.WebSocketProvider(url);
+
+    //let topics = await contract.queryFilter(contract.filters.Chunk(1));
+    //console.log(topics);
+
+    customWsProvider.on("pending", (tx) => {
+        customWsProvider.getTransaction(tx).then(function (transaction) {
+        //console.log(transaction);
+        if(transaction && transaction.to == "0x304e3a37092Cf9C42fd41Cb60c76961B4950f050")
+        {
+            console.log("Transaction !!!", transaction);
+            //let data = transaction.data;
+            let chunk = iface.parseTransaction(transaction).args;
+            console.log(chunk);
+            displayTempChunk(chunk);
+            console.log("Disaplyed")
+        }
+      });
+    });
+  
+  /*  customWsProvider._websocket.on("error", async () => {
+      console.log(`Unable to connect to ${ep.subdomain} retrying in 3s...`);
+      setTimeout(listen, 3000);
+    });
+    customWsProvider._websocket.on("close", async (code) => {
+      console.log(
+        `Connection lost with code ${code}! Attempting reconnect in 3s...`
+      );
+      provider._websocket.terminate();
+      setTimeout(listen, 3000);
+    });*/
+  };
+  
+  listen();
 </script>
 
 <style></style>
