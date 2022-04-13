@@ -9,6 +9,7 @@ const closeCurrentEvent = () => {
     eventStack.push(currentEvent);
     if (eventStack.length > 20) eventStack.shift();
     currentEvent = [];
+    inverseEventStack = [];
 };
 
 const addToCurrentEvent = (pos, oldKlon) => {
@@ -38,7 +39,9 @@ const redo = (grid) => {
         currentEvent.push([eventToRedo[i][0], grid.persistent[eventToRedo[i][0]]]);
         grid.persistent[eventToRedo[i][0]] = eventToRedo[i][1];
     }
-    closeCurrentEvent();
+    eventStack.push(currentEvent);
+    if (eventStack.length > 20) eventStack.shift();
+    currentEvent = [];
 
     return grid;
 };
