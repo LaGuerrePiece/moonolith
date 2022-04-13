@@ -90,43 +90,34 @@ canvas.onmousedown = startUsingTool;
 
 
 window.onwheel = function (e) {
-    viewPos += e.deltaY * -0.06;
+    //viewPos += e.deltaY * -0.06;
+    if(e.deltaY < 0){
+        viewPos += 3
+    }
+    else {
+        viewPos -= 3
+    }
+
     if (viewPos < 0) viewPos = 0;
     if (viewPos > 70) viewPos = 70;
     console.log('viewPos', viewPos);
     // update()
 };
 
-// Quand il faut remettre à jour la grille, on call :
-
-// let landscape = Array.from({ length: displayGrid.length * 2 }, () => [50, 205, 50]);
-// let landscapeStartY
+let randomArray;
+data = Array.from({ length: displayGrid.length }, () => [0.2, 0.8, 0.2]);
 
 function update() {
-    // landscapeStartY = landscape.length - displayGrid.length - viewPos * nbColonneDisplay;
-    data = Array.from({ length: displayGrid.length }, () => [0.2, 0.8, 0.2]);
-
-    // for (let i = landscapeStartY; i < displayGrid.length + landscapeStartY; i++) {
-    //     data[i - landscapeStartY] = landscape[i];
-    // }
-    
-    // ASSEMBLEUR : Il utilise grid.persistent et viewPos et boucle displayGrid.length fois pour générer data
-
-    // for (
-    //     let i = grid.length - viewPos * grid.nbColumns;
-    //     i < grid.persistent.length - viewPos * grid.nbColumns;
-    //     i++
-    // ) {
-    //     // Pour chaque klon si il y a une couleur on prend la couleur sinon un gris aléatoire
-    //     data[i - grid.length + viewPos * grid.nbColumns] = grid.persistent[i]
-    //         ? grid.persistent[i].color
-    //         : grid.noises[i].randGray(randomArray[i % 150]).color;
-    // }
-
+    randomArray = Array.from({ length: 150 }, () => Math.random() * 0.02);
+    for (let i = 0; i < grid.persistent.length; i++) {
+        data[i] = grid.persistent[i]
+            ? grid.persistent[i].color
+            : grid.noises[i].randGray(randomArray[i % 150]).color;
+    }
     displayGrid.updateDisplay(data)
 }
 
-setInterval(update, 3000);
+setInterval(update, 30);
 
 
 

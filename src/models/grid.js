@@ -16,8 +16,8 @@ export default class Grid {
         this.nbRows = nbRows;
 
         // Initialisation des tableaux avec le noise (en-dessous) et les dessins au-dessus
-        this.noises = Array.from({ length: this.length }, () => new Klon([0, 0, 0]));
-        this.persistent = new Array(this.length);
+        this.noises = Array.from({ length: 19040 }, () => new Klon([0, 0, 0]));
+        this.persistent = new Array(19040);
     }
 
     /**
