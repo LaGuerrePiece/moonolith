@@ -8,7 +8,6 @@ import Klon from '../models/klon';
 import { closeCurrentEvent, undo, redo } from '../models/stack';
 
 // Imports des fonctionnalités
-import { fetchImgur } from '../utils/network';
 import {
     decode,
     preEncode,
@@ -22,6 +21,7 @@ import mousePosition from 'mouse-position';
 import Tool from '../models/tools';
 import { chunkCreator, getChunk, getChunksFromPosition, getSupply, getTotalPixs, getThreshold } from '../utils/web3';
 import { assemble } from '../models/assembler.js';
+
 
 // Definition des props
 const props = defineProps({
@@ -130,6 +130,17 @@ getTotalPixs()
                     }
                 }
             );
+
+            fetch('./1.png').then(res => res.blob()) // Gets the response and returns it as a blob
+            .then(blob => {
+                const reader = new FileReader(blob);
+                reader.readAsDataURL(blob);
+                reader.onloadend = function() {
+                    let base64data = reader.result.split(',')[1];                
+                    //console.log(base64data);
+                    displayImageFromArrayBuffer(grid, _base64ToArrayBuffer(base64data), 121, 258, 2400, 100, 1);
+                }
+            });
         });
     })
     .then((res) => {
@@ -168,6 +179,7 @@ function useTool() {
     switch (props.tool) {
         case Tool.SMOL:
             grid.draw_pixel(newMousePosition.x, newMousePosition.y, Klon.USERPAINTED, new Klon(hexToRGB(colorPicked), Klon.USERPAINTED, 'Monolith'));
+            console.log(newMousePosition.x, newMousePosition.y);
             break;
         case Tool.BIG:
             for (let i = -1; i <= 1; i++) {
