@@ -1,5 +1,5 @@
-import landscapeJSON from './landscapeBis.json';
-import monolithJSON from './monolith.json';
+import landscapeJSON from './JSON/landscapeBis.json';
+import monolithJSON from './JSON/monolith.json';
 import { preEncodeSpecialK } from '../utils/image-manager';
 
 function getArrays(renderWidth, renderHeight, nbColumns, nbLine, viewPosX, viewPosY) {
