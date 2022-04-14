@@ -77,8 +77,6 @@ document.addEventListener('keydown', function (e) {
     if (e.ctrlKey && e.key === 'y') grid = redo(grid);
     if (e.metaKey && e.key === 'y') grid = redo(grid);
     if (e.key === 't') console.log(assemble(256, 362, 256, 362, 0, 0));
-;
-
 });
 
 getTotalPixs()
@@ -115,7 +113,6 @@ getTotalPixs()
             watch(
                 () => props.color,
                 (color) => {
-                    console.log(color);
                     colorPicked = props.color;
                 }
             );
@@ -135,7 +132,6 @@ getTotalPixs()
     .then((res) => {
         getSupply().then(async (supply) => {
             let s = supply.toNumber();
-            console.log('ici');
             /* getChunksFromPosition(0, 15).then((chunks) => {
                 for(let i = 0; i< chunks.length; i++) {
                     let pixelPaid = chunks[i][2].toNumber();
@@ -178,8 +174,8 @@ function useTool() {
             }
             break;
         case Tool.HUGE:
-            for (let i = -4; i <= 4; i++) {
-                for (let j = -4; j <= 4; j++) {
+            for (let i = -15; i <= 15; i++) {
+                for (let j = -15; j <= 15; j++) {
                     if (newMousePosition.x + i < nbColonne && newMousePosition.x + i > -1)
                     grid.draw_pixel(newMousePosition.x + i, newMousePosition.y + j, Klon.USERPAINTED, new Klon(hexToRGB(colorPicked), Klon.USERPAINTED, 'Monolith'));
                     }
@@ -207,8 +203,8 @@ function useDeleteTool() {
             }
             break;
         case Tool.HUGE:
-            for (let i = -4; i <= 4; i++) {
-                for (let j = -4; j <= 4; j++) {
+            for (let i = -15; i <= 15; i++) {
+                for (let j = -15; j <= 15; j++) {
                     grid.erase_pixel(newMousePosition.x + i, newMousePosition.y + j);
                 }
             }
@@ -222,7 +218,6 @@ function useColorPicker() {
     let newMousePosition = mousePositionInGrid();
     colorPicked = grid.get_color(newMousePosition.x, newMousePosition.y, grid);
     colorPicked = RGBToHex(colorPicked[0], colorPicked[1], colorPicked[2]);
-    console.log(colorPicked);
     if (colorPicked !== undefined) {
         emit('changeColor', colorPicked);
     }

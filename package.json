@@ -20,8 +20,8 @@
     "web3": "^1.7.1"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^2.2.2",
-    "vite": "^2.8.4"
+    "@vitejs/plugin-vue": "^2.3.1",
+    "vite": "^2.9.4"
   },
   "prettier": {
     "trailingComma": "es5",
