@@ -22,7 +22,6 @@ import Tool from '../models/tools';
 import { chunkCreator, getChunk, getChunksFromPosition, getSupply, getTotalPixs, getThreshold } from '../utils/web3';
 import { assemble } from '../models/assembler.js';
 
-
 // Definition des props
 const props = defineProps({
     tool: Number,
@@ -87,7 +86,7 @@ getTotalPixs()
             const formuleDeLaMort = offsetFormule + (klonSum * threshold) / 1000000;
             // const nbLine = Math.floor(formuleDeLaMort / nbColonne);
             const nbLine = 362;
-            console.log(`nbLine : ${nbLine}, nbColonne : ${nbColonne}`);
+            // console.log(`nbLine : ${nbLine}, nbColonne : ${nbColonne}`);
             // Gestion de la grille
             grid = new Grid(nbColonne, nbLine);
             grid.initialize(document.body);
@@ -127,17 +126,6 @@ getTotalPixs()
                     }
                 }
             );
-
-            fetch('./1.png').then(res => res.blob()) // Gets the response and returns it as a blob
-            .then(blob => {
-                const reader = new FileReader(blob);
-                reader.readAsDataURL(blob);
-                reader.onloadend = function() {
-                    let base64data = reader.result.split(',')[1];                
-                    //console.log(base64data);
-                    displayImageFromArrayBuffer(grid, _base64ToArrayBuffer(base64data), 121, 258, 2400, 100, 1);
-                }
-            });
         });
     })
     .then((res) => {
