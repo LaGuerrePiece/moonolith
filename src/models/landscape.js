@@ -1,65 +1,85 @@
-import floor from '../assets/landscape/1_floor.png';
-// import hills from '../assets/landscape/2_hills.png';
-// import mountains from '../assets/landscape/3_mountains.png';
-// import sky from '../assets/landscape/4_sky.png';
-import { preEncodeSpecialK } from '../utils/image-manager';
+import { preEncodeSpecialK, _base64ToArrayBuffer, decode, toRGBA8 } from '../utils/image-manager';
 
-let floorBlob = new Blob(['../assets/landscape/1_floor.png'], { type: 'image/png' });
-let hillsBlob = new Blob(['../assets/landscape/2_hills.png'], { type: 'image/png' });
-let mountainsBlob = new Blob(['../assets/landscape/3_mountains.png'], { type: 'image/png' });
-let skyBlob = new Blob(['../assets/landscape/4_sky.png'], { type: 'image/png' });
+import landscapeBase64 from '../assets/data.js';
 
 import floorJSON from '../assets/JSON/1_floor.json';
 import hillsJSON from '../assets/JSON/2_hills.json';
 import mountainsJSON from '../assets/JSON/3_mountains.json';
 import skyJSON from '../assets/JSON/4_sky.json';
 
-import { decode } from '../utils/image-manager';
+// let start = performance.now();
+// fetch('./landscape/1_floor.png')
+//     .then((res) => res.blob()) // Gets the response and returns it as a blob
+//     .then((blob) => {
+//         const reader = new FileReader(blob);
+//         reader.readAsDataURL(blob);
+//         reader.onloadend = async function () {
+//             let base64data = reader.result.split(',')[1];
+//             let decoded = await decode(_base64ToArrayBuffer(base64data)).catch(console.error);
+//             let ls_floor = toRGBA8(decoded);
+//             let end = performance.now();
+//             console.log(`decode Fetch floor took ${Math.floor(end - start)} milliseconds.`);
+//             // console.log('ls_floor', ls_floor);
+//         };
+//     });
 
-let layers = [
+let start2 = performance.now();
+let import64 = async (base64data) => {
+    let decoded = await decode(_base64ToArrayBuffer(base64data)).catch(console.error);
+    let b64_floor = toRGBA8(decoded);
+    let end2 = performance.now();
+    // console.log(`decode 64 floor took ${Math.floor(end2 - start2)} milliseconds.`);
+    // console.log('b64_floor', b64_floor);
+    return b64_floor;
+};
+import64(landscapeBase64.floor_1.base64);
+
+var layers = [
     { file: skyJSON, startY: 400, parallax: 0.2, name: 'sky' },
-    // { file: mountainsJSON, startY: 200, parallax: 0.45, name: 'mountains' },
-    // { file: hillsJSON, startY: 80, parallax: 0.7, name: 'hills' },
+    { file: mountainsJSON, startY: 200, parallax: 0.45, name: 'mountains' },
+    { file: hillsJSON, startY: 80, parallax: 0.7, name: 'hills' },
     { file: floorJSON, startY: 25, parallax: 1, name: 'floor' },
 ];
 
-export function assembleLandscape(renderWidth, renderHeight, nbColumns, nbLine, viewPosX, viewPosY) {
-    console.log('input :', renderWidth, renderHeight, nbColumns, nbLine, viewPosX, viewPosY);
-    let landscapeArray = [];
+export async function assembleLandscape(renderWidth, renderHeight, nbColumns, nbLine, viewPosX, viewPosY) {
+    let landscapeArrayJSON = [];
+    let landscapeArrayBase64 = [];
+
+    let startJSON = performance.now();
     for (let layer in layers) {
+        let start = performance.now(); // benchmark
         let currentFile = layers[layer].file;
         let currentFileLength = Object.keys(currentFile).length;
-        console.log(currentFileLength);
-        let writtenLines = 0;
-        for (let i = 0; i < renderHeight * renderWidth * 4; i++) {
-            while (writtenLines < renderHeight * 4) {
-                if (currentFile[writtenLines * renderWidth * 4 + i] !== undefined) {
-                    landscapeArray[writtenLines * renderWidth * 4 + i + layers[layer].startY * nbColumns] =
-                        currentFile[writtenLines * renderWidth * 4 + i];
-                }
-                writtenLines++; 
-            }
+        for (let i = 0; i < currentFileLength; i++) {
+            landscapeArrayJSON[i] = currentFile[i];
         }
+        let end = performance.now();
+        console.log(
+            `JSON : ${layers[layer].name} | length : ${currentFileLength} | performance : ${Math.floor(end - start)} ms`
+        );
     }
-    console.log('output :', landscapeArray);
-    return landscapeArray;
-    // const readImageBuffer = (img) =>
-    //     new Promise((resolve, reject) => {
-    //         let reader = new FileReader();
-    //         reader.readAsArrayBuffer(img);
-    //         reader.onload = () => resolve(reader.result);
-    //         reader.onerror = (error) => reject(error);
-    //     });
+    let endJSON = performance.now();
+    console.log(`JSON TOTAL : ${Math.floor(endJSON - startJSON)} ms`);
 
-    // readImageBuffer(floor).then((res) => {
-    //     console.log('res', res);
-    //     test(res).catch(console.error);
-    // });
-
-    // async function test(arrayBuffer) {
-    //     let decoded;
-    //     decoded = await decode(arrayBuffer, 'autrice').catch(console.error);
-    //     if (!decoded) return;
-    //     console.log('decoded', decoded);
-    // }
+    let start64 = performance.now();
+    for (let layer in landscapeBase64) {
+        let start3 = performance.now(); // benchmark
+        await import64(landscapeBase64[layer].base64).then((buffer) => {
+            for (let i = 0; i < buffer.length; i++) {
+                landscapeArrayBase64[i] = buffer[i];
+            }
+            let end3 = performance.now();
+            console.log(
+                `BASE64 : ${landscapeBase64[layer].name} | length : ${buffer.length} | performance : ${Math.floor(
+                    end3 - start3
+                )} ms`
+            );
+        });
+    }
+    let end64 = performance.now();
+    console.log(`BASE64 TOTAL : ${Math.floor(end64 - start64)} ms`);
+    console.log('output landscapeArrayBase64 :', landscapeArrayBase64);
+    console.log('output landscapeArrayJSON :', landscapeArrayJSON);
+    
+    return landscapeArrayBase64;
 }

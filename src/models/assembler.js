@@ -37,7 +37,6 @@ export function assemble(renderWidth, renderHeight, nbColumns, nbLine, viewPosX,
         'viewPosY', // 0
         viewPosY
     );
-    let start = performance.now(); // benchmark
 
     let displayArray = [];
     let { monolithArray, landscapeArray } = getArrays(renderWidth, renderHeight, nbColumns, nbLine, viewPosX, viewPosY); // obtient les arrays à concaténer
@@ -58,7 +57,7 @@ export function assemble(renderWidth, renderHeight, nbColumns, nbLine, viewPosX,
         } else {
             //mid
             for (let i = 0; i < renderWidth * 4; i++) {
-                if (i >= (marginLeft - viewPosX)* 4 && i < (nbColumns - marginRight - viewPosX) * 4) {
+                if (i >= (marginLeft - viewPosX) * 4 && i < (nbColumns - marginRight - viewPosX) * 4) {
                     displayArray[writtenLines * renderWidth * 4 + i] =
                         monolithArray[writtenLines * renderWidth * 4 + i];
                 } else {
@@ -69,8 +68,8 @@ export function assemble(renderWidth, renderHeight, nbColumns, nbLine, viewPosX,
         }
         writtenLines++;
     }
-    preEncodeSpecialK(displayArray, renderWidth, renderHeight);
-    let end = performance.now();
-    console.log('assemble: ' + Math.floor(end - start) + ' ms');
+    assembleLandscape(renderWidth, renderHeight, nbColumns, nbLine, viewPosX, viewPosY).then((res) => {
+        preEncodeSpecialK(res, renderWidth, renderHeight);
+    });
     return displayArray;
 }

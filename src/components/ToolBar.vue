@@ -94,6 +94,15 @@ function importImage() {
     readImageBuffer(importedImage).then((res) => {
         // console.log('buffer de ToolBar vers App', res);
         emit('import', res);
+
+        // convert res to base64
+        let base64 = btoa(
+            new Uint8Array(res).reduce(
+                (data, byte) => data + String.fromCharCode(byte),
+                ''
+            )
+        );
+        console.log('base64', base64); 
     });
 }
 

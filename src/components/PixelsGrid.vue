@@ -76,7 +76,7 @@ document.addEventListener('keydown', function (e) {
     if (e.metaKey && e.key === 'Z') grid = redo(grid);
     if (e.ctrlKey && e.key === 'y') grid = redo(grid);
     if (e.metaKey && e.key === 'y') grid = redo(grid);
-    if (e.key === 't') console.log(assemble(256, 362, 256, 362, 0, 0));
+    if (e.key === 'e') assemble(256, 362, 256, 362, 0, 0);
 });
 
 getTotalPixs()
