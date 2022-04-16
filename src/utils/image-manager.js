@@ -23,8 +23,8 @@ function RGBToHex(r, g, b) {
 function decode(buffer) {
     return new Promise((resolve) => {
         let buff = UPNG.decode(buffer);
-       // console.log(buff.width, buff.height);
-       // console.log(buff.data);
+        // console.log(buff.width, buff.height);
+        // console.log(buff.data);
         resolve(buff);
     });
 }
@@ -92,28 +92,28 @@ function gridToArray(grid) {
         let i = grid.convertXYToIndex(highLow.lowX, highLow.lowY);
         i <= grid.convertXYToIndex(highLow.highX, highLow.highY);
         i++
-        ) {
-            if (
-                grid.convertIndexToXY(i).x >= highLow.lowX &&
-                grid.convertIndexToXY(i).x <= highLow.highX &&
+    ) {
+        if (
+            grid.convertIndexToXY(i).x >= highLow.lowX &&
+            grid.convertIndexToXY(i).x <= highLow.highX &&
             grid.convertIndexToXY(i).y >= highLow.lowY &&
             grid.convertIndexToXY(i).y <= highLow.highY
-            ) {
-                if (grid.persistent[i] && grid.persistent[i].zIndex == Klon.USERPAINTED) {
-                    if (firstPix == -1) firstPix = i;
-                    saveArray.push(grid.persistent[i].color[0] * 255);
-                    saveArray.push(grid.persistent[i].color[1] * 255);
-                    saveArray.push(grid.persistent[i].color[2] * 255);
-                    saveArray.push(255);
-                    nbPix++;
-                } else {
-                    saveArray.push(0);
-                    saveArray.push(0);
-                    saveArray.push(0);
-                    saveArray.push(0);
-                }
+        ) {
+            if (grid.persistent[i] && grid.persistent[i].zIndex == Klon.USERPAINTED) {
+                if (firstPix == -1) firstPix = i;
+                saveArray.push(grid.persistent[i].color[0] * 255);
+                saveArray.push(grid.persistent[i].color[1] * 255);
+                saveArray.push(grid.persistent[i].color[2] * 255);
+                saveArray.push(255);
+                nbPix++;
+            } else {
+                saveArray.push(0);
+                saveArray.push(0);
+                saveArray.push(0);
+                saveArray.push(0);
             }
         }
+    }
     return { firstPix: firstPix, highLow: highLow, nbPix: nbPix, saveArray: saveArray };
 }
 
@@ -148,4 +148,61 @@ function _base64ToArrayBuffer(base64) {
     return bytes.buffer;
 }
 
-export { decode, getHighLow, preEncode, preEncodeSpecialK, _base64ToArrayBuffer, toRGBA8, gridToArray, hexToRGB, RGBToHex };
+export function moveDrawing(x, y) {
+    let highLow, saveArray, nbPix, firstPix;
+    let ret = gridToArray(monolith);
+    highLow = ret.highLow;
+    saveArray = ret.saveArray;
+    nbPix = ret.nbPix;
+    firstPix = ret.firstPix;
+    erase_all_pixel();
+    console.log('l', highLow.largeur);
+    console.log('L', highLow.longueur);
+    console.log('lowx', highLow.lowX);
+    let outx = x;
+    let outy = y;
+    if (outx > 127) outx = 127;
+    if (outx < 0) outx = 0;
+    displayArrayToImage(saveArray, highLow.largeur, outx, outy, 999999, 999999, 0);
+}
+
+export async function displayImageFromArrayBuffer(arrayBuffer, offsetx, offsety, pixelPaid, yMaxLegal, zIndex) {
+    let decoded;
+    decoded = await decode(arrayBuffer).catch(console.error);
+    if (!decoded) return;
+    let array = toRGBA8(decoded);
+    let width = decoded.width;
+    displayArrayToImage(array, width, offsetx, offsety, pixelPaid, yMaxLegal, zIndex);
+}
+
+export function displayArrayToImage(array, width, offsetx, offsety, pixelPaid, yMaxLegal, zIndex) {
+    let pixelDrawn = 0;
+    let decalage = 0;
+    for (let y = 0; y < yMaxLegal; y++) {
+        for (let x = 0; x < width; x++) {
+            let idx = (width * y + x) * 4;
+            if (array[idx + 3] != 0 && array[idx + 3] != 0 && pixelDrawn < pixelPaid) {
+                if (pixelDrawn === 0) decalage = x;
+                draw_pixel(
+                    x + offsetx - decalage,
+                    y + offsety,
+                    zIndex,
+                    new Klon([array[idx] / 255, array[idx + 1] / 255, array[idx + 2] / 255], zIndex)
+                );
+                pixelDrawn++;
+            }
+        }
+    }
+}
+
+export {
+    decode,
+    getHighLow,
+    preEncode,
+    preEncodeSpecialK,
+    _base64ToArrayBuffer,
+    toRGBA8,
+    gridToArray,
+    hexToRGB,
+    RGBToHex,
+};

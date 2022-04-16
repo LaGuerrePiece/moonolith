@@ -1,5 +1,7 @@
-import landscapeJSON from '../assets/JSON/landscapeBis.json';
-import monolithJSON from '../assets/JSON/monolith.json';
+import landscapeJSON from './JSON/landscapeBis.json';
+import monolithJSON from './JSON/monolith.json';
+import Klon from './klon';
+import { monolith, getMonolithArray } from './monolith';
 import { preEncodeSpecialK } from '../utils/image-manager';
 import { assembleLandscape } from './landscape';
 
@@ -17,22 +19,36 @@ async function getArrays(renderWidth, renderHeight, nbColumns, nbLine, viewPosX,
         viewPosX,
         viewPosY
     );
-    let landscapeArrayRedux = [];
-    let monolithArrayRedux = [];
+    landscapeArrayAssemble = convert(landscapeArrayAssemble);
+    let landscapeArray = [];
+
     for (let y = 0; y < renderHeight; y++) {
-        let currentLinePosStart = (nbLine - renderHeight - viewPosY + y) * 4 * nbColumns;
-        for (let x = 0; x < renderWidth * 4; x++) {
-            let currentColumnPosStart = viewPosX * 4 + x;
-            landscapeArrayRedux.push(landscapeArrayAssemble[currentColumnPosStart + currentLinePosStart]);
-            monolithArrayRedux.push(monolithJSON[currentColumnPosStart + currentLinePosStart]);
+        const currentLinePosStart = (nbLineLandscape - renderHeight - viewPosY + y) * nbColumnsLandscape;
+        for (let x = 0; x < renderWidth; x++) {
+            const currentColumnPosStart = viewPosX + x;
+            landscapeArray.push(landscapeArrayAssemble[currentColumnPosStart + currentLinePosStart]);
         }
     }
-    return { landscape: landscapeArrayRedux, monolith: monolithArrayRedux };
+    return landscapeArray;
 }
 
-export function assemble(renderWidth, renderHeight, nbColumns, nbLine, viewPosX, viewPosY) {
+export async function assemble(renderWidth, renderHeight, nbColumnsLandscape, nbLineLandscape, viewPosX, viewPosY) {
     console.log(
         'renderWidth', // 256
+        renderWidth,
+        'renderHeight', // 362
+        renderHeight,
+        'nbColumnsLandscape', // 256
+        nbColumnsLandscape,
+        'nbLineLandscape', // 362
+        nbLineLandscape,
+        'viewPosX', // 0
+        viewPosX,
+        'viewPosY', // 0
+        viewPosY
+    );
+    let startAssemble = performance.now();
+    let landscapeArray = await getLandscapeArray(
         renderWidth,
         'renderHeight', // 362
         renderHeight,
@@ -45,55 +61,46 @@ export function assemble(renderWidth, renderHeight, nbColumns, nbLine, viewPosX,
         'viewPosY', // 0
         viewPosY
     );
-    let startAssemble = performance.now();
-    let displayArray = [];
-    getArrays(renderWidth, renderHeight, nbColumns, nbLine, viewPosX, viewPosY).then((res) => {
-        let { landscape, monolith } = res;
-        let endGetArray = performance.now();
-        let writtenLines = 0;
-        while (writtenLines < renderHeight) {
-            let currentLine = viewPosY + renderHeight - writtenLines;
 
-            if (currentLine < marginBot) {
-                //bot
-                for (let i = 0; i < renderWidth * 4; i++) {
-                    displayArray[writtenLines * renderWidth * 4 + i] = landscape[writtenLines * renderWidth * 4 + i];
-                }
-            } else if (currentLine > nbLine - marginTop) {
-                // top
-                for (let i = 0; i < renderWidth * 4; i++) {
-                    displayArray[writtenLines * renderWidth * 4 + i] = landscape[writtenLines * renderWidth * 4 + i];
-                }
-            } else {
-                //mid
-                for (let i = 0; i < renderWidth * 4; i++) {
-                    if (i >= (marginLeft - viewPosX) * 4 && i < (nbColumns - marginRight - viewPosX) * 4) {
-                        displayArray[writtenLines * renderWidth * 4 + i] = monolith[writtenLines * renderWidth * 4 + i];
-                    } else {
-                        displayArray[writtenLines * renderWidth * 4 + i] =
-                            landscape[writtenLines * renderWidth * 4 + i];
-                    }
+    let monolithArray = getMonolithArray(
+        renderWidth,
+        renderHeight,
+        nbColumnsLandscape,
+        nbLineLandscape,
+        viewPosX,
+        viewPosY
+    );
+    let endGetArray = performance.now();
+
+    for (let i = 0; i < renderHeight; i++) {
+        const currentLine = viewPosY + renderHeight - i;
+        if (currentLine >= marginBot && currentLine <= nbLineLandscape - marginTop) {
+            for (let j = 0; j < renderWidth; j++) {
+                if (j >= marginLeft - viewPosX && j < nbColumnsLandscape - marginRight - viewPosX) {
+                    landscapeArray[i * renderWidth + j] = monolithArray[i * renderWidth + j];
                 }
             }
             writtenLines++;
         }
-        let endAssemble = performance.now();
-        console.log(
-            'Get arrays :',
-            Math.floor(endGetArray - startAssemble),
-            'ms | Write arrays :',
-            Math.floor(endAssemble - endGetArray),
-            'ms'
-        );
-        console.log('Assemble TOTAL :', Math.floor(endAssemble - startAssemble), 'ms');
+    }
+    let endAssemble = performance.now();
+    console.log(
+        'Get arrays :',
+        Math.floor(endGetArray - startAssemble),
+        'ms | Write arrays :',
+        Math.floor(endAssemble - endGetArray),
+        'ms'
+    );
+    console.log('Assemble TOTAL :', Math.floor(endAssemble - startAssemble), 'ms');
 
-        preEncodeSpecialK(displayArray, renderWidth, renderHeight);
+    return landscapeArray;
+}
 
-        // pour tester uniquement Landscape
-        // assembleLandscape(renderWidth, renderHeight, nbColumns, nbLine, viewPosX, viewPosY).then((res) => {
-        //     preEncodeSpecialK(res, renderWidth, renderHeight);
-        // });
-
-        return displayArray;
-    });
+//Conversion d'un array JSON en array RGB
+function convert(data) {
+    let convertedData = [];
+    for (let i = 0; i < data.length; i += 4) {
+        convertedData.push([data[i] / 255, data[i + 1] / 255, data[i + 2] / 255]);
+    }
+    return convertedData;
 }
