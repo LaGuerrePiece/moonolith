@@ -3,13 +3,20 @@ import monolithJSON from '../assets/JSON/monolith.json';
 import { preEncodeSpecialK } from '../utils/image-manager';
 import { assembleLandscape } from './landscape';
 
-let marginBot = 20;
+let marginBot = 10;
 let marginTop = 34;
 let marginLeft = 47;
 let marginRight = 60;
 
 async function getArrays(renderWidth, renderHeight, nbColumns, nbLine, viewPosX, viewPosY) {
-    let landscapeArrayAssemble = await assembleLandscape(renderWidth, renderHeight, nbColumns, nbLine, viewPosX, viewPosY);
+    let landscapeArrayAssemble = await assembleLandscape(
+        renderWidth,
+        renderHeight,
+        nbColumns,
+        nbLine,
+        viewPosX,
+        viewPosY
+    );
     let landscapeArrayRedux = [];
     let monolithArrayRedux = [];
     for (let y = 0; y < renderHeight; y++) {
@@ -81,12 +88,12 @@ export function assemble(renderWidth, renderHeight, nbColumns, nbLine, viewPosX,
         console.log('Assemble TOTAL :', Math.floor(endAssemble - startAssemble), 'ms');
 
         preEncodeSpecialK(displayArray, renderWidth, renderHeight);
-        
+
         // pour tester uniquement Landscape
         // assembleLandscape(renderWidth, renderHeight, nbColumns, nbLine, viewPosX, viewPosY).then((res) => {
-            //     preEncodeSpecialK(res, renderWidth, renderHeight);
-            // });
-            console.log('displayArray', displayArray);
-            return displayArray;
-        });
+        //     preEncodeSpecialK(res, renderWidth, renderHeight);
+        // });
+
+        return displayArray;
+    });
 }

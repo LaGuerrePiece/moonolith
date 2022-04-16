@@ -7,7 +7,7 @@ let import64 = async (base64data) => {
     let decoded = await decode(_base64ToArrayBuffer(base64data)).catch(console.error);
     let b64_floor = toRGBA8(decoded);
     let endImport = performance.now();
-    return {buffer: b64_floor, perf: Math.floor(endImport - startImport)};
+    return { buffer: b64_floor, perf: Math.floor(endImport - startImport) };
 };
 
 export async function assembleLandscape(renderWidth, renderHeight, nbColumns, nbLine, viewPosX, viewPosY) {
@@ -32,7 +32,11 @@ export async function assembleLandscape(renderWidth, renderHeight, nbColumns, nb
                 landscapeArray[i + offset] = res.buffer[i];
             }
             console.log(
-                `${thisLayer.name} | Parallax : ${thisLayer.parallax} | Height : ${thisLayer.height} | StartY : ${thisLayer.startY} | Offset : ${parallaxOffset} | Import : ${res.perf} ms | Total :`,
+                `${thisLayer.name} | Parallax : ${thisLayer.parallax} | Height : ${thisLayer.height} | StartY : ${
+                    thisLayer.startY
+                } | Parallax Offset : ${parallaxOffset} | Full Offset ${offset / nbColumns / 4}| Import : ${
+                    res.perf
+                } ms, total :`,
                 Math.floor(performance.now() - startLayer),
                 'ms'
             );
