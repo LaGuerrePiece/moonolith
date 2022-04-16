@@ -14,13 +14,12 @@ export async function assembleLandscape(renderWidth, renderHeight, nbColumns, nb
     console.log('------------------------------------------------------');
     var landscapeArray = [];
     let randomPos = Math.floor(Math.random() * 40);
-    // let randomPos = 30;
-    console.log('randomPos', randomPos);
+    // console.log('randomPos', randomPos);
     let start64 = performance.now();
     for (let layer in landscapeBase64) {
         let startLayer = performance.now();
         let thisLayer = landscapeBase64[layer];
-        let parallaxOffset = Math.floor(thisLayer.parallax * randomPos);
+        let parallaxOffset = Math.floor(thisLayer.parallax * viewPosY);
         let offset = (nbLine - thisLayer.height - thisLayer.startY + parallaxOffset) * nbColumns * 4;
         // console.log(`offset ${thisLayer.name}`, offset);
         await import64(thisLayer.base64).then((res) => {
@@ -42,6 +41,5 @@ export async function assembleLandscape(renderWidth, renderHeight, nbColumns, nb
     let end64 = performance.now();
     console.log('BASE64 TOTAL :', Math.floor(end64 - start64), 'ms');
     console.log('------------------------------------------------------');
-
     return landscapeArray;
 }
