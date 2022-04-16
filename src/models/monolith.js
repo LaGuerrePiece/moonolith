@@ -10,8 +10,8 @@ import {
     RGBToHex,
 } from '../utils/image-manager';
 
-const nbColumns = 256;
-const nbRows = 400;
+const nbColumns = 170;
+const nbRows = 600;
 
 // export let monolith = Array.from({ length: nbRows }, () =>
 //     Array.from({ length: nbColumns }, () => new Klon([0, 0, 0]))
