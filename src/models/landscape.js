@@ -31,19 +31,19 @@ export async function assembleLandscape(renderWidth, renderHeight, nbColumns, nb
                 }
                 landscapeArray[i + offset] = res.buffer[i];
             }
-            console.log(
-                `${thisLayer.name} | Parallax : ${thisLayer.parallax} | Height : ${thisLayer.height} | StartY : ${
-                    thisLayer.startY
-                } | Parallax Offset : ${parallaxOffset} | Full Offset ${offset / nbColumns / 4}| Import : ${
-                    res.perf
-                } ms, total :`,
-                Math.floor(performance.now() - startLayer),
-                'ms'
-            );
+            // console.log(
+            //     `${thisLayer.name} | Parallax : ${thisLayer.parallax} | Height : ${thisLayer.height} | StartY : ${
+            //         thisLayer.startY
+            //     } | Parallax Offset : ${parallaxOffset} | Full Offset ${offset / nbColumns / 4}| Import : ${
+            //         res.perf
+            //     } ms, total :`,
+            //     Math.floor(performance.now() - startLayer),
+            //     'ms'
+            // );
         });
     }
     let end64 = performance.now();
     console.log('BASE64 TOTAL :', Math.floor(end64 - start64), 'ms');
-    console.log('------------------------------------------------------');
+    // console.log('------------------------------------------------------');
     return landscapeArray;
 }

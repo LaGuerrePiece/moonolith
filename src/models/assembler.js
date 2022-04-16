@@ -31,20 +31,6 @@ async function getLandscapeArray(renderWidth, renderHeight, nbColumnsLandscape, 
 }
 
 export async function assemble(renderWidth, renderHeight, nbColumnsLandscape, nbLineLandscape, viewPosX, viewPosY) {
-    console.log(
-        'renderWidth', // 256
-        renderWidth,
-        'renderHeight', // 362
-        renderHeight,
-        'nbColumnsLandscape', // 256
-        nbColumnsLandscape,
-        'nbLineLandscape', // 362
-        nbLineLandscape,
-        'viewPosX', // 0
-        viewPosX,
-        'viewPosY', // 0
-        viewPosY
-    );
     let startAssemble = performance.now();
     let landscapeArray = await getLandscapeArray(
         renderWidth,
