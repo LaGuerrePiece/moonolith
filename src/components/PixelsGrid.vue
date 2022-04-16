@@ -3,7 +3,7 @@
 import { reactive, watch, ref } from 'vue';
 
 // Imports des composants
-import { draw_pixel, get_color, erase_all_pixel, erase_pixel, getMonolith, moveDrawing, displayImageFromArrayBuffer, displayArrayToImage} from '../models/monolith';
+import { draw_pixel, get_color, erase_all_pixel, erase_pixel, getMonolith} from '../models/monolith';
 import DisplayGrid from '../models/displayGrid';
 import Klon from '../models/klon';
 import { closeCurrentEvent, undo, redo } from '../models/undoStack';
@@ -18,6 +18,7 @@ import {
     gridToArray,
     hexToRGB,
     RGBToHex,
+    moveDrawing, displayImageFromArrayBuffer, displayArrayToImage
 } from '../utils/image-manager';
 import mousePosition from 'mouse-position';
 import Tool from '../models/tools';
@@ -87,7 +88,7 @@ position = ref(mousePosition(canvas));
 console.log('displayGrid.length', displayGrid.length)
 
 window.onwheel = function (e) {
-    viewPos += e.deltaY * -0.15;
+    viewPos += e.deltaY * -0.01;
     if (viewPos < 0) {
         viewPos = 0
         return

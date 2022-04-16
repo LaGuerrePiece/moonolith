@@ -1,5 +1,3 @@
-import landscapeJSON from './JSON/landscapeBis.json';
-import monolithJSON from './JSON/monolith.json';
 import Klon from './klon';
 import { monolith, getMonolithArray } from './monolith';
 import { preEncodeSpecialK } from '../utils/image-manager';
@@ -10,12 +8,12 @@ let marginTop = 34;
 let marginLeft = 47;
 let marginRight = 60;
 
-async function getArrays(renderWidth, renderHeight, nbColumns, nbLine, viewPosX, viewPosY) {
+async function getLandscapeArray(renderWidth, renderHeight, nbColumnsLandscape, nbLineLandscape, viewPosX, viewPosY) {
     let landscapeArrayAssemble = await assembleLandscape(
         renderWidth,
         renderHeight,
-        nbColumns,
-        nbLine,
+        nbColumnsLandscape,
+        nbLineLandscape,
         viewPosX,
         viewPosY
     );
@@ -50,15 +48,10 @@ export async function assemble(renderWidth, renderHeight, nbColumnsLandscape, nb
     let startAssemble = performance.now();
     let landscapeArray = await getLandscapeArray(
         renderWidth,
-        'renderHeight', // 362
         renderHeight,
-        'nbColumns', // 256
-        nbColumns,
-        'nbLine', // 362
-        nbLine,
-        'viewPosX', // 0
+        nbColumnsLandscape,
+        nbLineLandscape,
         viewPosX,
-        'viewPosY', // 0
         viewPosY
     );
 
@@ -80,7 +73,6 @@ export async function assemble(renderWidth, renderHeight, nbColumnsLandscape, nb
                     landscapeArray[i * renderWidth + j] = monolithArray[i * renderWidth + j];
                 }
             }
-            writtenLines++;
         }
     }
     let endAssemble = performance.now();
