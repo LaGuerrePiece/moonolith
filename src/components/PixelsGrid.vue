@@ -22,7 +22,7 @@ import {
 import mousePosition from 'mouse-position';
 import Tool from '../models/tools';
 import { chunkCreator, getChunk, getChunksFromPosition, getSupply, getTotalPixs, getThreshold } from '../utils/web3';
-import { assemble, convert } from '../models/assembler.js';
+import { assemble } from '../models/assembler.js';
 
 
 // Definition des props
@@ -98,7 +98,7 @@ window.onwheel = function (e) {
 function update() {
     if (new Date() - lastCall < 30) return;
     //data is the array of the displayed klons
-    data = assemble(nbColonneDisplay, displayGridHeight, 256, 362, 0, viewPos)
+    data = assemble(nbColonneDisplay, displayGridHeight, 256, 362, 256, 400, 0, viewPos)
     for (let i = 0; i < data.length; i++) {
         if (data[i].color) diplayData[i] = data[i].color
         else diplayData[i] = data[i]
