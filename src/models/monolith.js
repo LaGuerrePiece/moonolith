@@ -10,13 +10,16 @@ import {
     RGBToHex,
 } from '../utils/image-manager';
 
-import png from '../utils/png.png';
-console.log(png);
+const nbColumns = 256;
+const nbRows = 400;
 
-let nbColumns = 256;
-let nbRows = 400;
+// export let monolith = Array.from({ length: nbRows }, () =>
+//     Array.from({ length: nbColumns }, () => new Klon([0, 0, 0]))
+// );
+
+// console.log('monolith', monolith);
 export let monolith = [...Array(nbColumns * nbRows).keys()].map(
-    (index) => new Klon([0, 0, 0], undefined, 'monolith', index)
+    (index) => new Klon([0, 1, 0], undefined, 'monolith', index)
 );
 
 export function draw_pixel(pos, zIndex, klon) {

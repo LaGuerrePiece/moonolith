@@ -24,8 +24,8 @@ function RGBToHex(r, g, b) {
 function decode(buffer) {
     return new Promise((resolve) => {
         let buff = UPNG.decode(buffer);
-        console.log(buff.width, buff.height);
-        console.log(buff.data);
+        // console.log(buff.width, buff.height);
+        // console.log(buff.data);
         resolve(buff);
     });
 }
