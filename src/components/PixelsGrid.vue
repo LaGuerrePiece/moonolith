@@ -100,12 +100,7 @@ async function update() {
     if (new Date() - lastCall < 10) return;
     //data is the array of the displayed klons
     data = await assemble(nbColonneDisplay, displayGridHeight, 256, 362, 0, viewPos).then((data) => {
-        for (let i = 0; i < data.length; i++) {
-            if (data[i].color) diplayData[i] = data[i].color
-            else diplayData[i] = data[i]
-        }
-
-        displayGrid.updateDisplay(diplayData)
+        displayGrid.updateDisplay(data)
         lastCall = new Date()
     })
 

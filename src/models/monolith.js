@@ -94,7 +94,7 @@ export function getMonolithArray(renderWidth, renderHeight, nbColumnsLandscape, 
         const currentLinePosStart = (nbLineLandscape - renderHeight - viewPosY + y) * nbColumnsLandscape;
         for (let x = 0; x < renderWidth; x++) {
             const currentColumnPosStart = viewPosX + x;
-            monolithArray.push(monolith[currentColumnPosStart + currentLinePosStart]);
+            monolithArray.push(monolith[currentColumnPosStart + currentLinePosStart].color);
         }
     }
 
