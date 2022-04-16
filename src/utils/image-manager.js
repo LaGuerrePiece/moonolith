@@ -1,5 +1,6 @@
 import UPNG from 'upng-js';
 import Klon from '../models/klon';
+import { getMonolith, replaceMonolith } from '../models/monolith';
 
 function hexToRGB(hex) {
     var r = parseInt(hex.slice(1, 3), 16) / 255,
@@ -60,7 +61,7 @@ function getHighLow(grid) {
     return { lowX, lowY, highX, highY, longueur, largeur };
 }
 
-function preEncode(grid) {
+function preEncode() {
     return new Promise((resolve) => {
         let { highLow, saveArray, nbPix, firstPix } = gridToArray(grid);
 
@@ -83,7 +84,8 @@ function preEncodeSpecialK(displayArray, renderWidth, renderHeight) {
     });
 }
 
-function gridToArray(grid) {
+function gridToArray() {
+    grid = getMonolith();
     let highLow = getHighLow(grid);
     let saveArray = [];
     let nbPix = 0;
@@ -92,28 +94,28 @@ function gridToArray(grid) {
         let i = grid.convertXYToIndex(highLow.lowX, highLow.lowY);
         i <= grid.convertXYToIndex(highLow.highX, highLow.highY);
         i++
-        ) {
-            if (
-                grid.convertIndexToXY(i).x >= highLow.lowX &&
-                grid.convertIndexToXY(i).x <= highLow.highX &&
+    ) {
+        if (
+            grid.convertIndexToXY(i).x >= highLow.lowX &&
+            grid.convertIndexToXY(i).x <= highLow.highX &&
             grid.convertIndexToXY(i).y >= highLow.lowY &&
             grid.convertIndexToXY(i).y <= highLow.highY
-            ) {
-                if (grid.persistent[i] && grid.persistent[i].zIndex == Klon.USERPAINTED) {
-                    if (firstPix == -1) firstPix = i;
-                    saveArray.push(grid.persistent[i].color[0] * 255);
-                    saveArray.push(grid.persistent[i].color[1] * 255);
-                    saveArray.push(grid.persistent[i].color[2] * 255);
-                    saveArray.push(255);
-                    nbPix++;
-                } else {
-                    saveArray.push(0);
-                    saveArray.push(0);
-                    saveArray.push(0);
-                    saveArray.push(0);
-                }
+        ) {
+            if (grid.persistent[i] && grid.persistent[i].zIndex == Klon.USERPAINTED) {
+                if (firstPix == -1) firstPix = i;
+                saveArray.push(grid.persistent[i].color[0] * 255);
+                saveArray.push(grid.persistent[i].color[1] * 255);
+                saveArray.push(grid.persistent[i].color[2] * 255);
+                saveArray.push(255);
+                nbPix++;
+            } else {
+                saveArray.push(0);
+                saveArray.push(0);
+                saveArray.push(0);
+                saveArray.push(0);
             }
         }
+    }
     return { firstPix: firstPix, highLow: highLow, nbPix: nbPix, saveArray: saveArray };
 }
 
@@ -148,4 +150,14 @@ function _base64ToArrayBuffer(base64) {
     return bytes.buffer;
 }
 
-export { decode, getHighLow, preEncode, preEncodeSpecialK, _base64ToArrayBuffer, toRGBA8, gridToArray, hexToRGB, RGBToHex };
+export {
+    decode,
+    getHighLow,
+    preEncode,
+    preEncodeSpecialK,
+    _base64ToArrayBuffer,
+    toRGBA8,
+    gridToArray,
+    hexToRGB,
+    RGBToHex,
+};

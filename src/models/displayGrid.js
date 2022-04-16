@@ -16,7 +16,7 @@ export default class DisplayGrid {
         nbRows,
         options = {
             size: 15,
-            padding: 1,
+            padding: 0,
             background: [0, 0, 0],
             formatted: true,
         }
@@ -30,7 +30,7 @@ export default class DisplayGrid {
         this.pixels = null;
 
         // les futures datas de PixelGrid
-        this.initialData = Array.from({ length: this.length }, () => [1, 1, 1]);
+        this.initialData = Array.from({ length: this.length }, () => [0.2, 0.8, 0.2]);
     }
 
     /**
@@ -57,5 +57,6 @@ export default class DisplayGrid {
 
     updateDisplay(data) {
         this.pixels.update(data);
+        console.log('render!');
     }
 }

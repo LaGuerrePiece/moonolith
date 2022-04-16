@@ -13,19 +13,12 @@ const color = ref('');
 const hasBought = ref(0);
 const onDelete = ref(0);
 const importedImage = ref();
-console.log(window.location.pathname);
-const urlData = window.location.pathname.split("/");
-const canva = false;
-if(urlData[1] == 'runes')
-{
-    console.log("It's canva");
-    canva = true;
-}
+
 
 </script>
 
 <template>
-    <Draggable color="white" style=""  v-if="!canva">
+    <Draggable color="white" style="">
         <ToolBar
             @toolChanged="tool = $event"
             @import="importedImage = $event"
@@ -40,7 +33,7 @@ if(urlData[1] == 'runes')
             style="margin: auto"
         />
     </Draggable>
-    <PixelsGrid v-if="!canva"
+    <PixelsGrid 
         @contextmenu.prevent
         :tool="tool"
         :color="color"
