@@ -64,6 +64,10 @@ document.addEventListener('keydown', function (e) {
     if (e.metaKey && e.key === 'Z') redo();
     if (e.ctrlKey && e.key === 'y') redo();
     if (e.metaKey && e.key === 'y') redo();
+    if (e.key === 't') {
+        viewPos += 1
+        update()
+    }
 });
 
 // SETUP OF DISPLAYGRID
