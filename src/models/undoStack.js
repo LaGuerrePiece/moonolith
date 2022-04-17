@@ -24,7 +24,7 @@ const addToCurrentEvent = (x, y, oldKlon) => {
 const undo = () => {
     if (eventStack.length === 0) return;
     const eventToUndo = eventStack.pop();
-
+    console.log('eventToUndo', eventToUndo);
     for (let i = 0; i < eventToUndo.length; i++) {
         inverseCurrentEvent.push([
             eventToUndo[i][0],
@@ -32,6 +32,7 @@ const undo = () => {
             monolith[eventToUndo[i][1]][eventToUndo[i][0]],
         ]);
         monolith[eventToUndo[i][1]][eventToUndo[i][0]] = eventToUndo[i][2];
+        console.log('undo!');
     }
     inverseEventStack.push(inverseCurrentEvent);
     if (inverseEventStack.length > 20) inverseEventStack.shift();
