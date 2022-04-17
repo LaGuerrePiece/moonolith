@@ -1,5 +1,6 @@
 import Klon from './klon';
 import { addToCurrentEvent, closeCurrentEvent } from './undoStack';
+import { marginBot, marginLeft } from './assembler';
 import {
     decode,
     preEncode,
@@ -13,14 +14,14 @@ import {
 const nbColumns = 170;
 const nbRows = 600;
 
-// export let monolith = Array.from({ length: nbRows }, () =>
-//     Array.from({ length: nbColumns }, () => new Klon([0, 0, 0]))
-// );
-
-// console.log('monolith', monolith);
-export let monolith = [...Array(nbColumns * nbRows).keys()].map(
-    (index) => new Klon([0, 1, 0], undefined, 'monolith', index)
+export let monolith = Array.from({ length: nbRows }, () =>
+    Array.from({ length: nbColumns }, () => new Klon([0, 1, 0]))
 );
+
+console.log('monolith', monolith);
+// export let monolith = [...Array(nbColumns * nbRows).keys()].map(
+//     (index) => new Klon([0, 1, 0], undefined, 'monolith', index)
+// );
 
 export function draw_pixel(pos, zIndex, klon) {
     if (pos > 0 && pos < monolith.length) {
@@ -87,16 +88,30 @@ export function replaceMonolith(newMonolith) {
     monolith = newMonolith;
 }
 
-export function getMonolithArray(renderWidth, renderHeight, nbColumnsLandscape, nbLineLandscape, viewPosX, viewPosY) {
+export function getMonolithArray(renderWidth, renderHeight, viewPosX, viewPosY) {
     let monolithArray = [];
-
-    for (let y = 0; y < renderHeight; y++) {
-        const currentLinePosStart = (nbLineLandscape - renderHeight - viewPosY + y) * nbColumnsLandscape;
-        for (let x = 0; x < renderWidth; x++) {
-            const currentColumnPosStart = viewPosX + x;
-            monolithArray.push(monolith[currentColumnPosStart + currentLinePosStart].color);
+    const startY = nbRows + marginBot - viewPosY - renderHeight;
+    const startX = viewPosX - marginLeft;
+    console.log('startY', startY);
+    console.log('startX', startX);
+    for (let i = 0; i < renderHeight; i++) {
+        for (let j = 0; j < renderWidth; j++) {
+            if (monolith[startY + i]?.[startX + j]) {
+                monolithArray.push(monolith[startY + i][startX + j]);
+            } else {
+                monolithArray.push(undefined);
+            }
         }
     }
+    console.log('monolithArray', monolithArray);
+
+    // for (let y = 0; y < renderHeight; y++) {
+    //     const currentLinePosStart = (nbLineLandscape - renderHeight - viewPosY + y) * nbColumnsLandscape;
+    //     for (let x = 0; x < renderWidth; x++) {
+    //         const currentColumnPosStart = viewPosX + x;
+    //         monolithArray.push(monolith[currentColumnPosStart + currentLinePosStart].color);
+    //     }
+    // }
 
     return monolithArray;
 }

@@ -3,10 +3,10 @@ import { monolith, getMonolithArray } from './monolith';
 import { preEncodeSpecialK } from '../utils/image-manager';
 import { assembleLandscape } from './landscape';
 
-let marginBot = 10;
-let marginTop = 34;
-let marginLeft = 47;
-let marginRight = 60;
+export let marginBot = 10;
+export let marginTop = 34;
+export let marginLeft = 47;
+export let marginRight = 60;
 
 async function getLandscapeArray(renderWidth, renderHeight, nbColumnsLandscape, nbLineLandscape, viewPosX, viewPosY) {
     let landscapeArrayAssemble = await assembleLandscape(
@@ -41,25 +41,11 @@ export async function assemble(renderWidth, renderHeight, nbColumnsLandscape, nb
         viewPosY
     );
 
-    let monolithArray = getMonolithArray(
-        renderWidth,
-        renderHeight,
-        nbColumnsLandscape,
-        nbLineLandscape,
-        viewPosX,
-        viewPosY
-    );
+    let monolithArray = getMonolithArray(renderWidth, renderHeight, viewPosX, viewPosY);
     let endGetArray = performance.now();
 
-    for (let i = 0; i < renderHeight; i++) {
-        const currentLine = viewPosY + renderHeight - i;
-        if (currentLine >= marginBot && currentLine <= nbLineLandscape - marginTop) {
-            for (let j = 0; j < renderWidth; j++) {
-                if (j >= marginLeft - viewPosX && j < nbColumnsLandscape - marginRight - viewPosX) {
-                    landscapeArray[i * renderWidth + j] = monolithArray[i * renderWidth + j];
-                }
-            }
-        }
+    for (let i = 0; i < landscapeArray.length; i++) {
+        if (monolithArray[i] !== undefined) landscapeArray[i] = monolithArray[i];
     }
     let endAssemble = performance.now();
     console.log(
