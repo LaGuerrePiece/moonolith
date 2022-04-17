@@ -28,17 +28,21 @@ async function getLandscapeArray(renderWidth, renderHeight, nbColumnsLandscape, 
     return landscapeArray;
 }
 
-export async function assemble(renderWidth, renderHeight, nbColumnsLandscape, nbLineLandscape, viewPosX, viewPosY) {
+var previousLandscape;
+export async function assemble(
+    renderWidth,
+    renderHeight,
+    nbColumnsLandscape,
+    nbLineLandscape,
+    viewPosX,
+    viewPosY,
+    params
+) {
     let startAssemble = performance.now();
-    let landscapeArray = await getLandscapeArray(
-        renderWidth,
-        renderHeight,
-        nbColumnsLandscape,
-        nbLineLandscape,
-        viewPosX,
-        viewPosY
-    );
-
+    let landscapeArray = params?.monolithOnly
+        ? previousLandscape
+        : await getLandscapeArray(renderWidth, renderHeight, nbColumnsLandscape, nbLineLandscape, viewPosX, viewPosY);
+    if (!params?.monolithOnly) previousLandscape = landscapeArray;
     let monolithArray = getMonolithArray(renderWidth, renderHeight, viewPosX, viewPosY);
     let endGetArray = performance.now();
 
@@ -49,15 +53,14 @@ export async function assemble(renderWidth, renderHeight, nbColumnsLandscape, nb
         }
     }
     let endAssemble = performance.now();
-    console.log(
-        'Get arrays :',
-        Math.floor(endGetArray - startAssemble),
-        'ms | Write arrays :',
-        Math.floor(endAssemble - endGetArray),
-        'ms'
-    );
-    console.log('Assemble TOTAL :', Math.floor(endAssemble - startAssemble), 'ms');
-
+    // console.log(
+    //     'Get arrays :',
+    //     Math.floor(endGetArray - startAssemble),
+    //     'ms | Write arrays :',
+    //     Math.floor(endAssemble - endGetArray),
+    //     'ms'
+    // );
+    // console.log('Assemble TOTAL :', Math.floor(endAssemble - startAssemble), 'ms');
     return landscapeArray;
 }
 

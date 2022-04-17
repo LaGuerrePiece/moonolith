@@ -1,9 +1,9 @@
 <script setup>
 // Imports pour vue 3
-import { reactive, watch, ref } from 'vue';
+import { watch, ref } from 'vue';
 
 // Imports des composants
-import { draw_pixel, get_color, erase_all_pixel, erase_pixel, monolith} from '../models/monolith';
+import { draw_pixel, get_color, erase_all_pixel, erase_pixel, monolith, nbColumnsMonolith, nbRowsMonolith} from '../models/monolith';
 import DisplayGrid from '../models/displayGrid';
 import Klon from '../models/klon';
 import { closeCurrentEvent, undo, redo } from '../models/undoStack';
@@ -20,14 +20,14 @@ import {
     RGBToHex,
     moveDrawing, displayImageFromArrayBuffer, displayArrayToImage
 } from '../utils/image-manager';
-import mousePosition from 'mouse-position';
 import Tool from '../models/tools';
 import { chunkCreator, getChunk, getChunksFromPosition, getSupply, getTotalPixs, getThreshold } from '../utils/web3';
 import { assemble, marginBot, marginLeft } from '../models/assembler';
-import { nbRows } from '../models/monolith';
 
+/**********************************
+ ************* VUE ****************
+ **********************************/
 
-// Definition des props
 const props = defineProps({
     tool: Number,
     color: String,
@@ -38,16 +38,14 @@ const props = defineProps({
 
 const emit = defineEmits(['boughtBack', 'deleteBack', 'changeColor']);
 
-// DISABLE RIGHT CLICK
 document.addEventListener(
     'contextmenu',
     (e) => {e.preventDefault()}, false
 );
 
-
 watch(() => props.onDelete.value,
     (deleteInstance) => {
-        if (deleteInstance === 1) erase_all_pixel();
+        if (deleteInstance === 1) erase_all_pixel()
         emit('deleteBack');
     }
 );
@@ -57,170 +55,6 @@ watch(() => props.importedImage?.value,
         if (buffer) displayImageFromArrayBuffer(buffer, 1, 1, 999999, 99999, 0);
     }
 );
-
-document.addEventListener('keydown', function (e) {
-    if (e.ctrlKey && e.key === 'z') undo();
-    if (e.metaKey && e.key === 'z') undo();
-    if (e.ctrlKey && e.key === 'Z') redo();
-    if (e.metaKey && e.key === 'Z') redo();
-    if (e.ctrlKey && e.key === 'y') redo();
-    if (e.metaKey && e.key === 'y') redo();
-    if (e.key === 't') {
-        viewPosY += 1
-        update()
-    }
-});
-
-// SETUP OF DISPLAYGRID
-let displayGrid;
-let position;
-let viewPosY = 0;
-let viewPosX = 0;
-let lastCall
-let displayData
-
-const nbColonneDisplay = 256;
-const width = window.innerWidth
-const height = window.innerHeight
-const pixelSize = width / nbColonneDisplay
-const displayGridHeight = Math.floor(height/pixelSize) + 2;
-
-displayGrid = new DisplayGrid(nbColonneDisplay, displayGridHeight);
-displayGrid.initialize(document.body);
-let canvas = displayGrid.pixels.canvas;
-
-position = ref(mousePosition(canvas));
-console.log('displayGrid.length', displayGrid.length)
-
-window.onwheel = function (e) {
-    if (e.deltaY > 0) {
-        viewPosY -= 3;
-    } else {
-        viewPosY += 3;
-    }
-
-    if (viewPosY < 0) {
-        viewPosY = 0
-        return
-    }
-    update()
-};
-
-async function update() {
-    if (new Date() - lastCall < 10) return;
-    //data is the array of the displayed klons
-    await assemble(nbColonneDisplay, displayGridHeight, 256, 362, 0, viewPosY).then((data) => {
-        displayData = data
-        displayGrid.updateDisplay(displayData)
-        console.log('displayData', displayData)
-        lastCall = new Date()
-    })
-}
-
-canvas.onmouseup = stopUsingTool;
-canvas.onmousedown = clickManager;
-
-function clickManager(e) {
-    let mousePos = mousePositionInGrid()
-    console.log('x', mousePos.x, 'y', mousePos.y)
-    if (mousePos.x == 4 && mousePos.y == 4) {
-        //CASE GUI
-        console.log('clicked on the GUI')
-    } else {
-        mousePos = convertToMonolithPos(mousePos)
-        console.log('converted x', mousePos.x, 'converted y', mousePos.y)
-        if (monolith[mousePos.y]?.[mousePos.x]) {
-            //CASE MONOLITH
-            console.log('clicked on the Monolith')
-            startUsingTool(e)
-        }
-    }
-}
-
-function startUsingTool(e) {
-    if (e.button == 0) {
-        useTool();
-        canvas.onmousemove = useTool;
-    }
-    if (e.button == 2) {
-        useDeleteTool();
-        canvas.onmousemove = useDeleteTool;
-    }
-    if (e.button == 1) {
-        useColorPicker();
-        canvas.onmousemove = useColorPicker;
-    }
-}
-
-function useTool() {
-    let mousePos = convertToMonolithPos(mousePositionInGrid());
-    console.log('mousePos', mousePos)
-    switch (props.tool) {
-        case Tool.SMOL:
-            draw_pixel(mousePos.x, mousePos.y, Klon.USERPAINTED, hexToRGB(colorPicked));
-            break;
-        case Tool.BIG:
-            for (let i = -1; i <= 1; i++) {
-                for (let j = -1; j <= 1; j++) {
-                    if (mousePos.x + i < nbColonneDisplay && mousePos.x + i > -1)
-                    draw_pixel(mousePos.x + i, mousePos.y + j, Klon.USERPAINTED, hexToRGB(colorPicked));
-                    }
-            }
-            break;
-        case Tool.HUGE:
-            for (let i = -4; i <= 4; i++) {
-                for (let j = -4; j <= 4; j++) {
-                    if (mousePos.x + i < nbColonneDisplay && mousePos.x + i > -1)
-                    draw_pixel(mousePos.x + i, mousePos.y + j, Klon.USERPAINTED, hexToRGB(colorPicked));
-                    }
-            }
-            break;
-        case Tool.MOVE:
-            moveDrawing(mousePos.x, mousePos.y);
-            break;
-    }
-    update()
-}
-
-function useDeleteTool() {
-    let mousePos = mousePositionInGrid();
-    // prettier-ignore
-    switch (props.tool) {
-        case Tool.SMOL:
-            erase_pixel(mousePos.x, mousePos.y);
-            break;
-        case Tool.BIG:
-            for (let i = -1; i <= 1; i++) {
-                for (let j = -1; j <= 1; j++) {
-                    erase_pixel(mousePos.x + i, mousePos.y + j);
-                }
-            }
-            break;
-        case Tool.HUGE:
-            for (let i = -4; i <= 4; i++) {
-                for (let j = -4; j <= 4; j++) {
-                    erase_pixel(mousePos.x + i, mousePos.y + j);
-                }
-            }
-            break;
-    }
-}
-
-function stopUsingTool() {
-    closeCurrentEvent();
-    canvas.onmousemove = null;
-}
-
-function mousePositionInGrid() {
-    let screenx = document.documentElement.clientWidth;
-    let screeny = document.documentElement.clientHeight;
-    let pixelSize = screenx / displayGrid.nbColumns;
-    let nbPixely = screeny / pixelSize;
-    let x = Math.floor((position.value[0] / screenx) * displayGrid.nbColumns);
-    let y = Math.floor((position.value[1] / screeny) * nbPixely);
-    return { x, y };
-}
-
 
 // watch(
 //     () => props.tool,
@@ -255,20 +89,180 @@ watch(
 );
 
 
+document.addEventListener('keydown', function (e) {
+    if (e.ctrlKey && e.key === 'z') undo();
+    if (e.metaKey && e.key === 'z') undo();
+    if (e.ctrlKey && e.key === 'Z') redo();
+    if (e.metaKey && e.key === 'Z') redo();
+    if (e.ctrlKey && e.key === 'y') redo();
+    if (e.metaKey && e.key === 'y') redo();
+    if (e.key === 't') {
+        update({monolithOnly: true})
+    }
+});
+
+/**********************************
+ ************* DISPLAY ************
+ **********************************/
+
+let displayGrid;
+let position;
+let viewPosY = 0;
+let viewPosX = 0;
+let lastCall = 0
+let displayData
+
+const nbColonneDisplay = 256;
+const width = window.innerWidth
+const height = window.innerHeight
+const pixelSize = width / nbColonneDisplay
+const displayGridHeight = Math.floor(height/pixelSize) + 2;
+
+displayGrid = new DisplayGrid(nbColonneDisplay, displayGridHeight);
+displayGrid.initialize(document.body);
+let canvas = displayGrid.pixels.canvas;
+
+console.log('displayGrid.length', displayGrid.length)
+
+window.onwheel = function (e) {
+    if (e.deltaY > 0) {
+        viewPosY -= 3;
+    } else {
+        viewPosY += 3;
+    }
+
+    if (viewPosY < 0) {
+        viewPosY = 0
+        return
+    }
+    update()
+};
+
+async function update(params) {
+    if (new Date() - lastCall < 30) return;
+    //data is the array of the displayed klons
+    await assemble(nbColonneDisplay, displayGridHeight, 256, 362, 0, viewPosY, params).then((data) => {
+        displayData = data
+        displayGrid.updateDisplay(displayData)
+        lastCall = new Date()
+    })
+}
+
+/**********************************
+ ************* TOOLS **************
+ **********************************/
+
+canvas.onmousedown = clickManager;
+
+function clickManager(e) {
+    let mousePos = mousePosInGrid(e)
+    console.log('x', mousePos.x, 'y', mousePos.y)
+    if (mousePos.x < 5 && mousePos.y === 0) {
+        console.log('clicked on the GUI')               //CASE GUI
+    } else {
+        console.log('clicked on the Monolith')          //CASE MONOLITH
+        mousePos = convertToMonolithPos(mousePos)
+        if (mousePos.x < 0 || mousePos.x >= nbColumnsMonolith || mousePos.y < 0 || mousePos.y >= nbRowsMonolith) return; // out of bounds
+        startUsingTool(e, mousePos)
+    }
+}
+
+function startUsingTool(e, mousePos) {
+    if (e.button == 0) {
+        useTool(mousePos)
+        canvas.onmousemove = useTool
+        canvas.onmouseup = stopUsingTool
+    }
+    if (e.button == 2) {
+        useDeleteTool(mousePos)
+        canvas.onmousemove = useDeleteTool
+        canvas.onmouseup = stopUsingTool
+    }
+    if (e.button == 1) {
+        useColorPicker(mousePos);
+    }
+}
+
+function useTool(e) {
+    //IF E IS PASSED IT'S ALREADY FORMATED, ELSE IT'S A MOUSE EVENT
+    const mousePos = e.type ? convertToMonolithPos(mousePosInGrid({x: e.x, y: e.y})) : e
+    switch (props.tool) {
+        case Tool.SMOL:
+            draw_pixel(mousePos.x, mousePos.y, Klon.USERPAINTED, hexToRGB(colorPicked));
+            break;
+        case Tool.BIG:
+            for (let i = -1; i <= 1; i++) {
+                for (let j = -1; j <= 1; j++) {
+                    if (mousePos.x + i < nbColonneDisplay && mousePos.x + i > -1)
+                    draw_pixel(mousePos.x + i, mousePos.y + j, Klon.USERPAINTED, hexToRGB(colorPicked));
+                    }
+            }
+            break;
+        case Tool.HUGE:
+            for (let i = -4; i <= 4; i++) {
+                for (let j = -4; j <= 4; j++) {
+                    if (mousePos.x + i < nbColonneDisplay && mousePos.x + i > -1)
+                    draw_pixel(mousePos.x + i, mousePos.y + j, Klon.USERPAINTED, hexToRGB(colorPicked));
+                    }
+            }
+            break;
+        case Tool.MOVE:
+            moveDrawing(mousePos.x, mousePos.y);
+            break;
+    }
+    update({monolithOnly: true})
+}
+
+function useDeleteTool(e) {
+    //IF E IS PASSED IT'S ALREADY FORMATED, ELSE IT'S A MOUSE EVENT
+    const mousePos = e.type ? convertToMonolithPos(mousePosInGrid({x: e.x, y: e.y})) : e
+    switch (props.tool) {
+        case Tool.SMOL:
+            console.log('delete pixel')
+            erase_pixel(mousePos.x, mousePos.y);
+            break;
+        case Tool.BIG:
+            for (let i = -1; i <= 1; i++) {
+                for (let j = -1; j <= 1; j++) {
+                    erase_pixel(mousePos.x + i, mousePos.y + j);
+                }
+            }
+            break;
+        case Tool.HUGE:
+            for (let i = -4; i <= 4; i++) {
+                for (let j = -4; j <= 4; j++) {
+                    erase_pixel(mousePos.x + i, mousePos.y + j);
+                }
+            }
+            break;
+    }
+    update({monolithOnly: true})
+}
+
+function stopUsingTool() {
+    closeCurrentEvent();
+    canvas.onmousemove = null;
+}
+
+function mousePosInGrid(e) {
+    return { x: Math.floor((e.x / width) * nbColonneDisplay), y: Math.floor((e.y / height) * displayGridHeight) };
+}
 
 
 
 let colorPicked = '#b3e3da';
 
-function useColorPicker() {
-    let newMousePosition = mousePositionInGrid();
-    colorPicked = get_color(newMousePosition.x, newMousePosition.y);
+function useColorPicker(mousePos) {
+    console.log('colorPicker mousePos', mousePos);
+    colorPicked = get_color(mousePos.x, mousePos.y);
     colorPicked = RGBToHex(colorPicked[0], colorPicked[1], colorPicked[2]);
     console.log(colorPicked);
     if (colorPicked !== undefined) {
         emit('changeColor', colorPicked);
     }
 }
+
+setTimeout(() => {update()}, 200);
 
 // getTotalPixs()
 //     .then(async (total) => {
@@ -313,7 +307,7 @@ function useColorPicker() {
 //     });
 
 function convertToMonolithPos(mousePos) {
-    mousePos.y = nbRows + marginBot - viewPosY - displayGridHeight + mousePos.y;
+    mousePos.y = nbRowsMonolith + marginBot - viewPosY - displayGridHeight + mousePos.y;
     mousePos.x = viewPosX - marginLeft + mousePos.x;
     return mousePos;
 }

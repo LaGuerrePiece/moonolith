@@ -57,6 +57,5 @@ export default class DisplayGrid {
 
     updateDisplay(data) {
         this.pixels.update(data);
-        console.log('render!');
     }
 }
