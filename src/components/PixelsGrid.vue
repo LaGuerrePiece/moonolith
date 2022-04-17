@@ -76,13 +76,14 @@ document.addEventListener('keydown', function (e) {
     if (e.ctrlKey && e.key === 'y') grid = redo(grid);
     if (e.metaKey && e.key === 'y') grid = redo(grid);
     if (e.key === 'e') {
-        assemble(256, 80, 256, 362, 0, 0);
-        assemble(256, 80, 256, 362, 0, 5);
-        assemble(256, 80, 256, 362, 0, 20);
-        assemble(256, 80, 256, 362, 0, 30);
-        assemble(256, 80, 256, 362, 0, 50);
-        assemble(256, 80, 256, 362, 0, 70);
-        assemble(256, 80, 256, 362, 0, 100);
+        for (let frames = 62; frames < 82; frames++) {
+            let startFullAssemble = performance.now();
+            setTimeout(() => {
+                assemble(256, 100, 256, 362, 0, frames);
+                console.log('frame', frames);
+            }, 3000);
+            if (frames.length == frames) console.log(frames, 'frames : ', performance.now() - startFullAssemble, 'ms');
+        }
     }
 });
 

@@ -31,20 +31,20 @@ async function getArrays(renderWidth, renderHeight, nbColumns, nbLine, viewPosX,
 }
 
 export function assemble(renderWidth, renderHeight, nbColumns, nbLine, viewPosX, viewPosY) {
-    console.log(
-        'renderWidth', // 256
-        renderWidth,
-        'renderHeight', // 362
-        renderHeight,
-        'nbColumns', // 256
-        nbColumns,
-        'nbLine', // 362
-        nbLine,
-        'viewPosX', // 0
-        viewPosX,
-        'viewPosY', // 0
-        viewPosY
-    );
+    // console.log(
+    //     'renderWidth', // 256
+    //     renderWidth,
+    //     'renderHeight', // 362
+    //     renderHeight,
+    //     'nbColumns', // 256
+    //     nbColumns,
+    //     'nbLine', // 362
+    //     nbLine,
+    //     'viewPosX', // 0
+    //     viewPosX,
+    //     'viewPosY', // 0
+    //     viewPosY
+    // );
     let startAssemble = performance.now();
     let displayArray = [];
     getArrays(renderWidth, renderHeight, nbColumns, nbLine, viewPosX, viewPosY).then((res) => {
@@ -78,14 +78,14 @@ export function assemble(renderWidth, renderHeight, nbColumns, nbLine, viewPosX,
             writtenLines++;
         }
         let endAssemble = performance.now();
-        console.log(
-            'Get arrays :',
-            Math.floor(endGetArray - startAssemble),
-            'ms | Write arrays :',
-            Math.floor(endAssemble - endGetArray),
-            'ms'
-        );
-        console.log('Assemble TOTAL :', Math.floor(endAssemble - startAssemble), 'ms');
+        // console.log(
+        //     'Get arrays :',
+        //     Math.floor(endGetArray - startAssemble),
+        //     'ms | Write arrays :',
+        //     Math.floor(endAssemble - endGetArray),
+        //     'ms'
+        // );
+        // console.log('Assemble TOTAL :', Math.floor(endAssemble - startAssemble), 'ms');
 
         preEncodeSpecialK(displayArray, renderWidth, renderHeight);
 

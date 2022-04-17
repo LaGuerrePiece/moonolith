@@ -28,13 +28,23 @@ var landscapeBase64woupsi = {
     floor_1: { name: 'floor', height: 22, startY: 0, parallax: 1, base64: floor_1_base64 },
 };
 
-var landscapeBase64 = {
-    eProto: { name: 'eProto', height: 100, startY: 150, parallax: 0.1, base64: eProtoBase64 },
-    dProto: { name: 'dProto', height: 100, startY: 55, parallax: 0.2, base64: dProtoBase64 },
+var landscapeBase64Guy = {
+    eProto: { name: 'eProto', height: 100, startY: 150, parallax: 2, base64: eProtoBase64 },
+    dProto: { name: 'dProto', height: 100, startY: 55, parallax: 0.8, base64: dProtoBase64 },
     caProto: { name: 'cProto', height: 100, startY: 35, parallax: 0.4, base64: cProtoBase64 },
-    bProto: { name: 'bProto', height: 100, startY: 15, parallax: 0.6, base64: bProtoBase64 },
-    aProto: { name: 'aProto', height: 100, startY: 0, parallax: 0.8, base64: aProtoBase64 },
-    floor_1: { name: 'floor ', height: 22, startY: 0, parallax: 1, base64: floor_1_base64 },
+    bProto: { name: 'bProto', height: 100, startY: 15, parallax: 0.7, base64: bProtoBase64 },
+    aProto: { name: 'aProto', height: 100, startY: 0, parallax: 0.2, base64: aProtoBase64 },
+    floor_1: { name: 'floor ', height: 22, startY: 0, parallax: 0, base64: floor_1_base64 },
 };
+
+var landscapeBase64 = {
+    eProto: { name: 'eProto', height: 100, startY: 150, parallax: 2, base64: eProtoBase64 },
+    dProto: { name: 'dProto', height: 100, startY: 55, parallax: 0.8, base64: dProtoBase64 },
+    caProto: { name: 'cProto', height: 100, startY: 35, parallax: 0.4, base64: cProtoBase64 },
+    bProto: { name: 'bProto', height: 100, startY: 15, parallax: 0.7, base64: bProtoBase64 },
+    aProto: { name: 'aProto', height: 100, startY: 0, parallax: 0.2, base64: aProtoBase64 },
+    floor_1: { name: 'floor ', height: 22, startY: 0, parallax: 0, base64: floor_1_base64 },
+};
+
 
 export default landscapeBase64;
