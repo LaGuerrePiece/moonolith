@@ -25,8 +25,10 @@ import Tool from '../models/tools';
 import { chunkCreator, getChunk, getChunksFromPosition, getSupply, getTotalPixs, getThreshold } from '../utils/web3';
 import { assemble, marginBot, marginLeft } from '../models/assembler';
 
+/**********************************
+ ************* VUE ****************
+ **********************************/
 
-// Definition des props
 const props = defineProps({
     tool: Number,
     color: String,
@@ -37,7 +39,6 @@ const props = defineProps({
 
 const emit = defineEmits(['boughtBack', 'deleteBack', 'changeColor']);
 
-// DISABLE RIGHT CLICK
 document.addEventListener(
     'contextmenu',
     (e) => {e.preventDefault()}, false
@@ -56,6 +57,39 @@ watch(() => props.importedImage?.value,
     }
 );
 
+// watch(
+//     () => props.tool,
+//     (code) => {
+//         if (code === Tool.DONE) {
+//             canvas.onmousedown = null;
+//             canvas.onmousemove = null;
+//         } else {
+//             canvas.onmouseup = stopUsingTool;
+//             canvas.onmousedown = startUsingTool;
+//         }
+//     }
+// );
+
+watch(
+    () => props.color,
+    (color) => {
+        console.log(color);
+        colorPicked = props.color;
+    }
+);
+
+watch(
+    () => props.hasBought.value,
+    (boughtInstance) => {
+        if (boughtInstance === 1) {
+            preEncode().then((res) => {
+                chunkCreator(res);
+            });
+        }
+    }
+);
+
+
 document.addEventListener('keydown', function (e) {
     if (e.ctrlKey && e.key === 'z') undo();
     if (e.metaKey && e.key === 'z') undo();
@@ -69,7 +103,10 @@ document.addEventListener('keydown', function (e) {
     }
 });
 
-// SETUP OF DISPLAYGRID
+/**********************************
+ ************* DISPLAY ************
+ **********************************/
+
 let displayGrid;
 let position;
 let viewPosY = 0;
@@ -89,6 +126,7 @@ let canvas = displayGrid.pixels.canvas;
 
 position = ref(mousePosition(canvas));
 console.log('displayGrid.length', displayGrid.length)
+
 
 window.onwheel = function (e) {
     if (e.deltaY > 0) {
@@ -113,6 +151,10 @@ async function update() {
         lastCall = new Date()
     })
 }
+
+/**********************************
+ ************* TOOLS **************
+ **********************************/
 
 canvas.onmouseup = stopUsingTool;
 canvas.onmousedown = clickManager;
@@ -215,37 +257,6 @@ function mousePositionInGrid() {
 }
 
 
-// watch(
-//     () => props.tool,
-//     (code) => {
-//         if (code === Tool.DONE) {
-//             canvas.onmousedown = null;
-//             canvas.onmousemove = null;
-//         } else {
-//             canvas.onmouseup = stopUsingTool;
-//             canvas.onmousedown = startUsingTool;
-//         }
-//     }
-// );
-
-watch(
-    () => props.color,
-    (color) => {
-        console.log(color);
-        colorPicked = props.color;
-    }
-);
-
-watch(
-    () => props.hasBought.value,
-    (boughtInstance) => {
-        if (boughtInstance === 1) {
-            preEncode().then((res) => {
-                chunkCreator(res);
-            });
-        }
-    }
-);
 
 
 
@@ -261,6 +272,8 @@ function useColorPicker() {
         emit('changeColor', colorPicked);
     }
 }
+
+setTimeout(() => {update()}, 200);
 
 // getTotalPixs()
 //     .then(async (total) => {

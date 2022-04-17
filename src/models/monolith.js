@@ -76,14 +76,6 @@ export function klonsAreEqual(klon1, klon2) {
     );
 }
 
-export function getMonolith() {
-    return monolith;
-}
-
-export function replaceMonolith(newMonolith) {
-    monolith = newMonolith;
-}
-
 export function getMonolithArray(renderWidth, renderHeight, viewPosX, viewPosY) {
     let monolithArray = [];
     const startY = nbRowsMonolith + marginBot - viewPosY - renderHeight;
