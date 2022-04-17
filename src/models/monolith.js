@@ -11,59 +11,60 @@ import {
     RGBToHex,
 } from '../utils/image-manager';
 
-export const nbColumns = 170;
-export const nbRows = 600;
+export const nbColumnsMonolith = 170;
+export const nbRowsMonolith = 600;
+const backgroundColor = [1, 0, 0];
 
-export let monolith = Array.from({ length: nbRows }, () =>
-    Array.from({ length: nbColumns }, () => new Klon([1, 0, 0]))
+export let monolith = Array.from({ length: nbRowsMonolith }, () =>
+    Array.from({ length: nbColumnsMonolith }, () => new Klon(backgroundColor))
 );
 
 console.log('monolith', monolith);
 
 export function draw_pixel(x, y, zIndex, color) {
-    if (x < 0 || x >= nbColumns || y < 0 || y >= nbRows) return; //IF OUT OF BOUNDS, return
-    if (!monolith[y][x].isEditable(zIndex)) return; //IF IS NOT EDITABLE, return
-    //if (zIndex === 0) addToCurrentEvent(x, y, monolith[y][x]);                                    //A faire
+    if (x < 0 || x >= nbColumnsMonolith || y < 0 || y >= nbRowsMonolith) return; //IF OUT OF BOUNDS, return
+    if (!monolith[y][x].isEditable(zIndex)) return; //IF IT IS NOT EDITABLE, return
+    if (zIndex === 0) addToCurrentEvent(x, y, monolith[y][x]);
     monolith[y][x] = new Klon(color, zIndex);
 }
 
-// if (zIndex === monolith[y][x].zIndex && ) return; //IF IS THE SAME COLOR, return
+// if (zIndex === monolith[y][x].zIndex && ) return; ////////////////////////////////////TO DO : IF IS THE SAME COLOR, return
 // if (!klonsAreEqual(monolith[pos], klon)) {
 
 export function get_color(x, y) {
-    let pos = y * this.nbColumns + x;
-    if (this.persistent[pos] !== undefined) {
-        return this.persistent[pos].color;
-    }
+    console.log('monolith[y][x]', monolith[y][x]);
+    return monolith[y][x].color;
 }
 
 export function erase_all_pixel() {
-    for (let pos = 0; pos < this.persistent.length; pos++) {
-        if (this.persistent[pos] && !this.persistent[pos].zIndex) {
-            addToCurrentEvent(pos, this.persistent[pos]);
-            this.persistent[pos] = undefined;
+    for (let j = 0; j < nbRowsMonolith; j++) {
+        for (let i = 0; i < nbColumnsMonolith; i++) {
+            if (monolith[j][i].zIndex === 0) {
+                addToCurrentEvent(i, j, monolith[j][i]);
+                monolith[j][i] = new Klon(backgroundColor);
+            }
         }
     }
     closeCurrentEvent();
     console.log('erase_all_pixel');
+    //faire en sorte de call update() à ce moment là
 }
 
 export function erase_pixel(x, y) {
-    let pos = y * this.nbColumns + x;
-    if (this.persistent[pos] ? !this.persistent[pos].zIndex : true) {
-        if (this.persistent[pos]) addToCurrentEvent(pos, this.persistent[pos]);
-        this.persistent[pos] = undefined;
+    if (monolith[y][x].zIndex === 0) {
+        addToCurrentEvent(x, y, monolith[y][x]);
+        monolith[y][x] = new Klon(backgroundColor);
     }
 }
 
 export function convertIndexToXY(number) {
-    let x = number % this.nbColumns;
-    let y = Math.floor(number / this.nbColumns);
+    let x = number % this.nbColumnsMonolith;
+    let y = Math.floor(number / this.nbColumnsMonolith);
     return { x, y };
 }
 
 export function addRow(numberOfRow) {
-    this.nbRows += numberOfRow;
+    this.nbRowsMonolith += numberOfRow;
 }
 
 export function klonsAreEqual(klon1, klon2) {
@@ -85,7 +86,7 @@ export function replaceMonolith(newMonolith) {
 
 export function getMonolithArray(renderWidth, renderHeight, viewPosX, viewPosY) {
     let monolithArray = [];
-    const startY = nbRows + marginBot - viewPosY - renderHeight;
+    const startY = nbRowsMonolith + marginBot - viewPosY - renderHeight;
     const startX = viewPosX - marginLeft;
     // console.log('startY', startY);
     // console.log('startX', startX);

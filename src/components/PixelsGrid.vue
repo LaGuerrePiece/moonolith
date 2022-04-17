@@ -1,9 +1,9 @@
 <script setup>
 // Imports pour vue 3
-import { reactive, watch, ref } from 'vue';
+import { watch, ref } from 'vue';
 
 // Imports des composants
-import { draw_pixel, get_color, erase_all_pixel, erase_pixel, monolith} from '../models/monolith';
+import { draw_pixel, get_color, erase_all_pixel, erase_pixel, monolith, nbColumnsMonolith, nbRowsMonolith} from '../models/monolith';
 import DisplayGrid from '../models/displayGrid';
 import Klon from '../models/klon';
 import { closeCurrentEvent, undo, redo } from '../models/undoStack';
@@ -24,7 +24,6 @@ import mousePosition from 'mouse-position';
 import Tool from '../models/tools';
 import { chunkCreator, getChunk, getChunksFromPosition, getSupply, getTotalPixs, getThreshold } from '../utils/web3';
 import { assemble, marginBot, marginLeft } from '../models/assembler';
-import { nbRows } from '../models/monolith';
 
 
 // Definition des props
@@ -44,10 +43,9 @@ document.addEventListener(
     (e) => {e.preventDefault()}, false
 );
 
-
 watch(() => props.onDelete.value,
     (deleteInstance) => {
-        if (deleteInstance === 1) erase_all_pixel();
+        if (deleteInstance === 1) erase_all_pixel()
         emit('deleteBack');
     }
 );
@@ -76,7 +74,7 @@ let displayGrid;
 let position;
 let viewPosY = 0;
 let viewPosX = 0;
-let lastCall
+let lastCall = 0
 let displayData
 
 const nbColonneDisplay = 256;
@@ -128,11 +126,10 @@ function clickManager(e) {
     } else {
         mousePos = convertToMonolithPos(mousePos)
         console.log('converted x', mousePos.x, 'converted y', mousePos.y)
-        if (monolith[mousePos.y]?.[mousePos.x]) {
-            //CASE MONOLITH
-            console.log('clicked on the Monolith')
-            startUsingTool(e)
-        }
+        if (mousePos.x < 0 || mousePos.x >= nbColumnsMonolith || mousePos.y < 0 || mousePos.y >= nbRowsMonolith) return; // out of bounds
+        //CASE MONOLITH
+        console.log('clicked on the Monolith')
+        startUsingTool(e)
     }
 }
 
@@ -147,12 +144,13 @@ function startUsingTool(e) {
     }
     if (e.button == 1) {
         useColorPicker();
-        canvas.onmousemove = useColorPicker;
     }
 }
 
-function useTool() {
+function useTool(e) {
+    // console.log('e', e)
     let mousePos = convertToMonolithPos(mousePositionInGrid());
+    // console.log('mousePos', mousePos)
     switch (props.tool) {
         case Tool.SMOL:
             draw_pixel(mousePos.x, mousePos.y, Klon.USERPAINTED, hexToRGB(colorPicked));
@@ -181,10 +179,10 @@ function useTool() {
 }
 
 function useDeleteTool() {
-    let mousePos = mousePositionInGrid();
-    // prettier-ignore
+    let mousePos = convertToMonolithPos(mousePositionInGrid());
     switch (props.tool) {
         case Tool.SMOL:
+            console.log('delete pixel')
             erase_pixel(mousePos.x, mousePos.y);
             break;
         case Tool.BIG:
@@ -202,6 +200,7 @@ function useDeleteTool() {
             }
             break;
     }
+    update()
 }
 
 function stopUsingTool() {
@@ -250,13 +249,12 @@ watch(
 
 
 
-
-
 let colorPicked = '#b3e3da';
 
 function useColorPicker() {
-    let newMousePosition = mousePositionInGrid();
-    colorPicked = get_color(newMousePosition.x, newMousePosition.y);
+    let mousePos = convertToMonolithPos(mousePositionInGrid());
+    console.log('mousePos', mousePos);
+    colorPicked = get_color(mousePos.x, mousePos.y);
     colorPicked = RGBToHex(colorPicked[0], colorPicked[1], colorPicked[2]);
     console.log(colorPicked);
     if (colorPicked !== undefined) {
@@ -307,7 +305,7 @@ function useColorPicker() {
 //     });
 
 function convertToMonolithPos(mousePos) {
-    mousePos.y = nbRows + marginBot - viewPosY - displayGridHeight + mousePos.y;
+    mousePos.y = nbRowsMonolith + marginBot - viewPosY - displayGridHeight + mousePos.y;
     mousePos.x = viewPosX - marginLeft + mousePos.x;
     return mousePos;
 }
