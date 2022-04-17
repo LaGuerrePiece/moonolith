@@ -19,15 +19,12 @@ export let monolith = Array.from({ length: nbRowsMonolith }, () =>
     Array.from({ length: nbColumnsMonolith }, () => new Klon(backgroundColor))
 );
 
-console.log('monolith', monolith);
-
 export function draw_pixel(x, y, zIndex, color) {
     if (x < 0 || x >= nbColumnsMonolith || y < 0 || y >= nbRowsMonolith) return; //IF OUT OF BOUNDS, return
     if (!monolith[y][x].isEditable(zIndex)) return; //IF IT IS NOT EDITABLE, return
     // if (monolith[y][x].color === color && monolith[y][x].zIndex === zIndex) return; //IF IT IS THE SAME, return
     if (zIndex === 0) addToCurrentEvent(x, y, monolith[y][x]); //IF IT IS BEING DRAW BY USER, ADD TO CURRENT EVENT
     monolith[y][x] = new Klon(color, zIndex);
-    console.log('draw!');
 }
 
 // if (zIndex === monolith[y][x].zIndex && ) return; ////////////////////////////////////TO DO : IF IS THE SAME COLOR, return

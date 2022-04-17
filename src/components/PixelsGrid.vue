@@ -106,7 +106,6 @@ document.addEventListener('keydown', function (e) {
  **********************************/
 
 let displayGrid;
-let position;
 let viewPosY = 0;
 let viewPosX = 0;
 let lastCall = 0
@@ -157,10 +156,14 @@ canvas.onmousedown = clickManager;
 function clickManager(e) {
     let mousePos = mousePosInGrid(e)
     console.log('x', mousePos.x, 'y', mousePos.y)
-    if (mousePos.x < 5 && mousePos.y === 0) {
-        console.log('clicked on the GUI')               //CASE GUI
+    if (mousePos.y > 190 && mousePos.x < 60) {
+        //CASE GUI
+        console.log('clicked on the GUI')
+        if (mousePos.x < 5) colorPicked = '#FF0000';
+        if (mousePos.x < 10) colorPicked = '#00FF00';
+        if (mousePos.x < 15) colorPicked = '#0000FF';
     } else {
-        console.log('clicked on the Monolith')          //CASE MONOLITH
+        //CASE MONOLITH
         mousePos = convertToMonolithPos(mousePos)
         if (mousePos.x < 0 || mousePos.x >= nbColumnsMonolith || mousePos.y < 0 || mousePos.y >= nbRowsMonolith) return; // out of bounds
         startUsingTool(e, mousePos)
