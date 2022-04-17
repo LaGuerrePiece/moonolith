@@ -48,9 +48,9 @@ export async function assemble(
     let endGetArray = performance.now();
 
     for (let i = 0; i < landscapeArray.length; i++) {
-        if (monolithArray[i] !== undefined) landscapeArray[i] = monolithArray[i];
         //IF LANDSCAPE VOID, ADD BLUE
         if (!landscapeArray[i][0]) landscapeArray[i] = [0, 0, 1];
+        if (monolithArray[i] !== undefined) landscapeArray[i] = monolithArray[i];
     }
 
     //GUI

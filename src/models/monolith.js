@@ -13,7 +13,7 @@ import {
 
 export const nbColumnsMonolith = 170;
 export const nbRowsMonolith = 600;
-const backgroundColor = [1, 0, 0];
+const backgroundColor = [0.1568, 0.1568, 0.1803];
 
 export let monolith = Array.from({ length: nbRowsMonolith }, () =>
     Array.from({ length: nbColumnsMonolith }, () => new Klon(backgroundColor))
@@ -64,15 +64,6 @@ export function convertIndexToXY(number) {
 
 export function addRow(numberOfRow) {
     this.nbRowsMonolith += numberOfRow;
-}
-
-export function klonsAreEqual(klon1, klon2) {
-    return (
-        klon1?.color[0] == klon2?.color[0] &&
-        klon1?.color[1] == klon2?.color[1] &&
-        klon1?.color[2] == klon2?.color[2] &&
-        klon1?.zIndex == klon2?.zIndex
-    );
 }
 
 export function getMonolithArray(renderWidth, renderHeight, viewPosX, viewPosY) {

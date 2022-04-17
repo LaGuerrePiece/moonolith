@@ -159,9 +159,14 @@ function clickManager(e) {
     if (mousePos.y > 190 && mousePos.x < 60) {
         //CASE GUI
         console.log('clicked on the GUI')
-        if (mousePos.x < 5) colorPicked = '#FF0000';
-        if (mousePos.x < 10) colorPicked = '#00FF00';
-        if (mousePos.x < 15) colorPicked = '#0000FF';
+        colorPicked = mousePos.x < 5 ? '#FF0000'
+                    : mousePos.x < 10 ? '#00FF00'
+                    : mousePos.x < 15 ? '#0000FF'
+                    : mousePos.x < 20 ? '#FFFF00'
+                    : mousePos.x < 25 ? '#FF00FF'
+                    : mousePos.x < 30 ? '#00FFFF'
+                    : '#000000'
+        console.log('colorPicked', colorPicked)
     } else {
         //CASE MONOLITH
         mousePos = convertToMonolithPos(mousePos)
