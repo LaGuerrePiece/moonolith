@@ -1,7 +1,7 @@
 import { getMonolithArray } from './monolith';
 import { assembleLandscape } from './landscape';
 
-export let marginBot = 10;
+export let marginBot = 30;
 export let marginTop = 34;
 export let marginLeft = 47;
 export let marginRight = 60;

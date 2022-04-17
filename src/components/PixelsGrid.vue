@@ -3,7 +3,7 @@
 import { reactive, watch, ref } from 'vue';
 
 // Imports des composants
-import { draw_pixel, get_color, erase_all_pixel, erase_pixel, getMonolith} from '../models/monolith';
+import { draw_pixel, get_color, erase_all_pixel, erase_pixel, monolith} from '../models/monolith';
 import DisplayGrid from '../models/displayGrid';
 import Klon from '../models/klon';
 import { closeCurrentEvent, undo, redo } from '../models/undoStack';
@@ -23,7 +23,8 @@ import {
 import mousePosition from 'mouse-position';
 import Tool from '../models/tools';
 import { chunkCreator, getChunk, getChunksFromPosition, getSupply, getTotalPixs, getThreshold } from '../utils/web3';
-import { assemble } from '../models/assembler.js';
+import { assemble, marginBot, marginLeft } from '../models/assembler';
+import { nbRows } from '../models/monolith';
 
 
 // Definition des props
@@ -40,7 +41,7 @@ const emit = defineEmits(['boughtBack', 'deleteBack', 'changeColor']);
 // DISABLE RIGHT CLICK
 document.addEventListener(
     'contextmenu',
-    function (e) {e.preventDefault()}, false
+    (e) => {e.preventDefault()}, false
 );
 
 
@@ -65,7 +66,7 @@ document.addEventListener('keydown', function (e) {
     if (e.ctrlKey && e.key === 'y') redo();
     if (e.metaKey && e.key === 'y') redo();
     if (e.key === 't') {
-        viewPos += 1
+        viewPosY += 1
         update()
     }
 });
@@ -73,10 +74,10 @@ document.addEventListener('keydown', function (e) {
 // SETUP OF DISPLAYGRID
 let displayGrid;
 let position;
-let viewPos = 0;
+let viewPosY = 0;
+let viewPosX = 0;
 let lastCall
-let data
-let diplayData = []
+let displayData
 
 const nbColonneDisplay = 256;
 const width = window.innerWidth
@@ -93,12 +94,13 @@ console.log('displayGrid.length', displayGrid.length)
 
 window.onwheel = function (e) {
     if (e.deltaY > 0) {
-        viewPos -= 3;
+        viewPosY -= 3;
     } else {
-        viewPos += 3;
+        viewPosY += 3;
     }
-    if (viewPos < 0) {
-        viewPos = 0
+
+    if (viewPosY < 0) {
+        viewPosY = 0
         return
     }
     update()
@@ -107,8 +109,10 @@ window.onwheel = function (e) {
 async function update() {
     if (new Date() - lastCall < 10) return;
     //data is the array of the displayed klons
-    data = await assemble(nbColonneDisplay, displayGridHeight, 256, 362, 0, viewPos).then((data) => {
-        displayGrid.updateDisplay(data)
+    await assemble(nbColonneDisplay, displayGridHeight, 256, 362, 0, viewPosY).then((data) => {
+        displayData = data
+        displayGrid.updateDisplay(displayData)
+        console.log('displayData', displayData)
         lastCall = new Date()
     })
 }
@@ -118,19 +122,19 @@ canvas.onmousedown = clickManager;
 
 function clickManager(e) {
     let mousePos = mousePositionInGrid()
-    let pos = mousePos.x + mousePos.y * nbColonneDisplay
-    console.log('mousePos', pos)
-    console.log('klon at this pos', data[pos])
-    if (!data[pos].type) return
-    switch (data[pos].type) {
-        case 'monolith':
+    console.log('x', mousePos.x, 'y', mousePos.y)
+    if (mousePos.x == 4 && mousePos.y == 4) {
+        //CASE GUI
+        console.log('clicked on the GUI')
+    } else {
+        mousePos = convertToMonolithPos(mousePos)
+        console.log('converted x', mousePos.x, 'converted y', mousePos.y)
+        if (monolith[mousePos.y]?.[mousePos.x]) {
+            //CASE MONOLITH
+            console.log('clicked on the Monolith')
             startUsingTool(e)
-            break
-        case 'GUI':
-            //Trigger GUI
-            break
+        }
     }
-
 }
 
 function startUsingTool(e) {
@@ -149,56 +153,53 @@ function startUsingTool(e) {
 }
 
 function useTool() {
-    let newMousePosition = mousePositionInGrid();
-    let pos = data[newMousePosition.x + newMousePosition.y * nbColonneDisplay].index
-    console.log('newMousePosition', newMousePosition)
-    console.log('pos', pos)
-    // prettier-ignore
+    let mousePos = convertToMonolithPos(mousePositionInGrid());
+    console.log('mousePos', mousePos)
     switch (props.tool) {
         case Tool.SMOL:
-            draw_pixel(pos, Klon.USERPAINTED, new Klon(hexToRGB(colorPicked), Klon.USERPAINTED, 'Monolith'));
+            draw_pixel(mousePos.x, mousePos.y, Klon.USERPAINTED, hexToRGB(colorPicked));
             break;
-        // case Tool.BIG:
-        //     for (let i = -1; i <= 1; i++) {
-        //         for (let j = -1; j <= 1; j++) {
-        //             if (newMousePosition.x + i < nbColonneDisplay && newMousePosition.x + i > -1)
-        //             draw_pixel(newMousePosition.x + i, newMousePosition.y + j, Klon.USERPAINTED, new Klon(hexToRGB(colorPicked), Klon.USERPAINTED, 'Monolith'));
-        //             }
-        //     }
-        //     break;
-        // case Tool.HUGE:
-        //     for (let i = -4; i <= 4; i++) {
-        //         for (let j = -4; j <= 4; j++) {
-        //             if (newMousePosition.x + i < nbColonneDisplay && newMousePosition.x + i > -1)
-        //             draw_pixel(newMousePosition.x + i, newMousePosition.y + j, Klon.USERPAINTED, new Klon(hexToRGB(colorPicked), Klon.USERPAINTED, 'Monolith'));
-        //             }
-        //     }
-        //     break;
-        // case Tool.MOVE:
-        //     moveDrawing(newMousePosition.x, newMousePosition.y);
-        //     break;
+        case Tool.BIG:
+            for (let i = -1; i <= 1; i++) {
+                for (let j = -1; j <= 1; j++) {
+                    if (mousePos.x + i < nbColonneDisplay && mousePos.x + i > -1)
+                    draw_pixel(mousePos.x + i, mousePos.y + j, Klon.USERPAINTED, hexToRGB(colorPicked));
+                    }
+            }
+            break;
+        case Tool.HUGE:
+            for (let i = -4; i <= 4; i++) {
+                for (let j = -4; j <= 4; j++) {
+                    if (mousePos.x + i < nbColonneDisplay && mousePos.x + i > -1)
+                    draw_pixel(mousePos.x + i, mousePos.y + j, Klon.USERPAINTED, hexToRGB(colorPicked));
+                    }
+            }
+            break;
+        case Tool.MOVE:
+            moveDrawing(mousePos.x, mousePos.y);
+            break;
     }
     update()
 }
 
 function useDeleteTool() {
-    let newMousePosition = mousePositionInGrid();
+    let mousePos = mousePositionInGrid();
     // prettier-ignore
     switch (props.tool) {
         case Tool.SMOL:
-            erase_pixel(newMousePosition.x, newMousePosition.y);
+            erase_pixel(mousePos.x, mousePos.y);
             break;
         case Tool.BIG:
             for (let i = -1; i <= 1; i++) {
                 for (let j = -1; j <= 1; j++) {
-                    erase_pixel(newMousePosition.x + i, newMousePosition.y + j);
+                    erase_pixel(mousePos.x + i, mousePos.y + j);
                 }
             }
             break;
         case Tool.HUGE:
             for (let i = -4; i <= 4; i++) {
                 for (let j = -4; j <= 4; j++) {
-                    erase_pixel(newMousePosition.x + i, newMousePosition.y + j);
+                    erase_pixel(mousePos.x + i, mousePos.y + j);
                 }
             }
             break;
@@ -310,6 +311,12 @@ function useColorPicker() {
 //             // }
 //         });
 //     });
+
+function convertToMonolithPos(mousePos) {
+    mousePos.y = nbRows + marginBot - viewPosY - displayGridHeight + mousePos.y;
+    mousePos.x = viewPosX - marginLeft + mousePos.x;
+    return mousePos;
+}
 
 </script>
 
