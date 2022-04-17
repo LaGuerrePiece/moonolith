@@ -92,7 +92,11 @@ position = ref(mousePosition(canvas));
 console.log('displayGrid.length', displayGrid.length)
 
 window.onwheel = function (e) {
-    viewPos += e.deltaY * -0.01;
+    if (e.deltaY > 0) {
+        viewPos -= 3;
+    } else {
+        viewPos += 3;
+    }
     if (viewPos < 0) {
         viewPos = 0
         return
@@ -105,7 +109,6 @@ async function update() {
     //data is the array of the displayed klons
     data = await assemble(nbColonneDisplay, displayGridHeight, 256, 362, 0, viewPos).then((data) => {
         displayGrid.updateDisplay(data)
-        console.log('data', data)
         lastCall = new Date()
     })
 }
