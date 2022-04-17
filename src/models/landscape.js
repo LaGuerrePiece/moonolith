@@ -7,43 +7,49 @@ let import64 = async (base64data) => {
     let decoded = await decode(_base64ToArrayBuffer(base64data)).catch(console.error);
     let b64_floor = toRGBA8(decoded);
     let endImport = performance.now();
-    return { buffer: b64_floor, perf: Math.floor(endImport - startImport) };
+    return { buffer: b64_floor, perf: endImport - startImport };
 };
 
 export async function assembleLandscape(renderWidth, renderHeight, nbColumns, nbLine, viewPosX, viewPosY) {
-    console.log('------------------------------------------------------');
-    var landscapeArray = [];
-    let randomPos = Math.floor(Math.random() * 40);
-    // console.log('randomPos', randomPos);
     let start64 = performance.now();
+    var landscapeArray = [];
+    let layerCount = 0,
+        layerLines = 0,
+        importPerf = 0;
     for (let layer in landscapeBase64) {
         let startLayer = performance.now();
         let thisLayer = landscapeBase64[layer];
         let parallaxOffset = Math.floor(thisLayer.parallax * viewPosY);
-        let offset = (nbLine - thisLayer.height - thisLayer.startY + parallaxOffset) * nbColumns * 4;
-        // console.log(`offset ${thisLayer.name}`, offset);
+        if (thisLayer.startY - thisLayer.height - parallaxOffset > viewPosY + renderHeight) continue; // If the layer above render, skip it
+        if (nbLine - thisLayer.startY + parallaxOffset > nbLine - viewPosY) continue; // If the layer under render, skip it
+        let offset = (nbLine - thisLayer.startY + parallaxOffset) * nbColumns * 4;
+        layerCount++;
+        layerLines += thisLayer.height;
         await import64(thisLayer.base64).then((res) => {
-            for (let i = 0; i < res.buffer.length; i++) {
-                if (i % 4 === 0 && res.buffer[i + 3] === 0) {
+            let buffer = res.buffer;
+            importPerf += res.perf;
+            for (let i = 0; i < buffer.length; i++) {
+                if (i % 4 === 0 && buffer[i + 3] === 0) {
                     // checks 4th array and if it's 0 (transparent), skips the group
                     i += 3;
                     continue;
                 }
-                landscapeArray[i + offset] = res.buffer[i];
+                landscapeArray[i + offset] = buffer[i];
             }
-            // console.log(
-            //     `${thisLayer.name} | Parallax : ${thisLayer.parallax} | Height : ${thisLayer.height} | StartY : ${
-            //         thisLayer.startY
-            //     } | Parallax Offset : ${parallaxOffset} | Full Offset ${offset / nbColumns / 4}| Import : ${
-            //         res.perf
-            //     } ms, total :`,
-            //     Math.floor(performance.now() - startLayer),
-            //     'ms'
-            // );
         });
     }
     let end64 = performance.now();
-    console.log('BASE64 TOTAL :', Math.floor(end64 - start64), 'ms');
-    // console.log('------------------------------------------------------');
+    // console.log(
+    //     'Nb of Layers : ',
+    //     layerCount,
+    //     '| Nb of lines : ',
+    //     layerLines,
+    //     ' | ',
+    //     Math.floor(end64 - start64),
+    //     'ms | Import :',
+    //     Math.floor(importPerf * 10) / 10,
+    //     'ms | lines/ms : ',
+    //     Math.floor((layerLines / (end64 - start64)) * 100) / 100
+    // );
     return landscapeArray;
 }
