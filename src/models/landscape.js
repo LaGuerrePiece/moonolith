@@ -11,7 +11,7 @@ let import64 = async (base64data) => {
 };
 
 export async function assembleLandscape(renderWidth, renderHeight, nbColumns, nbLine, viewPosX, viewPosY) {
-    console.log('------------------------------------------------------');
+    // console.log('------------------------------------------------------');
     var landscapeArray = [];
     let randomPos = Math.floor(Math.random() * 40);
     // console.log('randomPos', randomPos);
@@ -43,7 +43,7 @@ export async function assembleLandscape(renderWidth, renderHeight, nbColumns, nb
         });
     }
     let end64 = performance.now();
-    console.log('BASE64 TOTAL :', Math.floor(end64 - start64), 'ms');
+    // console.log('BASE64 TOTAL :', Math.floor(end64 - start64), 'ms');
     // console.log('------------------------------------------------------');
     return landscapeArray;
 }

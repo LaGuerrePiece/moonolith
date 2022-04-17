@@ -107,12 +107,11 @@ window.onwheel = function (e) {
 };
 
 async function update() {
-    if (new Date() - lastCall < 10) return;
+    if (new Date() - lastCall < 30) return;
     //data is the array of the displayed klons
     await assemble(nbColonneDisplay, displayGridHeight, 256, 362, 0, viewPosY).then((data) => {
         displayData = data
         displayGrid.updateDisplay(displayData)
-        console.log('displayData', displayData)
         lastCall = new Date()
     })
 }
@@ -154,7 +153,6 @@ function startUsingTool(e) {
 
 function useTool() {
     let mousePos = convertToMonolithPos(mousePositionInGrid());
-    console.log('mousePos', mousePos)
     switch (props.tool) {
         case Tool.SMOL:
             draw_pixel(mousePos.x, mousePos.y, Klon.USERPAINTED, hexToRGB(colorPicked));
@@ -212,12 +210,8 @@ function stopUsingTool() {
 }
 
 function mousePositionInGrid() {
-    let screenx = document.documentElement.clientWidth;
-    let screeny = document.documentElement.clientHeight;
-    let pixelSize = screenx / displayGrid.nbColumns;
-    let nbPixely = screeny / pixelSize;
-    let x = Math.floor((position.value[0] / screenx) * displayGrid.nbColumns);
-    let y = Math.floor((position.value[1] / screeny) * nbPixely);
+    let x = Math.floor((position.value[0] / width) * nbColonneDisplay);
+    let y = Math.floor((position.value[1] / height) * displayGridHeight);
     return { x, y };
 }
 

@@ -49,14 +49,14 @@ export async function assemble(renderWidth, renderHeight, nbColumnsLandscape, nb
         }
     }
     let endAssemble = performance.now();
-    console.log(
-        'Get arrays :',
-        Math.floor(endGetArray - startAssemble),
-        'ms | Write arrays :',
-        Math.floor(endAssemble - endGetArray),
-        'ms'
-    );
-    console.log('Assemble TOTAL :', Math.floor(endAssemble - startAssemble), 'ms');
+    // console.log(
+    //     'Get arrays :',
+    //     Math.floor(endGetArray - startAssemble),
+    //     'ms | Write arrays :',
+    //     Math.floor(endAssemble - endGetArray),
+    //     'ms'
+    // );
+    // console.log('Assemble TOTAL :', Math.floor(endAssemble - startAssemble), 'ms');
 
     return landscapeArray;
 }

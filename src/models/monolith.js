@@ -22,14 +22,13 @@ console.log('monolith', monolith);
 
 export function draw_pixel(x, y, zIndex, color) {
     if (x < 0 || x >= nbColumns || y < 0 || y >= nbRows) return; //IF OUT OF BOUNDS, return
-
-    // if (monolith[pos] ? monolith[pos].isEditable(zIndex) : true) {
-    //     if (!klonsAreEqual(monolith[pos], klon)) {
-    //         if (zIndex === 0) addToCurrentEvent(pos, monolith[pos]);
-    //         monolith[pos] = new Klon(color, zIndex);
-    //     }
-    // }
+    if (!monolith[y][x].isEditable(zIndex)) return; //IF IS NOT EDITABLE, return
+    //if (zIndex === 0) addToCurrentEvent(x, y, monolith[y][x]);                                    //A faire
+    monolith[y][x] = new Klon(color, zIndex);
 }
+
+// if (zIndex === monolith[y][x].zIndex && ) return; //IF IS THE SAME COLOR, return
+// if (!klonsAreEqual(monolith[pos], klon)) {
 
 export function get_color(x, y) {
     let pos = y * this.nbColumns + x;
@@ -88,8 +87,8 @@ export function getMonolithArray(renderWidth, renderHeight, viewPosX, viewPosY) 
     let monolithArray = [];
     const startY = nbRows + marginBot - viewPosY - renderHeight;
     const startX = viewPosX - marginLeft;
-    console.log('startY', startY);
-    console.log('startX', startX);
+    // console.log('startY', startY);
+    // console.log('startX', startX);
     for (let i = 0; i < renderHeight; i++) {
         for (let j = 0; j < renderWidth; j++) {
             if (monolith[startY + i]?.[startX + j]) {
