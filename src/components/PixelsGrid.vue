@@ -156,7 +156,8 @@ canvas.onmousedown = clickManager;
 function clickManager(e) {
     let mousePos = mousePosInGrid(e)
     console.log('x', mousePos.x, 'y', mousePos.y)
-    if (mousePos.y > 190 && mousePos.x < 60) {
+    console.log('displayGridHeight', displayGridHeight)
+    if (mousePos.y > displayGridHeight - 6 && mousePos.x < 60) {
         //CASE GUI
         console.log('clicked on the GUI')
         colorPicked = mousePos.x < 5 ? '#FF0000'
