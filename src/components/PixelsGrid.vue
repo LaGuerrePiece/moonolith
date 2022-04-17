@@ -137,10 +137,10 @@ window.onwheel = function (e) {
     update()
 };
 
-async function update(params) {
+async function update() {
     if (new Date() - lastCall < 30) return;
     //data is the array of the displayed klons
-    await assemble(nbColonneDisplay, displayGridHeight, 256, 362, 0, viewPosY, params).then((data) => {
+    await assemble(nbColonneDisplay, displayGridHeight, 256, 362, 0, viewPosY).then((data) => {
         displayData = data
         displayGrid.updateDisplay(displayData)
         lastCall = new Date()
@@ -219,7 +219,7 @@ function useTool(e) {
             moveDrawing(mousePos.x, mousePos.y);
             break;
     }
-    update({monolithOnly: true})
+    update()
 }
 
 function useDeleteTool(e) {
@@ -245,7 +245,7 @@ function useDeleteTool(e) {
             }
             break;
     }
-    update({monolithOnly: true})
+    update()
 }
 
 function stopUsingTool() {

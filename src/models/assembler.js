@@ -6,29 +6,39 @@ export let marginTop = 34;
 export let marginLeft = 47;
 export let marginRight = 60;
 
-async function getLandscapeArray(renderWidth, renderHeight, nbColumnsLandscape, nbLineLandscape, viewPosX, viewPosY) {
-    let landscapeArrayAssemble = await assembleLandscape(
-        renderWidth,
-        renderHeight,
-        nbColumnsLandscape,
-        nbLineLandscape,
-        viewPosX,
-        viewPosY
-    );
-    landscapeArrayAssemble = convert(landscapeArrayAssemble);
-    let landscapeArray = [];
+let previousViewPosY = 0;
+var previousLandscape;
 
-    for (let y = 0; y < renderHeight; y++) {
-        const currentLinePosStart = (nbLineLandscape - renderHeight - viewPosY + y) * nbColumnsLandscape;
-        for (let x = 0; x < renderWidth; x++) {
-            const currentColumnPosStart = viewPosX + x;
-            landscapeArray.push(landscapeArrayAssemble[currentColumnPosStart + currentLinePosStart]);
+async function getLandscapeArray(renderWidth, renderHeight, nbColumnsLandscape, nbLineLandscape, viewPosX, viewPosY) {
+    if (previousViewPosY !== viewPosY) {
+        //execute only if viewPosY has changed, otherwise take the previous landscapeArray
+        let landscapeArrayAssemble = await assembleLandscape(
+            renderWidth,
+            renderHeight,
+            nbColumnsLandscape,
+            nbLineLandscape,
+            viewPosX,
+            viewPosY
+        );
+
+        landscapeArrayAssemble = convert(landscapeArrayAssemble);
+        let landscapeArray = [];
+
+        for (let y = 0; y < renderHeight; y++) {
+            const currentLinePosStart = (nbLineLandscape - renderHeight - viewPosY + y) * nbColumnsLandscape;
+            for (let x = 0; x < renderWidth; x++) {
+                const currentColumnPosStart = viewPosX + x;
+                landscapeArray.push(landscapeArrayAssemble[currentColumnPosStart + currentLinePosStart]);
+            }
         }
+        previousLandscape = landscapeArray;
+        previousViewPosY = viewPosY;
+        return landscapeArray;
+    } else {
+        return previousLandscape;
     }
-    return landscapeArray;
 }
 
-var previousLandscape;
 export async function assemble(
     renderWidth,
     renderHeight,
@@ -40,10 +50,14 @@ export async function assemble(
 ) {
     let startAssemble = performance.now();
     //IF MONOLITHONLY, THEN USE PREVIOUSLANDSCAPE
-    let landscapeArray = params?.monolithOnly
-        ? previousLandscape
-        : await getLandscapeArray(renderWidth, renderHeight, nbColumnsLandscape, nbLineLandscape, viewPosX, viewPosY);
-    if (!params?.monolithOnly) previousLandscape = landscapeArray;
+    let landscapeArray = await getLandscapeArray(
+        renderWidth,
+        renderHeight,
+        nbColumnsLandscape,
+        nbLineLandscape,
+        viewPosX,
+        viewPosY
+    );
     let monolithArray = getMonolithArray(renderWidth, renderHeight, viewPosX, viewPosY);
     let endGetArray = performance.now();
 
