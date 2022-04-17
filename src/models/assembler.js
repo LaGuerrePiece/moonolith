@@ -3,7 +3,7 @@ import monolithJSON from '../assets/JSON/monolith.json';
 import { preEncodeSpecialK } from '../utils/image-manager';
 import { assembleLandscape } from './landscape';
 
-let marginBot = 10;
+let marginBot = 30;
 let marginTop = 34;
 let marginLeft = 47;
 let marginRight = 60;
