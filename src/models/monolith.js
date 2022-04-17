@@ -103,15 +103,6 @@ export function getMonolithArray(renderWidth, renderHeight, viewPosX, viewPosY) 
             }
         }
     }
-    console.log('monolithArray', monolithArray);
-
-    // for (let y = 0; y < renderHeight; y++) {
-    //     const currentLinePosStart = (nbLineLandscape - renderHeight - viewPosY + y) * nbColumnsLandscape;
-    //     for (let x = 0; x < renderWidth; x++) {
-    //         const currentColumnPosStart = viewPosX + x;
-    //         monolithArray.push(monolith[currentColumnPosStart + currentLinePosStart].color);
-    //     }
-    // }
-
+    //console.log('monolithArray', monolithArray);
     return monolithArray;
 }

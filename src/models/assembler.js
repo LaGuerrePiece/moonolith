@@ -1,6 +1,4 @@
-import Klon from './klon';
-import { monolith, getMonolithArray } from './monolith';
-import { preEncodeSpecialK } from '../utils/image-manager';
+import { getMonolithArray } from './monolith';
 import { assembleLandscape } from './landscape';
 
 export let marginBot = 10;
@@ -46,6 +44,9 @@ export async function assemble(renderWidth, renderHeight, nbColumnsLandscape, nb
 
     for (let i = 0; i < landscapeArray.length; i++) {
         if (monolithArray[i] !== undefined) landscapeArray[i] = monolithArray[i];
+        if (Array.isArray(landscapeArray[i]) && !landscapeArray[i][0]) {
+            landscapeArray[i] = [0, 0, 1];
+        }
     }
     let endAssemble = performance.now();
     console.log(

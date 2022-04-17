@@ -105,9 +105,9 @@ async function update() {
     //data is the array of the displayed klons
     data = await assemble(nbColonneDisplay, displayGridHeight, 256, 362, 0, viewPos).then((data) => {
         displayGrid.updateDisplay(data)
+        console.log('data', data)
         lastCall = new Date()
     })
-
 }
 
 canvas.onmouseup = stopUsingTool;
