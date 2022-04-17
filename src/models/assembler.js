@@ -6,7 +6,7 @@ export let marginTop = 34;
 export let marginLeft = 47;
 export let marginRight = 60;
 
-let previousViewPosY = 0;
+var previousViewPosY;
 var previousLandscape;
 
 async function getLandscapeArray(renderWidth, renderHeight, nbColumnsLandscape, nbLineLandscape, viewPosX, viewPosY) {
@@ -85,6 +85,7 @@ export async function assemble(
         if (column < 50 && column >= 45) landscapeArray[i] = [0.6, 0.6, 0.6];
         if (column < 55 && column >= 50) landscapeArray[i] = [0.5, 0.5, 0.5];
         if (column < 60 && column >= 55) landscapeArray[i] = [0.4, 0.4, 0.4];
+        if (column < 65 && column >= 60) landscapeArray[i] = [0.3, 0.3, 0.3];
     }
 
     let endAssemble = performance.now();

@@ -43,37 +43,9 @@ document.addEventListener(
     (e) => {e.preventDefault()}, false
 );
 
-watch(() => props.onDelete.value,
-    (deleteInstance) => {
-        if (deleteInstance === 1) erase_all_pixel()
-        emit('deleteBack');
-    }
-);
-
 watch(() => props.importedImage?.value,
     (buffer) => {
         if (buffer) displayImageFromArrayBuffer(buffer, 1, 1, 999999, 99999, 0);
-    }
-);
-
-// watch(
-//     () => props.tool,
-//     (code) => {
-//         if (code === Tool.DONE) {
-//             canvas.onmousedown = null;
-//             canvas.onmousemove = null;
-//         } else {
-//             canvas.onmouseup = stopUsingTool;
-//             canvas.onmousedown = startUsingTool;
-//         }
-//     }
-// );
-
-watch(
-    () => props.color,
-    (color) => {
-        console.log(color);
-        colorPicked = props.color;
     }
 );
 
@@ -97,7 +69,7 @@ document.addEventListener('keydown', function (e) {
     if (e.ctrlKey && e.key === 'y') redo();
     if (e.metaKey && e.key === 'y') redo();
     if (e.key === 't') {
-        update({monolithOnly: true})
+        update()
     }
 });
 
@@ -120,8 +92,6 @@ const displayGridHeight = Math.floor(height/pixelSize) + 2;
 displayGrid = new DisplayGrid(nbColonneDisplay, displayGridHeight);
 displayGrid.initialize(document.body);
 let canvas = displayGrid.pixels.canvas;
-
-console.log('displayGrid.length', displayGrid.length)
 
 window.onwheel = function (e) {
     if (e.deltaY > 0) {
@@ -151,23 +121,33 @@ async function update() {
  ************* TOOLS **************
  **********************************/
 
+let tool = Tool.HUGE
+
 canvas.onmousedown = clickManager;
 
 function clickManager(e) {
     let mousePos = mousePosInGrid(e)
-    console.log('x', mousePos.x, 'y', mousePos.y)
-    console.log('displayGridHeight', displayGridHeight)
-    if (mousePos.y > displayGridHeight - 6 && mousePos.x < 60) {
+    if (mousePos.y > displayGridHeight - 6 && mousePos.x < 65) {
         //CASE GUI
-        console.log('clicked on the GUI')
-        colorPicked = mousePos.x < 5 ? '#FF0000'
-                    : mousePos.x < 10 ? '#00FF00'
-                    : mousePos.x < 15 ? '#0000FF'
-                    : mousePos.x < 20 ? '#FFFF00'
-                    : mousePos.x < 25 ? '#FF00FF'
-                    : mousePos.x < 30 ? '#00FFFF'
-                    : '#000000'
-        console.log('colorPicked', colorPicked)
+        if (mousePos.x < 30) {
+            colorPicked = mousePos.x < 5 ? '#FF0000'
+                        : mousePos.x < 10 ? '#00FF00'
+                        : mousePos.x < 15 ? '#0000FF'
+                        : mousePos.x < 20 ? '#FFFF00'
+                        : mousePos.x < 25 ? '#00FFFF'
+                        : '#FF00FF'
+            console.log('colorPicked', colorPicked)
+        }
+        if (mousePos.x >= 30 && mousePos.x < 35) tool = Tool.SMOL
+        if (mousePos.x >= 35 && mousePos.x < 40) tool = Tool.BIG
+        if (mousePos.x >= 40 && mousePos.x < 45) tool = Tool.HUGE
+        if (mousePos.x >= 45 && mousePos.x < 50) console.log('save!')
+        if (mousePos.x >= 50 && mousePos.x < 55) console.log('move!')
+        if (mousePos.x >= 55 && mousePos.x < 60) {
+            erase_all_pixel()
+            update()
+        }
+        if (mousePos.x >= 60 && mousePos.x < 65) console.log('Import!')
     } else {
         //CASE MONOLITH
         mousePos = convertToMonolithPos(mousePos)
@@ -195,7 +175,7 @@ function startUsingTool(e, mousePos) {
 function useTool(e) {
     //IF E IS PASSED IT'S ALREADY FORMATED, ELSE IT'S A MOUSE EVENT
     const mousePos = e.type ? convertToMonolithPos(mousePosInGrid({x: e.x, y: e.y})) : e
-    switch (props.tool) {
+    switch (tool) {
         case Tool.SMOL:
             draw_pixel(mousePos.x, mousePos.y, Klon.USERPAINTED, hexToRGB(colorPicked));
             break;
@@ -225,7 +205,7 @@ function useTool(e) {
 function useDeleteTool(e) {
     //IF E IS PASSED IT'S ALREADY FORMATED, ELSE IT'S A MOUSE EVENT
     const mousePos = e.type ? convertToMonolithPos(mousePosInGrid({x: e.x, y: e.y})) : e
-    switch (props.tool) {
+    switch (tool) {
         case Tool.SMOL:
             console.log('delete pixel')
             erase_pixel(mousePos.x, mousePos.y);
@@ -262,7 +242,6 @@ function mousePosInGrid(e) {
 let colorPicked = '#b3e3da';
 
 function useColorPicker(mousePos) {
-    console.log('colorPicker mousePos', mousePos);
     colorPicked = get_color(mousePos.x, mousePos.y);
     colorPicked = RGBToHex(colorPicked[0], colorPicked[1], colorPicked[2]);
     console.log(colorPicked);
