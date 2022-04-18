@@ -1,6 +1,6 @@
 import Klon from './klon';
+import Const from './constants';
 import { addToCurrentEvent, closeCurrentEvent } from './undoStack';
-import { marginBot, marginLeft } from './assembler';
 import {
     decode,
     preEncode,
@@ -11,16 +11,12 @@ import {
     RGBToHex,
 } from '../utils/image-manager';
 
-export const nbColumnsMonolith = 170;
-export const nbRowsMonolith = 600;
-const backgroundColor = [0.1568, 0.1568, 0.1803];
-
-export let monolith = Array.from({ length: nbRowsMonolith }, () =>
-    Array.from({ length: nbColumnsMonolith }, () => new Klon(backgroundColor))
+export let monolith = Array.from({ length: Const.MONOLITH_ROWS }, () =>
+    Array.from({ length: Const.MONOLITH_COLUMNS }, () => new Klon(Const.DEFAULT_COLOR))
 );
 
 export function draw_pixel(x, y, zIndex, color) {
-    if (x < 0 || x >= nbColumnsMonolith || y < 0 || y >= nbRowsMonolith) return; //IF OUT OF BOUNDS, return
+    if (x < 0 || x >= Const.MONOLITH_COLUMNS || y < 0 || y >= Const.MONOLITH_ROWS) return; //IF OUT OF BOUNDS, return
     if (!monolith[y][x].isEditable(zIndex)) return; //IF IT IS NOT EDITABLE, return
     // if (monolith[y][x].color === color && monolith[y][x].zIndex === zIndex) return; //IF IT IS THE SAME, return
     if (zIndex === 0) addToCurrentEvent(x, y, monolith[y][x]); //IF IT IS BEING DRAW BY USER, ADD TO CURRENT EVENT
@@ -36,11 +32,11 @@ export function get_color(x, y) {
 }
 
 export function erase_all_pixel() {
-    for (let j = 0; j < nbRowsMonolith; j++) {
-        for (let i = 0; i < nbColumnsMonolith; i++) {
+    for (let j = 0; j < Const.MONOLITH_ROWS; j++) {
+        for (let i = 0; i < Const.MONOLITH_COLUMNS; i++) {
             if (monolith[j][i].zIndex === 0) {
                 addToCurrentEvent(i, j, monolith[j][i]);
-                monolith[j][i] = new Klon(backgroundColor);
+                monolith[j][i] = new Klon(Const.DEFAULT_COLOR);
             }
         }
     }
@@ -52,7 +48,7 @@ export function erase_all_pixel() {
 export function erase_pixel(x, y) {
     if (monolith[y][x].zIndex === 0) {
         addToCurrentEvent(x, y, monolith[y][x]);
-        monolith[y][x] = new Klon(backgroundColor);
+        monolith[y][x] = new Klon(Const.DEFAULT_COLOR);
     }
 }
 
@@ -62,14 +58,10 @@ export function convertIndexToXY(number) {
     return { x, y };
 }
 
-export function addRow(numberOfRow) {
-    this.nbRowsMonolith += numberOfRow;
-}
-
 export function getMonolithArray(renderWidth, renderHeight, viewPosX, viewPosY) {
     let monolithArray = [];
-    const startY = nbRowsMonolith + marginBot - viewPosY - renderHeight;
-    const startX = viewPosX - marginLeft;
+    const startY = Const.MONOLITH_ROWS + Const.MARGIN_BOTTOM - viewPosY - renderHeight;
+    const startX = viewPosX - Const.MARGIN_LEFT;
     // console.log('startY', startY);
     // console.log('startX', startX);
     for (let i = 0; i < renderHeight; i++) {

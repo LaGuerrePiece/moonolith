@@ -1,12 +1,12 @@
 import { getMonolithArray } from './monolith';
 import { assembleLandscape } from './landscape';
-import Color from './colors';
+import Const from './constants';
 import { hexToRGB } from '../utils/image-manager';
 
-export let marginBot = 30;
-export let marginTop = 34;
-export let marginLeft = 47;
-export let marginRight = 60;
+export let marginBot = Const.MARGIN_BOTTOM;
+export let marginTop = Const.MARGIN_TOP;
+export let marginLeft = Const.MARGIN_LEFT;
+export let marginRight = Const.MARGIN_RIGHT;
 
 var previousViewPosY;
 var previousLandscape;
@@ -73,12 +73,12 @@ export async function assemble(
     for (let i = startGUI; i < landscapeArray.length; i++) {
         const column = i % renderWidth;
         //COLORS
-        if (column < 5) landscapeArray[i] = Color.RGB1;
-        if (column < 10 && column >= 5) landscapeArray[i] = Color.RGB2;
-        if (column < 15 && column >= 10) landscapeArray[i] = Color.RGB10;
-        if (column < 20 && column >= 15) landscapeArray[i] = Color.RGB4;
-        if (column < 25 && column >= 20) landscapeArray[i] = Color.RGB5;
-        if (column < 30 && column >= 25) landscapeArray[i] = Color.RGB6;
+        if (column < 5) landscapeArray[i] = Const.RGB1;
+        if (column < 10 && column >= 5) landscapeArray[i] = Const.RGB2;
+        if (column < 15 && column >= 10) landscapeArray[i] = Const.RGB10;
+        if (column < 20 && column >= 15) landscapeArray[i] = Const.RGB4;
+        if (column < 25 && column >= 20) landscapeArray[i] = Const.RGB5;
+        if (column < 30 && column >= 25) landscapeArray[i] = Const.RGB6;
         //TOOLS
         if (column < 35 && column >= 30) landscapeArray[i] = [0.9, 0.9, 0.9];
         if (column < 40 && column >= 35) landscapeArray[i] = [0.8, 0.8, 0.8];

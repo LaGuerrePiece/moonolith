@@ -8,9 +8,7 @@ import {
     get_color,
     erase_all_pixel,
     erase_pixel,
-    monolith,
-    nbColumnsMonolith,
-    nbRowsMonolith,
+    monolith
 } from '../models/monolith';
 import DisplayGrid from '../models/displayGrid';
 import Klon from '../models/klon';
@@ -30,7 +28,7 @@ import {
     displayImageFromArrayBuffer,
 } from '../utils/image-manager';
 import Tool from '../models/tools';
-import Color from '../models/colors';
+import Const from '../models/constants';
 import { chunkCreator, getChunk, getChunksFromPosition, getSupply, getTotalPixs, getThreshold } from '../utils/web3';
 import { assemble, marginBot, marginLeft } from '../models/assembler';
 
@@ -81,6 +79,7 @@ document.addEventListener('keydown', function (e) {
     if (e.metaKey && e.key === 'Z') redo();
     if (e.ctrlKey && e.key === 'y') redo();
     if (e.metaKey && e.key === 'y') redo();
+    if (e.key === 'u') console.log('CONST', Const);
     if (e.key === 't') {
         update();
     }
@@ -145,16 +144,16 @@ function clickManager(e) {
         if (mousePos.x < 30) {
             colorPicked =
                 mousePos.x < 5
-                    ? Color.HEX1
+                    ? Const.HEX1
                     : mousePos.x < 10
-                    ? Color.HEX2
+                    ? Const.HEX2
                     : mousePos.x < 15
-                    ? Color.HEX10
+                    ? Const.HEX10
                     : mousePos.x < 20
-                    ? Color.HEX4
+                    ? Const.HEX4
                     : mousePos.x < 25
-                    ? Color.HEX5
-                    : Color.HEX6;
+                    ? Const.HEX5
+                    : Const.HEX6;
             console.log('colorPicked', colorPicked);
         }
         if (mousePos.x >= 30 && mousePos.x < 35) tool = Tool.SMOL;
@@ -170,7 +169,7 @@ function clickManager(e) {
     } else {
         //CASE MONOLITH
         mousePos = convertToMonolithPos(mousePos);
-        if (mousePos.x < 0 || mousePos.x >= nbColumnsMonolith || mousePos.y < 0 || mousePos.y >= nbRowsMonolith) return; // out of bounds
+        if (mousePos.x < 0 || mousePos.x >= Const.MONOLITH_COLUMNS || mousePos.y < 0 || mousePos.y >= Const.MONOLITH_ROWS) return; // out of bounds
         startUsingTool(e, mousePos);
     }
 }
@@ -203,7 +202,7 @@ function importImage() {
 }
 
 function displayArrayToImage(array, width, offsetx, offsety, pixelPaid, yMaxLegal, zIndex) {
-    console.log('FONCTION A REFAIRE MARCHER, DUPLICATE DANS IMAGE-MANAGER')
+    console.log('FONCTION A REFAIRE MARCHER, DUPLICATE DANS IMAGE-MANAGER');
     let pixelDrawn = 0;
     let decalage = 0;
     for (let y = 0; y < yMaxLegal; y++) {
@@ -362,7 +361,7 @@ setTimeout(() => {
 //     });
 
 function convertToMonolithPos(mousePos) {
-    mousePos.y = nbRowsMonolith + marginBot - viewPosY - displayGridHeight + mousePos.y;
+    mousePos.y = Const.MONOLITH_ROWS + marginBot - viewPosY - displayGridHeight + mousePos.y;
     mousePos.x = viewPosX - marginLeft + mousePos.x;
     return mousePos;
 }
