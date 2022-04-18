@@ -146,16 +146,16 @@ function clickManager(e) {
         if (mousePos.x < 30) {
             colorPicked =
                 mousePos.x < 5
-                    ? Color.COLOR1
+                    ? Color.HEX1
                     : mousePos.x < 10
-                    ? Color.COLOR2
+                    ? Color.HEX2
                     : mousePos.x < 15
-                    ? Color.COLOR10
+                    ? Color.HEX10
                     : mousePos.x < 20
-                    ? Color.COLOR4
+                    ? Color.HEX4
                     : mousePos.x < 25
-                    ? Color.COLOR5
-                    : Color.COLOR6;
+                    ? Color.HEX5
+                    : Color.HEX6;
             console.log('colorPicked', colorPicked);
         }
         if (mousePos.x >= 30 && mousePos.x < 35) tool = Tool.SMOL;
