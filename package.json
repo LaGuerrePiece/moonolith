@@ -7,20 +7,13 @@
     "preview": "vite preview --port 5050"
   },
   "dependencies": {
-    "@ckpack/vue-color": "^1.1.8",
     "ethers": "^5.5.4",
     "express": "^4.17.3",
-    "mouse-position": "^2.1.0",
     "pixel-grid": "^1.0.2",
     "upng-js": "^2.1.0",
-    "vue": "^3.2.31",
-    "vue-router": "^4.0.14",
-    "vue-swatches": "^2.1.1",
-    "vue3-swatches": "^1.0.7",
     "web3": "^1.7.1"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^2.3.1",
     "vite": "^2.9.4"
   },
   "prettier": {
