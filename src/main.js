@@ -53,13 +53,13 @@ let viewPosX = 0;
 let lastCall = 0;
 let displayData;
 
-const nbColonneDisplay = 256;
-const width = window.innerWidth;
 const height = window.innerHeight;
-const pixelSize = width / nbColonneDisplay;
-const displayGridHeight = Math.floor(height / pixelSize) + 2;
+const width = window.innerWidth;
+const renderWidth = 256;
+const pixelSize = width / renderWidth;
+const renderHeight = Math.floor(height / pixelSize) + 2;
 
-displayGrid = new DisplayGrid(nbColonneDisplay, displayGridHeight);
+displayGrid = new DisplayGrid(renderWidth, renderHeight);
 displayGrid.initialize(document.body);
 let canvas = displayGrid.pixels.canvas;
 
@@ -80,7 +80,7 @@ window.onwheel = function (e) {
 async function update() {
     if (new Date() - lastCall < 30) return;
     //data is the array of the displayed klons
-    await assemble(nbColonneDisplay, displayGridHeight, 256, 362, 0, viewPosY).then((data) => {
+    await assemble(renderWidth, renderHeight, 0, viewPosY).then((data) => {
         displayData = data;
         displayGrid.updateDisplay(displayData);
         lastCall = new Date();
@@ -97,7 +97,7 @@ canvas.onmousedown = clickManager;
 
 function clickManager(e) {
     let mousePos = mousePosInGrid(e);
-    if (mousePos.y > displayGridHeight - 6 && mousePos.x < 65) {
+    if (mousePos.y > renderHeight - 6 && mousePos.x < 65) {
         //CASE GUI
         if (mousePos.x < 30) {
             colorPicked =
@@ -212,7 +212,7 @@ function useTool(e) {
         case Tool.BIG:
             for (let i = -1; i <= 1; i++) {
                 for (let j = -1; j <= 1; j++) {
-                    if (mousePos.x + i < nbColonneDisplay && mousePos.x + i > -1)
+                    if (mousePos.x + i < renderWidth && mousePos.x + i > -1)
                         draw_pixel(mousePos.x + i, mousePos.y + j, Klon.USERPAINTED, hexToRGB(colorPicked));
                 }
             }
@@ -220,7 +220,7 @@ function useTool(e) {
         case Tool.HUGE:
             for (let i = -4; i <= 4; i++) {
                 for (let j = -4; j <= 4; j++) {
-                    if (mousePos.x + i < nbColonneDisplay && mousePos.x + i > -1)
+                    if (mousePos.x + i < renderWidth && mousePos.x + i > -1)
                         draw_pixel(mousePos.x + i, mousePos.y + j, Klon.USERPAINTED, hexToRGB(colorPicked));
                 }
             }
@@ -264,7 +264,7 @@ function stopUsingTool() {
 }
 
 function mousePosInGrid(e) {
-    return { x: Math.floor((e.x / width) * nbColonneDisplay), y: Math.floor((e.y / height) * displayGridHeight) };
+    return { x: Math.floor((e.x / width) * renderWidth), y: Math.floor((e.y / height) * renderHeight) };
 }
 
 let colorPicked = '#b3e3da';
@@ -325,7 +325,7 @@ setTimeout(() => {
 //     });
 
 function convertToMonolithPos(mousePos) {
-    mousePos.y = Const.MONOLITH_ROWS + marginBot - viewPosY - displayGridHeight + mousePos.y;
+    mousePos.y = Const.MONOLITH_ROWS + marginBot - viewPosY - renderHeight + mousePos.y;
     mousePos.x = viewPosX - marginLeft + mousePos.x;
     return mousePos;
 }

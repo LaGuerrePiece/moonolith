@@ -2,7 +2,7 @@
 export default class Const { 
 
     static get COLUMNS() { return 256 }
-    static get ROWS() { return 600 }
+    static get LINES() { return 600 }
     static get MONOLITH_COLUMNS() { return 170 }
     static get MONOLITH_ROWS() { return 600 }
 

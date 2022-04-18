@@ -1,5 +1,5 @@
+import Const from './constants';
 import { preEncodeSpecialK, _base64ToArrayBuffer, decode, toRGBA8 } from '../utils/image-manager';
-
 import landscapeBase64 from '../assets/data.js';
 
 let import64 = async (base64data) => {
@@ -10,7 +10,7 @@ let import64 = async (base64data) => {
     return { buffer: b64_floor, perf: endImport - startImport };
 };
 
-export async function assembleLandscape(renderWidth, renderHeight, nbColumns, nbLine, viewPosX, viewPosY) {
+export async function assembleLandscape(renderWidth, renderHeight, viewPosX, viewPosY) {
     let start64 = performance.now();
     var landscapeArray = [];
     let layerCount = 0,
@@ -21,8 +21,8 @@ export async function assembleLandscape(renderWidth, renderHeight, nbColumns, nb
         let thisLayer = landscapeBase64[layer];
         let parallaxOffset = Math.floor(thisLayer.parallax * viewPosY);
         if (thisLayer.startY - thisLayer.height - parallaxOffset > viewPosY + renderHeight) continue; // If the layer above render, skip it
-        if (nbLine - thisLayer.startY + parallaxOffset > nbLine - viewPosY) continue; // If the layer under render, skip it
-        let offset = (nbLine - thisLayer.startY + parallaxOffset) * nbColumns * 4;
+        if (Const.LINES - thisLayer.startY + parallaxOffset > Const.LINES - viewPosY) continue; // If the layer under render, skip it
+        let offset = (Const.LINES - thisLayer.startY + parallaxOffset) * Const.COLUMNS * 4;
         layerCount++;
         layerLines += thisLayer.height;
         await import64(thisLayer.base64).then((res) => {

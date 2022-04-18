@@ -11,23 +11,16 @@ export let marginRight = Const.MARGIN_RIGHT;
 var previousViewPosY;
 var previousLandscape;
 
-async function getLandscapeArray(renderWidth, renderHeight, nbColumnsLandscape, nbLineLandscape, viewPosX, viewPosY) {
+async function getLandscapeArray(renderWidth, renderHeight, viewPosX, viewPosY) {
     if (previousViewPosY !== viewPosY) {
         //execute only if viewPosY has changed, otherwise take the previous landscapeArray
-        let landscapeArrayAssemble = await assembleLandscape(
-            renderWidth,
-            renderHeight,
-            nbColumnsLandscape,
-            nbLineLandscape,
-            viewPosX,
-            viewPosY
-        );
+        let landscapeArrayAssemble = await assembleLandscape(renderWidth, renderHeight, viewPosX, viewPosY);
 
         landscapeArrayAssemble = convert(landscapeArrayAssemble);
         let landscapeArray = [];
 
         for (let y = 0; y < renderHeight; y++) {
-            const currentLinePosStart = (nbLineLandscape - renderHeight - viewPosY + y) * nbColumnsLandscape;
+            const currentLinePosStart = (Const.LINES - renderHeight - viewPosY + y) * Const.COLUMNS;
             for (let x = 0; x < renderWidth; x++) {
                 const currentColumnPosStart = viewPosX + x;
                 landscapeArray.push(landscapeArrayAssemble[currentColumnPosStart + currentLinePosStart]);
@@ -41,24 +34,9 @@ async function getLandscapeArray(renderWidth, renderHeight, nbColumnsLandscape, 
     }
 }
 
-export async function assemble(
-    renderWidth,
-    renderHeight,
-    nbColumnsLandscape,
-    nbLineLandscape,
-    viewPosX,
-    viewPosY,
-    params
-) {
+export async function assemble(renderWidth, renderHeight, viewPosX, viewPosY) {
     let startAssemble = performance.now();
-    let landscapeArray = await getLandscapeArray(
-        renderWidth,
-        renderHeight,
-        nbColumnsLandscape,
-        nbLineLandscape,
-        viewPosX,
-        viewPosY
-    );
+    let landscapeArray = await getLandscapeArray(renderWidth, renderHeight, viewPosX, viewPosY);
     let monolithArray = getMonolithArray(renderWidth, renderHeight, viewPosX, viewPosY);
     let endGetArray = performance.now();
 
