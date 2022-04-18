@@ -28,7 +28,6 @@ import {
     RGBToHex,
     moveDrawing,
     displayImageFromArrayBuffer,
-    displayArrayToImage,
 } from '../utils/image-manager';
 import Tool from '../models/tools';
 import Color from '../models/colors';
@@ -167,12 +166,60 @@ function clickManager(e) {
             erase_all_pixel();
             update();
         }
-        if (mousePos.x >= 60 && mousePos.x < 65) console.log('Import!');
+        if (mousePos.x >= 60 && mousePos.x < 65) importImage();
     } else {
         //CASE MONOLITH
         mousePos = convertToMonolithPos(mousePos);
         if (mousePos.x < 0 || mousePos.x >= nbColumnsMonolith || mousePos.y < 0 || mousePos.y >= nbRowsMonolith) return; // out of bounds
         startUsingTool(e, mousePos);
+    }
+}
+
+function importImage() {
+    let input = document.createElement('input');
+    input.type = 'file';
+
+    input.onchange = (e) => {
+        let file = e.target.files[0];
+        let reader = new FileReader();
+        reader.readAsArrayBuffer(file);
+        reader.onload = (res) => {
+            let importedImage = res.target.result; // this is the content!
+            console.log('importedImage', importedImage);
+
+            displayImageFromArrayBuffer(importedImage, 1, 1, 999999, 99999, 0).then((res) => {
+                console.log('decoded', res);
+                displayArrayToImage(res.array, res.width, 1, 1, 999999, 99999, 0);
+            });
+
+            // convert res to base64
+            let base64 = btoa(
+                new Uint8Array(importedImage).reduce((data, byte) => data + String.fromCharCode(byte), '')
+            );
+            console.log('base64', base64);
+        };
+    };
+    input.click();
+}
+
+function displayArrayToImage(array, width, offsetx, offsety, pixelPaid, yMaxLegal, zIndex) {
+    console.log('FONCTION A REFAIRE MARCHER, DUPLICATE DANS IMAGE-MANAGER')
+    let pixelDrawn = 0;
+    let decalage = 0;
+    for (let y = 0; y < yMaxLegal; y++) {
+        for (let x = 0; x < width; x++) {
+            let idx = (width * y + x) * 4;
+            if (array[idx + 3] != 0 && array[idx + 3] != 0 && pixelDrawn < pixelPaid) {
+                if (pixelDrawn === 0) decalage = x;
+                draw_pixel(
+                    x + offsetx - decalage,
+                    y + offsety,
+                    zIndex,
+                    new Klon([array[idx] / 255, array[idx + 1] / 255, array[idx + 2] / 255], zIndex)
+                );
+                pixelDrawn++;
+            }
+        }
     }
 }
 

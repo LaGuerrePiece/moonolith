@@ -172,6 +172,7 @@ export async function displayImageFromArrayBuffer(arrayBuffer, offsetx, offsety,
     if (!decoded) return;
     let array = toRGBA8(decoded);
     let width = decoded.width;
+    return { array, width }
     displayArrayToImage(array, width, offsetx, offsety, pixelPaid, yMaxLegal, zIndex);
 }
 
