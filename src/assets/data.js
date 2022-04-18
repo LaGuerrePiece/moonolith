@@ -1,5 +1,5 @@
 import { caly0, caly1, caly2, caly3, caly4, caly5, caly6 } from './base64';
-import { preEncodeSpecialK, _base64ToArrayBuffer, decode, toRGBA8 } from '../utils/image-manager';
+import { _base64ToArrayBuffer, decode, toRGBA8 } from '../utils/image-manager';
 
 export var landscapeBase64 = {
     caly6: { name: 'caly6', height: 126, startY: 520, parallax: 1.2, base64: caly6, decoded: null },
@@ -11,13 +11,14 @@ export var landscapeBase64 = {
     caly0: { name: 'caly0', height: 101, startY: 45, parallax: 0, base64: caly0, decoded: null },
 };
 
-export async function initialImport(numberOfImports, viewPosY) {
+export async function initialImport(numberOfImports, viewPosY) { //Imports a few layers of landscape
     let startImport = performance.now();
     let importedLayers = 0;
+    let landscape = Object.keys(landscapeBase64);
 
-    for (let i = Object.keys(landscapeBase64).length - 1; i >= 0; i--) {
+    for (let i = landscape.length - 1; i >= 0; i--) {
         if (importedLayers >= numberOfImports) continue;
-        let thisLayer = landscapeBase64[Object.keys(landscapeBase64)[i]];
+        let thisLayer = landscapeBase64[landscape[i]];
         let decoded = await decode(_base64ToArrayBuffer(thisLayer.base64)).catch(console.error);
         decoded = toRGBA8(decoded);
         thisLayer.decoded = decoded;
@@ -28,16 +29,15 @@ export async function initialImport(numberOfImports, viewPosY) {
     // console.log('Initial import : ', Math.floor(endImport - startImport), 'ms');
 }
 
-export async function lateImport(numberOfImports) {
+export async function lateImport(numberOfImports) { //Imports the rest of the landscape
     let startImport = performance.now();
     let importedLayers = 0;
     let landscape = Object.keys(landscapeBase64);
-    let landscapeLength = landscape.length;
-    let remainingImports = landscapeLength - numberOfImports;
+    let remainingImports = landscape.length - numberOfImports;
 
-    for (let i = numberOfImports + 1; i <= landscapeLength; i++) {
+    for (let i = numberOfImports + 1; i <= landscape.length; i++) {
         if (importedLayers > numberOfImports) continue;
-        let thisLayer = landscapeBase64[landscape[landscapeLength - i]];
+        let thisLayer = landscapeBase64[landscape[landscape.length - i]];
         let decoded = await decode(_base64ToArrayBuffer(thisLayer.base64)).catch(console.error);
         decoded = toRGBA8(decoded);
         thisLayer.decoded = decoded;

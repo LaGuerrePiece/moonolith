@@ -1,7 +1,6 @@
 import { getMonolithArray } from './monolith';
 import { assembleLandscape } from './landscape';
 import Const from './constants';
-import { hexToRGB } from '../utils/image-manager';
 import { renderWidth, renderHeight, viewPosX, viewPosY } from '../main';
 
 export let marginBot = Const.MARGIN_BOTTOM;
@@ -11,6 +10,7 @@ export let marginRight = Const.MARGIN_RIGHT;
 
 var previousViewPosY;
 var previousLandscape;
+
 function getLandscapeArray() {
     if (previousViewPosY !== viewPosY) {
         //execute only if viewPosY has changed, otherwise take the previous landscapeArray
@@ -68,14 +68,15 @@ export function assemble() {
     }
 
     let endAssemble = performance.now();
-    // console.log(
-    //     'Get arrays :',
-    //     Math.floor(endGetArray - startAssemble),
-    //     'ms | Write arrays :',
-    //     Math.floor(endAssemble - endGetArray),
-    //     'ms'
-    // );
-    // console.log('Assemble TOTAL :', Math.floor(endAssemble - startAssemble), 'ms');
+    console.log(
+        'Get arrays + Write arrays = Total : ',
+        Math.floor(endGetArray - startAssemble),
+        '+',
+        Math.floor(endAssemble - endGetArray),
+        '=',
+        Math.floor(endAssemble - startAssemble),
+        'ms'
+    );
     return landscapeArray;
 }
 

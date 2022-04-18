@@ -1,23 +1,15 @@
 import Const from './constants';
-import { preEncodeSpecialK, _base64ToArrayBuffer, decode, toRGBA8 } from '../utils/image-manager';
 import { landscapeBase64 } from '../assets/data.js';
 import { renderWidth, renderHeight, viewPosX, viewPosY } from '../main';
 
 export function assembleLandscape() {
-    let start64 = performance.now();
     var landscapeArray = [];
-    let layerCount = 0,
-        layerLines = 0,
-        importPerf = 0;
     for (let layer in landscapeBase64) {
-        let startLayer = performance.now();
         let thisLayer = landscapeBase64[layer];
         let parallaxOffset = Math.floor(thisLayer.parallax * viewPosY);
         if (thisLayer.startY - thisLayer.height - parallaxOffset > viewPosY + renderHeight) continue; // If the layer above render, skip it
         if (Const.LINES - thisLayer.startY + parallaxOffset > Const.LINES - viewPosY) continue; // If the layer under render, skip it
         let offset = (Const.LINES - thisLayer.startY + parallaxOffset) * Const.COLUMNS * 4;
-        layerCount++;
-        layerLines += thisLayer.height;
         let buffer = thisLayer.decoded;
         for (let i = 0; i < buffer.length; i++) {
             if (i % 4 === 0 && buffer[i + 3] === 0) {
@@ -28,18 +20,5 @@ export function assembleLandscape() {
             landscapeArray[i + offset] = buffer[i];
         }
     }
-    let end64 = performance.now();
-    // console.log(
-    //     'Nb of Layers : ',
-    //     layerCount,
-    //     '| Nb of lines : ',
-    //     layerLines,
-    //     ' | ',
-    //     Math.floor(end64 - start64),
-    //     'ms | Import :',
-    //     Math.floor(importPerf * 10) / 10,
-    //     'ms | lines/ms : ',
-    //     Math.floor((layerLines / (end64 - start64)) * 100) / 100
-    // );
     return landscapeArray;
 }

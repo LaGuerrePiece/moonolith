@@ -20,7 +20,7 @@ import {
 import Tool from './models/tools';
 import Const from './models/constants';
 import { chunkCreator, getChunk, getChunksFromPosition, getSupply, getTotalPixs, getThreshold } from './utils/web3';
-import { assemble, marginBot, marginLeft } from './models/assembler';
+import { assemble } from './models/assembler';
 
 document.addEventListener(
     'contextmenu',
