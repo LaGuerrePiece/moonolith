@@ -1,5 +1,7 @@
 import { getMonolithArray } from './monolith';
 import { assembleLandscape } from './landscape';
+import Color from './colors';
+import { hexToRGB } from '../utils/image-manager';
 
 export let marginBot = 30;
 export let marginTop = 34;
@@ -72,12 +74,12 @@ export async function assemble(
     for (let i = startGUI; i < landscapeArray.length; i++) {
         const column = i % renderWidth;
         //COLORS
-        if (column < 5) landscapeArray[i] = [1, 0, 0];
-        if (column < 10 && column >= 5) landscapeArray[i] = [0, 1, 0];
-        if (column < 15 && column >= 10) landscapeArray[i] = [0, 0, 1];
-        if (column < 20 && column >= 15) landscapeArray[i] = [1, 1, 0];
-        if (column < 25 && column >= 20) landscapeArray[i] = [0, 1, 1];
-        if (column < 30 && column >= 25) landscapeArray[i] = [1, 0, 1];
+        if (column < 5) landscapeArray[i] = hexToRGB(Color.COLOR1);
+        if (column < 10 && column >= 5) landscapeArray[i] = hexToRGB(Color.COLOR2);
+        if (column < 15 && column >= 10) landscapeArray[i] = hexToRGB(Color.COLOR10);
+        if (column < 20 && column >= 15) landscapeArray[i] = hexToRGB(Color.COLOR4);
+        if (column < 25 && column >= 20) landscapeArray[i] = hexToRGB(Color.COLOR5);
+        if (column < 30 && column >= 25) landscapeArray[i] = hexToRGB(Color.COLOR6);
         //TOOLS
         if (column < 35 && column >= 30) landscapeArray[i] = [0.9, 0.9, 0.9];
         if (column < 40 && column >= 35) landscapeArray[i] = [0.8, 0.8, 0.8];
