@@ -1,11 +1,11 @@
 // Imports des composants
 import { draw_pixel, get_color, erase_all_pixel, erase_pixel, convertToMonolithPos, monolith } from './models/monolith';
 import DisplayGrid from './models/displayGrid';
+import { initialImport, lateImport } from './assets/data';
 import Klon from './models/klon';
 import { closeCurrentEvent, undo, redo } from './models/undoStack';
 
 // Imports des fonctionnalités
-import { fetchImgur } from './utils/network';
 import {
     decode,
     preEncode,
@@ -74,17 +74,19 @@ window.onwheel = function (e) {
         viewPosY = 0;
         return;
     }
+    if (viewPosY > Const.MONOLITH_ROWS - renderHeight) {
+        viewPosY = Const.MONOLITH_ROWS - renderHeight;
+        return;
+    }
     update();
 };
 
-async function update() {
+function update() {
     if (new Date() - lastCall < 30) return;
     //data is the array of the displayed klons
-    await assemble().then((data) => {
-        displayData = data;
-        displayGrid.updateDisplay(displayData);
-        lastCall = new Date();
-    });
+    displayData = assemble();
+    displayGrid.updateDisplay(displayData);
+    lastCall = new Date();
 }
 
 /**********************************
@@ -218,8 +220,8 @@ function useTool(e) {
             }
             break;
         case Tool.HUGE:
-            for (let i = -4; i <= 4; i++) {
-                for (let j = -4; j <= 4; j++) {
+            for (let i = -15; i <= 15; i++) {
+                for (let j = -15; j <= 15; j++) {
                     if (mousePos.x + i < renderWidth && mousePos.x + i > -1)
                         draw_pixel(mousePos.x + i, mousePos.y + j, Klon.USERPAINTED, hexToRGB(colorPicked));
                 }
@@ -248,8 +250,8 @@ function useDeleteTool(e) {
             }
             break;
         case Tool.HUGE:
-            for (let i = -4; i <= 4; i++) {
-                for (let j = -4; j <= 4; j++) {
+            for (let i = -15; i <= 15; i++) {
+                for (let j = -15; j <= 15; j++) {
                     erase_pixel(mousePos.x + i, mousePos.y + j);
                 }
             }
@@ -278,9 +280,24 @@ function useColorPicker(mousePos) {
     }
 }
 
-setTimeout(() => {
-    update();
-}, 200);
+async function init() {
+    let numberOfImports = 4;
+    initialImport(numberOfImports)
+        .then(() => {
+            setTimeout(() => {
+                update();
+            }, 150);
+        })
+        .then(() => {
+            lateImport(numberOfImports);
+        });
+}
+
+init();
+
+// setTimeout(() => {
+//     update();
+// }, 50);
 
 // getTotalPixs()
 //     .then(async (total) => {

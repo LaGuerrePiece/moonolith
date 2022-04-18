@@ -11,11 +11,10 @@ export let marginRight = Const.MARGIN_RIGHT;
 
 var previousViewPosY;
 var previousLandscape;
-
-async function getLandscapeArray() {
+function getLandscapeArray() {
     if (previousViewPosY !== viewPosY) {
         //execute only if viewPosY has changed, otherwise take the previous landscapeArray
-        let landscapeArrayAssemble = await assembleLandscape();
+        let landscapeArrayAssemble = assembleLandscape();
 
         landscapeArrayAssemble = convert(landscapeArrayAssemble);
         let landscapeArray = [];
@@ -35,9 +34,9 @@ async function getLandscapeArray() {
     }
 }
 
-export async function assemble() {
+export function assemble() {
     let startAssemble = performance.now();
-    let landscapeArray = await getLandscapeArray();
+    let landscapeArray = getLandscapeArray();
     let monolithArray = getMonolithArray();
     let endGetArray = performance.now();
 
