@@ -43,7 +43,7 @@ export async function assemble() {
 
     for (let i = 0; i < landscapeArray.length; i++) {
         //IF LANDSCAPE VOID, ADD BLUE
-        if (!landscapeArray[i][0]) landscapeArray[i] = [0, 0, 1];
+        if (!landscapeArray[i][0]) landscapeArray[i] = [0.9764, 0.5098, 0.5176];
         if (monolithArray[i] !== undefined) landscapeArray[i] = monolithArray[i];
     }
 

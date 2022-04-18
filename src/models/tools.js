@@ -10,5 +10,3 @@ export default class Tool {
     static get DELETE() { return 6 }
 
 }
-
-console.log(Tool.DONE);
