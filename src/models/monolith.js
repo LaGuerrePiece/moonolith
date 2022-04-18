@@ -10,6 +10,7 @@ import {
     hexToRGB,
     RGBToHex,
 } from '../utils/image-manager';
+import { renderWidth, renderHeight, viewPosX, viewPosY } from '../main';
 
 export let monolith = Array.from({ length: Const.MONOLITH_ROWS }, () =>
     Array.from({ length: Const.MONOLITH_COLUMNS }, () => new Klon(Const.DEFAULT_COLOR))
@@ -58,7 +59,13 @@ export function convertIndexToXY(number) {
     return { x, y };
 }
 
-export function getMonolithArray(renderWidth, renderHeight, viewPosX, viewPosY) {
+export function convertToMonolithPos(mousePos) {
+    mousePos.y = Const.MONOLITH_ROWS + Const.MARGIN_BOTTOM - viewPosY - renderHeight + mousePos.y;
+    mousePos.x = viewPosX - Const.MARGIN_LEFT + mousePos.x;
+    return mousePos;
+}
+
+export function getMonolithArray() {
     let monolithArray = [];
     const startY = Const.MONOLITH_ROWS + Const.MARGIN_BOTTOM - viewPosY - renderHeight;
     const startX = viewPosX - Const.MARGIN_LEFT;

@@ -1,3 +1,4 @@
+//prettier-ignore
 export default class Tool { 
 
     static get DONE() { return 0 }
@@ -9,3 +10,5 @@ export default class Tool {
     static get DELETE() { return 6 }
 
 }
+
+console.log(Tool.DONE);

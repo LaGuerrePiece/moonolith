@@ -1,6 +1,7 @@
 import Const from './constants';
 import { preEncodeSpecialK, _base64ToArrayBuffer, decode, toRGBA8 } from '../utils/image-manager';
 import landscapeBase64 from '../assets/data.js';
+import { renderWidth, renderHeight, viewPosX, viewPosY } from '../main';
 
 let import64 = async (base64data) => {
     let startImport = performance.now();
@@ -10,7 +11,7 @@ let import64 = async (base64data) => {
     return { buffer: b64_floor, perf: endImport - startImport };
 };
 
-export async function assembleLandscape(renderWidth, renderHeight, viewPosX, viewPosY) {
+export async function assembleLandscape() {
     let start64 = performance.now();
     var landscapeArray = [];
     let layerCount = 0,

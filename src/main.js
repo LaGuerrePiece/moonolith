@@ -1,5 +1,5 @@
 // Imports des composants
-import { draw_pixel, get_color, erase_all_pixel, erase_pixel, monolith } from './models/monolith';
+import { draw_pixel, get_color, erase_all_pixel, erase_pixel, convertToMonolithPos, monolith } from './models/monolith';
 import DisplayGrid from './models/displayGrid';
 import Klon from './models/klon';
 import { closeCurrentEvent, undo, redo } from './models/undoStack';
@@ -48,16 +48,16 @@ document.addEventListener('keydown', function (e) {
  **********************************/
 
 let displayGrid;
-let viewPosY = 0;
-let viewPosX = 0;
+export let viewPosY = 0;
+export let viewPosX = 0;
 let lastCall = 0;
 let displayData;
 
 const height = window.innerHeight;
 const width = window.innerWidth;
-const renderWidth = 256;
+export const renderWidth = 256;
 const pixelSize = width / renderWidth;
-const renderHeight = Math.floor(height / pixelSize) + 2;
+export const renderHeight = Math.floor(height / pixelSize) + 2;
 
 displayGrid = new DisplayGrid(renderWidth, renderHeight);
 displayGrid.initialize(document.body);
@@ -80,7 +80,7 @@ window.onwheel = function (e) {
 async function update() {
     if (new Date() - lastCall < 30) return;
     //data is the array of the displayed klons
-    await assemble(renderWidth, renderHeight, 0, viewPosY).then((data) => {
+    await assemble().then((data) => {
         displayData = data;
         displayGrid.updateDisplay(displayData);
         lastCall = new Date();
@@ -323,9 +323,3 @@ setTimeout(() => {
 //             // }
 //         });
 //     });
-
-function convertToMonolithPos(mousePos) {
-    mousePos.y = Const.MONOLITH_ROWS + marginBot - viewPosY - renderHeight + mousePos.y;
-    mousePos.x = viewPosX - marginLeft + mousePos.x;
-    return mousePos;
-}

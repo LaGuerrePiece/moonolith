@@ -2,6 +2,7 @@ import { getMonolithArray } from './monolith';
 import { assembleLandscape } from './landscape';
 import Const from './constants';
 import { hexToRGB } from '../utils/image-manager';
+import { renderWidth, renderHeight, viewPosX, viewPosY } from '../main';
 
 export let marginBot = Const.MARGIN_BOTTOM;
 export let marginTop = Const.MARGIN_TOP;
@@ -11,10 +12,10 @@ export let marginRight = Const.MARGIN_RIGHT;
 var previousViewPosY;
 var previousLandscape;
 
-async function getLandscapeArray(renderWidth, renderHeight, viewPosX, viewPosY) {
+async function getLandscapeArray() {
     if (previousViewPosY !== viewPosY) {
         //execute only if viewPosY has changed, otherwise take the previous landscapeArray
-        let landscapeArrayAssemble = await assembleLandscape(renderWidth, renderHeight, viewPosX, viewPosY);
+        let landscapeArrayAssemble = await assembleLandscape();
 
         landscapeArrayAssemble = convert(landscapeArrayAssemble);
         let landscapeArray = [];
@@ -34,10 +35,10 @@ async function getLandscapeArray(renderWidth, renderHeight, viewPosX, viewPosY) 
     }
 }
 
-export async function assemble(renderWidth, renderHeight, viewPosX, viewPosY) {
+export async function assemble() {
     let startAssemble = performance.now();
-    let landscapeArray = await getLandscapeArray(renderWidth, renderHeight, viewPosX, viewPosY);
-    let monolithArray = getMonolithArray(renderWidth, renderHeight, viewPosX, viewPosY);
+    let landscapeArray = await getLandscapeArray();
+    let monolithArray = getMonolithArray();
     let endGetArray = performance.now();
 
     for (let i = 0; i < landscapeArray.length; i++) {
