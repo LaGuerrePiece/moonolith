@@ -74,15 +74,15 @@ window.onwheel = function (e) {
         viewPosY = 0;
         return;
     }
-    if (viewPosY > Const.MONOLITH_ROWS - renderHeight) {
-        viewPosY = Const.MONOLITH_ROWS - renderHeight;
+    if (viewPosY + renderHeight > Const.LINES) {
+        viewPosY = Const.LINES - renderHeight;
         return;
     }
     update();
 };
 
 function update() {
-    if (new Date() - lastCall < 30) return;
+    if (new Date() - lastCall < 10) return;
     //data is the array of the displayed klons
     displayData = assemble();
     displayGrid.updateDisplay(displayData);
@@ -133,7 +133,7 @@ function clickManager(e) {
             mousePos.x < 0 ||
             mousePos.x >= Const.MONOLITH_COLUMNS ||
             mousePos.y < 0 ||
-            mousePos.y >= Const.MONOLITH_ROWS
+            mousePos.y >= Const.MONOLITH_LINES
         )
             return; // out of bounds
         startUsingTool(e, mousePos);
@@ -239,7 +239,6 @@ function useDeleteTool(e) {
     const mousePos = e.type ? convertToMonolithPos(mousePosInGrid({ x: e.x, y: e.y })) : e;
     switch (tool) {
         case Tool.SMOL:
-            console.log('delete pixel');
             erase_pixel(mousePos.x, mousePos.y);
             break;
         case Tool.BIG:

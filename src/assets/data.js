@@ -11,7 +11,8 @@ export var landscapeBase64 = {
     caly0: { name: 'caly0', height: 101, startY: 45, parallax: 0, base64: caly0, decoded: null },
 };
 
-export async function initialImport(numberOfImports, viewPosY) { //Imports a few layers of landscape
+export async function initialImport(numberOfImports, viewPosY) {
+    //Imports a few layers of landscape
     let startImport = performance.now();
     let importedLayers = 0;
     let landscape = Object.keys(landscapeBase64);
@@ -29,7 +30,8 @@ export async function initialImport(numberOfImports, viewPosY) { //Imports a few
     // console.log('Initial import : ', Math.floor(endImport - startImport), 'ms');
 }
 
-export async function lateImport(numberOfImports) { //Imports the rest of the landscape
+export async function lateImport(numberOfImports) {
+    //Imports the rest of the landscape
     let startImport = performance.now();
     let importedLayers = 0;
     let landscape = Object.keys(landscapeBase64);
