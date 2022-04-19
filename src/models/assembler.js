@@ -15,10 +15,7 @@ function getLandscapeArray() {
     if (previousViewPosY !== viewPosY) {
         //execute only if viewPosY has changed, otherwise take the previous landscapeArray
         let landscapeArrayAssemble = assembleLandscape();
-
-        landscapeArrayAssemble = convert(landscapeArrayAssemble);
         let landscapeArray = [];
-
         for (let y = 0; y < renderHeight; y++) {
             const currentLinePosStart = (Const.LINES - renderHeight - viewPosY + y) * Const.COLUMNS;
             for (let x = 0; x < renderWidth; x++) {
@@ -78,13 +75,4 @@ export function assemble() {
         'ms'
     );
     return landscapeArray;
-}
-
-//Conversion d'un array JSON en array RGB
-function convert(data) {
-    let convertedData = [];
-    for (let i = 0; i < data.length; i += 4) {
-        convertedData.push([data[i] / 255, data[i + 1] / 255, data[i + 2] / 255]);
-    }
-    return convertedData;
 }
