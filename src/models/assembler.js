@@ -9,20 +9,13 @@ export let marginLeft = Const.MARGIN_LEFT;
 export let marginRight = Const.MARGIN_RIGHT;
 
 var previousViewPosY;
+var previousViewPosX;
 var previousLandscape;
 
 function getLandscapeArray() {
-    if (previousViewPosY !== viewPosY) {
-        //execute only if viewPosY has changed, otherwise take the previous landscapeArray
-        let landscapeArrayAssemble = assembleLandscape();
-        let landscapeArray = [];
-        for (let y = 0; y < renderHeight; y++) {
-            const currentLinePosStart = (Const.LINES - renderHeight - viewPosY + y) * Const.COLUMNS;
-            for (let x = 0; x < renderWidth; x++) {
-                const currentColumnPosStart = viewPosX + x;
-                landscapeArray.push(landscapeArrayAssemble[currentColumnPosStart + currentLinePosStart]);
-            }
-        }
+    //execute only if viewPos has changed, otherwise take the previous landscapeArray
+    if (previousViewPosY !== viewPosY || previousViewPosX !== viewPosX) {
+        let landscapeArray = assembleLandscape();
         previousLandscape = landscapeArray;
         previousViewPosY = viewPosY;
         return landscapeArray;
@@ -66,7 +59,7 @@ export function assemble() {
 
     let endAssemble = performance.now();
     console.log(
-        'Get arrays + Write arrays = Total : ',
+        'Get + Write = ',
         Math.floor(endGetArray - startAssemble),
         '+',
         Math.floor(endAssemble - endGetArray),
