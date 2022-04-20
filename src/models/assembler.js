@@ -58,21 +58,21 @@ export function assemble() {
     console.log('layersToDisplay', layersToDisplay);
     
     let displayArray = [];
-    for (let x = 0; x < renderHeight; x++) {
-        for (let y = 0; y < renderWidth; y++) {
+    for (let y = 0; y < renderHeight; y++) {
+        for (let x = 0; x < renderWidth; x++) {
             //FOR EACH LAYER, PUSH COLOR IF PRESENT
             for (let z = 0; z < layersToDisplay.length; z++) {
                 const currentLayer = layersToDisplay[z];
-                if (!currentLayer.colorsArray[currentLayer.startY + x]?.[currentLayer.startX + y]) continue;
-                const colorToPush = currentLayer.colorsArray[currentLayer.startY + x][currentLayer.startX + y].color
-                    ? currentLayer.colorsArray[currentLayer.startY + x][currentLayer.startX + y].color
-                    : currentLayer.colorsArray[currentLayer.startY + x][currentLayer.startX + y];
+                if (!currentLayer.colorsArray[currentLayer.startY + y]?.[currentLayer.startX + x]) continue;
+                const colorToPush = currentLayer.colorsArray[currentLayer.startY + y][currentLayer.startX + x].color
+                    ? currentLayer.colorsArray[currentLayer.startY + y][currentLayer.startX + x].color
+                    : currentLayer.colorsArray[currentLayer.startY + y][currentLayer.startX + x];
                 displayArray.push(colorToPush);
                 break;
             }
 
             //IF NO COLOR HAS BEEN PUSHED, PUSH THE DEFAULT COLOR
-            if (!displayArray[x * renderWidth + y]) {
+            if (!displayArray[y * renderWidth + x]) {
                 displayArray.push([0.9764, 0.5098, 0.5176]);
             }
         }
