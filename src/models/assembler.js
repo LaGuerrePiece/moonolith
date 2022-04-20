@@ -16,7 +16,12 @@ export function assemble() {
     let layersToDisplay = [];
     //PUSH GUI AND MONOLITH TO LAYERSTODISPLAY ARRAY
     layersToDisplay.push({ name: 'GUI', colorsArray: GUI, startX: 0, startY: 0 });
-    layersToDisplay.push({ name: 'monolith', colorsArray: monolith, startX: monolithStartY, startY: monolithStartX });
+    layersToDisplay.push({
+        name: 'monolith',
+        colorsArray: monolith,
+        startX: monolithStartY,
+        startY: monolithStartX,
+    });
 
     //IF THE VIEWPOS HAS CHANGED, PUSH THE NEW LAYERS TO LAYER ARRAY
     if (previousViewPosY !== viewPosY || previousViewPosX !== viewPosX) {
@@ -33,13 +38,13 @@ export function assemble() {
             // let offset = (Const.LINES - thisLayer.startY + parallaxOffset) * Const.COLUMNS;
 
             const startX = 0;
-            const startY = 0;
+            const startY = thisLayer.height - renderHeight + viewPosY;
 
             ////////////////////////////////////////////////////   HELL   ////////////////////////////////////////////////////////////
 
             layersToDisplay.push({
                 name: thisLayer.name,
-                colorsArray: thisLayer.decoded,
+                colorsArray: thisLayer.decodedYX,
                 startX: startX,
                 startY: startY,
             });
@@ -50,17 +55,19 @@ export function assemble() {
         // ELSE, JUST PUSH PREVIOUSLANDSCAPE AT 0, 0
         layersToDisplay.push({ name: 'previousLandscape', colorsArray: previousLandscape, startX: 0, startY: 0 });
     }
-
+    console.log('layersToDisplay', layersToDisplay);
     let displayArray = [];
     for (let i = 0; i < renderHeight; i++) {
         for (let j = 0; j < renderWidth; j++) {
             //FOR EACH LAYER, PUSH COLOR IF PRESENT
             for (let k = 0; k < layersToDisplay.length; k++) {
                 const currentLayer = layersToDisplay[k];
-                if (currentLayer.colorsArray[currentLayer.startY + i]?.[currentLayer.startX + j]) {
-                    displayArray.push(currentLayer.colorsArray[currentLayer.startY + i][currentLayer.startX + j]);
-                    break;
-                }
+                if (!currentLayer.colorsArray[currentLayer.startY + i]?.[currentLayer.startX + j]) continue;
+                const colorToPush = currentLayer.colorsArray[currentLayer.startY + i][currentLayer.startX + j].color
+                    ? currentLayer.colorsArray[currentLayer.startY + i][currentLayer.startX + j].color
+                    : currentLayer.colorsArray[currentLayer.startY + i][currentLayer.startX + j];
+                displayArray.push(colorToPush);
+                break;
             }
 
             //IF NO COLOR HAS BEEN PUSHED, PUSH THE DEFAULT COLOR
