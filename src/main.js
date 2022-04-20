@@ -2,9 +2,10 @@
 import DisplayGrid from './models/displayGrid';
 import { initialImport, lateImport } from './assets/data';
 import { undo, redo } from './models/undoStack';
+import { convertToMonolithPos, monolith } from './models/monolith';
 // Imports des fonctionnalités
 import { _base64ToArrayBuffer, displayImageFromArrayBuffer, moveDrawing } from './utils/image-manager';
-import { clickManager } from './models/tools';
+import { clickManager, mousePosInGrid } from './models/tools';
 
 import Const from './models/constants';
 import { chunkCreator, getChunk, getChunksFromPosition, getSupply, getTotalPixs, getThreshold } from './utils/web3';
@@ -19,7 +20,7 @@ export let canvas;
 export let viewPosY = 0;
 export let viewPosX = 0;
 let lastCall = 0;
-let displayData;
+export let displayData;
 
 export const windowHeight = window.innerHeight;
 export const windowWidth = window.innerWidth;
@@ -50,12 +51,16 @@ async function initDecodeLandscape() {
 initDecodeLandscape();
 
 export function update() {
-    if (new Date() - lastCall < 10) return;
+    if (new Date() - lastCall < 30) return;
     //data is the array of the displayed klons
     displayData = assemble();
     displayGrid.updateDisplay(displayData);
     lastCall = new Date();
 }
+
+// setInterval(() => {
+//     update();
+// }, 3000);
 
 let zoomFactor;
 function zoom() {
@@ -107,6 +112,32 @@ function limitsViewPos() {
     if (viewPosX + renderWidth > Const.COLUMNS) viewPosX = Const.COLUMNS - renderWidth;
     update();
 }
+
+// let oldColor = [0, 0, 0];
+// let oldY = 100;
+// let oldX = 100;
+
+// document.addEventListener('mousemove', (e) => {
+//     const mousePos = convertToMonolithPos(mousePosInGrid({ x: e.x, y: e.y }));
+//     if (!mousePos) return;
+//     for (let i = -1; i <= 1; i++) {
+//         for (let j = -1; j <= 1; j++) {
+//             monolith[oldY + i][oldX + j].color = oldColor;
+//         }
+//     }
+
+//     oldColor = monolith[mousePos.y][mousePos.x].color;
+
+//     oldY = mousePos.y;
+//     oldX = mousePos.x;
+
+//     for (let i = -1; i <= 1; i++) {
+//         for (let j = -1; j <= 1; j++) {
+//             monolith[mousePos.y + i][mousePos.x + j].color = [1, 1, 1];
+//         }
+//     }
+//     //console.log('mousePos', mousePos);
+// });
 
 // getTotalPixs();
 // .then(async (total) => {

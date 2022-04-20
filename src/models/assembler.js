@@ -17,7 +17,7 @@ export function assemble() {
 
     let layersToDisplay = [];
     //PUSH GUI AND MONOLITH TO LAYERSTODISPLAY ARRAY
-    layersToDisplay.push({ name: 'GUI', colorsArray: GUI, startY: 0, startX: 0 });
+    // layersToDisplay.push({ name: 'GUI', colorsArray: GUI, startY: 0, startX: 0 });
     layersToDisplay.push({
         name: 'monolith',
         colorsArray: monolith,
@@ -52,38 +52,47 @@ export function assemble() {
         previousViewPosX = viewPosX;
     } else {
         // ELSE, JUST PUSH PREVIOUSLANDSCAPE AT 0, 0
-        layersToDisplay.push({ name: 'previousLandscape', colorsArray: previousLandscape, startY: 0, startX: 0 });
+        layersToDisplay.push({
+            name: 'previousLandscape',
+            colorsArray: previousLandscape,
+            startY: 0,
+            startX: 0,
+        });
     }
 
-    // console.log('layersToDisplay', layersToDisplay);
+    console.log('layersToDisplay', layersToDisplay);
 
     let displayArray = [];
     for (let y = 0; y < renderHeight; y++) {
         for (let x = 0; x < renderWidth; x++) {
-            //FOR EACH LAYER, PUSH COLOR IF PRESENT
             for (let z = 0; z < layersToDisplay.length; z++) {
                 const layer = layersToDisplay[z];
                 const array = layer.colorsArray;
                 const startY = layer.startY;
                 const startX = layer.startX;
-                if (!array[startY + y]?.[startX + x]) continue;
+                if (layersToDisplay[z].name === 'previousLandscape') {
+                    const pos = (startY + y) * renderWidth + startX + x;
+                    if (!array[pos]) continue;
 
-                const colorToPush = array[startY + y][startX + x].color
-                    ? array[startY + y][startX + x].color
-                    : array[startY + y][startX + x];
-                displayArray.push(colorToPush);
-                break;
+                    displayArray[y * renderWidth + x] = array[pos].color ? array[pos].color : array[pos];
+                    break;
+                } else {
+                    const slot = array[startY + y]?.[startX + x];
+                    if (!slot) continue;
+
+                    displayArray[y * renderWidth + x] = slot.color ? slot.color : slot;
+                    break;
+                }
             }
-
             //IF NO COLOR HAS BEEN PUSHED, PUSH THE DEFAULT COLOR
             if (!displayArray[y * renderWidth + x]) {
-                displayArray.push([0.9764, 0.5098, 0.5176]);
+                displayArray[y * renderWidth + x] = [0.9764, 0.5098, 0.5176];
             }
         }
     }
 
     previousLandscape = displayArray;
-    // console.log('displayArray', displayArray);
-    console.log('Assemble = ', Math.floor(performance.now() - startAssemble), 'ms');
+    // console.log('displayArray', displayArray, 'previousLandscape', previousLandscape);
+    //console.log('Assemble = ', Math.floor(performance.now() - startAssemble), 'ms');
     return displayArray;
 }
