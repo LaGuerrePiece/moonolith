@@ -1,10 +1,7 @@
 // Imports des composants
-import { draw_pixel, get_color, erase_all_pixel, erase_pixel, convertToMonolithPos, monolith } from './models/monolith';
 import DisplayGrid from './models/displayGrid';
 import { initialImport, lateImport } from './assets/data';
-import Klon from './models/klon';
-import { closeCurrentEvent, undo, redo } from './models/undoStack';
-
+import { undo, redo } from './models/undoStack';
 // Imports des fonctionnalités
 import {
     _base64ToArrayBuffer,
@@ -15,7 +12,8 @@ import {
     gridToArray,
     displayImageFromArrayBuffer,
 } from './utils/image-manager';
-import Tool from './models/tools';
+import { clickManager } from './models/tools';
+
 import Const from './models/constants';
 import { chunkCreator, getChunk, getChunksFromPosition, getSupply, getTotalPixs, getThreshold } from './utils/web3';
 import { assemble } from './models/assembler';
@@ -25,14 +23,14 @@ import { assemble } from './models/assembler';
  **********************************/
 
 let displayGrid;
-let canvas;
+export let canvas;
 export let viewPosY = 0;
 export let viewPosX = 0;
 let lastCall = 0;
 let displayData;
 
-const windowHeight = window.innerHeight;
-const windowWidth = window.innerWidth;
+export const windowHeight = window.innerHeight;
+export const windowWidth = window.innerWidth;
 export let renderWidth = 256;
 const pixelSize = windowWidth / renderWidth;
 export let renderHeight = Math.floor(windowHeight / pixelSize) + 2;
@@ -41,6 +39,7 @@ function initDisplay() {
     displayGrid = new DisplayGrid(renderWidth, renderHeight);
     displayGrid.initialize(document.body);
     canvas = displayGrid.pixels.canvas;
+    canvas.onmousedown = clickManager;
 }
 initDisplay();
 
@@ -58,7 +57,7 @@ async function initDecodeLandscape() {
 }
 initDecodeLandscape();
 
-function update() {
+export function update() {
     if (new Date() - lastCall < 10) return;
     //data is the array of the displayed klons
     displayData = assemble();
@@ -112,212 +111,6 @@ function limitsViewPos() {
     if (viewPosX + renderWidth > Const.COLUMNS) viewPosX = Const.COLUMNS - renderWidth;
     update();
 }
-
-/**********************************
- ************* TOOLS **************
- **********************************/
-
-let tool = Tool.HUGE;
-
-canvas.onmousedown = clickManager;
-
-function clickManager(e) {
-    let mousePos = mousePosInGrid(e);
-    if (mousePos.y > renderHeight - 6 && mousePos.x < 65) {
-        //CASE GUI
-        if (mousePos.x < 30) {
-            colorPicked =
-                mousePos.x < 5
-                    ? Const.HEX1
-                    : mousePos.x < 10
-                    ? Const.HEX2
-                    : mousePos.x < 15
-                    ? Const.HEX10
-                    : mousePos.x < 20
-                    ? Const.HEX4
-                    : mousePos.x < 25
-                    ? Const.HEX5
-                    : Const.HEX6;
-            console.log('colorPicked', colorPicked);
-        }
-        if (mousePos.x >= 30 && mousePos.x < 35) tool = Tool.SMOL;
-        if (mousePos.x >= 35 && mousePos.x < 40) tool = Tool.BIG;
-        if (mousePos.x >= 40 && mousePos.x < 45) tool = Tool.HUGE;
-        if (mousePos.x >= 45 && mousePos.x < 50) console.log('save!');
-        if (mousePos.x >= 50 && mousePos.x < 55) {
-            console.log('move! (not working now)');
-            moveDrawing(50, 500);
-            update();
-        }
-        if (mousePos.x >= 55 && mousePos.x < 60) {
-            erase_all_pixel();
-            update();
-        }
-        if (mousePos.x >= 60 && mousePos.x < 65) importImage();
-    } else {
-        //CASE MONOLITH
-        mousePos = convertToMonolithPos(mousePos);
-        if (
-            mousePos.x < 0 ||
-            mousePos.x >= Const.MONOLITH_COLUMNS ||
-            mousePos.y < 0 ||
-            mousePos.y >= Const.MONOLITH_LINES
-        )
-            return; // out of bounds
-        startUsingTool(e, mousePos);
-    }
-}
-
-function startUsingTool(e, mousePos) {
-    if (e.button == 0) {
-        useTool(mousePos);
-        canvas.onmousemove = useTool;
-        canvas.onmouseup = stopUsingTool;
-    }
-    if (e.button == 2) {
-        useDeleteTool(mousePos);
-        canvas.onmousemove = useDeleteTool;
-        canvas.onmouseup = stopUsingTool;
-    }
-    if (e.button == 1) {
-        useColorPicker(mousePos);
-    }
-}
-
-function useTool(e) {
-    //IF E IS PASSED IT'S ALREADY FORMATED, ELSE IT'S A MOUSE EVENT
-    const mousePos = e.type ? convertToMonolithPos(mousePosInGrid({ x: e.x, y: e.y })) : e;
-    console.log('mousePos', mousePos);
-    switch (tool) {
-        case Tool.SMOL:
-            draw_pixel(mousePos.x, mousePos.y, Klon.USERPAINTED, hexToRGB(colorPicked));
-            break;
-        case Tool.BIG:
-            for (let i = -1; i <= 1; i++) {
-                for (let j = -1; j <= 1; j++) {
-                    if (mousePos.x + i < renderWidth && mousePos.x + i > -1)
-                        draw_pixel(mousePos.x + i, mousePos.y + j, Klon.USERPAINTED, hexToRGB(colorPicked));
-                }
-            }
-            break;
-        case Tool.HUGE:
-            for (let i = -15; i <= 15; i++) {
-                for (let j = -15; j <= 15; j++) {
-                    if (mousePos.x + i < renderWidth && mousePos.x + i > -1)
-                        draw_pixel(mousePos.x + i, mousePos.y + j, Klon.USERPAINTED, hexToRGB(colorPicked));
-                }
-            }
-            break;
-        case Tool.MOVE:
-            moveDrawing(mousePos.x, mousePos.y);
-            break;
-    }
-    update();
-}
-
-function useDeleteTool(e) {
-    //IF E IS PASSED IT'S ALREADY FORMATED, ELSE IT'S A MOUSE EVENT
-    const mousePos = e.type ? convertToMonolithPos(mousePosInGrid({ x: e.x, y: e.y })) : e;
-    switch (tool) {
-        case Tool.SMOL:
-            erase_pixel(mousePos.x, mousePos.y);
-            break;
-        case Tool.BIG:
-            for (let i = -1; i <= 1; i++) {
-                for (let j = -1; j <= 1; j++) {
-                    erase_pixel(mousePos.x + i, mousePos.y + j);
-                }
-            }
-            break;
-        case Tool.HUGE:
-            for (let i = -15; i <= 15; i++) {
-                for (let j = -15; j <= 15; j++) {
-                    erase_pixel(mousePos.x + i, mousePos.y + j);
-                }
-            }
-            break;
-    }
-    update();
-}
-
-function stopUsingTool() {
-    closeCurrentEvent();
-    canvas.onmousemove = null;
-}
-
-function mousePosInGrid(e) {
-    // console.log('mousePosInGrid', e);
-    let x = Math.floor((e.x / windowWidth) * renderWidth);
-    let y = Math.floor((e.y / windowHeight) * renderHeight);
-    return { x: x, y: y };
-}
-
-let colorPicked = '#b3e3da';
-
-function useColorPicker(mousePos) {
-    colorPicked = get_color(mousePos.x, mousePos.y);
-    colorPicked = RGBToHex(colorPicked[0], colorPicked[1], colorPicked[2]);
-    console.log(colorPicked);
-    if (colorPicked !== undefined) {
-        emit('changeColor', colorPicked);
-    }
-}
-
-/**********************************************
- ************* IMG MNG A DEGAGER **************
- **********************************************/
-
-function importImage() {
-    let input = document.createElement('input');
-    input.type = 'file';
-
-    input.onchange = (e) => {
-        let file = e.target.files[0];
-        let reader = new FileReader();
-        reader.readAsArrayBuffer(file);
-        reader.onload = (res) => {
-            let importedImage = res.target.result; // this is the content!
-            console.log('importedImage', importedImage);
-
-            displayImageFromArrayBuffer(importedImage, 1, 1, 999999, 99999, 0).then((res) => {
-                console.log('decoded', res);
-                displayArrayToImage(res.array, res.width, 1, 1, 999999, 99999, 0);
-            });
-
-            // convert res to base64
-            let base64 = btoa(
-                new Uint8Array(importedImage).reduce((data, byte) => data + String.fromCharCode(byte), '')
-            );
-            console.log('base64', base64);
-        };
-    };
-    input.click();
-}
-
-function displayArrayToImage(array, width, offsetx, offsety, pixelPaid, yMaxLegal, zIndex) {
-    console.log('FONCTION A REFAIRE MARCHER, DUPLICATE DANS IMAGE-MANAGER');
-    let pixelDrawn = 0;
-    let decalage = 0;
-    for (let y = 0; y < yMaxLegal; y++) {
-        for (let x = 0; x < width; x++) {
-            let idx = (width * y + x) * 4;
-            if (array[idx + 3] != 0 && array[idx + 3] != 0 && pixelDrawn < pixelPaid) {
-                if (pixelDrawn === 0) decalage = x;
-                draw_pixel(
-                    x + offsetx - decalage,
-                    y + offsety,
-                    zIndex,
-                    new Klon([array[idx] / 255, array[idx + 1] / 255, array[idx + 2] / 255], zIndex)
-                );
-                pixelDrawn++;
-            }
-        }
-    }
-}
-
-// setTimeout(() => {
-//     update();
-// }, 50);
 
 // getTotalPixs()
 //     .then(async (total) => {

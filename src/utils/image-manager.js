@@ -2,7 +2,6 @@ import UPNG from 'upng-js';
 import Klon from '../models/klon';
 import Const from '../models/constants';
 import { monolith, erase_all_pixel } from '../models/monolith';
-import { update } from '../main';
 
 function hexToRGB(hex) {
     var r = parseInt(hex.slice(1, 3), 16) / 255,
