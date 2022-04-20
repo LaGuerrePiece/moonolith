@@ -7,8 +7,6 @@ import { closeCurrentEvent, undo, redo } from './models/undoStack';
 
 // Imports des fonctionnalités
 import {
-    decode,
-    preEncode,
     _base64ToArrayBuffer,
     toRGBA8,
     hexToRGB,
@@ -22,15 +20,73 @@ import Const from './models/constants';
 import { chunkCreator, getChunk, getChunksFromPosition, getSupply, getTotalPixs, getThreshold } from './utils/web3';
 import { assemble } from './models/assembler';
 
-document.addEventListener(
-    'contextmenu',
-    (e) => {
-        e.preventDefault();
-    },
-    false
-);
+/**********************************
+ ************* DISPLAY ************
+ **********************************/
 
-document.addEventListener('keydown', function (e) {
+let displayGrid;
+let canvas;
+export let viewPosY = 0;
+export let viewPosX = 0;
+let lastCall = 0;
+let displayData;
+
+const windowHeight = window.innerHeight;
+const windowWidth = window.innerWidth;
+export let renderWidth = 256;
+const pixelSize = windowWidth / renderWidth;
+export let renderHeight = Math.floor(windowHeight / pixelSize) + 2;
+
+function initDisplay() {
+    displayGrid = new DisplayGrid(renderWidth, renderHeight);
+    displayGrid.initialize(document.body);
+    canvas = displayGrid.pixels.canvas;
+}
+initDisplay();
+
+async function initDecodeLandscape() {
+    let numberOfImports = 4;
+    initialImport(numberOfImports)
+        .then(() => {
+            setTimeout(() => {
+                update();
+            }, 150);
+        })
+        .then(() => {
+            lateImport(numberOfImports);
+        });
+}
+initDecodeLandscape();
+
+function update() {
+    if (new Date() - lastCall < 10) return;
+    //data is the array of the displayed klons
+    displayData = assemble();
+    displayGrid.updateDisplay(displayData);
+    lastCall = new Date();
+}
+
+let zoomFactor;
+function zoom() {
+    if (zoomFactor !== 2) {
+        console.log('zoomed x2');
+        zoomFactor = 2;
+    } else {
+        console.log('unzoomed');
+        zoomFactor = 0.5;
+    }
+    renderWidth = renderWidth / zoomFactor;
+    renderHeight = renderHeight / zoomFactor;
+    console.log('renderWidth', renderWidth, 'renderHeight', renderHeight);
+    document.body.removeChild(displayGrid.pixels.canvas);
+    initDisplay();
+    update();
+}
+
+//prettier-ignore
+document.addEventListener('contextmenu', (e) => { e.preventDefault(); }, false);
+//prettier-ignore
+document.addEventListener('keydown', (e) => {
     if (e.ctrlKey && e.key === 'z') undo();
     if (e.metaKey && e.key === 'z') undo();
     if (e.ctrlKey && e.key === 'Z') redo();
@@ -38,55 +94,23 @@ document.addEventListener('keydown', function (e) {
     if (e.ctrlKey && e.key === 'y') redo();
     if (e.metaKey && e.key === 'y') redo();
     if (e.key === 'u') console.log('CONST', Const);
-    if (e.key === 't') {
-        update();
-    }
+    if (e.key === 'y') zoom();
+    if (e.key === 'ArrowUp') { viewPosY -= 3; limitsViewPos(); }
+    if (e.key === 'ArrowDown') { viewPosY += 3; limitsViewPos(); }
+    if (e.key === 'ArrowLeft') { viewPosX += 3; limitsViewPos(); }
+    if (e.key === 'ArrowRight') { viewPosX -= 3; limitsViewPos(); }
 });
 
-/**********************************
- ************* DISPLAY ************
- **********************************/
-
-let displayGrid;
-export let viewPosY = 0;
-export let viewPosX = 0;
-let lastCall = 0;
-let displayData;
-
-const height = window.innerHeight;
-const width = window.innerWidth;
-export const renderWidth = 256;
-const pixelSize = width / renderWidth;
-export const renderHeight = Math.floor(height / pixelSize) + 2;
-
-displayGrid = new DisplayGrid(renderWidth, renderHeight);
-displayGrid.initialize(document.body);
-let canvas = displayGrid.pixels.canvas;
-
+//prettier-ignore
 window.onwheel = function (e) {
-    if (e.deltaY > 0) {
-        viewPosY -= 3;
-    } else {
-        viewPosY += 3;
-    }
+    if (e.deltaY > 0) { viewPosY -= 3; } else { viewPosY += 3;} limitsViewPos(); };
 
-    if (viewPosY < 0) {
-        viewPosY = 0;
-        return;
-    }
-    if (viewPosY > Const.MONOLITH_ROWS - renderHeight) {
-        viewPosY = Const.MONOLITH_ROWS - renderHeight;
-        return;
-    }
+function limitsViewPos() {
+    if (viewPosY < -30) viewPosY = -30;
+    if (viewPosY + renderHeight > Const.LINES) viewPosY = Const.LINES - renderHeight;
+    if (viewPosX < 0) viewPosX = 0;
+    if (viewPosX + renderWidth > Const.COLUMNS) viewPosX = Const.COLUMNS - renderWidth;
     update();
-};
-
-function update() {
-    if (new Date() - lastCall < 30) return;
-    //data is the array of the displayed klons
-    displayData = assemble();
-    displayGrid.updateDisplay(displayData);
-    lastCall = new Date();
 }
 
 /**********************************
@@ -137,58 +161,10 @@ function clickManager(e) {
             mousePos.x < 0 ||
             mousePos.x >= Const.MONOLITH_COLUMNS ||
             mousePos.y < 0 ||
-            mousePos.y >= Const.MONOLITH_ROWS
+            mousePos.y >= Const.MONOLITH_LINES
         )
             return; // out of bounds
         startUsingTool(e, mousePos);
-    }
-}
-
-function importImage() {
-    let input = document.createElement('input');
-    input.type = 'file';
-
-    input.onchange = (e) => {
-        let file = e.target.files[0];
-        let reader = new FileReader();
-        reader.readAsArrayBuffer(file);
-        reader.onload = (res) => {
-            let importedImage = res.target.result; // this is the content!
-            console.log('importedImage', importedImage);
-
-            displayImageFromArrayBuffer(importedImage, 1, 1, 999999, 99999, 0).then((res) => {
-                console.log('decoded', res);
-                displayArrayToImage(res.array, res.width, 1, 1, 999999, 99999, 0);
-            });
-
-            // convert res to base64
-            let base64 = btoa(
-                new Uint8Array(importedImage).reduce((data, byte) => data + String.fromCharCode(byte), '')
-            );
-            console.log('base64', base64);
-        };
-    };
-    input.click();
-}
-
-function displayArrayToImage(array, width, offsetx, offsety, pixelPaid, yMaxLegal, zIndex) {
-    console.log('FONCTION A REFAIRE MARCHER, DUPLICATE DANS IMAGE-MANAGER');
-    let pixelDrawn = 0;
-    let decalage = 0;
-    for (let y = 0; y < yMaxLegal; y++) {
-        for (let x = 0; x < width; x++) {
-            let idx = (width * y + x) * 4;
-            if (array[idx + 3] != 0 && array[idx + 3] != 0 && pixelDrawn < pixelPaid) {
-                if (pixelDrawn === 0) decalage = x;
-                draw_pixel(
-                    x + offsetx - decalage,
-                    y + offsety,
-                    zIndex,
-                    new Klon([array[idx] / 255, array[idx + 1] / 255, array[idx + 2] / 255], zIndex)
-                );
-                pixelDrawn++;
-            }
-        }
     }
 }
 
@@ -244,7 +220,6 @@ function useDeleteTool(e) {
     const mousePos = e.type ? convertToMonolithPos(mousePosInGrid({ x: e.x, y: e.y })) : e;
     switch (tool) {
         case Tool.SMOL:
-            console.log('delete pixel');
             erase_pixel(mousePos.x, mousePos.y);
             break;
         case Tool.BIG:
@@ -271,7 +246,10 @@ function stopUsingTool() {
 }
 
 function mousePosInGrid(e) {
-    return { x: Math.floor((e.x / width) * renderWidth), y: Math.floor((e.y / height) * renderHeight) };
+    // console.log('mousePosInGrid', e);
+    let x = Math.floor((e.x / windowWidth) * renderWidth);
+    let y = Math.floor((e.y / windowHeight) * renderHeight);
+    return { x: x, y: y };
 }
 
 let colorPicked = '#b3e3da';
@@ -285,20 +263,57 @@ function useColorPicker(mousePos) {
     }
 }
 
-async function init() {
-    let numberOfImports = 4;
-    initialImport(numberOfImports)
-        .then(() => {
-            setTimeout(() => {
-                update();
-            }, 150);
-        })
-        .then(() => {
-            lateImport(numberOfImports);
-        });
+/**********************************************
+ ************* IMG MNG A DEGAGER **************
+ **********************************************/
+
+function importImage() {
+    let input = document.createElement('input');
+    input.type = 'file';
+
+    input.onchange = (e) => {
+        let file = e.target.files[0];
+        let reader = new FileReader();
+        reader.readAsArrayBuffer(file);
+        reader.onload = (res) => {
+            let importedImage = res.target.result; // this is the content!
+            console.log('importedImage', importedImage);
+
+            displayImageFromArrayBuffer(importedImage, 1, 1, 999999, 99999, 0).then((res) => {
+                console.log('decoded', res);
+                displayArrayToImage(res.array, res.width, 1, 1, 999999, 99999, 0);
+            });
+
+            // convert res to base64
+            let base64 = btoa(
+                new Uint8Array(importedImage).reduce((data, byte) => data + String.fromCharCode(byte), '')
+            );
+            console.log('base64', base64);
+        };
+    };
+    input.click();
 }
 
-init();
+function displayArrayToImage(array, width, offsetx, offsety, pixelPaid, yMaxLegal, zIndex) {
+    console.log('FONCTION A REFAIRE MARCHER, DUPLICATE DANS IMAGE-MANAGER');
+    let pixelDrawn = 0;
+    let decalage = 0;
+    for (let y = 0; y < yMaxLegal; y++) {
+        for (let x = 0; x < width; x++) {
+            let idx = (width * y + x) * 4;
+            if (array[idx + 3] != 0 && array[idx + 3] != 0 && pixelDrawn < pixelPaid) {
+                if (pixelDrawn === 0) decalage = x;
+                draw_pixel(
+                    x + offsetx - decalage,
+                    y + offsety,
+                    zIndex,
+                    new Klon([array[idx] / 255, array[idx + 1] / 255, array[idx + 2] / 255], zIndex)
+                );
+                pixelDrawn++;
+            }
+        }
+    }
+}
 
 // setTimeout(() => {
 //     update();
