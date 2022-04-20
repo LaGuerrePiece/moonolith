@@ -59,21 +59,21 @@ export function assemble() {
     }
 
     console.log('layersToDisplay', layersToDisplay);
-    console.log('layersToDisplay[1].colorsArray', layersToDisplay[1].colorsArray);
 
     let displayArray = [];
     for (let y = 0; y < renderHeight; y++) {
         for (let x = 0; x < renderWidth; x++) {
             //FOR EACH LAYER, PUSH COLOR IF PRESENT
             for (let z = 0; z < layersToDisplay.length; z++) {
-                const currentLayer = layersToDisplay[z];
-                if (z === 1 && y % 20 === 0)
-                    console.log('hello', currentLayer.colorsArray[currentLayer.startY + y]?.[currentLayer.startX + x]);
-                if (!currentLayer.colorsArray[currentLayer.startY + y]?.[currentLayer.startX + x]) continue;
+                const layer = layersToDisplay[z];
+                const array = layer.colorsArray;
+                const startX = layer.startX;
+                const startY = layer.startY;
+                if (!array[startY + y]?.[startX + x]) continue;
 
-                const colorToPush = currentLayer.colorsArray[currentLayer.startY + y][currentLayer.startX + x].color
-                    ? currentLayer.colorsArray[currentLayer.startY + y][currentLayer.startX + x].color
-                    : currentLayer.colorsArray[currentLayer.startY + y][currentLayer.startX + x];
+                const colorToPush = array[startY + y][startX + x].color
+                    ? array[startY + y][startX + x].color
+                    : array[startY + y][startX + x];
                 displayArray.push(colorToPush);
                 break;
             }
