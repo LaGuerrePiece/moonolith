@@ -11,8 +11,8 @@ var previousLandscape;
 export function assemble() {
     const monolithStartY = Const.MONOLITH_LINES + Const.MARGIN_BOTTOM - viewPosY - renderHeight;
     const monolithStartX = viewPosX - Const.MARGIN_LEFT;
-    console.log('monolithStartY', monolithStartY);
-    console.log('monolithStartX', monolithStartX);
+    // console.log('monolithStartY', monolithStartY);
+    // console.log('monolithStartX', monolithStartX);
     let startAssemble = performance.now();
 
     let layersToDisplay = [];
@@ -31,18 +31,15 @@ export function assemble() {
         for (let layer in landscapeBase64) {
             const thisLayer = landscapeBase64[layer];
 
-            ////////////////////////////////////////////////////   HELL   ////////////////////////////////////////////////////////////
-            // let parallaxOffset = Math.floor(thisLayer.parallax * viewPosY);
+            let parallaxOffset = Math.floor(thisLayer.parallax * viewPosY);
 
             // if (thisLayer.startY - thisLayer.height - parallaxOffset > viewPosY + renderHeight) continue; // If the layer above render, skip it
             // if (Const.LINES - thisLayer.startY + parallaxOffset > Const.LINES - viewPosY) continue; // If the layer under render, skip it
 
             // let offset = (Const.LINES - thisLayer.startY + parallaxOffset) * Const.COLUMNS;
 
-            const startY = thisLayer.height - renderHeight + viewPosY;
+            const startY = thisLayer.startY - parallaxOffset - viewPosY;
             const startX = 0;
-
-            ////////////////////////////////////////////////////   HELL   ////////////////////////////////////////////////////////////
 
             layersToDisplay.push({
                 name: thisLayer.name,
@@ -58,7 +55,7 @@ export function assemble() {
         layersToDisplay.push({ name: 'previousLandscape', colorsArray: previousLandscape, startY: 0, startX: 0 });
     }
 
-    console.log('layersToDisplay', layersToDisplay);
+    // console.log('layersToDisplay', layersToDisplay);
 
     let displayArray = [];
     for (let y = 0; y < renderHeight; y++) {
@@ -86,7 +83,7 @@ export function assemble() {
     }
 
     previousLandscape = displayArray;
-    console.log('displayArray', displayArray);
+    // console.log('displayArray', displayArray);
     console.log('Assemble = ', Math.floor(performance.now() - startAssemble), 'ms');
     return displayArray;
 }
