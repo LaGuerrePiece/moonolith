@@ -1,5 +1,6 @@
 import { caly0, caly1, caly2, caly3, caly4, caly5, caly6 } from './base64';
 import { _base64ToArrayBuffer, decode, toRGBA8 } from '../utils/image-manager';
+import Const from '../models/constants';
 
 export var landscapeBase64 = {
     caly6: { name: 'caly6', height: 126, startY: 520, parallax: 1.2, base64: caly6, decoded: null },
@@ -13,43 +14,48 @@ export var landscapeBase64 = {
 
 export async function initialImport(numberOfImports, viewPosY) {
     //Imports a few layers of landscape
-    let startImport = performance.now();
     let importedLayers = 0;
     //console.log('landscapeBase64', landscapeBase64);
     let landscape = Object.keys(landscapeBase64);
 
     for (let i = landscape.length - 1; i >= 0; i--) {
         if (importedLayers >= numberOfImports) continue;
-        formatLayer(landscape[i]);
+        importAndFormatLayer(landscape[i]);
         importedLayers++;
     }
-
-    let endImport = performance.now();
-    //console.log('Initial import : ', Math.floor(endImport - startImport), 'ms');
 }
 
 export async function lateImport(numberOfImports) {
     //Imports the rest of the landscape
-    let startImport = performance.now();
     let importedLayers = 0;
     let landscape = Object.keys(landscapeBase64);
 
     for (let i = numberOfImports + 1; i <= landscape.length; i++) {
         if (importedLayers > numberOfImports) continue;
-        formatLayer(landscape[landscape.length - i]);
+        importAndFormatLayer(landscape[landscape.length - i]);
         importedLayers++;
     }
-
-    let endImport = performance.now();
-    //console.log('Late import : ', Math.floor(endImport - startImport), 'ms');
 }
 
-async function formatLayer(index) {
+async function importAndFormatLayer(index) {
     let thisLayer = landscapeBase64[index];
     let decoded = await decode(_base64ToArrayBuffer(thisLayer.base64)).catch(console.error);
     decoded = toRGBA8(decoded);
-
     let converted = [];
+    let convertedYX = Array.from({ length: decoded.length / Const.COLUMNS / 4 }, () => Array.from(Const.COLUMNS));
+
+    for (let y = 0; y < decoded.length / Const.COLUMNS / 4; y++) {
+        for (let x = 0; x < Const.COLUMNS; x++) {
+            if (decoded[(x + y * Const.COLUMNS) * 4 + 3] === 0) continue;
+            convertedYX[y][x] = [
+                decoded[(x + y * Const.COLUMNS) * 4] / 255,
+                decoded[(x + y * Const.COLUMNS) * 4 + 1] / 255,
+                decoded[(x + y * Const.COLUMNS) * 4 + 2] / 255,
+            ];
+        }
+    }
+    if (thisLayer.name == 'caly0') console.log(thisLayer.name, convertedYX);
+    thisLayer.decodedYX = convertedYX;
 
     for (let j = 0; j < decoded.length; j += 4) {
         if (decoded[j + 3] === 0) {

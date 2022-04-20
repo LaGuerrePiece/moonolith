@@ -9,11 +9,17 @@ export function assembleLandscape() {
     for (let layer in landscapeBase64) {
         let thisLayer = landscapeBase64[layer];
 
-        let buffer = thisLayer.decoded;
+        let parallaxOffset = Math.floor(thisLayer.parallax * viewPosY);
 
-        for (let i = 0; i < buffer.length; i++) {
-            if (buffer[i] === undefined) continue;
-            arrayAssemble[i + offset] = buffer[i];
+        if (thisLayer.startY - thisLayer.height - parallaxOffset > viewPosY + renderHeight) continue; // If the layer above render, skip it
+        if (Const.LINES - thisLayer.startY + parallaxOffset > Const.LINES - viewPosY) continue; // If the layer under render, skip it
+
+        let offset = (Const.LINES - thisLayer.startY + parallaxOffset) * Const.COLUMNS;
+        let decodedLayer = thisLayer.decoded;
+
+        for (let i = 0; i < decodedLayer.length; i++) {
+            if (decodedLayer[i] === undefined) continue;
+            arrayAssemble[i + offset] = decodedLayer[i];
         }
     }
 

@@ -59,12 +59,12 @@ export function update() {
 
 let zoomFactor;
 function zoom() {
-    if (zoomFactor !== 2) {
-        console.log('zoomed x2');
-        zoomFactor = 2;
+    if (zoomFactor !== 4) {
+        console.log('zoomed x4');
+        zoomFactor = 4;
     } else {
         console.log('unzoomed');
-        zoomFactor = 0.5;
+        zoomFactor = 0.25;
     }
     renderWidth = renderWidth / zoomFactor;
     renderHeight = renderHeight / zoomFactor;
