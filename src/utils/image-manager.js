@@ -1,5 +1,8 @@
 import UPNG from 'upng-js';
 import Klon from '../models/klon';
+import Const from '../models/constants';
+import { monolith, erase_all_pixel } from '../models/monolith';
+import { update } from '../main';
 
 function hexToRGB(hex) {
     var r = parseInt(hex.slice(1, 3), 16) / 255,
@@ -28,41 +31,39 @@ function decode(buffer) {
         resolve(buff);
     });
 }
+
 function toRGBA8(buffer) {
     return new Uint8Array(UPNG.toRGBA8(buffer)[0]);
 }
 
-function getHighLow(grid) {
-    let lowX = grid.persistent.length,
-        lowY = grid.persistent.length,
+export function getHighLow() {
+    let lowX = Const.MONOLITH_COLUMNS,
+        lowY = Const.MONOLITH_ROWS,
         highX = 0,
         highY = 0;
 
-    for (let i in grid.persistent) {
-        if (grid.persistent[i]?.zIndex == Klon.USERPAINTED) {
-            if (grid.convertIndexToXY(i).x < lowX) {
-                lowX = grid.convertIndexToXY(i).x;
-            }
-            if (grid.convertIndexToXY(i).x > highX) {
-                highX = grid.convertIndexToXY(i).x;
-            }
-            if (grid.convertIndexToXY(i).y < lowY) {
-                lowY = grid.convertIndexToXY(i).y;
-            }
-            if (grid.convertIndexToXY(i).y > highY) {
-                highY = grid.convertIndexToXY(i).y;
+    for (let i = 0; i < Const.MONOLITH_ROWS; i++) {
+        for (let j = 0; j < Const.MONOLITH_COLUMNS; j++) {
+            if (monolith[i][j].zIndex == Klon.USERPAINTED) {
+                if (j < lowX) lowX = j;
+                if (j > highX) highX = j;
+                if (i < lowY) lowY = i;
+                if (i > highY) highY = i;
             }
         }
     }
+
     let longueur = highX - lowX + 1;
     let largeur = highY - lowY + 1;
-    // console.log(`lowX : ${lowX} | lowY : ${lowY} | highX : ${highX} | highY : ${highY} | `)
+    // console.log(
+    //     `lowX : ${lowX} | lowY : ${lowY} | highX : ${highX} | highY : ${highY} | longueur : ${longueur} | largeur : ${largeur}`
+    // );
     return { lowX, lowY, highX, highY, longueur, largeur };
 }
 
-function preEncode(grid) {
+function preEncode() {
     return new Promise((resolve) => {
-        let { highLow, saveArray, nbPix, firstPix } = gridToArray(grid);
+        let { highLow, saveArray, nbPix, firstPix } = gridToArray();
 
         saveArray = new Uint8Array(saveArray);
         var png = UPNG.encode([saveArray.buffer], highLow.longueur, highLow.largeur, 0); // on encode
@@ -83,38 +84,24 @@ function preEncodeSpecialK(displayArray, renderWidth, renderHeight) {
     });
 }
 
-function gridToArray(grid) {
-    let highLow = getHighLow(grid);
+export function gridToArray() {
+    let highLow = getHighLow();
     let saveArray = [];
     let nbPix = 0;
-    let firstPix = -1;
-    for (
-        let i = grid.convertXYToIndex(highLow.lowX, highLow.lowY);
-        i <= grid.convertXYToIndex(highLow.highX, highLow.highY);
-        i++
-    ) {
-        if (
-            grid.convertIndexToXY(i).x >= highLow.lowX &&
-            grid.convertIndexToXY(i).x <= highLow.highX &&
-            grid.convertIndexToXY(i).y >= highLow.lowY &&
-            grid.convertIndexToXY(i).y <= highLow.highY
-        ) {
-            if (grid.persistent[i] && grid.persistent[i].zIndex == Klon.USERPAINTED) {
-                if (firstPix == -1) firstPix = i;
-                saveArray.push(grid.persistent[i].color[0] * 255);
-                saveArray.push(grid.persistent[i].color[1] * 255);
-                saveArray.push(grid.persistent[i].color[2] * 255);
+    let firstPix = [];
+    for (let i = highLow.lowY; i <= highLow.highY; i++) {
+        for (let j = highLow.lowX; j <= highLow.highX; j++) {
+            if (monolith[i][j].zIndex == Klon.USERPAINTED) {
+                if (firstPix == []) firstPix = [i, j];
+                saveArray.push(...monolith[i][j].color.map((a) => a * 255));
                 saveArray.push(255);
                 nbPix++;
             } else {
-                saveArray.push(0);
-                saveArray.push(0);
-                saveArray.push(0);
-                saveArray.push(0);
+                saveArray.push(...[0, 0, 0, 0]);
             }
         }
     }
-    return { firstPix: firstPix, highLow: highLow, nbPix: nbPix, saveArray: saveArray };
+    return { firstPix, highLow, nbPix, saveArray };
 }
 
 function saveLocally(buffer) {
@@ -148,22 +135,16 @@ function _base64ToArrayBuffer(base64) {
     return bytes.buffer;
 }
 
+//TO BE FIXED
 export function moveDrawing(x, y) {
-    let highLow, saveArray, nbPix, firstPix;
-    let ret = gridToArray(monolith);
-    highLow = ret.highLow;
-    saveArray = ret.saveArray;
-    nbPix = ret.nbPix;
-    firstPix = ret.firstPix;
+    const ret = gridToArray();
+    console.log('x', x, 'y', y, 'ret', ret);
+    console.log('saveArray', ret.saveArray);
+    console.log('highLow', ret.highLow);
     erase_all_pixel();
-    console.log('l', highLow.largeur);
-    console.log('L', highLow.longueur);
-    console.log('lowx', highLow.lowX);
-    let outx = x;
-    let outy = y;
-    if (outx > 127) outx = 127;
-    if (outx < 0) outx = 0;
-    displayArrayToImage(saveArray, highLow.largeur, outx, outy, 999999, 999999, 0);
+    // if (outx > 127) outx = 127;
+    // if (outx < 0) outx = 0;
+    displayArrayToImage(ret.saveArray, ret.highLow.longueur, ret.highLow.largeur, x, y, 999999, 999999, 0);
 }
 
 export async function displayImageFromArrayBuffer(arrayBuffer, offsetx, offsety, pixelPaid, yMaxLegal, zIndex) {
@@ -172,38 +153,27 @@ export async function displayImageFromArrayBuffer(arrayBuffer, offsetx, offsety,
     if (!decoded) return;
     let array = toRGBA8(decoded);
     let width = decoded.width;
-    return { array, width }
+    return { array, width };
     displayArrayToImage(array, width, offsetx, offsety, pixelPaid, yMaxLegal, zIndex);
 }
 
-export function displayArrayToImage(array, width, offsetx, offsety, pixelPaid, yMaxLegal, zIndex) {
+export function displayArrayToImage(array, width, height, offsetx, offsety, pixelPaid, yMaxLegal, zIndex) {
     let pixelDrawn = 0;
     let decalage = 0;
-    for (let y = 0; y < yMaxLegal; y++) {
-        for (let x = 0; x < width; x++) {
-            let idx = (width * y + x) * 4;
-            if (array[idx + 3] != 0 && array[idx + 3] != 0 && pixelDrawn < pixelPaid) {
-                if (pixelDrawn === 0) decalage = x;
-                draw_pixel(
-                    x + offsetx - decalage,
-                    y + offsety,
-                    zIndex,
-                    new Klon([array[idx] / 255, array[idx + 1] / 255, array[idx + 2] / 255], zIndex)
-                );
+    console.log('displayArrayToImage', array, width, height, offsetx, offsety, pixelPaid, yMaxLegal, zIndex);
+    for (let y = offsety; y < height + offsety; y++) {
+        for (let x = offsetx; x < width + offsetx; x++) {
+            if (y >= yMaxLegal) return;
+            if (pixelDrawn >= pixelPaid) return;
+            if (!monolith[y]?.[x]) continue;
+            if (array[decalage + 3] > 0) {
+                monolith[y][x].color = [array[decalage] / 255, array[decalage + 1] / 255, array[decalage + 2] / 255];
+                monolith[y][x].zIndex = zIndex;
                 pixelDrawn++;
             }
+            decalage += 4;
         }
     }
 }
 
-export {
-    decode,
-    getHighLow,
-    preEncode,
-    preEncodeSpecialK,
-    _base64ToArrayBuffer,
-    toRGBA8,
-    gridToArray,
-    hexToRGB,
-    RGBToHex,
-};
+export { decode, preEncode, preEncodeSpecialK, _base64ToArrayBuffer, toRGBA8, hexToRGB, RGBToHex };

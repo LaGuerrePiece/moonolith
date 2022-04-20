@@ -11,10 +11,10 @@ import {
     preEncode,
     _base64ToArrayBuffer,
     toRGBA8,
-    gridToArray,
     hexToRGB,
     RGBToHex,
     moveDrawing,
+    gridToArray,
     displayImageFromArrayBuffer,
 } from './utils/image-manager';
 import Tool from './models/tools';
@@ -120,7 +120,11 @@ function clickManager(e) {
         if (mousePos.x >= 35 && mousePos.x < 40) tool = Tool.BIG;
         if (mousePos.x >= 40 && mousePos.x < 45) tool = Tool.HUGE;
         if (mousePos.x >= 45 && mousePos.x < 50) console.log('save!');
-        if (mousePos.x >= 50 && mousePos.x < 55) console.log('move!');
+        if (mousePos.x >= 50 && mousePos.x < 55) {
+            console.log('move! (not working now)');
+            moveDrawing(50, 500);
+            update();
+        }
         if (mousePos.x >= 55 && mousePos.x < 60) {
             erase_all_pixel();
             update();
@@ -207,6 +211,7 @@ function startUsingTool(e, mousePos) {
 function useTool(e) {
     //IF E IS PASSED IT'S ALREADY FORMATED, ELSE IT'S A MOUSE EVENT
     const mousePos = e.type ? convertToMonolithPos(mousePosInGrid({ x: e.x, y: e.y })) : e;
+    console.log('mousePos', mousePos);
     switch (tool) {
         case Tool.SMOL:
             draw_pixel(mousePos.x, mousePos.y, Klon.USERPAINTED, hexToRGB(colorPicked));
