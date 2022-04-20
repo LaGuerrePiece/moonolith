@@ -7,6 +7,9 @@ export let monolith = Array.from({ length: Const.MONOLITH_LINES }, () =>
     Array.from({ length: Const.MONOLITH_COLUMNS }, () => new Klon(Const.DEFAULT_COLOR))
 );
 
+export let monolithStartY = Const.MONOLITH_LINES + Const.MARGIN_BOTTOM - viewPosY - renderHeight;
+export let monolithStartX = viewPosX - Const.MARGIN_LEFT;
+
 export function draw_pixel(x, y, zIndex, color) {
     if (x < 0 || x >= Const.MONOLITH_COLUMNS || y < 0 || y >= Const.MONOLITH_LINES) return; //IF OUT OF BOUNDS, return
     if (!monolith[y][x].isEditable(zIndex)) return; //IF IT IS NOT EDITABLE, return
