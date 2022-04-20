@@ -9,7 +9,6 @@ import {
     hexToRGB,
     RGBToHex,
     moveDrawing,
-    gridToArray,
     displayImageFromArrayBuffer,
 } from '../utils/image-manager';
 import Const from './constants';

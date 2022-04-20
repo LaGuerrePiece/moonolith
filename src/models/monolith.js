@@ -1,7 +1,6 @@
 import Klon from './klon';
 import Const from './constants';
 import { addToCurrentEvent, closeCurrentEvent } from './undoStack';
-import { decode, preEncode, _base64ToArrayBuffer, toRGBA8, hexToRGB, RGBToHex } from '../utils/image-manager';
 import { renderWidth, renderHeight, viewPosX, viewPosY } from '../main';
 
 export let monolith = Array.from({ length: Const.MONOLITH_LINES }, () =>

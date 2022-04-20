@@ -15,6 +15,7 @@ export async function initialImport(numberOfImports, viewPosY) {
     //Imports a few layers of landscape
     let startImport = performance.now();
     let importedLayers = 0;
+    //console.log('landscapeBase64', landscapeBase64);
     let landscape = Object.keys(landscapeBase64);
 
     for (let i = landscape.length - 1; i >= 0; i--) {
@@ -24,7 +25,7 @@ export async function initialImport(numberOfImports, viewPosY) {
     }
 
     let endImport = performance.now();
-    console.log('Initial import : ', Math.floor(endImport - startImport), 'ms');
+    //console.log('Initial import : ', Math.floor(endImport - startImport), 'ms');
 }
 
 export async function lateImport(numberOfImports) {
@@ -40,7 +41,7 @@ export async function lateImport(numberOfImports) {
     }
 
     let endImport = performance.now();
-    console.log('Late import : ', Math.floor(endImport - startImport), 'ms');
+    //console.log('Late import : ', Math.floor(endImport - startImport), 'ms');
 }
 
 async function formatLayer(index) {
