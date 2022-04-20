@@ -17,12 +17,12 @@ export function assemble() {
 
     let layersToDisplay = [];
     //PUSH GUI AND MONOLITH TO LAYERSTODISPLAY ARRAY
-    layersToDisplay.push({ name: 'GUI', colorsArray: GUI, startX: 0, startY: 0 });
+    layersToDisplay.push({ name: 'GUI', colorsArray: GUI, startY: 0, startX: 0 });
     layersToDisplay.push({
         name: 'monolith',
         colorsArray: monolith,
-        startX: monolithStartX,
         startY: monolithStartY,
+        startX: monolithStartX,
     });
 
     //IF THE VIEWPOS HAS CHANGED, PUSH THE NEW LAYERS TO LAYER ARRAY
@@ -39,23 +39,23 @@ export function assemble() {
 
             // let offset = (Const.LINES - thisLayer.startY + parallaxOffset) * Const.COLUMNS;
 
-            const startX = 0;
             const startY = thisLayer.height - renderHeight + viewPosY;
+            const startX = 0;
 
             ////////////////////////////////////////////////////   HELL   ////////////////////////////////////////////////////////////
 
             layersToDisplay.push({
                 name: thisLayer.name,
                 colorsArray: thisLayer.decodedYX,
-                startX: startX,
                 startY: startY,
+                startX: startX,
             });
         }
         previousViewPosY = viewPosY;
         previousViewPosX = viewPosX;
     } else {
         // ELSE, JUST PUSH PREVIOUSLANDSCAPE AT 0, 0
-        layersToDisplay.push({ name: 'previousLandscape', colorsArray: previousLandscape, startX: 0, startY: 0 });
+        layersToDisplay.push({ name: 'previousLandscape', colorsArray: previousLandscape, startY: 0, startX: 0 });
     }
 
     console.log('layersToDisplay', layersToDisplay);
@@ -67,8 +67,8 @@ export function assemble() {
             for (let z = 0; z < layersToDisplay.length; z++) {
                 const layer = layersToDisplay[z];
                 const array = layer.colorsArray;
-                const startX = layer.startX;
                 const startY = layer.startY;
+                const startX = layer.startX;
                 if (!array[startY + y]?.[startX + x]) continue;
 
                 const colorToPush = array[startY + y][startX + x].color
