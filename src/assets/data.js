@@ -19,15 +19,12 @@ export async function initialImport(numberOfImports, viewPosY) {
 
     for (let i = landscape.length - 1; i >= 0; i--) {
         if (importedLayers >= numberOfImports) continue;
-        let thisLayer = landscapeBase64[landscape[i]];
-        let decoded = await decode(_base64ToArrayBuffer(thisLayer.base64)).catch(console.error);
-        decoded = toRGBA8(decoded);
-        thisLayer.decoded = decoded;
+        formatLayer(landscape[i]);
         importedLayers++;
     }
 
     let endImport = performance.now();
-    // console.log('Initial import : ', Math.floor(endImport - startImport), 'ms');
+    console.log('Initial import : ', Math.floor(endImport - startImport), 'ms');
 }
 
 export async function lateImport(numberOfImports) {
@@ -35,17 +32,31 @@ export async function lateImport(numberOfImports) {
     let startImport = performance.now();
     let importedLayers = 0;
     let landscape = Object.keys(landscapeBase64);
-    let remainingImports = landscape.length - numberOfImports;
 
     for (let i = numberOfImports + 1; i <= landscape.length; i++) {
         if (importedLayers > numberOfImports) continue;
-        let thisLayer = landscapeBase64[landscape[landscape.length - i]];
-        let decoded = await decode(_base64ToArrayBuffer(thisLayer.base64)).catch(console.error);
-        decoded = toRGBA8(decoded);
-        thisLayer.decoded = decoded;
+        formatLayer(landscape[landscape.length - i]);
         importedLayers++;
     }
 
     let endImport = performance.now();
-    // console.log('Late import : ', Math.floor(endImport - startImport), 'ms');
+    console.log('Late import : ', Math.floor(endImport - startImport), 'ms');
+}
+
+async function formatLayer(index) {
+    let thisLayer = landscapeBase64[index];
+    let decoded = await decode(_base64ToArrayBuffer(thisLayer.base64)).catch(console.error);
+    decoded = toRGBA8(decoded);
+
+    let converted = [];
+
+    for (let j = 0; j < decoded.length; j += 4) {
+        if (decoded[j + 3] === 0) {
+            converted.push(undefined);
+            continue;
+        }
+        converted.push([decoded[j] / 255, decoded[j + 1] / 255, decoded[j + 2] / 255]);
+    }
+
+    thisLayer.decoded = converted;
 }
