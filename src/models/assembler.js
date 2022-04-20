@@ -56,22 +56,23 @@ export function assemble() {
         layersToDisplay.push({ name: 'previousLandscape', colorsArray: previousLandscape, startX: 0, startY: 0 });
     }
     console.log('layersToDisplay', layersToDisplay);
+    
     let displayArray = [];
-    for (let i = 0; i < renderHeight; i++) {
-        for (let j = 0; j < renderWidth; j++) {
+    for (let x = 0; x < renderHeight; x++) {
+        for (let y = 0; y < renderWidth; y++) {
             //FOR EACH LAYER, PUSH COLOR IF PRESENT
-            for (let k = 0; k < layersToDisplay.length; k++) {
-                const currentLayer = layersToDisplay[k];
-                if (!currentLayer.colorsArray[currentLayer.startY + i]?.[currentLayer.startX + j]) continue;
-                const colorToPush = currentLayer.colorsArray[currentLayer.startY + i][currentLayer.startX + j].color
-                    ? currentLayer.colorsArray[currentLayer.startY + i][currentLayer.startX + j].color
-                    : currentLayer.colorsArray[currentLayer.startY + i][currentLayer.startX + j];
+            for (let z = 0; z < layersToDisplay.length; z++) {
+                const currentLayer = layersToDisplay[z];
+                if (!currentLayer.colorsArray[currentLayer.startY + x]?.[currentLayer.startX + y]) continue;
+                const colorToPush = currentLayer.colorsArray[currentLayer.startY + x][currentLayer.startX + y].color
+                    ? currentLayer.colorsArray[currentLayer.startY + x][currentLayer.startX + y].color
+                    : currentLayer.colorsArray[currentLayer.startY + x][currentLayer.startX + y];
                 displayArray.push(colorToPush);
                 break;
             }
 
             //IF NO COLOR HAS BEEN PUSHED, PUSH THE DEFAULT COLOR
-            if (!displayArray[i * renderWidth + j]) {
+            if (!displayArray[x * renderWidth + y]) {
                 displayArray.push([0.9764, 0.5098, 0.5176]);
             }
         }

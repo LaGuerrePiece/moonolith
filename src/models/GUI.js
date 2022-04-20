@@ -1,6 +1,6 @@
 import { renderWidth, renderHeight } from '../main';
 
-export let GUI = Array.from({ length: 100 }, () => Array.from({ length: 100 }, () => undefined));
+export let GUI = Array.from({ length: 10 }, () => Array.from({ length: 100 }, () => [0.3, 0.6, 0.1]));
 
 // GUI TO ADD
 // const startGUI = Math.floor(renderWidth * (renderHeight - 7));
