@@ -1,4 +1,4 @@
-import { monolith, monolithStartY, monolithStartX } from './monolith';
+import { monolith } from './monolith';
 import { GUI } from './GUI';
 import { landscapeBase64 } from '../assets/data';
 import Const from './constants';
@@ -8,7 +8,9 @@ var previousViewPosY;
 var previousViewPosX;
 var previousLandscape;
 
-function assemble() {
+export function assemble() {
+    const monolithStartY = Const.MONOLITH_LINES + Const.MARGIN_BOTTOM - viewPosY - renderHeight;
+    const monolithStartX = viewPosX - Const.MARGIN_LEFT;
     let startAssemble = performance.now();
 
     let layersToDisplay = [];
@@ -23,23 +25,23 @@ function assemble() {
             const thisLayer = landscapeBase64[layer];
 
             ////////////////////////////////////////////////////   HELL   ////////////////////////////////////////////////////////////
-            let parallaxOffset = Math.floor(thisLayer.parallax * viewPosY);
+            // let parallaxOffset = Math.floor(thisLayer.parallax * viewPosY);
 
-            if (thisLayer.startY - thisLayer.height - parallaxOffset > viewPosY + renderHeight) continue; // If the layer above render, skip it
-            if (Const.LINES - thisLayer.startY + parallaxOffset > Const.LINES - viewPosY) continue; // If the layer under render, skip it
+            // if (thisLayer.startY - thisLayer.height - parallaxOffset > viewPosY + renderHeight) continue; // If the layer above render, skip it
+            // if (Const.LINES - thisLayer.startY + parallaxOffset > Const.LINES - viewPosY) continue; // If the layer under render, skip it
 
-            let offset = (Const.LINES - thisLayer.startY + parallaxOffset) * Const.COLUMNS;
+            // let offset = (Const.LINES - thisLayer.startY + parallaxOffset) * Const.COLUMNS;
 
-            const thisLayerStartX = '???';
-            const thisLayerStartY = '???';
+            const startX = 0;
+            const startY = 0;
 
             ////////////////////////////////////////////////////   HELL   ////////////////////////////////////////////////////////////
 
             layersToDisplay.push({
                 name: thisLayer.name,
                 colorsArray: thisLayer.decoded,
-                startX: thisLayerStartX,
-                startY: thisLayerStartY,
+                startX: startX,
+                startY: startY,
             });
         }
         previousViewPosY = viewPosY;

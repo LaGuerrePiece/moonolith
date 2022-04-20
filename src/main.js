@@ -108,7 +108,7 @@ function limitsViewPos() {
     update();
 }
 
-getTotalPixs();
+// getTotalPixs();
 // .then(async (total) => {
 //let klonSum = total.toNumber();
 //const offsetFormule = nbColonne * 64;
