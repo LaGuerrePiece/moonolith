@@ -54,7 +54,7 @@ async function importAndFormatLayer(index) {
             ];
         }
     }
-    if (thisLayer.name == 'caly0') console.log(thisLayer.name, convertedYX);
+    //if (thisLayer.name == 'caly0') console.log(thisLayer.name, convertedYX);
     thisLayer.decodedYX = convertedYX;
 
     for (let j = 0; j < decoded.length; j += 4) {

@@ -11,6 +11,8 @@ var previousLandscape;
 export function assemble() {
     const monolithStartY = Const.MONOLITH_LINES + Const.MARGIN_BOTTOM - viewPosY - renderHeight;
     const monolithStartX = viewPosX - Const.MARGIN_LEFT;
+    console.log('monolithStartY', monolithStartY);
+    console.log('monolithStartX', monolithStartX);
     let startAssemble = performance.now();
 
     let layersToDisplay = [];
@@ -19,8 +21,8 @@ export function assemble() {
     layersToDisplay.push({
         name: 'monolith',
         colorsArray: monolith,
-        startX: monolithStartY,
-        startY: monolithStartX,
+        startX: monolithStartX,
+        startY: monolithStartY,
     });
 
     //IF THE VIEWPOS HAS CHANGED, PUSH THE NEW LAYERS TO LAYER ARRAY
@@ -55,15 +57,20 @@ export function assemble() {
         // ELSE, JUST PUSH PREVIOUSLANDSCAPE AT 0, 0
         layersToDisplay.push({ name: 'previousLandscape', colorsArray: previousLandscape, startX: 0, startY: 0 });
     }
+
     console.log('layersToDisplay', layersToDisplay);
-    
+    console.log('layersToDisplay[1].colorsArray', layersToDisplay[1].colorsArray);
+
     let displayArray = [];
     for (let y = 0; y < renderHeight; y++) {
         for (let x = 0; x < renderWidth; x++) {
             //FOR EACH LAYER, PUSH COLOR IF PRESENT
             for (let z = 0; z < layersToDisplay.length; z++) {
                 const currentLayer = layersToDisplay[z];
+                if (z === 1 && y % 20 === 0)
+                    console.log('hello', currentLayer.colorsArray[currentLayer.startY + y]?.[currentLayer.startX + x]);
                 if (!currentLayer.colorsArray[currentLayer.startY + y]?.[currentLayer.startX + x]) continue;
+
                 const colorToPush = currentLayer.colorsArray[currentLayer.startY + y][currentLayer.startX + x].color
                     ? currentLayer.colorsArray[currentLayer.startY + y][currentLayer.startX + x].color
                     : currentLayer.colorsArray[currentLayer.startY + y][currentLayer.startX + x];
@@ -79,6 +86,7 @@ export function assemble() {
     }
 
     previousLandscape = displayArray;
+    console.log('displayArray', displayArray);
     console.log('Assemble = ', Math.floor(performance.now() - startAssemble), 'ms');
     return displayArray;
 }
