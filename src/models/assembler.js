@@ -14,6 +14,7 @@ export function assemble() {
     // console.log('monolithStartY', monolithStartY);
     // console.log('monolithStartX', monolithStartX);
     let startAssemble = performance.now();
+    let displayArray = [];
 
     let layersToDisplay = [];
     //PUSH GUI AND MONOLITH TO LAYERSTODISPLAY ARRAY
@@ -51,18 +52,11 @@ export function assemble() {
         previousViewPosY = viewPosY;
         previousViewPosX = viewPosX;
     } else {
-        // ELSE, JUST PUSH PREVIOUSLANDSCAPE AT 0, 0
-        layersToDisplay.push({
-            name: 'previousLandscape',
-            colorsArray: previousLandscape,
-            startY: 0,
-            startX: 0,
-        });
+        displayArray = previousLandscape;
     }
 
     console.log('layersToDisplay', layersToDisplay);
 
-    let displayArray = [];
     for (let y = 0; y < renderHeight; y++) {
         for (let x = 0; x < renderWidth; x++) {
             for (let z = 0; z < layersToDisplay.length; z++) {
@@ -70,19 +64,12 @@ export function assemble() {
                 const array = layer.colorsArray;
                 const startY = layer.startY;
                 const startX = layer.startX;
-                if (layersToDisplay[z].name === 'previousLandscape') {
-                    const pos = (startY + y) * renderWidth + startX + x;
-                    if (!array[pos]) continue;
 
-                    displayArray[y * renderWidth + x] = array[pos].color ? array[pos].color : array[pos];
-                    break;
-                } else {
-                    const slot = array[startY + y]?.[startX + x];
-                    if (!slot) continue;
+                const pixel = array[startY + y]?.[startX + x];
+                if (!pixel) continue;
 
-                    displayArray[y * renderWidth + x] = slot.color ? slot.color : slot;
-                    break;
-                }
+                displayArray[y * renderWidth + x] = pixel.color ? pixel.color : pixel;
+                break;
             }
             //IF NO COLOR HAS BEEN PUSHED, PUSH THE DEFAULT COLOR
             if (!displayArray[y * renderWidth + x]) {
@@ -93,6 +80,6 @@ export function assemble() {
 
     previousLandscape = displayArray;
     // console.log('displayArray', displayArray, 'previousLandscape', previousLandscape);
-    //console.log('Assemble = ', Math.floor(performance.now() - startAssemble), 'ms');
+    console.log('Assemble = ', Math.floor(performance.now() - startAssemble), 'ms');
     return displayArray;
 }
