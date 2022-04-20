@@ -33,8 +33,8 @@ export function assemble() {
 
             let parallaxOffset = Math.floor(thisLayer.parallax * viewPosY);
 
-            // if (thisLayer.startY - thisLayer.height - parallaxOffset > viewPosY + renderHeight) continue; // If the layer above render, skip it
-            // if (Const.LINES - thisLayer.startY + parallaxOffset > Const.LINES - viewPosY) continue; // If the layer under render, skip it
+            if (thisLayer.startY - parallaxOffset > viewPosY + renderHeight) continue; // If the layer above render, skip it
+            if (thisLayer.startY - parallaxOffset + renderHeight < viewPosY) continue; // If the layer under render, skip it
 
             // let offset = (Const.LINES - thisLayer.startY + parallaxOffset) * Const.COLUMNS;
 
