@@ -30,8 +30,8 @@ let numberOfImports = 15;
 
 function initApp() {
     importChunks();
-    initialDecodeLandscape(numberOfImports);
     initDisplay();
+    initialDecodeLandscape(numberOfImports);
     console.log('initApp done');
     lateDecodeLandscape(numberOfImports);
     setTimeout(() => {

@@ -1,6 +1,5 @@
 import { monolith } from './monolith';
-import { GUI } from './GUI';
-import { landscapeBase64 } from '../assets/imageData';
+import { imageCatalog } from '../assets/imageData';
 import Const from './constants';
 import { renderWidth, renderHeight, viewPosX, viewPosY } from '../main';
 
@@ -16,9 +15,9 @@ export function assemble() {
     // Push GUI and Monolith to layersToDisplay
     layersToDisplay.push({
         name: 'GUI',
-        colorsArray: GUI.decodedYX,
-        startY: Math.floor((renderHeight - GUI.height) / -1.05),
-        startX: Math.floor((renderWidth - GUI.width) / -2),
+        colorsArray: imageCatalog.GUI.decodedYX,
+        startY: Math.floor((renderHeight - imageCatalog.GUI.height) / -1.05),
+        startX: Math.floor((renderWidth - imageCatalog.GUI.width) / -2),
     });
     layersToDisplay.push({
         name: 'monolith',
@@ -29,8 +28,8 @@ export function assemble() {
 
     // Push landscape to layersToDisplay if viewPos changed
     if (previousViewPosY !== viewPosY || previousViewPosX !== viewPosX) {
-        for (let layer in landscapeBase64) {
-            const thisLayer = landscapeBase64[layer];
+        for (let layer in imageCatalog) {
+            const thisLayer = imageCatalog[layer];
             const parallaxOffset = Math.floor(thisLayer.parallax * viewPosY);
 
             if (thisLayer.startY - thisLayer.height - parallaxOffset > viewPosY + renderHeight) continue; // If the layer above render, skip it

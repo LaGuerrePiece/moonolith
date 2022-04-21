@@ -1,13 +1,13 @@
 import Const from './constants';
-import { landscapeBase64 } from '../assets/imageData.js';
+import { imageCatalog } from '../assets/imageData.js';
 import { renderWidth, renderHeight, viewPosX, viewPosY } from '../main';
 
 export function assembleLandscape() {
     var arrayAssemble = [];
     var arrayFinal = [];
 
-    for (let layer in landscapeBase64) {
-        let thisLayer = landscapeBase64[layer];
+    for (let layer in imageCatalog) {
+        let thisLayer = imageCatalog[layer];
 
         let parallaxOffset = Math.floor(thisLayer.parallax * viewPosY);
 

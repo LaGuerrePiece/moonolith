@@ -181,6 +181,10 @@ function importImage() {
         reader.onload = (res) => {
             let importedImage = res.target.result; // this is the content!
             displayImageFromArrayBuffer(importedImage, 1, 400, 999999, 99999, 0);
+            
+            //! NE PAS SUPPRIMER LES LIGNES CI-DESSOUS !//
+            let base64 = btoa(new Uint8Array(importedImage).reduce((data, byte) => data + String.fromCharCode(byte), ''));
+            console.log('base64', base64);
         };
     };
     input.click();
