@@ -1,5 +1,5 @@
 import { update, canvas, windowHeight, windowWidth, renderWidth, renderHeight } from '../main';
-
+import { imageCatalog } from '../assets/imageData';
 import { draw_pixel, get_color, erase_all_pixel, erase_pixel, convertToMonolithPos, monolith } from './monolith';
 import Klon from './klon';
 import { closeCurrentEvent, undo, redo } from './undoStack';
@@ -34,11 +34,11 @@ let colorPicked = '#b3e3da';
 
 export function clickManager(e) {
     let mousePos = mousePosInGrid(e);
-    console.log('mousePos', mousePos);
-    if (GUICircle(mousePos, 86, 170, 8)) {
+    // console.log('mousePos', mousePos);
+    if (GUICircle(mousePos, 7, 7, 8)) {
         console.log('!!!');
     }
-    if (GUICircle(mousePos, 170, 170, 8)) {
+    if (GUICircle(mousePos, 91, 7, 8)) {
         console.log('???');
     }
     if (mousePos.y > renderHeight - 6 && mousePos.x < 65) {
@@ -85,6 +85,8 @@ export function clickManager(e) {
 }
 
 function GUICircle(mousePos, x, y, radius) {
+    x -= Math.floor((renderWidth - imageCatalog.GUI.width) / -2);
+    y -= Math.floor((renderHeight - imageCatalog.GUI.height) / -1.05);
     return Math.floor((mousePos.x - x) ** 2) + Math.floor((mousePos.y - y) ** 2) <= radius ** 2;
 }
 
