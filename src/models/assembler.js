@@ -16,8 +16,10 @@ export function assemble() {
     layersToDisplay.push({
         name: 'GUI',
         colorsArray: imageCatalog.GUI.decodedYX,
-        startY: Math.floor((renderHeight - imageCatalog.GUI.height) / -1.05),
-        startX: Math.floor((renderWidth - imageCatalog.GUI.width) / -2),
+        // startY: 0,
+        startY: Math.floor(-(renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y),
+        // startX: 0,
+        startX: Math.floor(-(renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X),
     });
     layersToDisplay.push({
         name: 'monolith',

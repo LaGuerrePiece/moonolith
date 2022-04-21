@@ -29,30 +29,43 @@ let colorPicked = Const.RGB7;
 
 export function clickManager(e) {
     let mousePos = mousePosInGrid(e);
-    // console.log('mousePos', mousePos);
-    if (GUICircle(mousePos, 7, 7, 8)) {
-        console.log('!!!');
-    }
-    if (GUICircle(mousePos, 91, 7, 8)) {
-        console.log('???');
-    }
-    if (mousePos.y > renderHeight - 6 && mousePos.x < 65) {
-        //CASE GUI
-        if (mousePos.x < 30) {
-            colorPicked =
-                mousePos.x < 5
-                    ? Const.RGB1
-                    : mousePos.x < 10
-                    ? Const.RGB2
-                    : mousePos.x < 15
-                    ? Const.RGB10
-                    : mousePos.x < 20
-                    ? Const.RGB4
-                    : mousePos.x < 25
-                    ? Const.RGB5
-                    : Const.RGB6;
-            console.log('colorPicked', colorPicked);
-        }
+    //console.log('mousePos', mousePos);
+    const GUIstartY = Math.floor((renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y);
+    const GUIstartX = Math.floor((renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X);
+    if (
+        mousePos.x > GUIstartX &&
+        mousePos.x < GUIstartX + imageCatalog.GUI.width &&
+        mousePos.y > GUIstartY &&
+        mousePos.y < GUIstartY + imageCatalog.GUI.height
+    ) {
+        //CASE : CLICK ON THE GUI
+        // console.log('GUI!!');
+
+        //BIG
+        if (GUICircle(mousePos, GUIstartY, GUIstartX, 7, 7, 8)) console.log('!!!');
+        if (GUICircle(mousePos, GUIstartY, GUIstartX, 7, 91, 8)) console.log('???');
+
+        //SMALL
+        //FIRST CIRCLE POSITION : 3, 21
+        if (GUICircle(mousePos, GUIstartY, GUIstartX, 3, 21, 3)) colorPicked = Const.HEX1;
+        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 1, 3, 21, 3)) colorPicked = Const.HEX2;
+        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 2, 3, 21, 3)) colorPicked = Const.HEX3;
+        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 3, 3, 21, 3)) colorPicked = Const.HEX4;
+        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 4, 3, 21, 3)) colorPicked = Const.HEX6;
+        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 5, 3, 21, 3)) colorPicked = Const.HEX5;
+        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 6, 3, 21, 3)) colorPicked = Const.HEX1;
+        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 7, 3, 21, 3)) colorPicked = Const.HEX1;
+        //ROW 2
+        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX, 3, 21, 3)) colorPicked = Const.HEX1;
+        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 1, 3, 21, 3)) colorPicked = Const.HEX2;
+        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 2, 3, 21, 3)) colorPicked = Const.HEX3;
+        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 3, 3, 21, 3)) colorPicked = Const.HEX4;
+        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 4, 3, 21, 3)) colorPicked = Const.HEX6;
+        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 5, 3, 21, 3)) colorPicked = Const.HEX5;
+        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 6, 3, 21, 3)) colorPicked = Const.HEX1;
+        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 7, 3, 21, 3)) colorPicked = Const.HEX1;
+
+        console.log('colorPicked', colorPicked);
         if (mousePos.x >= 30 && mousePos.x < 35) tool = Tool.SMOL;
         if (mousePos.x >= 35 && mousePos.x < 40) tool = Tool.BIG;
         if (mousePos.x >= 40 && mousePos.x < 45) tool = Tool.HUGE;
@@ -77,9 +90,10 @@ export function clickManager(e) {
     }
 }
 
-function GUICircle(mousePos, x, y, radius) {
-    x -= Math.floor((renderWidth - imageCatalog.GUI.width) / -2);
-    y -= Math.floor((renderHeight - imageCatalog.GUI.height) / -1.05);
+function GUICircle(mousePos, GUIstartY, GUIstartX, y, x, radius) {
+    // Coordinates of the center are input in the GUI
+    y += GUIstartY;
+    x += GUIstartX;
     return Math.floor((mousePos.x - x) ** 2) + Math.floor((mousePos.y - y) ** 2) <= radius ** 2;
 }
 
