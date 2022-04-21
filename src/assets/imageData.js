@@ -6,8 +6,8 @@ import Const from '../models/constants';
 export var imageCatalog = {
     GUI: { name: 'GUI', height: 15, width: 99, startX: 0, startY: 0, parallax: 0, base64: GUI },
     caly0: { name: 'caly0', height: 101, width: 256, startX: 0, startY: 45, parallax: 0, base64: caly0 },
-    calySide0: { name: 'calySide0', height: 335, width: 173, startX: -47, startY: Const.LINES - Const.MARGIN_TOP + 17, parallax: 0, base64: calySide0 },
-    calySideRepet: { name: 'calySideRepet', height: 216, width: 19, startX: -196, startY: Const.LINES - Const.MARGIN_TOP - 310, parallax: 0, base64: calySideRepet },
+    calySide0: { name: 'calySide0', height: 335, width: 173, startX: 47, startY: Const.LINES - Const.MARGIN_TOP + 17, parallax: 0, base64: calySide0 },
+    calySideRepet: { name: 'calySideRepet', height: 216, width: 19, startX: 196, startY: Const.LINES - Const.MARGIN_TOP - 310, parallax: 0, base64: calySideRepet },
     caly1: { name: 'caly1', height: 82, width: 256, startX: 0, startY: 85, parallax: 0.1, base64: caly1 },
     caly2: { name: 'caly2', height: 97, width: 256, startX: 0, startY: 150, parallax: 0.2, base64: caly2 },
     caly3: { name: 'caly3', height: 101, width: 256, startX: 0, startY: 225, parallax: 0.3, base64: caly3 },
@@ -60,6 +60,7 @@ async function decodeAndFormatLayer(index) {
             ];
         }
     }
+
     thisLayer.decodedYX = convertedYX;
     if (thisLayer.name == 'GUIMPORT') console.log('GUIMPORT', thisLayer.decodedYX); // NE PAS SUPPRIMER
 }

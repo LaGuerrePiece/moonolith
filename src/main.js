@@ -56,18 +56,17 @@ export function update() {
     lastCall = new Date();
 }
 
-let zoomFactor;
 function zoom() {
-    if (zoomFactor !== 2) {
-        console.log('zoomed x2');
-        zoomFactor = 2;
+    if (renderWidth == Const.COLUMNS) {
+        let zoomFactor = 2;
+        console.log(`Zoomed x${zoomFactor} | renderWidth`, renderWidth, 'renderHeight', renderHeight);
+        renderWidth = renderWidth / zoomFactor;
+        renderHeight = Math.floor((windowHeight / pixelSize + 1) / zoomFactor);
     } else {
         console.log('unzoomed');
-        zoomFactor = 0.5;
+        renderWidth = Const.COLUMNS;
+        renderHeight = Math.floor(windowHeight / pixelSize) + 1;
     }
-    renderWidth = renderWidth / zoomFactor;
-    renderHeight = renderHeight / zoomFactor;
-    console.log('renderWidth', renderWidth, 'renderHeight', renderHeight);
     document.body.removeChild(displayGrid.pixels.canvas);
     initDisplay();
     update();
@@ -83,7 +82,7 @@ document.addEventListener('keydown', (e) => {
     if (e.metaKey && e.key === 'Z') redo();
     if (e.ctrlKey && e.key === 'y') redo();
     if (e.metaKey && e.key === 'y') redo();
-    if (e.key === 'u') console.log('CONST', Const);
+    if (e.key === 'u') console.log('COLUMNS', Const.COLUMNS, 'LINES', Const.LINES, 'renderWidth', renderWidth, 'renderHeight', renderHeight, 'viewPosX', viewPosX, 'viewPosY', viewPosY);
     if (e.key === 'a') {
         moveDrawing(50, 400);
         update()

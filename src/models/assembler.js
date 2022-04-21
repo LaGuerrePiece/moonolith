@@ -32,6 +32,7 @@ export function assemble() {
             const thisLayer = imageCatalog[layer];
             const parallaxOffset = Math.floor(thisLayer.parallax * viewPosY);
 
+            if (thisLayer.name == 'GUI') continue;
             if (thisLayer.startY - thisLayer.height - parallaxOffset > viewPosY + renderHeight) continue; // If the layer above render, skip it
             if (Const.LINES - thisLayer.startY + parallaxOffset > Const.LINES - viewPosY) continue; // If the layer under render, skip it
 
@@ -39,7 +40,7 @@ export function assemble() {
                 name: thisLayer.name,
                 colorsArray: thisLayer.decodedYX,
                 startY: thisLayer.startY - parallaxOffset - viewPosY - renderHeight,
-                startX: thisLayer.startX,
+                startX: viewPosX - thisLayer.startX,
             });
         }
         previousViewPosY = viewPosY;

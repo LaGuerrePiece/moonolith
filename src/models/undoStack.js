@@ -32,7 +32,6 @@ const undo = () => {
             monolith[eventToUndo[i][1]][eventToUndo[i][0]],
         ]);
         monolith[eventToUndo[i][1]][eventToUndo[i][0]] = eventToUndo[i][2];
-        console.log('undo!');
     }
     inverseEventStack.push(inverseCurrentEvent);
     if (inverseEventStack.length > 20) inverseEventStack.shift();
