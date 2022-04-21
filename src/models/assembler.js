@@ -11,8 +11,6 @@ var previousLandscape;
 export function assemble() {
     const monolithStartY = Const.MONOLITH_LINES + Const.MARGIN_BOTTOM - viewPosY - renderHeight;
     const monolithStartX = viewPosX - Const.MARGIN_LEFT;
-    // console.log('monolithStartY', monolithStartY);
-    // console.log('monolithStartX', monolithStartX);
     let startAssemble = performance.now();
     let displayArray = [];
 
@@ -22,7 +20,7 @@ export function assemble() {
         name: 'GUI',
         colorsArray: GUI.decodedYX,
         startY: Math.floor((renderHeight - GUI.height) / -1.05),
-        startX: (renderWidth - GUI.width) / -2,
+        startX: Math.floor((renderWidth - GUI.width) / -2),
     });
     layersToDisplay.push({
         name: 'monolith',
@@ -41,8 +39,6 @@ export function assemble() {
 
             if (thisLayer.startY - thisLayer.height - parallaxOffset > viewPosY + renderHeight) continue; // If the layer above render, skip it
             if (Const.LINES - thisLayer.startY + parallaxOffset > Const.LINES - viewPosY) continue; // If the layer under render, skip it
-
-            // let offset = (Const.LINES - thisLayer.startY + parallaxOffset) * Const.COLUMNS;
 
             const startY = thisLayer.startY - parallaxOffset - viewPosY - renderHeight;
             const startX = thisLayer.startX;
@@ -67,7 +63,7 @@ export function assemble() {
                 const array = layer.colorsArray;
                 const startY = layer.startY;
                 const startX = layer.startX;
-
+                if(startY + y < 0 || startX + x < 0) continue;
                 const pixel = array[startY + y]?.[startX + x];
                 if (!pixel) continue;
 
@@ -82,7 +78,6 @@ export function assemble() {
     }
 
     previousLandscape = displayArray;
-    // console.log('displayArray', displayArray, 'previousLandscape', previousLandscape);
-    console.log('Assemble = ', Math.floor(performance.now() - startAssemble), 'ms');
+    console.log('total time ', Math.floor(performance.now() - startAssemble), 'ms');
     return displayArray;
 }
