@@ -11,6 +11,9 @@ export default class Const {
     static get MARGIN_BOTTOM() { return 30 }
     static get MARGIN_LEFT() { return 47 }
     static get MARGIN_RIGHT() { return 60 }
+    
+    static get GUI_RELATIVE_Y() { return 1.05 }
+    static get GUI_RELATIVE_X() { return 2 }
 
 
     // COLORS

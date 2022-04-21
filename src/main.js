@@ -49,7 +49,7 @@ function initDisplay() {
 }
 
 export function update() {
-    if (new Date() - lastCall < 20) return;
+    if (new Date() - lastCall < 50) return;
     //data is the array of the displayed klons
     displayData = assemble();
     displayGrid.updateDisplay(displayData);
