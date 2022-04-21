@@ -8,7 +8,7 @@ import { _base64ToArrayBuffer, displayImageFromArrayBuffer, moveDrawing } from '
 import { clickManager, mousePosInGrid } from './models/tools';
 
 import Const from './models/constants';
-import { chunkCreator, getChunk, getChunksFromPosition, getSupply, getTotalPixs, getThreshold } from './utils/web3';
+import { getChunk, getChunksFromPosition, getSupply, getTotalPixs, getThreshold } from './utils/web3';
 import { assemble } from './models/assembler';
 
 /**********************************
@@ -51,7 +51,7 @@ async function initDecodeLandscape() {
 initDecodeLandscape();
 
 export function update() {
-    if (new Date() - lastCall < 10) return;
+    if (new Date() - lastCall < 20) return;
     //data is the array of the displayed klons
     displayData = assemble();
     displayGrid.updateDisplay(displayData);
@@ -113,6 +113,8 @@ function limitsViewPos() {
     update();
 }
 
+// TENTATIVE DE POINTEUR
+
 // let oldColor = [0, 0, 0];
 // let oldY = 100;
 // let oldX = 100;
@@ -139,33 +141,33 @@ function limitsViewPos() {
 //console.log('mousePos', mousePos);
 // });
 
-// getTotalPixs();
-// .then(async (total) => {
-//let klonSum = total.toNumber();
-//const offsetFormule = nbColonne * 64;
-// getThreshold().then(async (threshold) => {
-//const formuleDeLaMort = offsetFormule + (klonSum * threshold) / 1000000;
-// const nbLine = Math.floor(formuleDeLaMort / nbColonne);
-//console.log(`nbLine : ${nbLine}, nbColonne : ${nbColonne}`);
+getTotalPixs()
+    // .then(async (total) => {
+    // let klonSum = total.toNumber();
+    // const offsetFormule = nbColonne * 64;
+    // getThreshold().then(async (threshold) => {
+    // const formuleDeLaMort = offsetFormule + (klonSum * threshold) / 1000000;
+    // const nbLine = Math.floor(formuleDeLaMort / nbColonne);
+    // console.log(`nbLine : ${nbLine}, nbColonne : ${nbColonne}`);
 
-//     });
-// })
-// .then((res) => {
-//     getSupply().then(async (supply) => {
-//         let s = supply.toNumber();
-//         console.log('s', s);
+    //     });
+    // })
+    .then((res) => {
+        getSupply().then(async (supply) => {
+            let s = supply.toNumber();
+            console.log('s', s);
 
-//         for (let i = 1; i <= s; i++) {
-//             getChunk(i).then((res) => {
-//                 let pixelPaid = res[2].toNumber();
-//                 let index = res[0].toNumber();
-//                 let yMaxLegal = res[1].toNumber();
-//                 console.log('index', index, 'yMaxLegal', yMaxLegal, 'pixelPaid', pixelPaid);
-//                 let x = index % Const.MONOLITH_COLUMNS;
-//                 let y = Math.floor(index / Const.MONOLITH_COLUMNS);
-//                 let arrBuffer = _base64ToArrayBuffer(res[3]);
-//                 displayImageFromArrayBuffer(arrBuffer, x, y, pixelPaid, 1000, i);
-//             });
-//         }
-//     });
-// });
+            for (let i = 1; i <= s; i++) {
+                getChunk(i).then((res) => {
+                    let pixelPaid = res[2].toNumber();
+                    let index = res[0].toNumber();
+                    let yMaxLegal = res[1].toNumber();
+                    console.log('index', index, 'yMaxLegal', yMaxLegal, 'pixelPaid', pixelPaid);
+                    let x = index % Const.MONOLITH_COLUMNS;
+                    let y = Math.floor(index / Const.MONOLITH_COLUMNS);
+                    let arrBuffer = _base64ToArrayBuffer(res[3]);
+                    displayImageFromArrayBuffer(arrBuffer, x, y, pixelPaid, 1000, i);
+                });
+            }
+        });
+    });

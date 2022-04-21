@@ -37,16 +37,17 @@ function toRGBA8(buffer) {
 
 function preEncode() {
     return new Promise((resolve) => {
-        let { highLow, saveArray, nbPix, firstPix } = gridToArray();
+        let { highLow, nbPix, saveArray } = gridToArray();
+        let firstPix = highLow.lowY * Const.MONOLITH_COLUMNS + highLow.lowX;
 
         saveArray = new Uint8Array(saveArray);
         var png = UPNG.encode([saveArray.buffer], highLow.longueur, highLow.largeur, 0); // on encode
         let buffer = _arrayBufferToBase64(png); //on passe au format base64
         saveLocally(buffer);
-
         resolve({ position: firstPix, ymax: highLow.highY, nbPix: nbPix, imgURI: buffer });
     });
 }
+
 function preEncodeSpecialK(displayArray, renderWidth, renderHeight) {
     return new Promise((resolve) => {
         displayArray = new Uint8Array(displayArray);
@@ -140,7 +141,7 @@ export function moveDrawing(x, y) {
     erase_all_pixel();
     // if (outx > 127) outx = 127;
     // if (outx < 0) outx = 0;
-    displayArrayToImage(drawing.saveArray, drawing.highLow.longueur, drawing.highLow.largeur, x, y, 999999, 999999, 0);
+    displayArrayToImage(drawing.saveArray, x, y, 999999, 999999, 0, drawing.highLow.longueur, drawing.highLow.largeur);
 }
 
 export async function displayImageFromArrayBuffer(arrayBuffer, offsetx, offsety, pixelPaid, yMaxLegal, zIndex) {
@@ -149,13 +150,15 @@ export async function displayImageFromArrayBuffer(arrayBuffer, offsetx, offsety,
     if (!decoded) return;
     let array = toRGBA8(decoded);
     let width = decoded.width;
-    displayArrayToImage(array, width, 50, offsetx, offsety, pixelPaid, yMaxLegal, zIndex);
+    console.log('width', decoded.width);
+    displayArrayToImage(array, offsetx, offsety, pixelPaid, yMaxLegal, zIndex, width); //SENT WITHOUT WIDTH AND HEIGHT
 }
 
-export function displayArrayToImage(array, width, height, offsetx, offsety, pixelPaid, yMaxLegal, zIndex) {
+// TAKES A UINT8ARRAY AND DISPLAY IT ON THE MONOLITH
+function displayArrayToImage(array, offsetx, offsety, pixelPaid, yMaxLegal, zIndex, width, height = 300) {
     let pixelDrawn = 0;
     let decalage = 0;
-    // console.log('displayArrayToImage', array, width, height, offsetx, offsety, pixelPaid, yMaxLegal, zIndex);
+    // console.log('displayArrayToImage', array, offsetx, offsety, pixelPaid, yMaxLegal, zIndex, width, height,);
     for (let y = offsety; y < height + offsety; y++) {
         for (let x = offsetx; x < width + offsetx; x++) {
             if (y >= yMaxLegal) return;

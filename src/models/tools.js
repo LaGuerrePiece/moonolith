@@ -3,6 +3,8 @@ import { update, canvas, windowHeight, windowWidth, renderWidth, renderHeight } 
 import { draw_pixel, get_color, erase_all_pixel, erase_pixel, convertToMonolithPos, monolith } from './monolith';
 import Klon from './klon';
 import { closeCurrentEvent, undo, redo } from './undoStack';
+import { chunkCreator } from '../utils/web3';
+
 import {
     _base64ToArrayBuffer,
     toRGBA8,
@@ -10,6 +12,7 @@ import {
     RGBToHex,
     moveDrawing,
     displayImageFromArrayBuffer,
+    preEncode,
 } from '../utils/image-manager';
 import Const from './constants';
 
@@ -52,7 +55,12 @@ export function clickManager(e) {
         if (mousePos.x >= 30 && mousePos.x < 35) tool = Tool.SMOL;
         if (mousePos.x >= 35 && mousePos.x < 40) tool = Tool.BIG;
         if (mousePos.x >= 40 && mousePos.x < 45) tool = Tool.HUGE;
-        if (mousePos.x >= 45 && mousePos.x < 50) console.log('save!');
+        if (mousePos.x >= 45 && mousePos.x < 50) {
+            console.log('send To the blockchain!');
+            preEncode().then((res) => {
+                chunkCreator(res);
+            });
+        }
         if (mousePos.x >= 50 && mousePos.x < 55) {
             console.log('move! (not working now)');
             moveDrawing(50, 500);
@@ -64,7 +72,7 @@ export function clickManager(e) {
         }
         if (mousePos.x >= 60 && mousePos.x < 65) importImage();
     } else {
-        //CASE MONOLITH
+        //CASE MONOLITH OR LANDSCAPE
         mousePos = convertToMonolithPos(mousePos);
         if (mousePos) startUsingTool(e, mousePos);
     }
@@ -172,18 +180,7 @@ function importImage() {
         reader.readAsArrayBuffer(file);
         reader.onload = (res) => {
             let importedImage = res.target.result; // this is the content!
-            console.log('importedImage', importedImage);
-
-            displayImageFromArrayBuffer(importedImage, 1, 1, 999999, 99999, 0).then((res) => {
-                console.log('decoded', res);
-                displayArrayToImage(res.array, res.width, 1, 1, 999999, 99999, 0);
-            });
-
-            // convert res to base64
-            let base64 = btoa(
-                new Uint8Array(importedImage).reduce((data, byte) => data + String.fromCharCode(byte), '')
-            );
-            console.log('base64', base64);
+            displayImageFromArrayBuffer(importedImage, 1, 400, 999999, 99999, 0);
         };
     };
     input.click();
