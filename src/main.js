@@ -62,8 +62,12 @@ function zoom() {
         console.log(`Zoomed x${zoomFactor} | renderWidth`, renderWidth, 'renderHeight', renderHeight);
         renderWidth = renderWidth / zoomFactor;
         renderHeight = Math.floor((windowHeight / pixelSize + 1) / zoomFactor);
+        viewPosX = viewPosX + renderWidth / 2;
+        viewPosY = viewPosY + renderHeight / 2;
     } else {
         console.log('unzoomed');
+        viewPosX = viewPosX - renderWidth / 2;
+        viewPosY = viewPosY - renderHeight / 2;
         renderWidth = Const.COLUMNS;
         renderHeight = Math.floor(windowHeight / pixelSize) + 1;
     }
@@ -82,16 +86,16 @@ document.addEventListener('keydown', (e) => {
     if (e.metaKey && e.key === 'Z') redo();
     if (e.ctrlKey && e.key === 'y') redo();
     if (e.metaKey && e.key === 'y') redo();
-    if (e.key === 'u') console.log('COLUMNS', Const.COLUMNS, 'LINES', Const.LINES, 'renderWidth', renderWidth, 'renderHeight', renderHeight, 'viewPosX', viewPosX, 'viewPosY', viewPosY);
+    if (e.key === 'c') console.log('COLUMNS', Const.COLUMNS, 'LINES', Const.LINES, 'renderWidth', renderWidth, 'renderHeight', renderHeight, 'viewPosX', viewPosX, 'viewPosY', viewPosY);
     if (e.key === 'a') {
         moveDrawing(50, 400);
         update()
     }
     if (e.key === 'y') zoom();
-    if (e.key === 'ArrowUp') { viewPosY -= 3; limitsViewPos(); }
-    if (e.key === 'ArrowDown') { viewPosY += 3; limitsViewPos(); }
-    if (e.key === 'ArrowLeft') { viewPosX += 3; limitsViewPos(); }
-    if (e.key === 'ArrowRight') { viewPosX -= 3; limitsViewPos(); }
+    if (e.key === 'ArrowUp') { viewPosY += 3; limitsViewPos(); }
+    if (e.key === 'ArrowDown') { viewPosY -= 3; limitsViewPos(); }
+    if (e.key === 'ArrowLeft') { viewPosX -= 3; limitsViewPos(); }
+    if (e.key === 'ArrowRight') { viewPosX += 3; limitsViewPos(); }
 });
 
 //prettier-ignore
