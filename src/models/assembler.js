@@ -18,7 +18,12 @@ export function assemble() {
 
     let layersToDisplay = [];
     //PUSH GUI AND MONOLITH TO LAYERSTODISPLAY ARRAY
-    layersToDisplay.push({ name: 'GUI', colorsArray: GUI, startY: 0, startX: 0 });
+    layersToDisplay.push({
+        name: 'GUI',
+        colorsArray: GUI.decodedYX,
+        startY: Math.floor((renderHeight - GUI.height) / -1.05),
+        startX: (renderWidth - GUI.width) / -2,
+    });
     layersToDisplay.push({
         name: 'monolith',
         colorsArray: monolith,
@@ -54,8 +59,6 @@ export function assemble() {
     } else {
         displayArray = previousLandscape;
     }
-
-    console.log('layersToDisplay', layersToDisplay);
 
     for (let y = 0; y < renderHeight; y++) {
         for (let x = 0; x < renderWidth; x++) {
