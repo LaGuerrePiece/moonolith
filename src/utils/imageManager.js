@@ -10,15 +10,13 @@ function saveToEthernity() {
     });
 }
 
-function pngToBuffer(buffer) {
+function pngToBufferToRGBA8(buffer) {
     return new Promise((resolve) => {
         buffer = UPNG.decode(buffer);
         resolve(buffer);
+    }).then((buffer) => {
+        return { buffer: new Uint8Array(UPNG.toRGBA8(buffer)[0]), width: buffer.width, height: buffer.height };
     });
-}
-
-function toRGBA8(buffer) {
-    return new Uint8Array(UPNG.toRGBA8(buffer)[0]);
 }
 
 function monolithToBase64() {
@@ -115,14 +113,22 @@ export function moveDrawing(x, y) {
     erase_all_pixel();
     // if (outx > 127) outx = 127;
     // if (outx < 0) outx = 0;
-    displayArrayToImage(drawing.saveArray, x, y, Const.FREE_DRAWING, Const.FREE_DRAWING, 0, drawing.highLow.longueur, drawing.highLow.largeur);
+    displayArrayToImage(
+        drawing.saveArray,
+        x,
+        y,
+        Const.FREE_DRAWING,
+        Const.FREE_DRAWING,
+        0,
+        drawing.highLow.longueur,
+        drawing.highLow.largeur
+    );
 }
 
 export async function displayImageFromArrayBuffer(arrayBuffer, offsetx, offsety, pixelPaid, yMaxLegal, zIndex) {
-    let decoded = await pngToBuffer(arrayBuffer).catch(console.error);
-    let width = decoded.width;
-    decoded = toRGBA8(decoded);
-    displayArrayToImage(decoded, offsetx, offsety, pixelPaid, yMaxLegal, zIndex, width); //SENT WITHOUT WIDTH AND HEIGHT
+    let res = await pngToBufferToRGBA8(arrayBuffer).catch(console.error);
+    console.log('rgba', res.buffer);
+    displayArrayToImage(res.buffer, offsetx, offsety, pixelPaid, yMaxLegal, zIndex, res.width, res.height); //SENT WITHOUT WIDTH AND HEIGHT
 }
 
 // TAKES A UINT8ARRAY AND DISPLAY IT ON THE MONOLITH
@@ -145,4 +151,4 @@ function displayArrayToImage(array, offsetx, offsety, pixelPaid, yMaxLegal, zInd
     }
 }
 
-export { pngToBuffer, saveToEthernity, base64ToBuffer, toRGBA8 };
+export { saveToEthernity, base64ToBuffer, pngToBufferToRGBA8 };
