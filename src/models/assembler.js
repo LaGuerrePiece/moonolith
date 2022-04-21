@@ -1,6 +1,6 @@
 import { monolith } from './monolith';
 import { GUI } from './GUI';
-import { landscapeBase64 } from '../assets/data';
+import { landscapeBase64 } from '../assets/imageData';
 import Const from './constants';
 import { renderWidth, renderHeight, viewPosX, viewPosY } from '../main';
 

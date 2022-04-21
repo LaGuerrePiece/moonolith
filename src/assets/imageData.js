@@ -1,5 +1,5 @@
 import { caly0, caly1, caly2, caly3, caly4, caly5, caly6, calySide0, calySideRepet, GUIMPORT } from './base64';
-import { _base64ToArrayBuffer, decode, toRGBA8 } from '../utils/image-manager';
+import { _base64ToArrayBuffer, decode, toRGBA8 } from '../utils/imageManager';
 import Const from '../models/constants';
 
 //prettier-ignore
@@ -20,31 +20,31 @@ export var landscapeBase64 = {
     // GUIMPORT: { name: 'GUIMPORT', height: 16, width: 74, startX: 0, startY: 0, parallax: 0, base64: GUIMPORT, decoded: null },
 };
 
-export async function initialImport(numberOfImports, viewPosY) {
+export async function initialDecodeLandscape(numberOfImports, viewPosY) {
     //Imports a few layers of landscape
     let importedLayers = 0;
     let landscape = Object.keys(landscapeBase64);
 
     for (let i = landscape.length - 1; i >= 0; i--) {
         if (importedLayers >= numberOfImports) continue;
-        importAndFormatLayer(landscape[i]);
+        decodeAndFormatLayer(landscape[i]);
         importedLayers++;
     }
 }
 
-export async function lateImport(numberOfImports) {
+export async function lateDecodeLandscape(numberOfImports) {
     //Imports the rest of the landscape
     let importedLayers = 0;
     let landscape = Object.keys(landscapeBase64);
 
     for (let i = numberOfImports + 1; i <= landscape.length; i++) {
         if (importedLayers > numberOfImports) continue;
-        importAndFormatLayer(landscape[landscape.length - i]);
+        decodeAndFormatLayer(landscape[landscape.length - i]);
         importedLayers++;
     }
 }
 
-async function importAndFormatLayer(index) {
+async function decodeAndFormatLayer(index) {
     let thisLayer = landscapeBase64[index];
     let decoded = await decode(_base64ToArrayBuffer(thisLayer.base64)).catch(console.error);
     decoded = toRGBA8(decoded);

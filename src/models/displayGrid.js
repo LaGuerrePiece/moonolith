@@ -26,11 +26,11 @@ export default class DisplayGrid {
         this.nbRows = nbRows;
         this.options = options;
 
-        // la future instance de PixelGrid
+        // la future instance de PixelGrid 
         this.pixels = null;
 
         // les futures datas de PixelGrid
-        this.initialData = Array.from({ length: this.length }, () => [0.2, 0.8, 0.2]);
+        this.initialData = Array.from({ length: this.length }, () => [0.9137, 0.9607, 0.6156]);
     }
 
     /**

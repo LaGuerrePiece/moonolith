@@ -13,7 +13,7 @@ import {
     moveDrawing,
     displayImageFromArrayBuffer,
     preEncode,
-} from '../utils/image-manager';
+} from '../utils/imageManager';
 import Const from './constants';
 
 //prettier-ignore

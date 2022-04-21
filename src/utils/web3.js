@@ -1,6 +1,8 @@
 import { ethers } from 'ethers';
 import { Interface } from 'ethers/lib/utils';
 import contractABI from '../utils/abi.json';
+import { _base64ToArrayBuffer, displayImageFromArrayBuffer } from './imageManager';
+import Const from '../models/constants';
 
 const provider = new ethers.providers.InfuraProvider('rinkeby');
 const metamaskProvider = new ethers.providers.Web3Provider(window.ethereum);
@@ -44,27 +46,61 @@ const getChunk = async (id) => {
 
 const getChunksFromPosition = async (min, max) => {
     let res = [];
-    for(let i = min; i <= max; i++){
+    for (let i = min; i <= max; i++) {
         let data = await contract.queryFilter(contract.filters.Chunk(null, i));
-        if(data.length > 0){
+        if (data.length > 0) {
             let topics = data[0].topics;
             data = data[0].data;
-            let chunk = iface.parseLog({data, topics}).args;
+            let chunk = iface.parseLog({ data, topics }).args;
             console.log(chunk);
             chunk = chunk.slice(1);
             res.push(chunk);
         }
     }
     console.log(res);
-    return res;                   
-};
-
-const getTotalPixs = async () => {
-    return await contract.klonSum();
+    return res;
 };
 
 const getThreshold = async () => {
     return await contract.threshold();
 };
 
-export { chunkCreator, getChunk, getChunksFromPosition, getSupply, getTotalPixs, getThreshold };
+const getTotalPixs = async () => {
+    return await contract.klonSum();
+};
+
+async function importChunks() {
+    // .then(async (total) => {
+    // let klonSum = total.toNumber();
+    // const offsetFormule = nbColonne * 64;
+    // getThreshold().then(async (threshold) => {
+    // const formuleDeLaMort = offsetFormule + (klonSum * threshold) / 1000000;
+    // const nbLine = Math.floor(formuleDeLaMort / nbColonne);
+    // console.log(`nbLine : ${nbLine}, nbColonne : ${nbColonne}`);
+
+    //     });
+    // })
+    let startSupply = performance.now();
+    await getSupply()
+        .then(async (supply) => {
+            let s = supply.toNumber();
+
+            for (let i = 1; i <= s; i++) {
+                getChunk(i).then((res) => {
+                    let pixelPaid = res[2].toNumber();
+                    let index = res[0].toNumber();
+                    let yMaxLegal = res[1].toNumber() * 4;
+                    let x = index % Const.MONOLITH_COLUMNS;
+                    let y = Math.floor(index / Const.MONOLITH_COLUMNS);
+                    // console.log('x y', x, y, 'yMaxLegal', yMaxLegal, 'pixelPaid', pixelPaid);
+                    let arrBuffer = _base64ToArrayBuffer(res[3]);
+                    displayImageFromArrayBuffer(arrBuffer, x, y, pixelPaid, yMaxLegal, i); // yMaxLegal à vérifier
+                });
+            }
+        })
+        .finally(() => {
+            console.log('Chunks loaded in ' + (performance.now() - startSupply) + ' ms');
+        });
+}
+
+export { chunkCreator, getChunk, getChunksFromPosition, getSupply, importChunks, getThreshold };

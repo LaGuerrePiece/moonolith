@@ -1,14 +1,13 @@
 // Imports des composants
 import DisplayGrid from './models/displayGrid';
-import { initialImport, lateImport } from './assets/data';
+import { initialDecodeLandscape, lateDecodeLandscape } from './assets/imageData';
 import { undo, redo } from './models/undoStack';
-import { convertToMonolithPos, monolith } from './models/monolith';
 // Imports des fonctionnalités
-import { _base64ToArrayBuffer, displayImageFromArrayBuffer, moveDrawing } from './utils/image-manager';
+import { moveDrawing } from './utils/imageManager';
 import { clickManager, mousePosInGrid } from './models/tools';
 
 import Const from './models/constants';
-import { getChunk, getChunksFromPosition, getSupply, getTotalPixs, getThreshold } from './utils/web3';
+import { importChunks } from './utils/web3';
 import { assemble } from './models/assembler';
 
 /**********************************
@@ -26,7 +25,21 @@ export const windowHeight = window.innerHeight;
 export const windowWidth = window.innerWidth;
 export let renderWidth = Const.COLUMNS;
 const pixelSize = windowWidth / renderWidth;
-export let renderHeight = Math.floor(windowHeight / pixelSize) + 2;
+export let renderHeight = Math.floor(windowHeight / pixelSize) + 1;
+let numberOfImports = 15;
+
+function initApp() {
+    importChunks();
+    initialDecodeLandscape(numberOfImports);
+    initDisplay();
+    console.log('initApp done');
+    lateDecodeLandscape(numberOfImports);
+    setTimeout(() => {
+        update();
+    }, 100);
+}
+
+initApp();
 
 function initDisplay() {
     displayGrid = new DisplayGrid(renderWidth, renderHeight);
@@ -34,21 +47,6 @@ function initDisplay() {
     canvas = displayGrid.pixels.canvas;
     canvas.onmousedown = clickManager;
 }
-initDisplay();
-
-async function initDecodeLandscape() {
-    let numberOfImports = 10;
-    initialImport(numberOfImports)
-        .then(() => {
-            setTimeout(() => {
-                update();
-            }, 150);
-        })
-        .then(() => {
-            lateImport(numberOfImports);
-        });
-}
-initDecodeLandscape();
 
 export function update() {
     if (new Date() - lastCall < 20) return;
@@ -58,18 +56,14 @@ export function update() {
     lastCall = new Date();
 }
 
-// setInterval(() => {
-//     update();
-// }, 3000);
-
 let zoomFactor;
 function zoom() {
-    if (zoomFactor !== 4) {
-        console.log('zoomed x4');
-        zoomFactor = 4;
+    if (zoomFactor !== 2) {
+        console.log('zoomed x2');
+        zoomFactor = 2;
     } else {
         console.log('unzoomed');
-        zoomFactor = 0.25;
+        zoomFactor = 0.5;
     }
     renderWidth = renderWidth / zoomFactor;
     renderHeight = renderHeight / zoomFactor;
@@ -140,34 +134,3 @@ function limitsViewPos() {
 //     }
 //console.log('mousePos', mousePos);
 // });
-
-getTotalPixs()
-    // .then(async (total) => {
-    // let klonSum = total.toNumber();
-    // const offsetFormule = nbColonne * 64;
-    // getThreshold().then(async (threshold) => {
-    // const formuleDeLaMort = offsetFormule + (klonSum * threshold) / 1000000;
-    // const nbLine = Math.floor(formuleDeLaMort / nbColonne);
-    // console.log(`nbLine : ${nbLine}, nbColonne : ${nbColonne}`);
-
-    //     });
-    // })
-    .then((res) => {
-        getSupply().then(async (supply) => {
-            let s = supply.toNumber();
-            console.log('s', s);
-
-            for (let i = 1; i <= s; i++) {
-                getChunk(i).then((res) => {
-                    let pixelPaid = res[2].toNumber();
-                    let index = res[0].toNumber();
-                    let yMaxLegal = res[1].toNumber();
-                    console.log('index', index, 'yMaxLegal', yMaxLegal, 'pixelPaid', pixelPaid);
-                    let x = index % Const.MONOLITH_COLUMNS;
-                    let y = Math.floor(index / Const.MONOLITH_COLUMNS);
-                    let arrBuffer = _base64ToArrayBuffer(res[3]);
-                    displayImageFromArrayBuffer(arrBuffer, x, y, pixelPaid, 1000, i);
-                });
-            }
-        });
-    });

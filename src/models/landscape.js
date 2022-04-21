@@ -1,5 +1,5 @@
 import Const from './constants';
-import { landscapeBase64 } from '../assets/data.js';
+import { landscapeBase64 } from '../assets/imageData.js';
 import { renderWidth, renderHeight, viewPosX, viewPosY } from '../main';
 
 export function assembleLandscape() {

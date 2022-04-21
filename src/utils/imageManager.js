@@ -150,7 +150,7 @@ export async function displayImageFromArrayBuffer(arrayBuffer, offsetx, offsety,
     if (!decoded) return;
     let array = toRGBA8(decoded);
     let width = decoded.width;
-    console.log('width', decoded.width);
+    // console.log('width', decoded.width);
     displayArrayToImage(array, offsetx, offsety, pixelPaid, yMaxLegal, zIndex, width); //SENT WITHOUT WIDTH AND HEIGHT
 }
 
