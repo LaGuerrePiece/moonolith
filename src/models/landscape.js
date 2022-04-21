@@ -15,11 +15,11 @@ export function assembleLandscape() {
         if (Const.LINES - thisLayer.startY + parallaxOffset > Const.LINES - viewPosY) continue; // If the layer under render, skip it
 
         let offset = (Const.LINES - thisLayer.startY + parallaxOffset) * Const.COLUMNS;
-        let buffer = thisLayer.decoded;
+        let decodedLayer = thisLayer.decoded;
 
-        for (let i = 0; i < buffer.length; i++) {
-            if (buffer[i] === undefined) continue;
-            arrayAssemble[i + offset] = buffer[i];
+        for (let i = 0; i < decodedLayer.length; i++) {
+            if (decodedLayer[i] === undefined) continue;
+            arrayAssemble[i + offset] = decodedLayer[i];
         }
     }
 

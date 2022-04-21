@@ -1,7 +1,6 @@
 import Klon from './klon';
 import Const from './constants';
 import { addToCurrentEvent, closeCurrentEvent } from './undoStack';
-import { decode, preEncode, _base64ToArrayBuffer, toRGBA8, hexToRGB, RGBToHex } from '../utils/image-manager';
 import { renderWidth, renderHeight, viewPosX, viewPosY } from '../main';
 
 export let monolith = Array.from({ length: Const.MONOLITH_LINES }, () =>
@@ -54,6 +53,8 @@ export function convertIndexToXY(index) {
 export function convertToMonolithPos(mousePos) {
     mousePos.y = Const.MONOLITH_LINES + Const.MARGIN_BOTTOM - viewPosY - renderHeight + mousePos.y;
     mousePos.x = viewPosX - Const.MARGIN_LEFT + mousePos.x;
+    if (mousePos.x < 0 || mousePos.x >= Const.MONOLITH_COLUMNS || mousePos.y < 0 || mousePos.y >= Const.MONOLITH_LINES)
+        return undefined;
     return mousePos;
 }
 

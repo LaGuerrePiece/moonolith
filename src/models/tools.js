@@ -9,7 +9,6 @@ import {
     hexToRGB,
     RGBToHex,
     moveDrawing,
-    gridToArray,
     displayImageFromArrayBuffer,
 } from '../utils/image-manager';
 import Const from './constants';
@@ -67,14 +66,7 @@ export function clickManager(e) {
     } else {
         //CASE MONOLITH
         mousePos = convertToMonolithPos(mousePos);
-        if (
-            mousePos.x < 0 ||
-            mousePos.x >= Const.MONOLITH_COLUMNS ||
-            mousePos.y < 0 ||
-            mousePos.y >= Const.MONOLITH_LINES
-        )
-            return; // out of bounds
-        startUsingTool(e, mousePos);
+        if (mousePos) startUsingTool(e, mousePos);
     }
 }
 
@@ -97,6 +89,7 @@ function startUsingTool(e, mousePos) {
 function useTool(e) {
     //IF E IS PASSED IT'S ALREADY FORMATED, ELSE IT'S A MOUSE EVENT
     const mousePos = e.type ? convertToMonolithPos(mousePosInGrid({ x: e.x, y: e.y })) : e;
+    if (!mousePos) return;
     //console.log('mousePos', mousePos);
     switch (tool) {
         case Tool.SMOL:
@@ -128,6 +121,7 @@ function useTool(e) {
 function useDeleteTool(e) {
     //IF E IS PASSED IT'S ALREADY FORMATED, ELSE IT'S A MOUSE EVENT
     const mousePos = e.type ? convertToMonolithPos(mousePosInGrid({ x: e.x, y: e.y })) : e;
+    if (!mousePos) return;
     switch (tool) {
         case Tool.SMOL:
             erase_pixel(mousePos.x, mousePos.y);
@@ -155,7 +149,7 @@ function stopUsingTool() {
     canvas.onmousemove = null;
 }
 
-function mousePosInGrid(e) {
+export function mousePosInGrid(e) {
     // console.log('mousePosInGrid', e);
     let x = Math.floor((e.x / windowWidth) * renderWidth);
     let y = Math.floor((e.y / windowHeight) * renderHeight);
