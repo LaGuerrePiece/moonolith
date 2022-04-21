@@ -24,7 +24,7 @@ export let displayData;
 
 export const windowHeight = window.innerHeight;
 export const windowWidth = window.innerWidth;
-export let renderWidth = 256;
+export let renderWidth = Const.COLUMNS;
 const pixelSize = windowWidth / renderWidth;
 export let renderHeight = Math.floor(windowHeight / pixelSize) + 2;
 

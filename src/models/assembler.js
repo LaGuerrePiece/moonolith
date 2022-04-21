@@ -9,13 +9,11 @@ var previousViewPosX;
 var previousLandscape;
 
 export function assemble() {
-    const monolithStartY = Const.MONOLITH_LINES + Const.MARGIN_BOTTOM - viewPosY - renderHeight;
-    const monolithStartX = viewPosX - Const.MARGIN_LEFT;
     let startAssemble = performance.now();
     let displayArray = [];
-
     let layersToDisplay = [];
-    //PUSH GUI AND MONOLITH TO LAYERSTODISPLAY ARRAY
+
+    // Push GUI and Monolith to layersToDisplay
     layersToDisplay.push({
         name: 'GUI',
         colorsArray: GUI.decodedYX,
@@ -25,37 +23,34 @@ export function assemble() {
     layersToDisplay.push({
         name: 'monolith',
         colorsArray: monolith,
-        startY: monolithStartY,
-        startX: monolithStartX,
+        startY: Const.MONOLITH_LINES + Const.MARGIN_BOTTOM - viewPosY - renderHeight,
+        startX: viewPosX - Const.MARGIN_LEFT,
     });
 
-    //IF THE VIEWPOS HAS CHANGED, PUSH THE NEW LAYERS TO LAYER ARRAY
+    // Push landscape to layersToDisplay if viewPos changed
     if (previousViewPosY !== viewPosY || previousViewPosX !== viewPosX) {
-        //FOR EACH LAYER, IF CONDITIONS ARE MET, PUSH TO LAYERTODISPLAY
         for (let layer in landscapeBase64) {
             const thisLayer = landscapeBase64[layer];
-
-            let parallaxOffset = Math.floor(thisLayer.parallax * viewPosY);
+            const parallaxOffset = Math.floor(thisLayer.parallax * viewPosY);
 
             if (thisLayer.startY - thisLayer.height - parallaxOffset > viewPosY + renderHeight) continue; // If the layer above render, skip it
             if (Const.LINES - thisLayer.startY + parallaxOffset > Const.LINES - viewPosY) continue; // If the layer under render, skip it
 
-            const startY = thisLayer.startY - parallaxOffset - viewPosY - renderHeight;
-            const startX = thisLayer.startX;
-
             layersToDisplay.push({
                 name: thisLayer.name,
                 colorsArray: thisLayer.decodedYX,
-                startY: startY,
-                startX: startX,
+                startY: thisLayer.startY - parallaxOffset - viewPosY - renderHeight,
+                startX: thisLayer.startX,
             });
         }
         previousViewPosY = viewPosY;
         previousViewPosX = viewPosX;
     } else {
+        // If viewPos didn't change, push previous landscape
         displayArray = previousLandscape;
     }
 
+    // Iterate over each pixel and push colors to displayArray
     for (let y = 0; y < renderHeight; y++) {
         for (let x = 0; x < renderWidth; x++) {
             for (let z = 0; z < layersToDisplay.length; z++) {
@@ -63,14 +58,15 @@ export function assemble() {
                 const array = layer.colorsArray;
                 const startY = layer.startY;
                 const startX = layer.startX;
-                if(startY + y < 0 || startX + x < 0) continue;
+
+                if (startY + y < 0 || startX + x < 0) continue; // If pixel is out of bounds in this layer, skip it
                 const pixel = array[startY + y]?.[startX + x];
                 if (!pixel) continue;
 
                 displayArray[y * renderWidth + x] = pixel.color ? pixel.color : pixel;
                 break;
             }
-            //IF NO COLOR HAS BEEN PUSHED, PUSH THE DEFAULT COLOR
+            // if no color found, set to default color
             if (!displayArray[y * renderWidth + x]) {
                 displayArray[y * renderWidth + x] = Const.SKY_COLOR;
             }
@@ -78,6 +74,6 @@ export function assemble() {
     }
 
     previousLandscape = displayArray;
-    console.log('total time ', Math.floor(performance.now() - startAssemble), 'ms');
+    console.log('render', Math.floor(performance.now() - startAssemble), 'ms');
     return displayArray;
 }
