@@ -8,8 +8,6 @@ import { chunkCreator } from '../utils/web3';
 import {
     _base64ToArrayBuffer,
     toRGBA8,
-    hexToRGB,
-    RGBToHex,
     moveDrawing,
     displayImageFromArrayBuffer,
     preEncode,
@@ -30,7 +28,7 @@ class Tool {
 }
 
 let tool = Tool.HUGE;
-let colorPicked = '#b3e3da';
+let colorPicked = Const.RGB7;
 
 export function clickManager(e) {
     let mousePos = mousePosInGrid(e);
@@ -46,16 +44,16 @@ export function clickManager(e) {
         if (mousePos.x < 30) {
             colorPicked =
                 mousePos.x < 5
-                    ? Const.HEX1
+                    ? Const.RGB1
                     : mousePos.x < 10
-                    ? Const.HEX2
+                    ? Const.RGB2
                     : mousePos.x < 15
-                    ? Const.HEX10
+                    ? Const.RGB10
                     : mousePos.x < 20
-                    ? Const.HEX4
+                    ? Const.RGB4
                     : mousePos.x < 25
-                    ? Const.HEX5
-                    : Const.HEX6;
+                    ? Const.RGB5
+                    : Const.RGB6;
             console.log('colorPicked', colorPicked);
         }
         if (mousePos.x >= 30 && mousePos.x < 35) tool = Tool.SMOL;
@@ -113,13 +111,13 @@ function useTool(e) {
     //console.log('mousePos', mousePos);
     switch (tool) {
         case Tool.SMOL:
-            draw_pixel(mousePos.x, mousePos.y, Klon.USERPAINTED, hexToRGB(colorPicked));
+            draw_pixel(mousePos.x, mousePos.y, Klon.USERPAINTED, colorPicked);
             break;
         case Tool.BIG:
             for (let i = -1; i <= 1; i++) {
                 for (let j = -1; j <= 1; j++) {
                     if (mousePos.x + i < renderWidth && mousePos.x + i > -1)
-                        draw_pixel(mousePos.x + i, mousePos.y + j, Klon.USERPAINTED, hexToRGB(colorPicked));
+                        draw_pixel(mousePos.x + i, mousePos.y + j, Klon.USERPAINTED, colorPicked);
                 }
             }
             break;
@@ -127,7 +125,7 @@ function useTool(e) {
             for (let i = -15; i <= 15; i++) {
                 for (let j = -15; j <= 15; j++) {
                     if (mousePos.x + i < renderWidth && mousePos.x + i > -1)
-                        draw_pixel(mousePos.x + i, mousePos.y + j, Klon.USERPAINTED, hexToRGB(colorPicked));
+                        draw_pixel(mousePos.x + i, mousePos.y + j, Klon.USERPAINTED, colorPicked);
                 }
             }
             break;
@@ -178,8 +176,6 @@ export function mousePosInGrid(e) {
 
 function useColorPicker(mousePos) {
     colorPicked = get_color(mousePos.x, mousePos.y);
-    colorPicked = RGBToHex(colorPicked[0], colorPicked[1], colorPicked[2]);
-    console.log(colorPicked);
 }
 
 function importImage() {

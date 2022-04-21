@@ -3,25 +3,6 @@ import Klon from '../models/klon';
 import Const from '../models/constants';
 import { monolith, erase_all_pixel } from '../models/monolith';
 
-function hexToRGB(hex) {
-    var r = parseInt(hex.slice(1, 3), 16) / 255,
-        g = parseInt(hex.slice(3, 5), 16) / 255,
-        b = parseInt(hex.slice(5, 7), 16) / 255;
-    return [r, g, b];
-}
-
-function componentToHex(c) {
-    let hex = c.toString(16);
-    return hex.length == 1 ? '0' + hex : hex;
-}
-
-function RGBToHex(r, g, b) {
-    r = Math.floor(r * 255);
-    g = Math.floor(g * 255);
-    b = Math.floor(b * 255);
-    return '#' + componentToHex(r) + componentToHex(g) + componentToHex(b);
-}
-
 function decode(buffer) {
     return new Promise((resolve) => {
         let buff = UPNG.decode(buffer);
@@ -174,4 +155,4 @@ function displayArrayToImage(array, offsetx, offsety, pixelPaid, yMaxLegal, zInd
     }
 }
 
-export { decode, preEncode, preEncodeSpecialK, _base64ToArrayBuffer, toRGBA8, hexToRGB, RGBToHex };
+export { decode, preEncode, preEncodeSpecialK, _base64ToArrayBuffer, toRGBA8 };

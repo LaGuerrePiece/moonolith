@@ -19,7 +19,7 @@ export function draw_pixel(x, y, zIndex, color) {
 // if (!klonsAreEqual(monolith[pos], klon)) {
 
 export function get_color(x, y) {
-    console.log('monolith[y][x]', monolith[y][x]);
+    console.log('monolith[y][x]', monolith[y][x], monolith[y][x].color);
     return monolith[y][x].color;
 }
 
