@@ -1,13 +1,13 @@
 import Klon from './klon';
 import Const from './constants';
 import { addToCurrentEvent, closeCurrentEvent } from './undoStack';
-import { renderWidth, renderHeight, viewPosX, viewPosY } from '../main';
+import { renderWidth, renderHeight, viewPosX, viewPosY, update } from '../main';
 
 export let monolith = Array.from({ length: Const.MONOLITH_LINES }, () =>
     Array.from({ length: Const.MONOLITH_COLUMNS }, () => new Klon(Const.DEFAULT_COLOR))
 );
 
-export function draw_pixel(x, y, zIndex, color) {
+export function drawPixel(x, y, zIndex, color) {
     if (x < 0 || x >= Const.MONOLITH_COLUMNS || y < 0 || y >= Const.MONOLITH_LINES) return; //IF OUT OF BOUNDS, return
     if (!monolith[y][x].isEditable(zIndex)) return; //IF IT IS NOT EDITABLE, return
     // if (monolith[y][x].color === color && monolith[y][x].zIndex === zIndex) return; //IF IT IS THE SAME, return
@@ -18,12 +18,12 @@ export function draw_pixel(x, y, zIndex, color) {
 // if (zIndex === monolith[y][x].zIndex && ) return; ////////////////////////////////////TO DO : IF IS THE SAME COLOR, return
 // if (!klonsAreEqual(monolith[pos], klon)) {
 
-export function get_color(x, y) {
+export function getColor(x, y) {
     console.log('monolith[y][x]', monolith[y][x], monolith[y][x].color);
     return monolith[y][x].color;
 }
 
-export function erase_all_pixel() {
+export function eraseAllPixel() {
     for (let j = 0; j < Const.MONOLITH_LINES; j++) {
         for (let i = 0; i < Const.MONOLITH_COLUMNS; i++) {
             if (monolith[j][i].zIndex === 0) {
@@ -33,11 +33,12 @@ export function erase_all_pixel() {
         }
     }
     closeCurrentEvent();
-    console.log('erase_all_pixel');
+    console.log('eraseAllPixel');
+    update();
     //faire en sorte de call update() à ce moment là
 }
 
-export function erase_pixel(x, y) {
+export function erasePixel(x, y) {
     if (monolith[y]?.[x]?.zIndex === 0) {
         addToCurrentEvent(x, y, monolith[y][x]);
         monolith[y][x] = new Klon(Const.DEFAULT_COLOR);

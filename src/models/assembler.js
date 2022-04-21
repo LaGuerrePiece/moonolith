@@ -76,6 +76,6 @@ export function assemble() {
     }
 
     previousLandscape = displayArray;
-    console.log('render', Math.floor(performance.now() - startAssemble), 'ms');
+    // console.log('render', Math.floor(performance.now() - startAssemble), 'ms');
     return displayArray;
 }

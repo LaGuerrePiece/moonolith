@@ -1,14 +1,10 @@
 import { update, canvas, windowHeight, windowWidth, renderWidth, renderHeight } from '../main';
 import { imageCatalog } from '../assets/imageData';
-import { draw_pixel, get_color, erase_all_pixel, erase_pixel, convertToMonolithPos, monolith } from './monolith';
+import { drawPixel, getColor, eraseAllPixel, erasePixel, convertToMonolithPos } from './monolith';
 import Klon from './klon';
 import { closeCurrentEvent, undo, redo } from './undoStack';
 
-import {
-    moveDrawing,
-    displayImageFromArrayBuffer,
-    saveToEthernity,
-} from '../utils/imageManager';
+import { moveDrawing, bufferOnMonolith, saveToEthernity } from '../utils/imageManager';
 import Const from './constants';
 
 //prettier-ignore
@@ -42,28 +38,28 @@ export function clickManager(e) {
         // console.log('GUI!!');
 
         //BIG
-        if (GUICircle(mousePos, GUIstartY, GUIstartX, 7, 7, 8)) console.log('!!!');
-        if (GUICircle(mousePos, GUIstartY, GUIstartX, 7, 91, 8)) console.log('???');
+        if (GUICircle(mousePos, GUIstartY, GUIstartX, 7, 7, 8)) saveToEthernity(); // !!! BUTTON
+        if (GUICircle(mousePos, GUIstartY, GUIstartX, 7, 91, 8)) brushSwitch(); // ??? BUTTON
 
         //SMALL
         //FIRST CIRCLE POSITION : 3, 21
-        if (GUICircle(mousePos, GUIstartY, GUIstartX, 3, 21, 3)) colorPicked = Const.HEX1;
-        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 1, 3, 21, 3)) colorPicked = Const.HEX2;
-        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 2, 3, 21, 3)) colorPicked = Const.HEX3;
-        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 3, 3, 21, 3)) colorPicked = Const.HEX4;
-        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 4, 3, 21, 3)) colorPicked = Const.HEX6;
-        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 5, 3, 21, 3)) colorPicked = Const.HEX5;
-        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 6, 3, 21, 3)) colorPicked = Const.HEX1;
-        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 7, 3, 21, 3)) colorPicked = Const.HEX1;
+        if (GUICircle(mousePos, GUIstartY, GUIstartX, 3, 21, 3)) colorPicked = Const.RGB1;
+        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 1, 3, 21, 3)) colorPicked = Const.RGB2;
+        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 2, 3, 21, 3)) colorPicked = Const.RGB3;
+        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 3, 3, 21, 3)) colorPicked = Const.RGB4;
+        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 4, 3, 21, 3)) colorPicked = Const.RGB5;
+        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 5, 3, 21, 3)) colorPicked = Const.RGB6;
+        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 6, 3, 21, 3)) colorPicked = Const.RGB7;
+        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 7, 3, 21, 3)) colorPicked = Const.RGB8;
         //ROW 2
-        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX, 3, 21, 3)) colorPicked = Const.HEX1;
-        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 1, 3, 21, 3)) colorPicked = Const.HEX2;
-        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 2, 3, 21, 3)) colorPicked = Const.HEX3;
-        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 3, 3, 21, 3)) colorPicked = Const.HEX4;
-        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 4, 3, 21, 3)) colorPicked = Const.HEX6;
-        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 5, 3, 21, 3)) colorPicked = Const.HEX5;
-        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 6, 3, 21, 3)) colorPicked = Const.HEX1;
-        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 7, 3, 21, 3)) colorPicked = Const.HEX1;
+        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX, 3, 21, 3)) colorPicked = Const.RGB9;
+        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 1, 3, 21, 3)) colorPicked = Const.RGB10;
+        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 2, 3, 21, 3)) colorPicked = Const.RGB11;
+        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 3, 3, 21, 3)) colorPicked = Const.RGB12;
+        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 4, 3, 21, 3)) colorPicked = Const.RGB13;
+        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 5, 3, 21, 3)) colorPicked = Const.RGB14;
+        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 6, 3, 21, 3)) colorPicked = Const.RGB15;
+        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 7, 3, 21, 3)) colorPicked = Const.RGB16;
 
         console.log('colorPicked', colorPicked);
         if (mousePos.x >= 30 && mousePos.x < 35) tool = Tool.SMOL;
@@ -79,7 +75,7 @@ export function clickManager(e) {
             update();
         }
         if (mousePos.x >= 55 && mousePos.x < 60) {
-            erase_all_pixel();
+            eraseAllPixel();
             update();
         }
         if (mousePos.x >= 60 && mousePos.x < 65) importImage();
@@ -120,13 +116,13 @@ function useTool(e) {
     //console.log('mousePos', mousePos);
     switch (tool) {
         case Tool.SMOL:
-            draw_pixel(mousePos.x, mousePos.y, Klon.USERPAINTED, colorPicked);
+            drawPixel(mousePos.x, mousePos.y, Klon.USERPAINTED, colorPicked);
             break;
         case Tool.BIG:
             for (let i = -1; i <= 1; i++) {
                 for (let j = -1; j <= 1; j++) {
                     if (mousePos.x + i < renderWidth && mousePos.x + i > -1)
-                        draw_pixel(mousePos.x + i, mousePos.y + j, Klon.USERPAINTED, colorPicked);
+                        drawPixel(mousePos.x + i, mousePos.y + j, Klon.USERPAINTED, colorPicked);
                 }
             }
             break;
@@ -134,7 +130,7 @@ function useTool(e) {
             for (let i = -15; i <= 15; i++) {
                 for (let j = -15; j <= 15; j++) {
                     if (mousePos.x + i < renderWidth && mousePos.x + i > -1)
-                        draw_pixel(mousePos.x + i, mousePos.y + j, Klon.USERPAINTED, colorPicked);
+                        drawPixel(mousePos.x + i, mousePos.y + j, Klon.USERPAINTED, colorPicked);
                 }
             }
             break;
@@ -151,24 +147,38 @@ function useDeleteTool(e) {
     if (!mousePos) return;
     switch (tool) {
         case Tool.SMOL:
-            erase_pixel(mousePos.x, mousePos.y);
+            erasePixel(mousePos.x, mousePos.y);
             break;
         case Tool.BIG:
             for (let i = -1; i <= 1; i++) {
                 for (let j = -1; j <= 1; j++) {
-                    erase_pixel(mousePos.x + i, mousePos.y + j);
+                    erasePixel(mousePos.x + i, mousePos.y + j);
                 }
             }
             break;
         case Tool.HUGE:
             for (let i = -15; i <= 15; i++) {
                 for (let j = -15; j <= 15; j++) {
-                    erase_pixel(mousePos.x + i, mousePos.y + j);
+                    erasePixel(mousePos.x + i, mousePos.y + j);
                 }
             }
             break;
     }
     update();
+}
+
+function brushSwitch() {
+    switch (tool) {
+        case Tool.SMOL:
+            tool = Tool.BIG;
+            break;
+        case Tool.BIG:
+            tool = Tool.HUGE;
+            break;
+        case Tool.HUGE:
+            tool = Tool.SMOL;
+            break;
+    }
 }
 
 function stopUsingTool() {
@@ -184,7 +194,7 @@ export function mousePosInGrid(e) {
 }
 
 function useColorPicker(mousePos) {
-    colorPicked = get_color(mousePos.x, mousePos.y);
+    colorPicked = getColor(mousePos.x, mousePos.y);
 }
 
 function importImage() {
@@ -197,7 +207,7 @@ function importImage() {
         reader.readAsArrayBuffer(file);
         reader.onload = (res) => {
             let importedImage = res.target.result; // this is the content!
-            displayImageFromArrayBuffer(importedImage, 1, 400, 999999, 99999, 0);
+            bufferOnMonolith(importedImage, 1, 400, Const.FREE_DRAWING, Const.FREE_DRAWING, Klon.USERPAINTED);
 
             //! NE PAS SUPPRIMER LES LIGNES CI-DESSOUS !//
             let base64 = btoa(

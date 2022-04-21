@@ -9,6 +9,7 @@ import { clickManager, mousePosInGrid } from './models/tools';
 import Const from './models/constants';
 import { importChunks } from './utils/web3';
 import { assemble } from './models/assembler';
+import { eraseAllPixel } from './models/monolith';
 
 /**********************************
  ************* DISPLAY ************
@@ -49,7 +50,7 @@ function initDisplay() {
 }
 
 export function update() {
-    if (new Date() - lastCall < 50) return;
+    if (new Date() - lastCall < 10) return;
     //data is the array of the displayed klons
     displayData = assemble();
     displayGrid.updateDisplay(displayData);
@@ -86,6 +87,7 @@ document.addEventListener('keydown', (e) => {
     if (e.metaKey && e.key === 'Z') redo();
     if (e.ctrlKey && e.key === 'y') redo();
     if (e.metaKey && e.key === 'y') redo();
+    if (e.key === 'x') eraseAllPixel();
     if (e.key === 'c') console.log('COLUMNS', Const.COLUMNS, 'LINES', Const.LINES, 'renderWidth', renderWidth, 'renderHeight', renderHeight, 'viewPosX', viewPosX, 'viewPosY', viewPosY);
     if (e.key === 'a') {
         moveDrawing(50, 400);

@@ -1,7 +1,7 @@
 import UPNG from 'upng-js';
 import Klon from '../models/klon';
 import Const from '../models/constants';
-import { monolith, erase_all_pixel } from '../models/monolith';
+import { monolith, eraseAllPixel } from '../models/monolith';
 import { chunkCreator } from '../utils/web3';
 
 function saveToEthernity() {
@@ -106,14 +106,15 @@ function getHighLow() {
 }
 
 export function moveDrawing(x, y) {
+    //TODO : À BOUGER DANS TOOLS
     const drawing = gridToArray();
     console.log('x', x, 'y', y, 'drawing', drawing);
     console.log('saveArray', drawing.saveArray);
     console.log('highLow', drawing.highLow);
-    erase_all_pixel();
+    eraseAllPixel();
     // if (outx > 127) outx = 127;
     // if (outx < 0) outx = 0;
-    displayArrayToImage(
+    drawBuffer(
         drawing.saveArray,
         x,
         y,
@@ -125,24 +126,21 @@ export function moveDrawing(x, y) {
     );
 }
 
-export async function displayImageFromArrayBuffer(arrayBuffer, offsetx, offsety, pixelPaid, yMaxLegal, zIndex) {
+async function bufferOnMonolith(arrayBuffer, offsetx, offsety, pixelPaid, yMaxLegal, zIndex) {
     let res = await pngToBufferToRGBA8(arrayBuffer).catch(console.error);
-    console.log('rgba', res.buffer);
-    displayArrayToImage(res.buffer, offsetx, offsety, pixelPaid, yMaxLegal, zIndex, res.width, res.height); //SENT WITHOUT WIDTH AND HEIGHT
-}
-
-// TAKES A UINT8ARRAY AND DISPLAY IT ON THE MONOLITH
-function displayArrayToImage(array, offsetx, offsety, pixelPaid, yMaxLegal, zIndex, width, height = 300) {
     let pixelDrawn = 0;
     let decalage = 0;
-    // console.log('displayArrayToImage', array, offsetx, offsety, pixelPaid, yMaxLegal, zIndex, width, height);
-    for (let y = offsety; y < height + offsety; y++) {
-        for (let x = offsetx; x < width + offsetx; x++) {
+    for (let y = offsety; y < res.height + offsety; y++) {
+        for (let x = offsetx; x < res.width + offsetx; x++) {
             if (y >= yMaxLegal) return;
             if (pixelDrawn >= pixelPaid) return;
             if (!monolith[y]?.[x]) continue;
-            if (array[decalage + 3] > 0) {
-                monolith[y][x].color = [array[decalage] / 255, array[decalage + 1] / 255, array[decalage + 2] / 255];
+            if (res.buffer[decalage + 3] > 0) {
+                monolith[y][x].color = [
+                    res.buffer[decalage] / 255,
+                    res.buffer[decalage + 1] / 255,
+                    res.buffer[decalage + 2] / 255,
+                ];
                 monolith[y][x].zIndex = zIndex;
                 pixelDrawn++;
             }
@@ -151,4 +149,4 @@ function displayArrayToImage(array, offsetx, offsety, pixelPaid, yMaxLegal, zInd
     }
 }
 
-export { saveToEthernity, base64ToBuffer, pngToBufferToRGBA8 };
+export { saveToEthernity, base64ToBuffer, pngToBufferToRGBA8, bufferOnMonolith };

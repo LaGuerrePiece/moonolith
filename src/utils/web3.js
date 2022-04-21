@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import { Interface } from 'ethers/lib/utils';
 import contractABI from '../utils/abi.json';
-import { base64ToBuffer, displayImageFromArrayBuffer } from './imageManager';
+import { base64ToBuffer, bufferOnMonolith } from './imageManager';
 import Const from '../models/constants';
 
 const provider = new ethers.providers.InfuraProvider('rinkeby');
@@ -89,7 +89,7 @@ async function importChunks() {
                     let y = Math.floor(index / Const.MONOLITH_COLUMNS);
                     // console.log('x y', x, y, 'yMaxLegal', yMaxLegal, 'pixelPaid', pixelPaid);
                     let arrBuffer = base64ToBuffer(res[3]);
-                    displayImageFromArrayBuffer(arrBuffer, x, y, pixelPaid, yMaxLegal, i); // yMaxLegal à vérifier
+                    bufferOnMonolith(arrBuffer, x, y, pixelPaid, yMaxLegal, i); // yMaxLegal à vérifier
                 });
             }
         })
