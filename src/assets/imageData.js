@@ -1,5 +1,5 @@
 import { GUI, caly0, caly1, caly2, caly3, caly4, caly5, caly6, calySide0, calySideRepet } from './base64';
-import { _base64ToArrayBuffer, decode, toRGBA8 } from '../utils/imageManager';
+import { base64ToBuffer, pngToBuffer, toRGBA8 } from '../utils/imageManager';
 import Const from '../models/constants';
 
 //prettier-ignore
@@ -46,7 +46,7 @@ export async function lateDecodeLandscape(numberOfImports) {
 
 async function decodeAndFormatLayer(index) {
     let thisLayer = imageCatalog[index];
-    let decoded = await decode(_base64ToArrayBuffer(thisLayer.base64)).catch(console.error);
+    let decoded = await pngToBuffer(base64ToBuffer(thisLayer.base64)).catch(console.error);
     decoded = toRGBA8(decoded);
     let convertedYX = Array.from({ length: decoded.length / thisLayer.width / 4 }, () => Array.from(Const.COLUMNS));
 

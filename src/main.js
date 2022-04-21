@@ -62,12 +62,12 @@ function zoom() {
         console.log(`Zoomed x${zoomFactor} | renderWidth`, renderWidth, 'renderHeight', renderHeight);
         renderWidth = renderWidth / zoomFactor;
         renderHeight = Math.floor((windowHeight / pixelSize + 1) / zoomFactor);
-        viewPosX = viewPosX + renderWidth / 2;
-        viewPosY = viewPosY + renderHeight / 2;
+        viewPosX = Math.floor(viewPosX + renderWidth / 2);
+        viewPosY = Math.floor(viewPosY + renderHeight / 2);
     } else {
         console.log('unzoomed');
-        viewPosX = viewPosX - renderWidth / 2;
-        viewPosY = viewPosY - renderHeight / 2;
+        viewPosX = Math.floor(viewPosX - renderWidth / 2);
+        viewPosY = Math.floor(viewPosY - renderHeight / 2);
         renderWidth = Const.COLUMNS;
         renderHeight = Math.floor(windowHeight / pixelSize) + 1;
     }

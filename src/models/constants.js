@@ -12,6 +12,7 @@ export default class Const {
     static get MARGIN_LEFT() { return 47 }
     static get MARGIN_RIGHT() { return 60 }
 
+    static get FREE_DRAWING() { return 999999 }
 
     // COLORS
 

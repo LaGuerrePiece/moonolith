@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import { Interface } from 'ethers/lib/utils';
 import contractABI from '../utils/abi.json';
-import { _base64ToArrayBuffer, displayImageFromArrayBuffer } from './imageManager';
+import { base64ToBuffer, displayImageFromArrayBuffer } from './imageManager';
 import Const from '../models/constants';
 
 const provider = new ethers.providers.InfuraProvider('rinkeby');
@@ -70,22 +70,17 @@ const getTotalPixs = async () => {
 };
 
 async function importChunks() {
-    // .then(async (total) => {
-    // let klonSum = total.toNumber();
-    // const offsetFormule = nbColonne * 64;
-    // getThreshold().then(async (threshold) => {
-    // const formuleDeLaMort = offsetFormule + (klonSum * threshold) / 1000000;
-    // const nbLine = Math.floor(formuleDeLaMort / nbColonne);
-    // console.log(`nbLine : ${nbLine}, nbColonne : ${nbColonne}`);
-
-    //     });
-    // })
     let startSupply = performance.now();
     await getSupply()
         .then(async (supply) => {
-            let s = supply.toNumber();
-
-            for (let i = 1; i <= s; i++) {
+            let klonSum = supply.toNumber();
+            // const offsetFormule = Const.COLUMNS * 64;
+            // getThreshold().then(async (threshold) => {
+            //     const formuleDeLaMort = offsetFormule + (klonSum * threshold) / 1000000;
+            //     const nbLine = Math.floor(formuleDeLaMort / nbColonne);
+            //     console.log(`nbLine : ${nbLine}, nbColonne : ${nbColonne}`);
+            // });
+            for (let i = 1; i <= klonSum; i++) {
                 getChunk(i).then((res) => {
                     let pixelPaid = res[2].toNumber();
                     let index = res[0].toNumber();
@@ -93,7 +88,7 @@ async function importChunks() {
                     let x = index % Const.MONOLITH_COLUMNS;
                     let y = Math.floor(index / Const.MONOLITH_COLUMNS);
                     // console.log('x y', x, y, 'yMaxLegal', yMaxLegal, 'pixelPaid', pixelPaid);
-                    let arrBuffer = _base64ToArrayBuffer(res[3]);
+                    let arrBuffer = base64ToBuffer(res[3]);
                     displayImageFromArrayBuffer(arrBuffer, x, y, pixelPaid, yMaxLegal, i); // yMaxLegal à vérifier
                 });
             }

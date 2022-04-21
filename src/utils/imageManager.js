@@ -2,13 +2,18 @@ import UPNG from 'upng-js';
 import Klon from '../models/klon';
 import Const from '../models/constants';
 import { monolith, erase_all_pixel } from '../models/monolith';
+import { chunkCreator } from '../utils/web3';
 
-function decode(buffer) {
+function saveToEthernity() {
+    monolithToBase64().then((data) => {
+        chunkCreator(data);
+    });
+}
+
+function pngToBuffer(buffer) {
     return new Promise((resolve) => {
-        let buff = UPNG.decode(buffer);
-        // console.log(buff.width, buff.height);
-        // console.log(buff.data);
-        resolve(buff);
+        buffer = UPNG.decode(buffer);
+        resolve(buffer);
     });
 }
 
@@ -16,33 +21,22 @@ function toRGBA8(buffer) {
     return new Uint8Array(UPNG.toRGBA8(buffer)[0]);
 }
 
-function preEncode() {
+function monolithToBase64() {
     return new Promise((resolve) => {
         let { highLow, nbPix, saveArray } = gridToArray();
         let firstPix = highLow.lowY * Const.MONOLITH_COLUMNS + highLow.lowX;
-
         saveArray = new Uint8Array(saveArray);
-        var png = UPNG.encode([saveArray.buffer], highLow.longueur, highLow.largeur, 0); // on encode
-        let buffer = _arrayBufferToBase64(png); //on passe au format base64
-        saveLocally(buffer);
-        resolve({ position: firstPix, ymax: highLow.highY, nbPix: nbPix, imgURI: buffer });
+        var png = UPNG.encode([saveArray.buffer], highLow.longueur, highLow.largeur, 0);
+        let base64 = bufferToBase64(png);
+        console.log('base64', base64);
+        saveLocally(base64);
+        resolve({ position: firstPix, ymax: highLow.highY, nbPix: nbPix, imgURI: base64 });
     });
 }
 
-function preEncodeSpecialK(displayArray, renderWidth, renderHeight) {
-    return new Promise((resolve) => {
-        displayArray = new Uint8Array(displayArray);
-        var png = UPNG.encode([displayArray.buffer], renderWidth, renderHeight, 0); // on encode
-        let buffer = _arrayBufferToBase64(png); //on passe au format base64
-        saveLocally(buffer);
-
-        resolve({ imgURI: buffer });
-    });
-}
-
-function saveLocally(buffer) {
+function saveLocally(base64) {
     var elementA = document.createElement('a'); //On crée un element vide pour forcer le téléchargement
-    elementA.setAttribute('href', 'data:image/png;base64,' + buffer); // on met les données au bon format (base64)
+    elementA.setAttribute('href', 'data:image/png;base64,' + base64); // on met les données au bon format (base64)
     elementA.setAttribute('download', +new Date() + '.png'); // le nom du fichier
     elementA.style.display = 'none'; // on met l'elem invisible
     document.body.appendChild(elementA); //on crée l 'elem
@@ -50,8 +44,7 @@ function saveLocally(buffer) {
     document.body.removeChild(elementA); // on delete l'elem
 }
 
-function _arrayBufferToBase64(buffer) {
-    // fonction pour encoder en base 64 pour pouvoir télécharger l'image ensuite
+function bufferToBase64(buffer) {
     var binary = '';
     var bytes = new Uint8Array(buffer);
     var len = bytes.byteLength;
@@ -61,7 +54,7 @@ function _arrayBufferToBase64(buffer) {
     return window.btoa(binary);
 }
 
-function _base64ToArrayBuffer(base64) {
+function base64ToBuffer(base64) {
     var binary_string = window.atob(base64);
     var len = binary_string.length;
     var bytes = new Uint8Array(len);
@@ -122,24 +115,21 @@ export function moveDrawing(x, y) {
     erase_all_pixel();
     // if (outx > 127) outx = 127;
     // if (outx < 0) outx = 0;
-    displayArrayToImage(drawing.saveArray, x, y, 999999, 999999, 0, drawing.highLow.longueur, drawing.highLow.largeur);
+    displayArrayToImage(drawing.saveArray, x, y, Const.FREE_DRAWING, Const.FREE_DRAWING, 0, drawing.highLow.longueur, drawing.highLow.largeur);
 }
 
 export async function displayImageFromArrayBuffer(arrayBuffer, offsetx, offsety, pixelPaid, yMaxLegal, zIndex) {
-    let decoded;
-    decoded = await decode(arrayBuffer).catch(console.error);
-    if (!decoded) return;
-    let array = toRGBA8(decoded);
+    let decoded = await pngToBuffer(arrayBuffer).catch(console.error);
     let width = decoded.width;
-    // console.log('width', decoded.width);
-    displayArrayToImage(array, offsetx, offsety, pixelPaid, yMaxLegal, zIndex, width); //SENT WITHOUT WIDTH AND HEIGHT
+    decoded = toRGBA8(decoded);
+    displayArrayToImage(decoded, offsetx, offsety, pixelPaid, yMaxLegal, zIndex, width); //SENT WITHOUT WIDTH AND HEIGHT
 }
 
 // TAKES A UINT8ARRAY AND DISPLAY IT ON THE MONOLITH
 function displayArrayToImage(array, offsetx, offsety, pixelPaid, yMaxLegal, zIndex, width, height = 300) {
     let pixelDrawn = 0;
     let decalage = 0;
-    // console.log('displayArrayToImage', array, offsetx, offsety, pixelPaid, yMaxLegal, zIndex, width, height,);
+    // console.log('displayArrayToImage', array, offsetx, offsety, pixelPaid, yMaxLegal, zIndex, width, height);
     for (let y = offsety; y < height + offsety; y++) {
         for (let x = offsetx; x < width + offsetx; x++) {
             if (y >= yMaxLegal) return;
@@ -155,4 +145,4 @@ function displayArrayToImage(array, offsetx, offsety, pixelPaid, yMaxLegal, zInd
     }
 }
 
-export { decode, preEncode, preEncodeSpecialK, _base64ToArrayBuffer, toRGBA8 };
+export { pngToBuffer, saveToEthernity, base64ToBuffer, toRGBA8 };

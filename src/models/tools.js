@@ -3,14 +3,11 @@ import { imageCatalog } from '../assets/imageData';
 import { draw_pixel, get_color, erase_all_pixel, erase_pixel, convertToMonolithPos, monolith } from './monolith';
 import Klon from './klon';
 import { closeCurrentEvent, undo, redo } from './undoStack';
-import { chunkCreator } from '../utils/web3';
 
 import {
-    _base64ToArrayBuffer,
-    toRGBA8,
     moveDrawing,
     displayImageFromArrayBuffer,
-    preEncode,
+    saveToEthernity,
 } from '../utils/imageManager';
 import Const from './constants';
 
@@ -61,9 +58,7 @@ export function clickManager(e) {
         if (mousePos.x >= 40 && mousePos.x < 45) tool = Tool.HUGE;
         if (mousePos.x >= 45 && mousePos.x < 50) {
             console.log('send To the blockchain!');
-            preEncode().then((res) => {
-                chunkCreator(res);
-            });
+            saveToEthernity();
         }
         if (mousePos.x >= 50 && mousePos.x < 55) {
             console.log('move! (not working now)');
