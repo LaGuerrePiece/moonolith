@@ -33,8 +33,14 @@ let tool = Tool.HUGE;
 let colorPicked = '#b3e3da';
 
 export function clickManager(e) {
-    //console.log('clickManager', e);
     let mousePos = mousePosInGrid(e);
+    console.log('mousePos', mousePos);
+    if (GUICircle(mousePos, 86, 170, 8)) {
+        console.log('!!!');
+    }
+    if (GUICircle(mousePos, 170, 170, 8)) {
+        console.log('???');
+    }
     if (mousePos.y > renderHeight - 6 && mousePos.x < 65) {
         //CASE GUI
         if (mousePos.x < 30) {
@@ -76,6 +82,10 @@ export function clickManager(e) {
         mousePos = convertToMonolithPos(mousePos);
         if (mousePos) startUsingTool(e, mousePos);
     }
+}
+
+function GUICircle(mousePos, x, y, radius) {
+    return Math.floor((mousePos.x - x) ** 2) + Math.floor((mousePos.y - y) ** 2) <= radius ** 2;
 }
 
 function startUsingTool(e, mousePos) {
@@ -181,9 +191,11 @@ function importImage() {
         reader.onload = (res) => {
             let importedImage = res.target.result; // this is the content!
             displayImageFromArrayBuffer(importedImage, 1, 400, 999999, 99999, 0);
-            
+
             //! NE PAS SUPPRIMER LES LIGNES CI-DESSOUS !//
-            let base64 = btoa(new Uint8Array(importedImage).reduce((data, byte) => data + String.fromCharCode(byte), ''));
+            let base64 = btoa(
+                new Uint8Array(importedImage).reduce((data, byte) => data + String.fromCharCode(byte), '')
+            );
             console.log('base64', base64);
         };
     };
