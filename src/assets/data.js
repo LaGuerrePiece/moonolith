@@ -1,4 +1,4 @@
-import { caly0, caly1, caly2, caly3, caly4, caly5, caly6, calySide0, calySideRepet } from './base64';
+import { caly0, caly1, caly2, caly3, caly4, caly5, caly6, calySide0, calySideRepet, GUIMPORT } from './base64';
 import { _base64ToArrayBuffer, decode, toRGBA8 } from '../utils/image-manager';
 import Const from '../models/constants';
 
@@ -17,6 +17,7 @@ export var landscapeBase64 = {
     caly4b: { name: 'caly4b', height: 101, width: 256, startX: 0, startY: 590, parallax: 0.8, base64: caly4, decoded: null },
     caly5: { name: 'caly5', height: 126, width: 256, startX: 0, startY: 680, parallax: 0.9, base64: caly5, decoded: null },
     caly6: { name: 'caly6', height: 126, width: 256, startX: 0, startY: 790, parallax: 1, base64: caly6, decoded: null },
+    // GUIMPORT: { name: 'GUIMPORT', height: 16, width: 74, startX: 0, startY: 0, parallax: 0, base64: GUIMPORT, decoded: null },
 };
 
 export async function initialImport(numberOfImports, viewPosY) {
@@ -49,8 +50,6 @@ async function importAndFormatLayer(index) {
     decoded = toRGBA8(decoded);
     let convertedYX = Array.from({ length: decoded.length / thisLayer.width / 4 }, () => Array.from(Const.COLUMNS));
 
-    if (thisLayer.name == 'calySide0') console.log(convertedYX);
-    if (thisLayer.name == 'caly0') console.log(convertedYX);
     for (let y = 0; y < decoded.length / thisLayer.width / 4; y++) {
         for (let x = 0; x < thisLayer.width; x++) {
             if (decoded[(x + y * thisLayer.width) * 4 + 3] === 0) continue;
@@ -62,4 +61,5 @@ async function importAndFormatLayer(index) {
         }
     }
     thisLayer.decodedYX = convertedYX;
+    // if (thisLayer.name == 'GUIMPORT') console.log('LOL', thisLayer.decodedYX);
 }
