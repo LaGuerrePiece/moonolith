@@ -18,7 +18,7 @@ export function assemble() {
 
     let layersToDisplay = [];
     //PUSH GUI AND MONOLITH TO LAYERSTODISPLAY ARRAY
-    // layersToDisplay.push({ name: 'GUI', colorsArray: GUI, startY: 0, startX: 0 });
+    layersToDisplay.push({ name: 'GUI', colorsArray: GUI, startY: 0, startX: 0 });
     layersToDisplay.push({
         name: 'monolith',
         colorsArray: monolith,
@@ -34,13 +34,13 @@ export function assemble() {
 
             let parallaxOffset = Math.floor(thisLayer.parallax * viewPosY);
 
-            if (thisLayer.startY - parallaxOffset > viewPosY + renderHeight) continue; // If the layer above render, skip it
-            if (thisLayer.startY - parallaxOffset + renderHeight < viewPosY) continue; // If the layer under render, skip it
+            if (thisLayer.startY - thisLayer.height - parallaxOffset > viewPosY + renderHeight) continue; // If the layer above render, skip it
+            if (Const.LINES - thisLayer.startY + parallaxOffset > Const.LINES - viewPosY) continue; // If the layer under render, skip it
 
             // let offset = (Const.LINES - thisLayer.startY + parallaxOffset) * Const.COLUMNS;
 
-            const startY = thisLayer.startY - parallaxOffset - viewPosY;
-            const startX = 0;
+            const startY = thisLayer.startY - parallaxOffset - viewPosY - renderHeight;
+            const startX = thisLayer.startX;
 
             layersToDisplay.push({
                 name: thisLayer.name,
@@ -73,7 +73,7 @@ export function assemble() {
             }
             //IF NO COLOR HAS BEEN PUSHED, PUSH THE DEFAULT COLOR
             if (!displayArray[y * renderWidth + x]) {
-                displayArray[y * renderWidth + x] = [0.9764, 0.5098, 0.5176];
+                displayArray[y * renderWidth + x] = Const.SKY_COLOR;
             }
         }
     }

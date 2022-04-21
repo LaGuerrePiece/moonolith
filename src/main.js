@@ -37,7 +37,7 @@ function initDisplay() {
 initDisplay();
 
 async function initDecodeLandscape() {
-    let numberOfImports = 4;
+    let numberOfImports = 10;
     initialImport(numberOfImports)
         .then(() => {
             setTimeout(() => {
@@ -51,7 +51,7 @@ async function initDecodeLandscape() {
 initDecodeLandscape();
 
 export function update() {
-    if (new Date() - lastCall < 30) return;
+    if (new Date() - lastCall < 10) return;
     //data is the array of the displayed klons
     displayData = assemble();
     displayGrid.updateDisplay(displayData);
@@ -136,7 +136,7 @@ function limitsViewPos() {
 //             monolith[mousePos.y + i][mousePos.x + j].color = [1, 1, 1];
 //         }
 //     }
-//     //console.log('mousePos', mousePos);
+//console.log('mousePos', mousePos);
 // });
 
 // getTotalPixs();

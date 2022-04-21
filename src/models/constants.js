@@ -2,12 +2,12 @@
 export default class Const { 
 
     static get COLUMNS() { return 256 }
-    static get LINES() { return 600 }
+    static get LINES() { return 560 }
     static get MONOLITH_COLUMNS() { return this.COLUMNS - this.MARGIN_LEFT - this.MARGIN_RIGHT }
     static get MONOLITH_LINES() { return this.LINES - this.MARGIN_TOP - this.MARGIN_BOTTOM }
 
 
-    static get MARGIN_TOP() { return 34 }
+    static get MARGIN_TOP() { return 54 }
     static get MARGIN_BOTTOM() { return 30 }
     static get MARGIN_LEFT() { return 47 }
     static get MARGIN_RIGHT() { return 60 }
@@ -50,6 +50,8 @@ export default class Const {
     static get RGB16() { return [0.1568, 0.1568, 0.1803]} // SAME AS DEFAULT_COLOR
 
     static get DEFAULT_COLOR() { return [0.1568, 0.1568, 0.1803] }
+    static get SKY_COLOR() { return [0.2902, 0.6431, 0.6549] }
+
 
     static get PALETTE() { return [this.COLOR1, this.COLOR2, this.COLOR3, this.COLOR4, this.COLOR5, this.COLOR6, this.COLOR7, this.COLOR8, this.COLOR9, this.COLOR10, this.COLOR11, this.COLOR12, this.COLOR13, this.COLOR14, this.COLOR15, this.COLOR16] }
     
