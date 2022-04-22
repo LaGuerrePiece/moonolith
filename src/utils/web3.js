@@ -6,7 +6,7 @@ import Const from '../models/constants';
 
 const provider = new ethers.providers.InfuraProvider('rinkeby');
 const iface = new Interface(contractABI);
-const contractAddress = '0x304e3a37092Cf9C42fd41Cb60c76961B4950f050';
+const contractAddress = '0x2E47CBDe82b8765055a73e6AC914e22a75b8b961';
 //const contractAddressCaly = '0x2a1068d93BF2aD8a2b93b6DF8a6B607B3A648570';
 const contract = new ethers.Contract(contractAddress, contractABI, provider);
 
