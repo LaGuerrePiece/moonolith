@@ -23,6 +23,7 @@ export var imageCatalog = {
 
 export async function initialDecodeLandscape(numberOfImports, viewPosY) {
     //Imports a few layers of landscape
+    let startImport = Date.now();
     let importedLayers = 0;
     let landscape = Object.keys(imageCatalog);
 
@@ -31,10 +32,12 @@ export async function initialDecodeLandscape(numberOfImports, viewPosY) {
         decodeAndFormatLayer(landscape[i]);
         importedLayers++;
     }
+    console.log('//     First import of', numberOfImports, ':', Date.now() - startImport, 'ms     //');
 }
 
 export async function lateDecodeLandscape(numberOfImports) {
     //Imports the rest of the landscape
+    let startImport = Date.now();
     let importedLayers = 0;
     let landscape = Object.keys(imageCatalog);
 
@@ -43,6 +46,8 @@ export async function lateDecodeLandscape(numberOfImports) {
         decodeAndFormatLayer(landscape[landscape.length - i]);
         importedLayers++;
     }
+    //prettier-ignore
+    console.log('//      Second import of', landscape.length - numberOfImports, ':', Date.now() - startImport, 'ms     //');
 }
 
 async function decodeAndFormatLayer(index) {

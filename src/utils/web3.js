@@ -7,11 +7,11 @@ import Const from '../models/constants';
 const provider = new ethers.providers.InfuraProvider('rinkeby');
 const iface = new Interface(contractABI);
 const contractAddress = '0x2E47CBDe82b8765055a73e6AC914e22a75b8b961';
-//const contractAddressCaly = '0x2a1068d93BF2aD8a2b93b6DF8a6B607B3A648570';
+// const contractAddress = '0x2a1068d93BF2aD8a2b93b6DF8a6B607B3A648570';
 const contract = new ethers.Contract(contractAddress, contractABI, provider);
 
+const metamaskProvider = new ethers.providers.Web3Provider(window.ethereum);
 if (window.ethereum) {
-    const metamaskProvider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = metamaskProvider.getSigner();
     var metamaskContract = new ethers.Contract(contractAddress, contractABI, signer);
 }
@@ -67,33 +67,52 @@ async function getMetaData() {
 
 async function initialChunkImport() {
     let startSupply = performance.now();
-    await getMetaData()
-        .then((meta) => {
-            const monolithHeightFormula = Const.COLUMNS * 64 + (meta.nbKlon * meta.threshold) / 1000000;
-            const monolithHeight = Math.floor(monolithHeightFormula / Const.COLUMNS);
-            Const.setMonolithHeight(monolithHeight);
-            for (let i = 1; i <= meta.nbChunks; i++) {
-                getChunk(i).then((res) => {
-                    let index = res[0].toNumber();
-                    let yMaxLegal = res[1].toNumber() * 4;
-                    let pixelPaid = res[2].toNumber();
-                    let x = index % Const.MONOLITH_COLUMNS;
-                    let y = Math.floor(index / Const.MONOLITH_COLUMNS);
-                    let arrBuffer = base64ToBuffer(res[3]);
-                    bufferOnMonolith({
-                        buffer: arrBuffer,
-                        x: x,
-                        y: y,
-                        paid: pixelPaid,
-                        yMaxLegal: yMaxLegal,
-                        zIndex: i,
-                    }); // yMaxLegal à vérifier
-                });
-            }
-        })
-        .then(() => {
-            console.log('Chunks loaded in ' + (performance.now() - startSupply) + ' ms');
+    let meta = await getMetaData();
+    console.log(`//     Metadata gotten: ${meta.nbChunks} chunks     //`);
+    const monolithHeightFormula = Const.COLUMNS * 64 + (meta.nbKlon * meta.threshold) / 1000000;
+    const monolithHeight = Math.floor(monolithHeightFormula / Const.COLUMNS);
+    Const.setMonolithHeight(monolithHeight);
+
+    // async function allChunks() {
+    for (let i = 1; i <= meta.nbChunks; i++) {
+        getChunk(i).then((res) => {
+            bufferOnMonolith({
+                buffer: base64ToBuffer(res[3]),
+                x: res[0].toNumber() % Const.MONOLITH_COLUMNS,
+                y: Math.floor(res[0].toNumber() / Const.MONOLITH_COLUMNS),
+                paid: res[2].toNumber(),
+                yMaxLegal: res[1].toNumber() * 4,
+                zIndex: i,
+            }); // yMaxLegal à vérifier
         });
+        // console.log(`Chunk ${i} imported`);
+    }
+    // }
+    // allChunks();
+
+    async function method2() {
+        const promises = [];
+        const startTime = new Date();
+        console.log('start 2:', startTime);
+
+        for (const item in data) {
+            const promise = new Promise((resolve) => {
+                setTimeout(() => {
+                    if (item % 3 === 0) {
+                        resolve({});
+                    } else {
+                        resolve(item);
+                    }
+                }, 1);
+            });
+
+            promises.push(promise);
+        }
+
+        await Promise.all(promises);
+    }
+
+    console.log('//      Chunks loaded in', Math.floor(performance.now() - startSupply), 'ms      //');
 }
 
 export { chunkCreator, getChunk, getChunksFromPosition, initialChunkImport };
