@@ -3,6 +3,7 @@ import { Interface } from 'ethers/lib/utils';
 import contractABI from '../utils/abi.json';
 import { base64ToBuffer, bufferOnMonolith } from './imageManager';
 import Const from '../models/constants';
+import { update } from '../main';
 
 const provider = new ethers.providers.InfuraProvider('rinkeby');
 const iface = new Interface(contractABI);
@@ -15,6 +16,8 @@ if (window.ethereum) {
     const signer = metamaskProvider.getSigner();
     var metamaskContract = new ethers.Contract(contractAddress, contractABI, signer);
 }
+
+let previousNbChunks;
 
 const chunkCreator = async (res) => {
     await metamaskProvider.send('eth_requestAccounts', []);
@@ -57,15 +60,16 @@ const getChunksFromPosition = async (min, max) => {
 };
 
 async function getMetaData() {
-    let metadata =  await contract.getMonolithInfo();
-    console.log(metadata);
-    return  { nbKlon: metadata[2].toNumber(), threshold: metadata[1].toNumber(), nbChunks: metadata[0].toNumber() };
+    let metadata = await contract.getMonolithInfo();
+    // console.log(metadata);
+    return { nbKlon: metadata[2].toNumber(), threshold: metadata[1].toNumber(), nbChunks: metadata[0].toNumber() };
 }
 
 async function initialChunkImport() {
     let startSupply = performance.now();
     let meta = await getMetaData();
     console.log(`//     Metadata gotten: ${meta.nbChunks} chunks     //`);
+    previousNbChunks = meta.nbChunks;
     const monolithHeightFormula = Const.COLUMNS * 64 + (meta.nbKlon * meta.threshold) / 1000000;
     const monolithHeight = Math.floor(monolithHeightFormula / Const.COLUMNS);
     Const.setMonolithHeight(monolithHeight);
@@ -112,4 +116,26 @@ async function initialChunkImport() {
     console.log('//      Chunks loaded in', Math.floor(performance.now() - startSupply), 'ms      //');
 }
 
-export { chunkCreator, getChunk, getChunksFromPosition, initialChunkImport };
+async function importNewChunks() {
+    const meta = await getMetaData();
+    // console.log('checked for new chunks, found', meta.nbChunks - previousNbChunks);
+    if (previousNbChunks === meta.nbChunks) return;
+    for (let i = 0; i < meta.nbChunks - previousNbChunks; i++) {
+        getChunk(meta.nbChunks - i).then((res) => {
+            console.log('res', res);
+            bufferOnMonolith({
+                buffer: base64ToBuffer(res[3]),
+                x: res[0].toNumber() % Const.MONOLITH_COLUMNS,
+                y: Math.floor(res[0].toNumber() / Const.MONOLITH_COLUMNS),
+                paid: res[2].toNumber(),
+                yMaxLegal: res[1].toNumber() * 4,
+                zIndex: i,
+            }); // yMaxLegal à vérifier
+        });
+    }
+    previousNbChunks = meta.nbChunks;
+    //IL FAUT ENSUITE UPDATE LE DISPLAY Y COMPRIS LE MONOLITH
+    //MAIS SANS QUE LE VIEWPOS CHANGE
+}
+
+export { chunkCreator, getChunk, getChunksFromPosition, initialChunkImport, importNewChunks };

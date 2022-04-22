@@ -61,7 +61,6 @@ async function bufferOnMonolith(data) {
     }
 }
 
-
 function monolithToBase64() {
     return new Promise((resolve) => {
         let { highLow, nbPix, saveArray } = gridToArray();

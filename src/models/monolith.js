@@ -2,6 +2,7 @@ import Klon from './klon';
 import Const from './constants';
 import { addToCurrentEvent, closeCurrentEvent } from './undoStack';
 import { renderWidth, renderHeight, viewPosX, viewPosY, update } from '../main';
+import { imageCatalog } from '../assets/imageData';
 
 export let monolith;
 
@@ -74,4 +75,22 @@ export function getMonolithArray() {
         }
     }
     return monolithArray;
+}
+
+export function increaseMonolithHeight(newRows) {
+    console.log('increaseMonolithHeight');
+    console.log('monolith', monolith);
+    Const.setMonolithHeight(Const.MONOLITH_LINES + newRows);
+    monolith.push(
+        ...Array.from({ length: newRows }, () =>
+            Array.from({ length: Const.MONOLITH_COLUMNS }, () => new Klon(Const.DEFAULT_COLOR))
+        )
+    );
+    //MET A JOUR LES STARTY :
+    for (let layer in imageCatalog) {
+        const thisLayer = imageCatalog[layer];
+        if (thisLayer.type == 'side') thisLayer.startY += newRows;
+    }
+
+    console.log('monolith', monolith);
 }

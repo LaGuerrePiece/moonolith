@@ -5,7 +5,7 @@ import { initialDecodeLandscape, lateDecodeLandscape } from './assets/imageData'
 import { clickManager, keyManager, scrollManager } from './models/tools';
 
 import Const from './models/constants';
-import { initialChunkImport } from './utils/web3';
+import { initialChunkImport, importNewChunks } from './utils/web3';
 import { assemble } from './models/assembler';
 import { buildMonolith } from './models/monolith';
 
@@ -49,7 +49,7 @@ function initDisplay() {
 }
 
 export function update() {
-    if (new Date() - lastCall < 10) return;
+    if (new Date() - lastCall < 30) return;
     //data is the array of the displayed klons
     displayData = assemble();
     displayGrid.updateDisplay(displayData);
@@ -90,8 +90,14 @@ export function zoom() {
     }
     document.body.removeChild(displayGrid.pixels.canvas);
     initDisplay();
-    update();
+    setTimeout(() => {
+        update();
+    }, 50);
 }
+
+setInterval(() => {
+    importNewChunks();
+}, 5000);
 
 // TENTATIVE DE POINTEUR
 

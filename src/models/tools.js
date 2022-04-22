@@ -1,7 +1,14 @@
 //prettier-ignore
 import {update, canvas, windowHeight, windowWidth, renderWidth, renderHeight, changeViewPos, viewPosX, viewPosY, zoom} from '../main';
 import { imageCatalog } from '../assets/imageData';
-import { drawPixel, getColor, eraseAllPixel, erasePixel, convertToMonolithPos } from './monolith';
+import {
+    drawPixel,
+    getColor,
+    eraseAllPixel,
+    erasePixel,
+    convertToMonolithPos,
+    increaseMonolithHeight,
+} from './monolith';
 import Klon from './klon';
 import { closeCurrentEvent, undo, redo } from './undoStack';
 
@@ -36,6 +43,7 @@ export function keyManager(e){
     if (e.key === 'm') { moveDrawing(50, 400); update() }
     if (e.key === 'y') zoom();
     if (e.key === 'i') importImage();
+    if (e.key === 'p') increaseMonolithHeight(10)
     if (e.key === 'ArrowUp') { changeViewPos(0, 6); }
     if (e.key === 'ArrowDown') { changeViewPos(0, -6); }
     if (e.key === 'ArrowLeft') { changeViewPos(-6, 0); }
