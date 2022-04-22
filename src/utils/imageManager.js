@@ -56,6 +56,39 @@ function monolithToBase64() {
     });
 }
 
+function monolithToBase64But4Bits(grid) {
+    return new Promise((resolve) => {
+        let { highLow, saveArray, nbPix, firstPix } = encode4bits(grid);
+
+        saveArray = new Uint8Array(saveArray);
+        var png = UPNG.encodeLL([saveArray.buffer], highLow.longueur, highLow.largeur, 1, 0, 4); // on encode
+        let buffer = _arrayBufferToBase64(png); //on passe au format base64
+        saveLocally(buffer);
+
+        resolve({ position: firstPix, ymax: highLow.highY, nbPix: nbPix, imgURI: buffer });
+    });
+}
+
+function encode4bits(grid)
+{
+    console.log(grid);
+    let { highLow, saveArray, nbPix, firstPix } = gridToArray(grid);
+    saveArray = new Uint8Array(saveArray);
+    console.log(saveArray);
+    let encoded = [];
+    for(let i = 0; i< saveArray.length; i+=4)
+    {
+        console.log(saveArray[i], saveArray[i+1],  saveArray[i+2]);
+        let hex = RGBToHex(saveArray[i]/255, saveArray[i+1]/255,  saveArray[i+2]/255);
+        console.log(hex)
+        let c = parseInt(getKeyByValue(palette, hex));
+        console.log(c);
+        addUintTo4bitArray(encoded, c);
+    }
+    console.log(encoded);
+    return { firstPix: firstPix, highLow: highLow, nbPix: nbPix, saveArray: encoded };
+}
+
 function bufferToBase64(buffer) {
     var binary = '';
     var bytes = new Uint8Array(buffer);
@@ -65,6 +98,7 @@ function bufferToBase64(buffer) {
     }
     return window.btoa(binary);
 }
+
 
 function saveLocally(base64) {
     var elementA = document.createElement('a'); //On crée un element vide pour forcer le téléchargement
@@ -129,6 +163,19 @@ function getHighLow() {
     return { lowX, lowY, highX, highY, longueur, largeur };
 }
 
+function RGBToHex(r, g, b) {
+    r = Math.floor(r * 255);
+    g = Math.floor(g * 255);
+    b = Math.floor(b * 255);
+    return '#' + componentToHex(r) + componentToHex(g) + componentToHex(b);
+}
+function componentToHex(c) {
+    let hex = c.toString(16);
+    return hex.length == 1 ? '0' + hex : hex;
+}
+function getKeyByValue(object, value) {
+    return Object.keys(object).find(key => object[key] === value);
+}
 export function moveDrawing(x, y) {
     //TODO : À BOUGER DANS TOOLS ?
     const drawing = gridToArray();
