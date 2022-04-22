@@ -1,19 +1,13 @@
 // Imports des composants
 import DisplayGrid from './models/displayGrid';
 import { initialDecodeLandscape, lateDecodeLandscape } from './assets/imageData';
-import { undo, redo } from './models/undoStack';
 // Imports des fonctionnalités
-import { moveDrawing } from './utils/imageManager';
-import { clickManager, mousePosInGrid } from './models/tools';
+import { clickManager, keyManager, scrollManager } from './models/tools';
 
 import Const from './models/constants';
-import { importChunks } from './utils/web3';
+import { initialChunkImport } from './utils/web3';
 import { assemble } from './models/assembler';
-import { eraseAllPixel } from './models/monolith';
-
-/**********************************
- ************* DISPLAY ************
- **********************************/
+import { buildMonolith } from './models/monolith';
 
 let displayGrid;
 export let canvas;
@@ -27,14 +21,17 @@ export const windowWidth = window.innerWidth;
 export let renderWidth = Const.COLUMNS;
 const pixelSize = windowWidth / renderWidth;
 export let renderHeight = Math.floor(windowHeight / pixelSize) + 1;
-let numberOfImports = 15;
+let InitialImports = 15;
 
-function initApp() {
-    importChunks();
-    initDisplay();
-    initialDecodeLandscape(numberOfImports);
-    console.log('initApp done');
-    lateDecodeLandscape(numberOfImports);
+async function initApp() {
+    await initialChunkImport().then((res) => {
+        buildMonolith();
+        initDisplay();
+        initialDecodeLandscape(InitialImports);
+        console.log('initApp done');
+    });
+
+    lateDecodeLandscape(InitialImports);
     setTimeout(() => {
         update();
     }, 100);
@@ -57,7 +54,25 @@ export function update() {
     lastCall = new Date();
 }
 
-function zoom() {
+//prettier-ignore
+document.addEventListener('contextmenu', (e) => { e.preventDefault(); }, false);
+//prettier-ignore
+document.addEventListener('keydown', (e) => { keyManager(e) });
+//prettier-ignore
+window.onwheel = function (e) { scrollManager(e) };
+
+
+export function changeViewPos(inputX, inputY) {
+    viewPosX += inputX;
+    viewPosY += inputY;
+    if (viewPosY < -30) viewPosY = -30;
+    if (viewPosY + renderHeight > Const.LINES) viewPosY = Const.LINES - renderHeight;
+    if (viewPosX < 0) viewPosX = 0;
+    if (viewPosX + renderWidth > Const.COLUMNS) viewPosX = Const.COLUMNS - renderWidth;
+    update();
+}
+
+export function zoom() {
     if (renderWidth == Const.COLUMNS) {
         let zoomFactor = 2;
         console.log(`Zoomed x${zoomFactor} | renderWidth`, renderWidth, 'renderHeight', renderHeight);
@@ -74,41 +89,6 @@ function zoom() {
     }
     document.body.removeChild(displayGrid.pixels.canvas);
     initDisplay();
-    update();
-}
-
-//prettier-ignore
-document.addEventListener('contextmenu', (e) => { e.preventDefault(); }, false);
-//prettier-ignore
-document.addEventListener('keydown', (e) => {
-    if (e.ctrlKey && e.key === 'z') undo();
-    if (e.metaKey && e.key === 'z') undo();
-    if (e.ctrlKey && e.key === 'Z') redo();
-    if (e.metaKey && e.key === 'Z') redo();
-    if (e.ctrlKey && e.key === 'y') redo();
-    if (e.metaKey && e.key === 'y') redo();
-    if (e.key === 'x') eraseAllPixel();
-    if (e.key === 'c') console.log('COLUMNS', Const.COLUMNS, 'LINES', Const.LINES, 'renderWidth', renderWidth, 'renderHeight', renderHeight, 'viewPosX', viewPosX, 'viewPosY', viewPosY);
-    if (e.key === 'a') {
-        moveDrawing(50, 400);
-        update()
-    }
-    if (e.key === 'y') zoom();
-    if (e.key === 'ArrowUp') { viewPosY += 3; limitsViewPos(); }
-    if (e.key === 'ArrowDown') { viewPosY -= 3; limitsViewPos(); }
-    if (e.key === 'ArrowLeft') { viewPosX -= 3; limitsViewPos(); }
-    if (e.key === 'ArrowRight') { viewPosX += 3; limitsViewPos(); }
-});
-
-//prettier-ignore
-window.onwheel = function (e) {
-    if (e.deltaY > 0) { viewPosY -= 3; } else { viewPosY += 3;} limitsViewPos(); };
-
-function limitsViewPos() {
-    if (viewPosY < -30) viewPosY = -30;
-    if (viewPosY + renderHeight > Const.LINES) viewPosY = Const.LINES - renderHeight;
-    if (viewPosX < 0) viewPosX = 0;
-    if (viewPosX + renderWidth > Const.COLUMNS) viewPosX = Const.COLUMNS - renderWidth;
     update();
 }
 

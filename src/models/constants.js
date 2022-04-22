@@ -1,21 +1,26 @@
+var monolithHeight;
+
 //prettier-ignore
 export default class Const { 
 
-    static get COLUMNS() { return 256 }
-    static get LINES() { return 560 }
-    static get MONOLITH_COLUMNS() { return this.COLUMNS - this.MARGIN_LEFT - this.MARGIN_RIGHT }
-    static get MONOLITH_LINES() { return this.LINES - this.MARGIN_TOP - this.MARGIN_BOTTOM }
-
-
-    static get MARGIN_TOP() { return 54 }
-    static get MARGIN_BOTTOM() { return 30 }
-    static get MARGIN_LEFT() { return 47 }
-    static get MARGIN_RIGHT() { return 60 }
-    
-    static get GUI_RELATIVE_Y() { return 1.05 }
-    static get GUI_RELATIVE_X() { return 2 }
-
-    static get FREE_DRAWING() { return 999999 }
+  static get COLUMNS() { return 256 }
+  static get LINES() { return monolithHeight + this.MARGIN_TOP + this.MARGIN_BOTTOM }
+  static get MONOLITH_COLUMNS() { return this.COLUMNS - this.MARGIN_LEFT - this.MARGIN_RIGHT }
+  static get MONOLITH_LINES() { return monolithHeight }
+  
+  static get MARGIN_TOP() { return 54 }
+  static get MARGIN_BOTTOM() { return 30 }
+  static get MARGIN_LEFT() { return 47 }
+  static get MARGIN_RIGHT() { return 60 }
+  
+  static get GUI_RELATIVE_Y() { return 1.05 }
+  static get GUI_RELATIVE_X() { return 2 }
+  
+  static get FREE_DRAWING() { return 999999 }
+  
+  static setMonolithHeight(height) {
+    monolithHeight = height
+  }
 
     // COLORS
 
@@ -42,4 +47,4 @@ export default class Const {
 
     static get PALETTE() { return [this.RGB1, this.RGB2, this.RGB3, this.RGB4, this.RGB5, this.RGB6, this.RGB7, this.RGB8, this.RGB9, this.RGB10, this.RGB11, this.RGB12, this.RGB13, this.RGB14, this.RGB15, this.RGB16] }
     
-}
+  }

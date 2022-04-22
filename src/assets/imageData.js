@@ -1,23 +1,24 @@
-import { GUI, caly0, caly1, caly2, caly3, caly4, caly5, caly6, calySide0, calySideRepet } from './base64';
+import { GUI, caly0, caly1, caly2, caly3, caly4, caly5, caly6, calySide0, calySide1 } from './base64';
 import { base64ToBuffer, pngToBufferToRGBA8 } from '../utils/imageManager';
 import Const from '../models/constants';
 
-//prettier-ignore
 export var imageCatalog = {
-    GUI: { name: 'GUI', startX: 0, startY: 0, parallax: 0, base64: GUI },
-    caly0: { name: 'caly0', startX: 0, startY: 45, parallax: 0, base64: caly0 },
-    calySide0: { name: 'calySide0', startX: 47, startY: Const.LINES - Const.MARGIN_TOP + 17, parallax: 0, base64: calySide0 },
-    calySideRepet: { name: 'calySideRepet', startX: 196, startY: Const.LINES - Const.MARGIN_TOP - 310, parallax: 0, base64: calySideRepet },
-    caly1: { name: 'caly1', startX: 0, startY: 85, parallax: 0.1, base64: caly1 },
-    caly2: { name: 'caly2', startX: 0, startY: 150, parallax: 0.2, base64: caly2 },
-    caly3: { name: 'caly3', startX: 0, startY: 225, parallax: 0.3, base64: caly3 },
-    caly4: { name: 'caly4', startX: 0, startY: 290, parallax: 0.4, base64: caly4 },
-    caly1b: { name: 'caly1b', startX: 0, startY: 343, parallax: 0.5, base64: caly1 },
-    caly2b: { name: 'caly2b', startX: 0, startY: 420, parallax: 0.6, base64: caly2 },
-    caly3b: { name: 'caly3b', startX: 0, startY: 500, parallax: 0.7, base64: caly3 },
-    caly4b: { name: 'caly4b', startX: 0, startY: 590, parallax: 0.8, base64: caly4 },
-    caly5: { name: 'caly5', startX: 0, startY: 680, parallax: 0.9, base64: caly5 },
-    caly6: { name: 'caly6', startX: 0, startY: 790, parallax: 1, base64: caly6 },
+    GUI: { name: 'GUI', type: 'GUI', startX: 0, startY: 0, parallax: 0, base64: GUI },
+    caly0: { name: 'caly0', type: 'landscape', startX: 0, startY: 45, parallax: 0, base64: caly0 },
+    calySide0: { name: 'calySide0', type: 'side', startX: 47, startY: 17, parallax: 0, base64: calySide0 },
+    calySide1: { name: 'calySide1', type: 'side', startX: 196, startY: -310, parallax: 0, base64: calySide1 },
+    calySide2: { name: 'calySide2', type: 'side', startX: 196, startY: -526, parallax: 0, base64: calySide1 },
+    calySide3: { name: 'calySide3', type: 'side', startX: 196, startY: -742, parallax: 0, base64: calySide1 },
+    caly1: { name: 'caly1', type: 'landscape', startX: 0, startY: 85, parallax: 0.1, base64: caly1 },
+    caly2: { name: 'caly2', type: 'landscape', startX: 0, startY: 150, parallax: 0.2, base64: caly2 },
+    caly3: { name: 'caly3', type: 'landscape', startX: 0, startY: 225, parallax: 0.3, base64: caly3 },
+    caly4: { name: 'caly4', type: 'landscape', startX: 0, startY: 290, parallax: 0.4, base64: caly4 },
+    caly1b: { name: 'caly1b', type: 'landscape', startX: 0, startY: 343, parallax: 0.5, base64: caly1 },
+    caly2b: { name: 'caly2b', type: 'landscape', startX: 0, startY: 420, parallax: 0.6, base64: caly2 },
+    caly3b: { name: 'caly3b', type: 'landscape', startX: 0, startY: 500, parallax: 0.7, base64: caly3 },
+    caly4b: { name: 'caly4b', type: 'landscape', startX: 0, startY: 590, parallax: 0.8, base64: caly4 },
+    caly5: { name: 'caly5', type: 'landscape', startX: 0, startY: 680, parallax: 0.9, base64: caly5 },
+    caly6: { name: 'caly6', type: 'landscape', startX: 0, startY: 790, parallax: 1, base64: caly6 },
 };
 
 export async function initialDecodeLandscape(numberOfImports, viewPosY) {
@@ -66,5 +67,6 @@ async function decodeAndFormatLayer(index) {
     thisLayer.width = width;
     thisLayer.height = decoded.height;
 
+    if (thisLayer.type === 'side') thisLayer.startY = Const.LINES - Const.MARGIN_TOP + thisLayer.startY;
     if (thisLayer.name == 'GUIMPORT') console.log('GUIMPORT', thisLayer.decodedYX); // NE PAS SUPPRIMER
 }

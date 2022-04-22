@@ -3,9 +3,14 @@ import Const from './constants';
 import { addToCurrentEvent, closeCurrentEvent } from './undoStack';
 import { renderWidth, renderHeight, viewPosX, viewPosY, update } from '../main';
 
-export let monolith = Array.from({ length: Const.MONOLITH_LINES }, () =>
-    Array.from({ length: Const.MONOLITH_COLUMNS }, () => new Klon(Const.DEFAULT_COLOR))
-);
+export let monolith;
+
+export function buildMonolith() {
+    monolith = Array.from({ length: Const.MONOLITH_LINES }, () =>
+        Array.from({ length: Const.MONOLITH_COLUMNS }, () => new Klon(Const.DEFAULT_COLOR))
+    );
+    console.log('monolith height :', Const.MONOLITH_LINES);
+}
 
 export function drawPixel(x, y, zIndex, color) {
     if (x < 0 || x >= Const.MONOLITH_COLUMNS || y < 0 || y >= Const.MONOLITH_LINES) return; //IF OUT OF BOUNDS, return

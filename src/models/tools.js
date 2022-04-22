@@ -1,4 +1,5 @@
-import { update, canvas, windowHeight, windowWidth, renderWidth, renderHeight } from '../main';
+//prettier-ignore
+import {update, canvas, windowHeight, windowWidth, renderWidth, renderHeight, changeViewPos, viewPosX, viewPosY, zoom} from '../main';
 import { imageCatalog } from '../assets/imageData';
 import { drawPixel, getColor, eraseAllPixel, erasePixel, convertToMonolithPos } from './monolith';
 import Klon from './klon';
@@ -22,6 +23,33 @@ class Tool {
 
 let tool = Tool.HUGE;
 let colorPicked = Const.RGB7;
+
+//prettier-ignore
+export function keyManager(e){
+    if (e.ctrlKey && e.key === 'z') undo();
+    if (e.metaKey && e.key === 'z') undo();
+    if (e.ctrlKey && e.key === 'Z') redo();
+    if (e.metaKey && e.key === 'Z') redo();
+    if (e.ctrlKey && e.key === 'y') redo();
+    if (e.metaKey && e.key === 'y') redo();
+    if (e.key === 'x') eraseAllPixel();
+    if (e.key === 'c') console.log('Total H', Const.COLUMNS, 'Total W', Const.LINES, 'render W', renderWidth, 'render H', renderHeight, 'viewPosX', viewPosX, 'viewPosY', viewPosY, 'mousePos', mousePosInGrid(e).x, mousePosInGrid(e).y);
+    if (e.key === 'm') { moveDrawing(50, 400); update() }
+    if (e.key === 'y') zoom();
+    if (e.key === 'i') importImage();
+    if (e.key === 'ArrowUp') { changeViewPos(0, 3); }
+    if (e.key === 'ArrowDown') { changeViewPos(0, -3); }
+    if (e.key === 'ArrowLeft') { changeViewPos(-3, 0); }
+    if (e.key === 'ArrowRight') { changeViewPos(3, 0); }
+}
+
+export function scrollManager(e) {
+    if (e.deltaY > 0) {
+        changeViewPos(0, -3);
+    } else {
+        changeViewPos(0, 3);
+    }
+}
 
 export function clickManager(e) {
     let mousePos = mousePosInGrid(e);
@@ -60,25 +88,6 @@ export function clickManager(e) {
         if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 5, 3, 21, 3)) colorPicked = Const.RGB14;
         if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 6, 3, 21, 3)) colorPicked = Const.RGB15;
         if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 7, 3, 21, 3)) colorPicked = Const.RGB16;
-
-        console.log('colorPicked', colorPicked);
-        if (mousePos.x >= 30 && mousePos.x < 35) tool = Tool.SMOL;
-        if (mousePos.x >= 35 && mousePos.x < 40) tool = Tool.BIG;
-        if (mousePos.x >= 40 && mousePos.x < 45) tool = Tool.HUGE;
-        if (mousePos.x >= 45 && mousePos.x < 50) {
-            console.log('send To the blockchain!');
-            saveToEthernity();
-        }
-        if (mousePos.x >= 50 && mousePos.x < 55) {
-            console.log('move! (not working now)');
-            moveDrawing(50, 500);
-            update();
-        }
-        if (mousePos.x >= 55 && mousePos.x < 60) {
-            eraseAllPixel();
-            update();
-        }
-        if (mousePos.x >= 60 && mousePos.x < 65) importImage();
     } else {
         //CASE MONOLITH OR LANDSCAPE
         mousePos = convertToMonolithPos(mousePos);
@@ -119,8 +128,8 @@ function useTool(e) {
             drawPixel(mousePos.x, mousePos.y, Klon.USERPAINTED, colorPicked);
             break;
         case Tool.BIG:
-            for (let i = -1; i <= 1; i++) {
-                for (let j = -1; j <= 1; j++) {
+            for (let i = -2; i <= 2; i++) {
+                for (let j = -2; j <= 2; j++) {
                     if (mousePos.x + i < renderWidth && mousePos.x + i > -1)
                         drawPixel(mousePos.x + i, mousePos.y + j, Klon.USERPAINTED, colorPicked);
                 }
@@ -150,8 +159,8 @@ function useDeleteTool(e) {
             erasePixel(mousePos.x, mousePos.y);
             break;
         case Tool.BIG:
-            for (let i = -1; i <= 1; i++) {
-                for (let j = -1; j <= 1; j++) {
+            for (let i = -2; i <= 2; i++) {
+                for (let j = -2; j <= 2; j++) {
                     erasePixel(mousePos.x + i, mousePos.y + j);
                 }
             }
@@ -170,12 +179,15 @@ function useDeleteTool(e) {
 function brushSwitch() {
     switch (tool) {
         case Tool.SMOL:
+            console.log('BIG BRUSH');
             tool = Tool.BIG;
             break;
         case Tool.BIG:
+            console.log('HUGE BRUSH');
             tool = Tool.HUGE;
             break;
         case Tool.HUGE:
+            console.log('SMOL BRUSH');
             tool = Tool.SMOL;
             break;
     }
@@ -207,7 +219,14 @@ function importImage() {
         reader.readAsArrayBuffer(file);
         reader.onload = (res) => {
             let importedImage = res.target.result; // this is the content!
-            bufferOnMonolith(importedImage, 1, 400, Const.FREE_DRAWING, Const.FREE_DRAWING, Klon.USERPAINTED);
+            bufferOnMonolith({
+                buffer: importedImage,
+                x: 1,
+                y: 400,
+                paid: Const.FREE_DRAWING,
+                yMaxLegal: Const.FREE_DRAWING,
+                zIndex: Klon.USERPAINTED,
+            });
 
             //! NE PAS SUPPRIMER LES LIGNES CI-DESSOUS !//
             let base64 = btoa(

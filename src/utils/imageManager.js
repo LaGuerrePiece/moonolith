@@ -19,6 +19,30 @@ function pngToBufferToRGBA8(buffer) {
     });
 }
 
+async function bufferOnMonolith(data) {
+    let rgba8 = await pngToBufferToRGBA8(data.buffer).catch(console.error);
+    let pixelDrawn = 0;
+    let decalage = 0;
+    for (let y = data.y; y < data.yMaxLegal; y++) {
+        for (let x = data.x; x < rgba8.width + data.x; x++) {
+            // if (y >= data.yMaxLegal) return;
+            if (pixelDrawn >= data.paid) return;
+            if (!monolith[y]?.[x]) continue;
+            if (rgba8.buffer[decalage + 3] > 0) {
+                monolith[y][x].color = [
+                    rgba8.buffer[decalage] / 255,
+                    rgba8.buffer[decalage + 1] / 255,
+                    rgba8.buffer[decalage + 2] / 255,
+                ];
+                monolith[y][x].zIndex = data.zIndex;
+                pixelDrawn++;
+            }
+            decalage += 4;
+        }
+    }
+}
+
+
 function monolithToBase64() {
     return new Promise((resolve) => {
         let { highLow, nbPix, saveArray } = gridToArray();
@@ -32,16 +56,6 @@ function monolithToBase64() {
     });
 }
 
-function saveLocally(base64) {
-    var elementA = document.createElement('a'); //On crée un element vide pour forcer le téléchargement
-    elementA.setAttribute('href', 'data:image/png;base64,' + base64); // on met les données au bon format (base64)
-    elementA.setAttribute('download', +new Date() + '.png'); // le nom du fichier
-    elementA.style.display = 'none'; // on met l'elem invisible
-    document.body.appendChild(elementA); //on crée l 'elem
-    elementA.click(); // on télécharge
-    document.body.removeChild(elementA); // on delete l'elem
-}
-
 function bufferToBase64(buffer) {
     var binary = '';
     var bytes = new Uint8Array(buffer);
@@ -50,6 +64,16 @@ function bufferToBase64(buffer) {
         binary += String.fromCharCode(bytes[i]);
     }
     return window.btoa(binary);
+}
+
+function saveLocally(base64) {
+    var elementA = document.createElement('a'); //On crée un element vide pour forcer le téléchargement
+    elementA.setAttribute('href', 'data:image/png;base64,' + base64); // on met les données au bon format (base64)
+    elementA.setAttribute('download', +new Date() + '.png'); // le nom du fichier
+    elementA.style.display = 'none'; // on met l'elem invisible
+    document.body.appendChild(elementA); //on crée l 'elem
+    elementA.click(); // on télécharge
+    document.body.removeChild(elementA); // on delete l'elem
 }
 
 function base64ToBuffer(base64) {
@@ -106,7 +130,7 @@ function getHighLow() {
 }
 
 export function moveDrawing(x, y) {
-    //TODO : À BOUGER DANS TOOLS
+    //TODO : À BOUGER DANS TOOLS ?
     const drawing = gridToArray();
     console.log('x', x, 'y', y, 'drawing', drawing);
     console.log('saveArray', drawing.saveArray);
@@ -124,29 +148,6 @@ export function moveDrawing(x, y) {
         drawing.highLow.longueur,
         drawing.highLow.largeur
     );
-}
-
-async function bufferOnMonolith(arrayBuffer, offsetx, offsety, pixelPaid, yMaxLegal, zIndex) {
-    let res = await pngToBufferToRGBA8(arrayBuffer).catch(console.error);
-    let pixelDrawn = 0;
-    let decalage = 0;
-    for (let y = offsety; y < res.height + offsety; y++) {
-        for (let x = offsetx; x < res.width + offsetx; x++) {
-            if (y >= yMaxLegal) return;
-            if (pixelDrawn >= pixelPaid) return;
-            if (!monolith[y]?.[x]) continue;
-            if (res.buffer[decalage + 3] > 0) {
-                monolith[y][x].color = [
-                    res.buffer[decalage] / 255,
-                    res.buffer[decalage + 1] / 255,
-                    res.buffer[decalage + 2] / 255,
-                ];
-                monolith[y][x].zIndex = zIndex;
-                pixelDrawn++;
-            }
-            decalage += 4;
-        }
-    }
 }
 
 export { saveToEthernity, base64ToBuffer, pngToBufferToRGBA8, bufferOnMonolith };
