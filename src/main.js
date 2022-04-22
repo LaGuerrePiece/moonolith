@@ -63,8 +63,8 @@ window.onwheel = function (e) { scrollManager(e) };
 export function changeViewPos(inputX, inputY) {
     viewPosX += inputX;
     viewPosY += inputY;
-    if (viewPosY < -30) viewPosY = -30;
     if (viewPosY + renderHeight > Const.LINES) viewPosY = Const.LINES - renderHeight;
+    if (viewPosY < -30) viewPosY = -30;
     if (viewPosX < 0) viewPosX = 0;
     if (viewPosX + renderWidth > Const.COLUMNS) viewPosX = Const.COLUMNS - renderWidth;
     update();

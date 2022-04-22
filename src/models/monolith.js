@@ -22,7 +22,7 @@ export function drawPixel(x, y, zIndex, color) {
 }
 
 export function getColor(x, y) {
-    console.log('monolith[y][x]', monolith[y][x], monolith[y][x].color);
+    console.log('monolith[y][x]', x, y, monolith[y][x]);
     return monolith[y][x].color;
 }
 

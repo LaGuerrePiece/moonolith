@@ -76,6 +76,7 @@ async function initialChunkImport() {
 
     // async function allChunks() {
     for (let i = 1; i <= meta.nbChunks; i++) {
+        if (i == 1 || i == 10 || i == 17) continue;
         getChunk(i).then((res) => {
             bufferOnMonolith({
                 buffer: base64ToBuffer(res[3]),
