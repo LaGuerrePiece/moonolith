@@ -9,7 +9,7 @@ export function buildMonolith() {
     monolith = Array.from({ length: Const.MONOLITH_LINES }, () =>
         Array.from({ length: Const.MONOLITH_COLUMNS }, () => new Klon(Const.DEFAULT_COLOR))
     );
-    console.log('monolith height :', Const.MONOLITH_LINES);
+    console.log('//     monolith initialized at ' + Const.MONOLITH_LINES + '    //');
 }
 
 export function drawPixel(x, y, zIndex, color) {
@@ -19,9 +19,6 @@ export function drawPixel(x, y, zIndex, color) {
     if (zIndex === 0) addToCurrentEvent(x, y, monolith[y][x]); //IF IT IS BEING DRAW BY USER, ADD TO CURRENT EVENT
     monolith[y][x] = new Klon(color, zIndex);
 }
-
-// if (zIndex === monolith[y][x].zIndex && ) return; ////////////////////////////////////TO DO : IF IS THE SAME COLOR, return
-// if (!klonsAreEqual(monolith[pos], klon)) {
 
 export function getColor(x, y) {
     console.log('monolith[y][x]', monolith[y][x], monolith[y][x].color);
@@ -40,7 +37,6 @@ export function eraseAllPixel() {
     closeCurrentEvent();
     console.log('eraseAllPixel');
     update();
-    //faire en sorte de call update() à ce moment là
 }
 
 export function erasePixel(x, y) {
@@ -68,8 +64,6 @@ export function getMonolithArray() {
     let monolithArray = [];
     const startY = Const.MONOLITH_LINES + Const.MARGIN_BOTTOM - viewPosY - renderHeight;
     const startX = viewPosX - Const.MARGIN_LEFT;
-    // console.log('startY', startY);
-    // console.log('startX', startX);
     for (let i = 0; i < renderHeight; i++) {
         for (let j = 0; j < renderWidth; j++) {
             if (monolith[startY + i]?.[startX + j]) {
@@ -79,6 +73,5 @@ export function getMonolithArray() {
             }
         }
     }
-    //console.log('monolithArray', monolithArray);
     return monolithArray;
 }

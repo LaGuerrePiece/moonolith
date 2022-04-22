@@ -20,21 +20,22 @@ export const windowHeight = window.innerHeight;
 export const windowWidth = window.innerWidth;
 export let renderWidth = Const.COLUMNS;
 const pixelSize = windowWidth / renderWidth;
-export let renderHeight = Math.floor(windowHeight / pixelSize) + 1;
-let InitialImports = 15;
+export let renderHeight = Math.ceil(windowHeight / pixelSize);
+let InitialImports = 13;
 
 async function initApp() {
-    await initialChunkImport().then((res) => {
-        buildMonolith();
-        initDisplay();
-        initialDecodeLandscape(InitialImports);
-        console.log('initApp done');
-    });
-
+    let initPerf = performance.now();
+    console.log('/////////   INITIALIZING APP   /////////');
+    await initialChunkImport();
+    initialDecodeLandscape(InitialImports);
+    buildMonolith();
+    initDisplay();
     lateDecodeLandscape(InitialImports);
+    console.log('//         End of init', Math.floor(performance.now() - initPerf), 'ms        //');
+    console.log('//////  INITIALIZATION COMPLETE   //////');
     setTimeout(() => {
         update();
-    }, 100);
+    }, 501);
 }
 
 initApp();
@@ -44,6 +45,7 @@ function initDisplay() {
     displayGrid.initialize(document.body);
     canvas = displayGrid.pixels.canvas;
     canvas.onmousedown = clickManager;
+    console.log('//      displayGrid initialized       //');
 }
 
 export function update() {
@@ -60,7 +62,6 @@ document.addEventListener('contextmenu', (e) => { e.preventDefault(); }, false);
 document.addEventListener('keydown', (e) => { keyManager(e) });
 //prettier-ignore
 window.onwheel = function (e) { scrollManager(e) };
-
 
 export function changeViewPos(inputX, inputY) {
     viewPosX += inputX;
@@ -85,7 +86,7 @@ export function zoom() {
         viewPosX = Math.floor(viewPosX - renderWidth / 2);
         viewPosY = Math.floor(viewPosY - renderHeight / 2);
         renderWidth = Const.COLUMNS;
-        renderHeight = Math.floor(windowHeight / pixelSize) + 1;
+        renderHeight = Math.ceil(windowHeight / pixelSize);
     }
     document.body.removeChild(displayGrid.pixels.canvas);
     initDisplay();

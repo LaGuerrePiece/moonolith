@@ -13,12 +13,11 @@ class Tool {
 
     static get DONE() { return 0 }
     static get SMOL() { return 1 }
-    static get PIPETTE() { return 2 }
     static get BIG() { return 3 }
     static get HUGE() { return 4 }
+    static get PIPETTE() { return 2 }
     static get MOVE() { return 5 }
     static get DELETE() { return 6 }
-
 }
 
 let tool = Tool.HUGE;
@@ -37,10 +36,10 @@ export function keyManager(e){
     if (e.key === 'm') { moveDrawing(50, 400); update() }
     if (e.key === 'y') zoom();
     if (e.key === 'i') importImage();
-    if (e.key === 'ArrowUp') { changeViewPos(0, 3); }
-    if (e.key === 'ArrowDown') { changeViewPos(0, -3); }
-    if (e.key === 'ArrowLeft') { changeViewPos(-3, 0); }
-    if (e.key === 'ArrowRight') { changeViewPos(3, 0); }
+    if (e.key === 'ArrowUp') { changeViewPos(0, 6); }
+    if (e.key === 'ArrowDown') { changeViewPos(0, -6); }
+    if (e.key === 'ArrowLeft') { changeViewPos(-6, 0); }
+    if (e.key === 'ArrowRight') { changeViewPos(6, 0); }
 }
 
 export function scrollManager(e) {
