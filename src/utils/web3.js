@@ -57,12 +57,9 @@ const getChunksFromPosition = async (min, max) => {
 };
 
 async function getMetaData() {
-    let [nbKlon, threshold, nbChunks] = await Promise.all([
-        contract.klonSum(),
-        contract.threshold(),
-        contract.totalSupply(),
-    ]);
-    return await { nbKlon: nbKlon.toNumber(), threshold: threshold.toNumber(), nbChunks: nbChunks.toNumber() };
+    let metadata =  await contract.getMonolithInfo();
+    console.log(metadata);
+    return  { nbKlon: metadata[2].toNumber(), threshold: metadata[1].toNumber(), nbChunks: metadata[0].toNumber() };
 }
 
 async function initialChunkImport() {
