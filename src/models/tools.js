@@ -99,7 +99,7 @@ function GUICircle(mousePos, GUIstartY, GUIstartX, y, x, radius) {
     // Coordinates of the center are input in the GUI
     y += GUIstartY;
     x += GUIstartX;
-    return Math.floor((mousePos.x - x) ** 2) + Math.floor((mousePos.y - y) ** 2) <= radius ** 2;
+    return Math.floor(mousePos.x - x) ** 2 + Math.floor(mousePos.y - y) ** 2 <= radius ** 2;
 }
 
 function startUsingTool(e, mousePos) {
