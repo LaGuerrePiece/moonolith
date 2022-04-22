@@ -122,20 +122,19 @@ async function importNewChunks() {
     if (previousNbChunks === meta.nbChunks) return;
     for (let i = 0; i < meta.nbChunks - previousNbChunks; i++) {
         getChunk(meta.nbChunks - i).then((res) => {
-            console.log('res', res);
             bufferOnMonolith({
                 buffer: base64ToBuffer(res[3]),
                 x: res[0].toNumber() % Const.MONOLITH_COLUMNS,
                 y: Math.floor(res[0].toNumber() / Const.MONOLITH_COLUMNS),
                 paid: res[2].toNumber(),
-                yMaxLegal: res[1].toNumber() * 4,
+                yMaxLegal: res[1].toNumber() * 4, // yMaxLegal à vérifier
                 zIndex: i,
-            }); // yMaxLegal à vérifier
+            }).then(() => {
+                update(true);
+            });
         });
     }
     previousNbChunks = meta.nbChunks;
-    //IL FAUT ENSUITE UPDATE LE DISPLAY Y COMPRIS LE MONOLITH
-    //MAIS SANS QUE LE VIEWPOS CHANGE
 }
 
 export { chunkCreator, getChunk, getChunksFromPosition, initialChunkImport, importNewChunks };

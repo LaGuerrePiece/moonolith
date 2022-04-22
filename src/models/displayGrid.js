@@ -1,4 +1,5 @@
 import pixelgrid from 'pixel-grid';
+import { assemble } from './assembler';
 
 /**
  * Classe de la Grille d'affichage
@@ -26,7 +27,7 @@ export default class DisplayGrid {
         this.nbRows = nbRows;
         this.options = options;
 
-        // la future instance de PixelGrid 
+        // la future instance de PixelGrid
         this.pixels = null;
 
         // les futures datas de PixelGrid
@@ -53,6 +54,11 @@ export default class DisplayGrid {
             ...this.options,
         });
         this.pixels.canvas.style.width = width;
+        // let framecounter = 0;
+        // this.pixels.frame(() => {
+        //     if (framecounter % 5 === 0) this.pixels.update(assemble());
+        //     framecounter++;
+        // });
     }
 
     updateDisplay(data) {

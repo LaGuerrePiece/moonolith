@@ -7,7 +7,7 @@ var previousViewPosY;
 var previousViewPosX;
 var previousLandscape;
 
-export function assemble() {
+export function assemble(force) {
     let startAssemble = performance.now();
     let displayArray = [];
     let layersToDisplay = [];
@@ -29,7 +29,7 @@ export function assemble() {
     });
 
     // Push landscape to layersToDisplay if viewPos changed
-    if (previousViewPosY !== viewPosY || previousViewPosX !== viewPosX) {
+    if (previousViewPosY !== viewPosY || previousViewPosX !== viewPosX || force) {
         for (let layer in imageCatalog) {
             const thisLayer = imageCatalog[layer];
             const parallaxOffset = Math.floor(thisLayer.parallax * viewPosY);

@@ -90,4 +90,5 @@ export function increaseMonolithHeight(newRows) {
         const thisLayer = imageCatalog[layer];
         if (thisLayer.type == 'side') thisLayer.startY += newRows;
     }
+    update(true);
 }

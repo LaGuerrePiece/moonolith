@@ -14,7 +14,6 @@ export let canvas;
 export let viewPosY = 0;
 export let viewPosX = 0;
 let lastCall = 0;
-export let displayData;
 
 export const windowHeight = window.innerHeight;
 export const windowWidth = window.innerWidth;
@@ -48,11 +47,9 @@ function initDisplay() {
     console.log('//      displayGrid initialized       //');
 }
 
-export function update() {
-    if (new Date() - lastCall < 30) return;
-    //data is the array of the displayed klons
-    displayData = assemble();
-    displayGrid.updateDisplay(displayData);
+export function update(force) {
+    if (new Date() - lastCall < 30 && !force) return;
+    displayGrid.updateDisplay(assemble(force));
     lastCall = new Date();
 }
 
