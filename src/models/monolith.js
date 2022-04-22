@@ -79,7 +79,6 @@ export function getMonolithArray() {
 
 export function increaseMonolithHeight(newRows) {
     console.log('increaseMonolithHeight');
-    console.log('monolith', monolith);
     Const.setMonolithHeight(Const.MONOLITH_LINES + newRows);
     monolith.push(
         ...Array.from({ length: newRows }, () =>
@@ -91,6 +90,4 @@ export function increaseMonolithHeight(newRows) {
         const thisLayer = imageCatalog[layer];
         if (thisLayer.type == 'side') thisLayer.startY += newRows;
     }
-
-    console.log('monolith', monolith);
 }
