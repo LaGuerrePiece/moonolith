@@ -6,7 +6,7 @@ import Const from '../models/constants';
 
 const provider = new ethers.providers.InfuraProvider('rinkeby');
 const iface = new Interface(contractABI);
-const contractAddress = '0x2E47CBDe82b8765055a73e6AC914e22a75b8b961';
+const contractAddress = '0x403e131b446fD8175F747709489B8b32981fF494';
 // const contractAddress = '0x2a1068d93BF2aD8a2b93b6DF8a6B607B3A648570';
 const contract = new ethers.Contract(contractAddress, contractABI, provider);
 
@@ -22,6 +22,7 @@ const chunkCreator = async (res) => {
     let overrides = {
         value: oneGwei.mul(res.nbPix),
     };
+    console.log("Minting: ", res.position, res.ymax, res.nbPix, res.imgURI);
     let tx = metamaskContract.mint_One_4d(res.position, res.ymax, res.nbPix, res.imgURI, overrides);
 };
 
