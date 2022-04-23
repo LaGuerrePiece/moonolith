@@ -25,7 +25,9 @@ export default class Klon {
      * Rend true si le klon est éditable, false sinon
      */
     isEditable(zIndex) {
-        return zIndex ? this.zIndex >= zIndex : !this.zIndex;
+        if (this.zIndex == Klon.USERPAINTED || this.zIndex == undefined) return true;
+        if (zIndex == Klon.USERPAINTED) return this.zIndex <= zIndex;
+        return this.zIndex >= zIndex;
     }
 
     static get USERPAINTED() {

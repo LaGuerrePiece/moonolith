@@ -1,7 +1,7 @@
 import UPNG from 'upng-js';
 import Klon from '../models/klon';
 import Const from '../models/constants';
-import { monolith, eraseAllPixel } from '../models/monolith';
+import { monolith, eraseAllPixel, drawPixel } from '../models/monolith';
 import { chunkCreator } from '../utils/web3';
 import { update } from '../main';
 
@@ -39,7 +39,6 @@ function pngToBufferToRGBA8(buffer) {
     });
 }
 
-
 async function bufferOnMonolith(data) {
     let rgba8 = await pngToBufferToRGBA8(data.buffer).catch(console.error);
     let pixelDrawn = 0;
@@ -50,12 +49,12 @@ async function bufferOnMonolith(data) {
             if (pixelDrawn >= data.paid) return;
             if (!monolith[y]?.[x]) continue;
             if (rgba8.buffer[decalage + 3] > 0) {
-                monolith[y][x].color = [
+                let color = [
                     rgba8.buffer[decalage] / 255,
                     rgba8.buffer[decalage + 1] / 255,
                     rgba8.buffer[decalage + 2] / 255,
                 ];
-                monolith[y][x].zIndex = data.zIndex;
+                drawPixel(x, y, data.zIndex, color);
                 pixelDrawn++;
             }
             decalage += 4;

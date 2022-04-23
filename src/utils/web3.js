@@ -68,7 +68,6 @@ async function getMetaData() {
 
 async function chunkImport() {
     let meta = await getMetaData();
-    console.log(`//     Metadata gotten: ${meta.nbChunks} chunks     //`);
 
     for (let i = previousNbChunks + 1; i <= meta.nbChunks - previousNbChunks; i++) {
         if (i == 1 || i == 10 || i == 17) continue;
@@ -90,7 +89,8 @@ async function chunkImport() {
         increaseMonolithHeight(monolithHeight - Const.MONOLITH_LINES);
         update(true);
     } else {
-    Const.setMonolithHeight(monolithHeight);
+        console.log(`//     Metadata gotten: ${meta.nbChunks} chunks     //`);
+        Const.setMonolithHeight(monolithHeight);
     }
 
     previousNbChunks = meta.nbChunks;
