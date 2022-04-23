@@ -3,6 +3,7 @@ import DisplayGrid from './models/displayGrid';
 import { initialDecodeLandscape, lateDecodeLandscape } from './assets/imageData';
 // Imports des fonctionnalités
 import { clickManager, keyManager, scrollManager } from './models/tools';
+import { newInitDisplay } from './models/newDisplayGrid';
 
 import Const from './models/constants';
 import { initialChunkImport, importNewChunks } from './utils/web3';
@@ -28,13 +29,13 @@ async function initApp() {
     await initialChunkImport();
     initialDecodeLandscape(InitialImports);
     buildMonolith();
-    initDisplay();
     lateDecodeLandscape(InitialImports);
     console.log('//         End of init', Math.floor(performance.now() - initPerf), 'ms        //');
     console.log('//////  INITIALIZATION COMPLETE   //////');
     setTimeout(() => {
+        newInitDisplay();
         update();
-    }, 501);
+    }, 20);
 }
 
 initApp();
@@ -48,9 +49,9 @@ function initDisplay() {
 }
 
 export function update(force) {
-    if (new Date() - lastCall < 30 && !force) return;
-    displayGrid.updateDisplay(assemble(force));
-    lastCall = new Date();
+    // if (new Date() - lastCall < 30 && !force) return;
+    // displayGrid.updateDisplay(assemble(force));
+    // lastCall = new Date();
 }
 
 //prettier-ignore

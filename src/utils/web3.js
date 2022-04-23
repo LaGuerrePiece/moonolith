@@ -73,7 +73,7 @@ async function initialChunkImport() {
     previousNbChunks = meta.nbChunks;
     const monolithHeightFormula = Const.COLUMNS * 64 + (meta.nbKlon * meta.threshold) / 1000000;
     const monolithHeight = Math.floor(monolithHeightFormula / Const.COLUMNS);
-    Const.setMonolithHeight(monolithHeight);
+    Const.setMonolithHeight(2000);
 
     // async function allChunks() {
     for (let i = 1; i <= meta.nbChunks; i++) {

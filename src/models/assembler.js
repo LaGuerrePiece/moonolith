@@ -1,11 +1,15 @@
 import { monolith } from './monolith';
 import { imageCatalog } from '../assets/imageData';
 import Const from './constants';
-import { renderWidth, renderHeight, viewPosX, viewPosY } from '../main';
+import { renderWidth, viewPosX } from '../main';
+
+var renderHeight = 2000;
+var viewPosY = 0;
 
 var previousViewPosY;
 var previousViewPosX;
 var previousLandscape;
+let firstTime = true;
 
 export function assemble(force) {
     let startAssemble = performance.now();
@@ -76,6 +80,12 @@ export function assemble(force) {
     }
 
     previousLandscape = displayArray;
-    // console.log('render', Math.floor(performance.now() - startAssemble), 'ms');
+    console.log('render', Math.floor(performance.now() - startAssemble), 'ms');
+    let startConvert = performance.now();
+    if (firstTime) displayArray.forEach((x) => x.push(1));
+    firstTime = false;
+    displayArray = displayArray.flat().map((x) => x * 255);
+    console.log('convert', Math.floor(performance.now() - startConvert), 'ms');
+
     return displayArray;
 }

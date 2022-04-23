@@ -14,6 +14,7 @@ import { closeCurrentEvent, undo, redo } from './undoStack';
 
 import { moveDrawing, bufferOnMonolith, saveToEthernity } from '../utils/imageManager';
 import Const from './constants';
+import { state, nbRows } from './newDisplayGrid';
 
 //prettier-ignore
 class Tool {
@@ -60,7 +61,16 @@ export function scrollManager(e) {
 
 export function clickManager(e) {
     let mousePos = mousePosInGrid(e);
-    //console.log('mousePos', mousePos);
+
+    console.log('mousePos', mousePos);
+    const mousePosInState = state.length + 4 * Const.COLUMNS * (mousePos.y - viewPosY - nbRows) + 4 * mousePos.x;
+    // console.log('mousePosInState', mousePosInState);
+    // state[mousePosInState] = 255;
+    // state[mousePosInState + 1] = 0;
+    // state[mousePosInState + 2] = 0;
+    // state[mousePosInState + 3] = 255;
+    // console.log('state', state);
+
     const GUIstartY = Math.floor((renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y);
     const GUIstartX = Math.floor((renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X);
     if (
@@ -96,9 +106,9 @@ export function clickManager(e) {
         if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 6, 3, 21, 3)) colorPicked = Const.RGB15;
         if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 7, 3, 21, 3)) colorPicked = Const.RGB16;
     } else {
-        //CASE MONOLITH OR LANDSCAPE
-        mousePos = convertToMonolithPos(mousePos);
-        if (mousePos) startUsingTool(e, mousePos);
+        // //CASE MONOLITH OR LANDSCAPE
+        // mousePos = convertToMonolithPos(mousePos);
+        // if (mousePos) startUsingTool(e, mousePos);
     }
 }
 
