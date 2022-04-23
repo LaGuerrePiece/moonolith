@@ -33,7 +33,6 @@ function saveToEthernity() {
 function pngToBufferToRGBA8(buffer) {
     return new Promise((resolve) => {
         buffer = UPNG.decode(buffer);
-        console.log(buffer);
         resolve(buffer);
     }).then((buffer) => {
         return { buffer: new Uint8Array(UPNG.toRGBA8(buffer)[0]), width: buffer.width, height: buffer.height };
@@ -43,18 +42,17 @@ function pngToBufferToRGBA8(buffer) {
 function pngToBufferToRGB(buffer) {
     return new Promise((resolve) => {
         buffer = UPNG.decode(buffer);
-        console.log(buffer);
         resolve(buffer);
     }).then((buffer) => {
         return { buffer: buffer.data, width: buffer.width, height: buffer.height };
     });
 }
 
-async function bufferOnMonolith(data) {
-    let rgba8 = await pngToBufferToRGB(data.buffer).catch(console.error);
-    console.log("Data from image:", rgba8);
+async function prepareBufferForApi(data)
+{
+    let rgba8 = await pngToBufferToRGB(data).catch(console.error);
+    //console.log("Data from image:", rgba8);
     let pixArray = decode4bitsArray(rgba8.buffer);
-    console.log(pixArray.length, rgba8.height, rgba8.height)
     while(pixArray[pixArray.length-1] === 0){ // virer les 0 de la fin
         pixArray.pop();
     }
@@ -63,7 +61,26 @@ async function bufferOnMonolith(data) {
         pixArray[pixArray.length - 2] = pixArray[pixArray.length - 1];
         pixArray[pixArray.length - 1] = 0;
     }
-    console.log("Decoded data:", pixArray);
+    let colors = [];
+    pixArray.forEach(pix => {
+        colors.push(hexToRgb(palette[pix]));
+    });
+    return [colors, rgba8.width, rgba8.height];
+}
+
+async function bufferOnMonolith(data) {
+    let rgba8 = await pngToBufferToRGB(data.buffer).catch(console.error);
+    //console.log("Data from image:", rgba8);
+    let pixArray = decode4bitsArray(rgba8.buffer);
+    while(pixArray[pixArray.length-1] === 0){ // virer les 0 de la fin
+        pixArray.pop();
+    }
+    if(pixArray.length > rgba8.height * rgba8.width) // corriger le tableau en cas de dernier entier qui coderait une seule valeur
+    {
+        pixArray[pixArray.length - 2] = pixArray[pixArray.length - 1];
+        pixArray[pixArray.length - 1] = 0;
+    }
+    //console.log("Decoded data:", pixArray);
     let pixelDrawn = 0;
     let p = 0;
     for (let y = data.y; y < data.yMaxLegal; y++) {
@@ -162,8 +179,8 @@ function gridToArray()
     while(encoded.length % 4 != 0){
         encoded.push(0);
     }
-    console.log("From drawing raw data:", raw)
-    console.log(encoded);
+    //console.log("From drawing raw data:", raw)
+    //console.log(encoded);
     return { highLow, nbPix, encoded};
 }
 function getHighLow() {
@@ -185,9 +202,9 @@ function getHighLow() {
 
     let longueur = highX - lowX + 1;
     let largeur = highY - lowY + 1;
-    console.log(
+    /*console.log(
         `lowX : ${lowX} | lowY : ${lowY} | highX : ${highX} | highY : ${highY} | longueur : ${longueur} | largeur : ${largeur}`
-    );
+    );*/
     return { lowX, lowY, highX, highY, longueur, largeur };
 }
 function addUintTo4bitArray(array, uint)
@@ -254,4 +271,4 @@ export function moveDrawing(x, y) {
     );
 }
 
-export { saveToEthernity, base64ToBuffer, pngToBufferToRGBA8, bufferOnMonolith };
+export { saveToEthernity, base64ToBuffer, pngToBufferToRGBA8, pngToBufferToRGB, prepareBufferForApi, bufferOnMonolith };

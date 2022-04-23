@@ -5,9 +5,10 @@ import { initialDecodeLandscape, lateDecodeLandscape } from './assets/imageData'
 import { clickManager, keyManager, scrollManager } from './models/tools';
 
 import Const from './models/constants';
-import { initialChunkImport } from './utils/web3';
+import { initialChunkImport, getChunk } from './utils/web3';
 import { assemble } from './models/assembler';
 import { buildMonolith } from './models/monolith';
+import { base64ToBuffer, pngToBufferToRGB, prepareBufferForApi } from './utils/imageManager';
 
 let displayGrid;
 export let canvas;
@@ -24,18 +25,24 @@ export let renderHeight = Math.ceil(windowHeight / pixelSize);
 let InitialImports = 13;
 
 async function initApp() {
-    let initPerf = performance.now();
-    console.log('/////////   INITIALIZING APP   /////////');
-    await initialChunkImport();
-    initialDecodeLandscape(InitialImports);
-    buildMonolith();
-    initDisplay();
-    lateDecodeLandscape(InitialImports);
-    console.log('//         End of init', Math.floor(performance.now() - initPerf), 'ms        //');
-    console.log('//////  INITIALIZATION COMPLETE   //////');
-    setTimeout(() => {
+    let splittedUri=document.URL.split('/runes/');
+    if(!isNaN(splittedUri[1]) && !isNaN(parseInt(splittedUri[1]))){ // si on tape sur l'api
+        initApiDisplay(splittedUri[1]);
+    } else {
+        let initPerf = performance.now();
+        console.log('/////////   INITIALIZING APP   /////////');
+        await initialChunkImport();
+        initialDecodeLandscape(InitialImports);
+        buildMonolith();
+        initDisplay();
+        lateDecodeLandscape(InitialImports);
+        console.log('//         End of init', 
+        Math.floor(performance.now() - initPerf), 'ms        //');
+        console.log('//////  INITIALIZATION COMPLETE   //////');
+        setTimeout(() => {
         update();
-    }, 501);
+        }, 501);
+    } 
 }
 
 initApp();
@@ -45,8 +52,31 @@ function initDisplay() {
     displayGrid.initialize(document.body);
     canvas = displayGrid.pixels.canvas;
     canvas.onmousedown = clickManager;
-    console.log('//      displayGrid initialized       //');
+    console.log('//      displayGrid initialized       //');   
 }
+
+function initApiDisplay(id){
+    getChunk(parseInt(id)).then((chunk) => {
+        prepareBufferForApi(base64ToBuffer(chunk[3])).then((data)=> {
+           let dataToDisplay = Array.from(data[0]);
+           console.log(dataToDisplay);
+           //while(dataToDisplay[dataToDisplay.length - 1][0] == dataToDisplay[dataToDisplay.length - 1][1] && 
+            //dataToDisplay[dataToDisplay.length - 1][0]  == dataToDisplay[dataToDisplay.length - 1][2] == 0)
+            console.log(dataToDisplay.length, data[1]*data[2]);
+            while(dataToDisplay.length < data[1]*data[2])
+            {
+                dataToDisplay.push[0, 0, 0];
+            }
+            console.log(dataToDisplay.length, data[1]*data[2]);
+           displayGrid = new DisplayGrid(data[1], data[2]);
+           displayGrid.initialize(document.body);
+           canvas = displayGrid.pixels.canvas;
+           displayGrid.updateDisplay(data[0]);
+       });
+    });
+}
+
+
 
 export function update() {
     if (new Date() - lastCall < 10) return;
