@@ -1,14 +1,14 @@
 import Klon from './klon';
 import Const from './constants';
 import { addToCurrentEvent, closeCurrentEvent } from './undoStack';
-import { renderWidth, renderHeight, viewPosX, viewPosY, update } from '../main';
+import { renderWidth, renderHeight, viewPosX, viewPosY } from '../main';
 import { imageCatalog } from '../assets/imageData';
 
 export let monolith;
 
 export function buildMonolith() {
     monolith = Array.from({ length: Const.MONOLITH_LINES }, () =>
-        Array.from({ length: Const.MONOLITH_COLUMNS }, () => new Klon(Const.DEFAULT_COLOR))
+        Array.from({ length: Const.MONOLITH_COLUMNS }, () => new Klon([30, 30, 40, 255]))
     );
     console.log('//     monolith initialized at ' + Const.MONOLITH_LINES + '    //');
 }
@@ -18,7 +18,7 @@ export function drawPixel(x, y, zIndex, color) {
     if (!monolith[y][x].isEditable(zIndex)) return; //IF IT IS NOT EDITABLE, return
     // if (monolith[y][x].color === color && monolith[y][x].zIndex === zIndex) return; //IF IT IS THE SAME, return
     if (zIndex === 0) addToCurrentEvent(x, y, monolith[y][x]); //IF IT IS BEING DRAW BY USER, ADD TO CURRENT EVENT
-    monolith[y][x] = new Klon(color, zIndex);
+    monolith[y][x] = new Klon([255, 0, 0, 255], zIndex);
 }
 
 export function getColor(x, y) {
@@ -59,22 +59,6 @@ export function convertToMonolithPos(mousePos) {
     if (mousePos.x < 0 || mousePos.x >= Const.MONOLITH_COLUMNS || mousePos.y < 0 || mousePos.y >= Const.MONOLITH_LINES)
         return undefined;
     return mousePos;
-}
-
-export function getMonolithArray() {
-    let monolithArray = [];
-    const startY = Const.MONOLITH_LINES + Const.MARGIN_BOTTOM - viewPosY - renderHeight;
-    const startX = viewPosX - Const.MARGIN_LEFT;
-    for (let i = 0; i < renderHeight; i++) {
-        for (let j = 0; j < renderWidth; j++) {
-            if (monolith[startY + i]?.[startX + j]) {
-                monolithArray.push(monolith[startY + i][startX + j].color);
-            } else {
-                monolithArray.push(undefined);
-            }
-        }
-    }
-    return monolithArray;
 }
 
 export function increaseMonolithHeight(newRows) {

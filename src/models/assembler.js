@@ -1,15 +1,11 @@
 import { monolith } from './monolith';
 import { imageCatalog } from '../assets/imageData';
 import Const from './constants';
-import { renderWidth, viewPosX } from '../main';
-
-var renderHeight = 2000;
-var viewPosY = 0;
+import { renderHeight, renderWidth, viewPosX, viewPosY } from '../main';
 
 var previousViewPosY;
 var previousViewPosX;
-var previousLandscape;
-let firstTime = true;
+// var previousLandscape;
 
 export function assemble(force) {
     let startAssemble = performance.now();
@@ -20,9 +16,7 @@ export function assemble(force) {
     layersToDisplay.push({
         name: 'GUI',
         colorsArray: imageCatalog.GUI.decodedYX,
-        // startY: 0,
         startY: Math.floor(-(renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y),
-        // startX: 0,
         startX: Math.floor(-(renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X),
     });
     layersToDisplay.push({
@@ -53,14 +47,12 @@ export function assemble(force) {
         previousViewPosX = viewPosX;
     } else {
         // If viewPos didn't change, push previous landscape
-        displayArray = previousLandscape;
+        // displayArray = previousLandscape;
     }
 
-    // Iterate over each pixel and push colors to displayArray
     for (let y = 0; y < renderHeight; y++) {
         for (let x = 0; x < renderWidth; x++) {
-            for (let z = 0; z < layersToDisplay.length; z++) {
-                const layer = layersToDisplay[z];
+            for (let layer of layersToDisplay) {
                 const array = layer.colorsArray;
                 const startY = layer.startY;
                 const startX = layer.startX;
@@ -68,24 +60,22 @@ export function assemble(force) {
                 if (startY + y < 0 || startX + x < 0) continue; // If pixel is out of bounds in this layer, skip it
                 const pixel = array[startY + y]?.[startX + x];
                 if (!pixel) continue;
-
-                displayArray[y * renderWidth + x] = pixel.color ? pixel.color : pixel;
+                if (layer.name === 'monolith') displayArray.push(pixel.color[0], pixel.color[1], pixel.color[2], 255);
+                else displayArray.push(pixel[0], pixel[1], pixel[2], 255);
+                // displayArray[y * renderWidth + x] = pixel[0];
+                // displayArray[y * renderWidth + x + 1] = pixel[1];
+                // displayArray[y * renderWidth + x + 2] = pixel[2];
+                // displayArray[y * renderWidth + x + 3] = 255;
                 break;
             }
             // if no color found, set to default color
-            if (!displayArray[y * renderWidth + x]) {
-                displayArray[y * renderWidth + x] = Const.SKY_COLOR;
-            }
+            // if (!displayArray[y * renderWidth + x]) {
+            //     displayArray[y * renderWidth + x] = Const.SKY_COLOR;
+            // }
         }
     }
-
-    previousLandscape = displayArray;
+    // previousLandscape = displayArray;
     console.log('render', Math.floor(performance.now() - startAssemble), 'ms');
-    let startConvert = performance.now();
-    if (firstTime) displayArray.forEach((x) => x.push(1));
-    firstTime = false;
-    displayArray = displayArray.flat().map((x) => x * 255);
-    console.log('convert', Math.floor(performance.now() - startConvert), 'ms');
 
     return displayArray;
 }

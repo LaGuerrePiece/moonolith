@@ -62,9 +62,10 @@ async function decodeAndFormatLayer(index) {
         for (let x = 0; x < width; x++) {
             if (buffer[(x + y * width) * 4 + 3] === 0) continue;
             convertedYX[y][x] = [
-                buffer[(x + y * width) * 4] / 255,
-                buffer[(x + y * width) * 4 + 1] / 255,
-                buffer[(x + y * width) * 4 + 2] / 255,
+                buffer[(x + y * width) * 4],
+                buffer[(x + y * width) * 4 + 1],
+                buffer[(x + y * width) * 4 + 2],
+                255,
             ];
         }
     }

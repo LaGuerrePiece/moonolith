@@ -1,5 +1,5 @@
 //prettier-ignore
-import {update, canvas, windowHeight, windowWidth, renderWidth, renderHeight, changeViewPos, viewPosX, viewPosY, zoom} from '../main';
+import { windowHeight, windowWidth, renderWidth, renderHeight, changeViewPos, viewPosX, viewPosY, zoom, canvas} from '../main';
 import { imageCatalog } from '../assets/imageData';
 import {
     drawPixel,
@@ -14,7 +14,6 @@ import { closeCurrentEvent, undo, redo } from './undoStack';
 
 import { moveDrawing, bufferOnMonolith, saveToEthernity } from '../utils/imageManager';
 import Const from './constants';
-import { state, nbRows } from './newDisplayGrid';
 
 //prettier-ignore
 class Tool {
@@ -41,7 +40,7 @@ export function keyManager(e){
     if (e.metaKey && e.key === 'y') redo();
     if (e.key === 'x') eraseAllPixel();
     if (e.key === 'c') console.log('Total H', Const.COLUMNS, 'Total W', Const.LINES, 'render W', renderWidth, 'render H', renderHeight, 'viewPosX', viewPosX, 'viewPosY', viewPosY, 'mousePos', mousePosInGrid(e).x, mousePosInGrid(e).y);
-    if (e.key === 'm') { moveDrawing(50, 400); update() }
+    if (e.key === 'm') { moveDrawing(50, 400) }
     if (e.key === 'y') zoom();
     if (e.key === 'i') importImage();
     if (e.key === 'p') increaseMonolithHeight(1000)
@@ -63,13 +62,6 @@ export function clickManager(e) {
     let mousePos = mousePosInGrid(e);
 
     console.log('mousePos', mousePos);
-    const mousePosInState = state.length + 4 * Const.COLUMNS * (mousePos.y - viewPosY - nbRows) + 4 * mousePos.x;
-    // console.log('mousePosInState', mousePosInState);
-    // state[mousePosInState] = 255;
-    // state[mousePosInState + 1] = 0;
-    // state[mousePosInState + 2] = 0;
-    // state[mousePosInState + 3] = 255;
-    // console.log('state', state);
 
     const GUIstartY = Math.floor((renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y);
     const GUIstartX = Math.floor((renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X);
@@ -107,8 +99,8 @@ export function clickManager(e) {
         if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 7, 3, 21, 3)) colorPicked = Const.RGB16;
     } else {
         // //CASE MONOLITH OR LANDSCAPE
-        // mousePos = convertToMonolithPos(mousePos);
-        // if (mousePos) startUsingTool(e, mousePos);
+        mousePos = convertToMonolithPos(mousePos);
+        if (mousePos) startUsingTool(e, mousePos);
     }
 }
 
@@ -164,7 +156,6 @@ function useTool(e) {
             moveDrawing(mousePos.x, mousePos.y);
             break;
     }
-    update();
 }
 
 function useDeleteTool(e) {
@@ -190,7 +181,6 @@ function useDeleteTool(e) {
             }
             break;
     }
-    update();
 }
 
 function brushSwitch() {

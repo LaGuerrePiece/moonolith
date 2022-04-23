@@ -3,7 +3,6 @@ import { Interface } from 'ethers/lib/utils';
 import contractABI from '../utils/abi.json';
 import { base64ToBuffer, bufferOnMonolith } from './imageManager';
 import Const from '../models/constants';
-import { update } from '../main';
 import { increaseMonolithHeight } from '../models/monolith';
 
 const provider = new ethers.providers.InfuraProvider('rinkeby');
