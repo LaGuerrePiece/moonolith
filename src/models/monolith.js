@@ -78,21 +78,15 @@ export function getMonolithArray() {
 }
 
 export function increaseMonolithHeight(newRows) {
-
     for (let rowAdded = 0; rowAdded < newRows; rowAdded++) {
         let scalingValue = 1000 * Math.log(rowAdded);
         setTimeout(() => {
-            oldScalingValue = scalingValue;
             Const.setMonolithHeight(Const.MONOLITH_LINES + 1);
-            monolith.push(
-                ...Array.from({ length: 1 }, () =>
-                    Array.from({ length: Const.MONOLITH_COLUMNS }, () => new Klon(Const.DEFAULT_COLOR))
-                )
-            );
+            monolith.push(...[Array.from({ length: Const.MONOLITH_COLUMNS }, () => new Klon(Const.DEFAULT_COLOR))]);
             //MET A JOUR LES STARTY :
             for (let layer in imageCatalog) {
                 const thisLayer = imageCatalog[layer];
-                if (thisLayer.type == 'side') thisLayer.startY++;
+                if (thisLayer.type === 'side') thisLayer.startY++;
             }
             update(true);
         }, scalingValue + 15 * rowAdded);

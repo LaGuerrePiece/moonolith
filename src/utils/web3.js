@@ -4,6 +4,7 @@ import contractABI from '../utils/abi.json';
 import { base64ToBuffer, bufferOnMonolith } from './imageManager';
 import Const from '../models/constants';
 import { update } from '../main';
+import { increaseMonolithHeight } from '../models/monolith';
 
 const provider = new ethers.providers.InfuraProvider('rinkeby');
 const iface = new Interface(contractABI);
@@ -120,7 +121,9 @@ async function initialChunkImport() {
 async function importNewChunks() {
     const meta = await getMetaData();
     // console.log('checked for new chunks, found', meta.nbChunks - previousNbChunks);
-    if (previousNbChunks === meta.nbChunks) return;
+    // if (previousNbChunks === meta.nbChunks) return;
+
+    // Write new chunks on monolith
     for (let i = 0; i < meta.nbChunks - previousNbChunks; i++) {
         getChunk(meta.nbChunks - i).then((res) => {
             bufferOnMonolith({
@@ -136,6 +139,13 @@ async function importNewChunks() {
         });
     }
     previousNbChunks = meta.nbChunks;
+
+    // Compute the number of rows to add
+    const monolithHeightFormula = Const.COLUMNS * 64 + (meta.nbKlon * meta.threshold) / 1000000;
+    const newMonolithHeight = Math.floor(monolithHeightFormula / Const.COLUMNS);
+    const newRows = newMonolithHeight - Const.MONOLITH_LINES;
+    // Initiate animation and increase monolith height
+    increaseMonolithHeight(newRows);
 }
 
 export { chunkCreator, getChunk, getChunksFromPosition, initialChunkImport, importNewChunks };
