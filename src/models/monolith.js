@@ -78,14 +78,10 @@ export function getMonolithArray() {
 }
 
 export function increaseMonolithHeight(newRows) {
-    console.log('increaseMonolithHeight');
-    console.log();
 
     for (let rowAdded = 0; rowAdded < newRows; rowAdded++) {
-        let oldScalingValue;
-        let scalingValue = 1000 * (Math.log(rowAdded) / Math.log(2) + 1);
+        let scalingValue = 1000 * Math.log(rowAdded);
         setTimeout(() => {
-            console.log('rowAdded', rowAdded, oldScalingValue - scalingValue);
             oldScalingValue = scalingValue;
             Const.setMonolithHeight(Const.MONOLITH_LINES + 1);
             monolith.push(
@@ -99,6 +95,6 @@ export function increaseMonolithHeight(newRows) {
                 if (thisLayer.type == 'side') thisLayer.startY++;
             }
             update(true);
-        }, scalingValue);
+        }, scalingValue + 15 * rowAdded);
     }
 }
