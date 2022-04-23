@@ -1,6 +1,6 @@
 // Imports des composants
 import DisplayGrid from './models/displayGrid';
-import { initialDecodeLandscape, lateDecodeLandscape } from './assets/imageData';
+import { initialDecodeLandscape, lateDecodeLandscape, initialDecodeAnim } from './assets/imageData';
 // Imports des fonctionnalités
 import { clickManager, keyManager, scrollManager } from './models/tools';
 
@@ -29,6 +29,7 @@ async function initApp() {
     await chunkImport();
     initialDecodeLandscape(InitialImports);
     buildMonolith();
+    initialDecodeAnim(InitialImports);
     initDisplay();
     lateDecodeLandscape(InitialImports);
     console.log('//         End of init', Math.floor(performance.now() - initPerf), 'ms        //');

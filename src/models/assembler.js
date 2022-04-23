@@ -1,5 +1,5 @@
 import { monolith } from './monolith';
-import { imageCatalog } from '../assets/imageData';
+import { imageCatalog, animationCatalog } from '../assets/imageData';
 import Const from './constants';
 import { renderWidth, renderHeight, viewPosX, viewPosY } from '../main';
 
@@ -12,7 +12,7 @@ export function assemble(force) {
     let displayArray = [];
     let layersToDisplay = [];
 
-    // Push GUI and Monolith to layersToDisplay
+    // Push GUI to layersToDisplay
     layersToDisplay.push({
         name: 'GUI',
         colorsArray: imageCatalog.GUI.decodedYX,
@@ -21,6 +21,19 @@ export function assemble(force) {
         // startX: 0,
         startX: Math.floor(-(renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X),
     });
+
+    // Push animations to layersToDisplay
+    for (let animation in animationCatalog) {
+        const thisAnim = animationCatalog[animation];
+        layersToDisplay.push({
+            name: thisAnim.name,
+            colorsArray: thisAnim.decodedYX,
+            startY: thisAnim.startY - viewPosY - renderHeight,
+            startX: viewPosX - thisAnim.startX,
+        });
+    }
+
+    // Push monolith to layersToDisplay
     layersToDisplay.push({
         name: 'monolith',
         colorsArray: monolith,
@@ -28,7 +41,7 @@ export function assemble(force) {
         startX: viewPosX - Const.MARGIN_LEFT,
     });
 
-    // Push landscape to layersToDisplay if viewPos changed
+    // Push landscape to layersToDisplay if viewPos changed or update forced
     if (previousViewPosY !== viewPosY || previousViewPosX !== viewPosX || force) {
         for (let layer in imageCatalog) {
             const thisLayer = imageCatalog[layer];
@@ -48,7 +61,6 @@ export function assemble(force) {
         previousViewPosY = viewPosY;
         previousViewPosX = viewPosX;
     } else {
-        // If viewPos didn't change, push previous landscape
         displayArray = previousLandscape;
     }
 

@@ -30,6 +30,74 @@ function saveToEthernity() {
     });
 }
 
+async function APNGtoMonolith(buffer) {
+    new Promise((resolve) => {
+        buffer = UPNG.decode(buffer);
+        resolve(buffer);
+    }).then((buffer) => {
+        console.log('anim buffer', buffer);
+        for (let frame = 0; frame < 51; frame++) {
+            let decodedFrame = UPNG.toRGBA8(buffer)[frame];
+            // console.log('decodedFrame', frame, decodedFrame);
+
+            setTimeout(() => {
+                animBufferOnMonolith({
+                    buffer: new Uint8Array(decodedFrame),
+                    width: buffer.width,
+                    height: buffer.height,
+                    x: 5,
+                    y: 45,
+                    zIndex: 0,
+                    paid: 99999,
+                });
+                update();
+                eraseAllPixel();
+            }, 100 * frame);
+        }
+    });
+
+    async function animBufferOnMonolith(data) {
+        let pixelDrawn = 0;
+        let decalage = 0;
+        for (let y = data.y; y < 350; y++) {
+            for (let x = data.x; x < data.width + data.x; x++) {
+                if (pixelDrawn >= data.paid) return;
+                if (!monolith[y]?.[x]) continue;
+                if (data.buffer[decalage + 3] > 0) {
+                    monolith[y][x].color = [
+                        data.buffer[decalage] / 255,
+                        data.buffer[decalage + 1] / 255,
+                        data.buffer[decalage + 2] / 255,
+                    ];
+                    monolith[y][x].zIndex = data.zIndex;
+                    pixelDrawn++;
+                }
+                decalage += 4;
+            }
+        }
+    }
+}
+
+export async function ApngToBuffer(buffer) {
+    return new Promise((resolve) => {
+        buffer = UPNG.decode(buffer);
+        resolve(buffer);
+    }).then((buffer) => {
+        console.log('anim buffer', buffer);
+        let framesArray = [];
+        for (let frame = 0; frame < 51; frame++) {
+            let decodedFrame = UPNG.toRGBA8(buffer)[frame];
+            framesArray.push(new Uint8Array(decodedFrame));
+        }
+        return {
+            decodedYX: new Uint8Array(UPNG.toRGBA8(buffer)[0]),
+            frames: framesArray,
+            height: buffer.height,
+            width: buffer.width,
+        };
+    });
+}
+
 function pngToBufferToRGBA8(buffer) {
     return new Promise((resolve) => {
         buffer = UPNG.decode(buffer);
@@ -211,54 +279,6 @@ export function moveDrawing(x, y) {
         drawing.highLow.longueur,
         drawing.highLow.largeur
     );
-}
-
-async function APNGtoMonolith(buffer) {
-    new Promise((resolve) => {
-        buffer = UPNG.decode(buffer);
-        resolve(buffer);
-    }).then((buffer) => {
-        console.log('anim buffer', buffer);
-        for (let frame = 0; frame < 51; frame++) {
-            let decodedFrame = UPNG.toRGBA8(buffer)[frame];
-            // console.log('decodedFrame', frame, decodedFrame);
-
-            setTimeout(() => {
-                animBufferOnMonolith({
-                    buffer: new Uint8Array(decodedFrame),
-                    width: buffer.width,
-                    height: buffer.height,
-                    x: 5,
-                    y: 5,
-                    zIndex: 0,
-                    paid: 99999,
-                });
-                update();
-                eraseAllPixel();
-            }, 100 * frame);
-        }
-    });
-
-    async function animBufferOnMonolith(data) {
-        let pixelDrawn = 0;
-        let decalage = 0;
-        for (let y = data.y; y < 350; y++) {
-            for (let x = data.x; x < data.width + data.x; x++) {
-                if (pixelDrawn >= data.paid) return;
-                if (!monolith[y]?.[x]) continue;
-                if (data.buffer[decalage + 3] > 0) {
-                    monolith[y][x].color = [
-                        data.buffer[decalage] / 255,
-                        data.buffer[decalage + 1] / 255,
-                        data.buffer[decalage + 2] / 255,
-                    ];
-                    monolith[y][x].zIndex = data.zIndex;
-                    pixelDrawn++;
-                }
-                decalage += 4;
-            }
-        }
-    }
 }
 
 export { saveToEthernity, base64ToBuffer, pngToBufferToRGBA8, bufferOnMonolith, APNGtoMonolith };
