@@ -79,16 +79,26 @@ export function getMonolithArray() {
 
 export function increaseMonolithHeight(newRows) {
     console.log('increaseMonolithHeight');
-    Const.setMonolithHeight(Const.MONOLITH_LINES + newRows);
-    monolith.push(
-        ...Array.from({ length: newRows }, () =>
-            Array.from({ length: Const.MONOLITH_COLUMNS }, () => new Klon(Const.DEFAULT_COLOR))
-        )
-    );
-    //MET A JOUR LES STARTY :
-    for (let layer in imageCatalog) {
-        const thisLayer = imageCatalog[layer];
-        if (thisLayer.type == 'side') thisLayer.startY += newRows;
+    console.log();
+
+    for (let rowAdded = 0; rowAdded < newRows; rowAdded++) {
+        let oldScalingValue;
+        let scalingValue = 1000 * (Math.log(rowAdded) / Math.log(2) + 1);
+        setTimeout(() => {
+            console.log('rowAdded', rowAdded, oldScalingValue - scalingValue);
+            oldScalingValue = scalingValue;
+            Const.setMonolithHeight(Const.MONOLITH_LINES + 1);
+            monolith.push(
+                ...Array.from({ length: 1 }, () =>
+                    Array.from({ length: Const.MONOLITH_COLUMNS }, () => new Klon(Const.DEFAULT_COLOR))
+                )
+            );
+            //MET A JOUR LES STARTY :
+            for (let layer in imageCatalog) {
+                const thisLayer = imageCatalog[layer];
+                if (thisLayer.type == 'side') thisLayer.startY++;
+            }
+            update(true);
+        }, scalingValue);
     }
-    update(true);
 }

@@ -43,7 +43,7 @@ export function keyManager(e){
     if (e.key === 'm') { moveDrawing(50, 400); update() }
     if (e.key === 'y') zoom();
     if (e.key === 'i') importImage();
-    if (e.key === 'p') increaseMonolithHeight(10)
+    if (e.key === 'p') increaseMonolithHeight(1000)
     if (e.key === 'ArrowUp') { changeViewPos(0, 6); }
     if (e.key === 'ArrowDown') { changeViewPos(0, -6); }
     if (e.key === 'ArrowLeft') { changeViewPos(-6, 0); }
