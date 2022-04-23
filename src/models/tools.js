@@ -12,7 +12,7 @@ import {
 import Klon from './klon';
 import { closeCurrentEvent, undo, redo } from './undoStack';
 
-import { moveDrawing, bufferOnMonolith, saveToEthernity } from '../utils/imageManager';
+import { moveDrawing, bufferOnMonolith, saveToEthernity, APNGtoMonolith } from '../utils/imageManager';
 import Const from './constants';
 
 //prettier-ignore
@@ -229,11 +229,12 @@ function importImage() {
             bufferOnMonolith({
                 buffer: importedImage,
                 x: 1,
-                y: 400,
+                y: 1,
                 paid: Const.FREE_DRAWING,
                 yMaxLegal: Const.FREE_DRAWING,
                 zIndex: Klon.USERPAINTED,
             });
+            APNGtoMonolith(importedImage);
 
             //! NE PAS SUPPRIMER LES LIGNES CI-DESSOUS !//
             let base64 = btoa(

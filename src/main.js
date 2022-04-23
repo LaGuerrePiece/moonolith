@@ -5,7 +5,7 @@ import { initialDecodeLandscape, lateDecodeLandscape } from './assets/imageData'
 import { clickManager, keyManager, scrollManager } from './models/tools';
 
 import Const from './models/constants';
-import { initialChunkImport, importNewChunks } from './utils/web3';
+import { chunkImport } from './utils/web3';
 import { assemble } from './models/assembler';
 import { buildMonolith } from './models/monolith';
 
@@ -14,6 +14,7 @@ export let canvas;
 export let viewPosY = 0;
 export let viewPosX = 0;
 let lastCall = 0;
+let frameRate = 10;
 
 export const windowHeight = window.innerHeight;
 export const windowWidth = window.innerWidth;
@@ -25,7 +26,7 @@ let InitialImports = 13;
 async function initApp() {
     let initPerf = performance.now();
     console.log('/////////   INITIALIZING APP   /////////');
-    await initialChunkImport();
+    await chunkImport();
     initialDecodeLandscape(InitialImports);
     buildMonolith();
     initDisplay();
@@ -48,7 +49,7 @@ function initDisplay() {
 }
 
 export function update(force) {
-    if (new Date() - lastCall < 30 && !force) return;
+    if (new Date() - lastCall < frameRate && !force) return;
     displayGrid.updateDisplay(assemble(force));
     lastCall = new Date();
 }
@@ -93,7 +94,7 @@ export function zoom() {
 }
 
 setInterval(() => {
-    importNewChunks();
+    chunkImport();
 }, 5000);
 
 // TENTATIVE DE POINTEUR

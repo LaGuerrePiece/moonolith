@@ -3,6 +3,7 @@ import Klon from '../models/klon';
 import Const from '../models/constants';
 import { monolith, eraseAllPixel } from '../models/monolith';
 import { chunkCreator } from '../utils/web3';
+import { update } from '../main';
 
 const palette = [
     '#000000',
@@ -37,6 +38,7 @@ function pngToBufferToRGBA8(buffer) {
         return { buffer: new Uint8Array(UPNG.toRGBA8(buffer)[0]), width: buffer.width, height: buffer.height };
     });
 }
+
 
 async function bufferOnMonolith(data) {
     let rgba8 = await pngToBufferToRGBA8(data.buffer).catch(console.error);
@@ -87,18 +89,16 @@ function monolithToBase64But4Bits(grid) {
     });
 }
 
-function encode4bits(grid)
-{
+function encode4bits(grid) {
     console.log(grid);
     let { highLow, saveArray, nbPix, firstPix } = gridToArray(grid);
     saveArray = new Uint8Array(saveArray);
     console.log(saveArray);
     let encoded = [];
-    for(let i = 0; i< saveArray.length; i+=4)
-    {
-        console.log(saveArray[i], saveArray[i+1],  saveArray[i+2]);
-        let hex = RGBToHex(saveArray[i]/255, saveArray[i+1]/255,  saveArray[i+2]/255);
-        console.log(hex)
+    for (let i = 0; i < saveArray.length; i += 4) {
+        console.log(saveArray[i], saveArray[i + 1], saveArray[i + 2]);
+        let hex = RGBToHex(saveArray[i] / 255, saveArray[i + 1] / 255, saveArray[i + 2] / 255);
+        console.log(hex);
         let c = parseInt(getKeyByValue(palette, hex));
         console.log(c);
         addUintTo4bitArray(encoded, c);
@@ -116,7 +116,6 @@ function bufferToBase64(buffer) {
     }
     return window.btoa(binary);
 }
-
 
 function saveLocally(base64) {
     var elementA = document.createElement('a'); //On crée un element vide pour forcer le téléchargement
@@ -192,7 +191,7 @@ function componentToHex(c) {
     return hex.length == 1 ? '0' + hex : hex;
 }
 function getKeyByValue(object, value) {
-    return Object.keys(object).find(key => object[key] === value);
+    return Object.keys(object).find((key) => object[key] === value);
 }
 export function moveDrawing(x, y) {
     //TODO : À BOUGER DANS TOOLS ?
@@ -215,4 +214,52 @@ export function moveDrawing(x, y) {
     );
 }
 
-export { saveToEthernity, base64ToBuffer, pngToBufferToRGBA8, bufferOnMonolith };
+async function APNGtoMonolith(buffer) {
+    new Promise((resolve) => {
+        buffer = UPNG.decode(buffer);
+        resolve(buffer);
+    }).then((buffer) => {
+        console.log('anim buffer', buffer);
+        for (let frame = 0; frame < 51; frame++) {
+            let decodedFrame = UPNG.toRGBA8(buffer)[frame];
+            // console.log('decodedFrame', frame, decodedFrame);
+
+            setTimeout(() => {
+                animBufferOnMonolith({
+                    buffer: new Uint8Array(decodedFrame),
+                    width: buffer.width,
+                    height: buffer.height,
+                    x: 5,
+                    y: 5,
+                    zIndex: 0,
+                    paid: 99999,
+                });
+                update();
+                eraseAllPixel();
+            }, 100 * frame);
+        }
+    });
+
+    async function animBufferOnMonolith(data) {
+        let pixelDrawn = 0;
+        let decalage = 0;
+        for (let y = data.y; y < 350; y++) {
+            for (let x = data.x; x < data.width + data.x; x++) {
+                if (pixelDrawn >= data.paid) return;
+                if (!monolith[y]?.[x]) continue;
+                if (data.buffer[decalage + 3] > 0) {
+                    monolith[y][x].color = [
+                        data.buffer[decalage] / 255,
+                        data.buffer[decalage + 1] / 255,
+                        data.buffer[decalage + 2] / 255,
+                    ];
+                    monolith[y][x].zIndex = data.zIndex;
+                    pixelDrawn++;
+                }
+                decalage += 4;
+            }
+        }
+    }
+}
+
+export { saveToEthernity, base64ToBuffer, pngToBufferToRGBA8, bufferOnMonolith, APNGtoMonolith };
