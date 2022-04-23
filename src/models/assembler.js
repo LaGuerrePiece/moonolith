@@ -49,7 +49,7 @@ export function assemble(force) {
         // If viewPos didn't change, push previous landscape
         // displayArray = previousLandscape;
     }
-
+    // console.log('layersToDisplay', layersToDisplay);
     for (let y = 0; y < renderHeight; y++) {
         for (let x = 0; x < renderWidth; x++) {
             for (let layer of layersToDisplay) {
@@ -69,13 +69,13 @@ export function assemble(force) {
                 break;
             }
             // if no color found, set to default color
-            // if (!displayArray[y * renderWidth + x]) {
-            //     displayArray[y * renderWidth + x] = Const.SKY_COLOR;
-            // }
+            if (!displayArray[(y * renderWidth + x) * 4]) {
+                displayArray.push(75, 175, 175, 255);
+            }
         }
     }
     // previousLandscape = displayArray;
-    console.log('render', Math.floor(performance.now() - startAssemble), 'ms');
+    // console.log('render', Math.floor(performance.now() - startAssemble), 'ms');
 
     return displayArray;
 }

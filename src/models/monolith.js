@@ -7,7 +7,7 @@ import { imageCatalog } from '../assets/imageData';
 export let monolith;
 
 export function buildMonolith() {
-    monolith = Array.from({ length: Const.MONOLITH_LINES }, () =>
+    monolith = Array.from({ length: 2000 }, () =>
         Array.from({ length: Const.MONOLITH_COLUMNS }, () => new Klon([30, 30, 40, 255]))
     );
     console.log('//     monolith initialized at ' + Const.MONOLITH_LINES + '    //');
