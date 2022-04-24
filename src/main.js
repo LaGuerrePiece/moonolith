@@ -98,6 +98,10 @@ setInterval(() => {
     chunkImport();
 }, 5000);
 
+setInterval(() => { //animation showcase
+    update(true);
+}, 100);
+
 // TENTATIVE DE POINTEUR
 
 // let oldColor = [0, 0, 0];

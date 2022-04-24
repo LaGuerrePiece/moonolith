@@ -83,15 +83,16 @@ export async function ApngToBuffer(buffer) {
         buffer = UPNG.decode(buffer);
         resolve(buffer);
     }).then((buffer) => {
-        console.log('anim buffer', buffer);
         let framesArray = [];
-        for (let frame = 0; frame < 51; frame++) {
-            let decodedFrame = UPNG.toRGBA8(buffer)[frame];
-            framesArray.push(new Uint8Array(decodedFrame));
+        let delayArray = [];
+        for (let frame = 0; frame < buffer.frames.length; frame++) {
+            delayArray.push(buffer.frames[frame].delay);
+            framesArray.push(new Uint8Array(UPNG.toRGBA8(buffer)[frame]));
         }
         return {
             decodedYX: new Uint8Array(UPNG.toRGBA8(buffer)[0]),
             frames: framesArray,
+            delay: delayArray,
             height: buffer.height,
             width: buffer.width,
         };

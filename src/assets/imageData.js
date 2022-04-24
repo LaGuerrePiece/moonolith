@@ -1,9 +1,9 @@
-import { GUI, caly0, caly1, caly2, caly3, caly4, caly5, caly6, calySide0, calySide1, slug } from './base64';
+import { GUI, caly0, caly1, caly2, caly3, caly4, caly5, caly6, calySide0, calySide1, slug, GUISweetie15 } from './base64';
 import { base64ToBuffer, pngToBufferToRGBA8, ApngToBuffer } from '../utils/imageManager';
 import Const from '../models/constants';
 
 export var imageCatalog = {
-    GUI: { name: 'GUI', type: 'GUI', startX: 0, startY: 0, parallax: 0, base64: GUI },
+    GUI: { name: 'GUI', type: 'GUI', startX: 0, startY: 0, parallax: 0, base64: GUISweetie15 },
     caly0: { name: 'caly0', type: 'landscape', startX: 0, startY: 45, parallax: 0, base64: caly0 },
     calySide0: { name: 'calySide0', type: 'side', startX: 47, startY: 17, parallax: 0, base64: calySide0 },
     calySide1: { name: 'calySide1', type: 'side', startX: 196, startY: -310, parallax: 0, base64: calySide1 },
@@ -22,7 +22,7 @@ export var imageCatalog = {
 };
 
 export var animationCatalog = {
-    slug: { name: 'slug', type: 'anim', startX: 15, startY: 10, parallax: 0, base64: slug },
+    slug: { name: 'slug', type: 'anim', startX: 15, startY: 10, parallax: 0, base64: slug, loop: true },
 };
 
 export async function initialDecodeAnim(numberOfImports) {
@@ -36,48 +36,35 @@ export async function initialDecodeAnim(numberOfImports) {
         decodeAndFormatAnimation(animations[i]);
         importedAnimations++;
     }
-    console.log('//     First animation import of', numberOfImports, ':', Date.now() - startImport, 'ms     //');
+    console.log('//     First animation import of', animations.length, ':', Date.now() - startImport, 'ms     //');
 }
 
 async function decodeAndFormatAnimation(index) {
     let thisAnim = animationCatalog[index];
     let decoded = await ApngToBuffer(base64ToBuffer(thisAnim.base64)).catch(console.error);
-
-    console.log('decoded', decoded);
-    let buffer = decoded.decodedYX;
     let width = decoded.width;
+    let framesObj = {};
+    let frames = Array.from({ length: decoded.frames.length }, () =>
+        Array.from({ length: decoded.frames[0].length / width / 4 }, () => Array.from(Const.COLUMNS))
+    );
 
-    // let frames = []
-    // decoded.frames.forEach((frame) => {
-    //     console.log('frame', frame);
-    //     for (let y = 0; y < buffer.length / width / 4; y++) {
-    //         for (let x = 0; x < width; x++) {
-    //             if (buffer[(x + y * width) * 4 + 3] === 0) continue;
-    //             convertedYX[y][x] = [
-    //                 buffer[(x + y * width) * 4] / 255,
-    //                 buffer[(x + y * width) * 4 + 1] / 255,
-    //                 buffer[(x + y * width) * 4 + 2] / 255,
-    //             ];
-    //         }
-    //     }
-    // });
-
-    let convertedYX = Array.from({ length: buffer.length / width / 4 }, () => Array.from(Const.COLUMNS));
-    for (let y = 0; y < buffer.length / width / 4; y++) {
-        for (let x = 0; x < width; x++) {
-            if (buffer[(x + y * width) * 4 + 3] === 0) continue;
-            convertedYX[y][x] = [
-                buffer[(x + y * width) * 4] / 255,
-                buffer[(x + y * width) * 4 + 1] / 255,
-                buffer[(x + y * width) * 4 + 2] / 255,
-            ];
+    for (let frame in decoded.frames) {
+        for (let y = 0; y < decoded.frames[frame].length / width / 4; y++) {
+            for (let x = 0; x < width; x++) {
+                if (decoded.frames[frame][(x + y * width) * 4 + 3] === 0) continue;
+                frames[frame][y][x] = [
+                    decoded.frames[frame][(x + y * width) * 4] / 255,
+                    decoded.frames[frame][(x + y * width) * 4 + 1] / 255,
+                    decoded.frames[frame][(x + y * width) * 4 + 2] / 255,
+                ];
+            }
         }
+        framesObj[frame] = { buffer: frames[frame], delay: decoded.delay[frame] };
     }
-    thisAnim.decodedYX = convertedYX;
+
+    thisAnim.frames = framesObj;
     thisAnim.width = width;
     thisAnim.height = decoded.height;
-
-    console.log('thisAnim', thisAnim);
 }
 
 export async function initialDecodeLandscape(numberOfImports) {
