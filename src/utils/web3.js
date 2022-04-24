@@ -6,12 +6,12 @@ import Const from '../models/constants';
 
 const provider = new ethers.providers.InfuraProvider('rinkeby');
 const iface = new Interface(contractABI);
-const contractAddress = '0x403e131b446fD8175F747709489B8b32981fF494';
+const contractAddress = '0xe2aBFe6c4b360aF197AD421FCFC69A6fbF5C4598';
 // const contractAddress = '0x2a1068d93BF2aD8a2b93b6DF8a6B607B3A648570';
 const contract = new ethers.Contract(contractAddress, contractABI, provider);
 
-const metamaskProvider = new ethers.providers.Web3Provider(window.ethereum);
 if (window.ethereum) {
+    const metamaskProvider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = metamaskProvider.getSigner();
     var metamaskContract = new ethers.Contract(contractAddress, contractABI, signer);
 }

@@ -1,4 +1,4 @@
-import UPNG from 'upng-js';
+import {UPNG} from './upmc';
 import Klon from '../models/klon';
 import Const from '../models/constants';
 import { monolith, eraseAllPixel } from '../models/monolith';
@@ -105,7 +105,7 @@ function monolithToBase64() {
         let firstPix = highLow.lowY * Const.MONOLITH_COLUMNS + highLow.lowX;
         encoded = new Uint8Array(encoded);
         //console.log("data avant encodage:", encoded);
-        var png = UPNG.encode([encoded.buffer], highLow.longueur, highLow.largeur, 1, 0, 4); // on encode
+        var png = UPNG.encodeLL([encoded.buffer], highLow.longueur, highLow.largeur, 1, 0, 4); // on encode
        // console.log("data encoded", png);
         let buff = UPNG.decode(png);
         //console.log("data apres decodage", buff);

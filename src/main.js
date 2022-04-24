@@ -25,7 +25,7 @@ export let renderHeight = Math.ceil(windowHeight / pixelSize);
 let InitialImports = 13;
 
 async function initApp() {
-    let splittedUri = document.URL.split('/runes/');
+    let splittedUri = document.URL.split('?rune=');
     if (!isNaN(splittedUri[1]) && !isNaN(parseInt(splittedUri[1]))) {
         // si on tape sur l'api
         initApiDisplay(splittedUri[1]);
@@ -59,12 +59,20 @@ function initApiDisplay(id) {
     getChunk(parseInt(id)).then((chunk) => {
         prepareBufferForApi(base64ToBuffer(chunk[3])).then((data) => {
             let dataToDisplay = Array.from(data[0]);
+            console.log(dataToDisplay.length, data[1], data[2]);
 
             while (dataToDisplay.length < data[1] * data[2]) {
-                dataToDisplay.push[(0, 0, 0)];
+                dataToDisplay[dataToDisplay.length] = [(0, 0, 0)];
+                console.log(dataToDisplay.length, data[1], data[2]);
+                console.log("pushed");
             }
-            dataToDisplay.pop();
+            console.log(dataToDisplay, data[1], data[2]);
+            while (dataToDisplay.length > data[1] * data[2]) {
+                dataToDisplay.pop();
+                console.log("poped");
 
+            }
+            console.log(dataToDisplay, data[1], data[2]);
             // Convert to Uint8ClampedArray
             dataToDisplay.forEach((x) => x.push(1));
             dataToDisplay = dataToDisplay.flat().map((x) => x * 255);
