@@ -48,11 +48,7 @@ async function bufferOnMonolith(data) {
             if (pixelDrawn >= data.paid) return;
             if (!monolith[y]?.[x]) continue;
             if (rgba8.buffer[decalage + 3] > 0) {
-                monolith[y][x].color = [
-                    rgba8.buffer[decalage] / 255,
-                    rgba8.buffer[decalage + 1] / 255,
-                    rgba8.buffer[decalage + 2] / 255,
-                ];
+                monolith[y][x].color = [rgba8.buffer[decalage], rgba8.buffer[decalage + 1], rgba8.buffer[decalage + 2]];
                 monolith[y][x].zIndex = data.zIndex;
                 pixelDrawn++;
             }
@@ -87,18 +83,16 @@ function monolithToBase64But4Bits(grid) {
     });
 }
 
-function encode4bits(grid)
-{
+function encode4bits(grid) {
     console.log(grid);
     let { highLow, saveArray, nbPix, firstPix } = gridToArray(grid);
     saveArray = new Uint8Array(saveArray);
     console.log(saveArray);
     let encoded = [];
-    for(let i = 0; i< saveArray.length; i+=4)
-    {
-        console.log(saveArray[i], saveArray[i+1],  saveArray[i+2]);
-        let hex = RGBToHex(saveArray[i]/255, saveArray[i+1]/255,  saveArray[i+2]/255);
-        console.log(hex)
+    for (let i = 0; i < saveArray.length; i += 4) {
+        console.log(saveArray[i], saveArray[i + 1], saveArray[i + 2]);
+        let hex = RGBToHex(saveArray[i] / 255, saveArray[i + 1] / 255, saveArray[i + 2] / 255);
+        console.log(hex);
         let c = parseInt(getKeyByValue(palette, hex));
         console.log(c);
         addUintTo4bitArray(encoded, c);
@@ -116,7 +110,6 @@ function bufferToBase64(buffer) {
     }
     return window.btoa(binary);
 }
-
 
 function saveLocally(base64) {
     var elementA = document.createElement('a'); //On crée un element vide pour forcer le téléchargement
@@ -145,8 +138,7 @@ function gridToArray() {
     for (let i = highLow.lowY; i <= highLow.highY; i++) {
         for (let j = highLow.lowX; j <= highLow.highX; j++) {
             if (monolith[i][j].zIndex == Klon.USERPAINTED) {
-                saveArray.push(...monolith[i][j].color.map((a) => a * 255));
-                saveArray.push(255);
+                saveArray.push(...monolith[i][j].color, 255);
                 nbPix++;
             } else {
                 saveArray.push(...[0, 0, 0, 0]);
@@ -192,7 +184,7 @@ function componentToHex(c) {
     return hex.length == 1 ? '0' + hex : hex;
 }
 function getKeyByValue(object, value) {
-    return Object.keys(object).find(key => object[key] === value);
+    return Object.keys(object).find((key) => object[key] === value);
 }
 export function moveDrawing(x, y) {
     //TODO : À BOUGER DANS TOOLS ?

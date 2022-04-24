@@ -68,9 +68,9 @@ export function assemble(force) {
                 // displayArray[y * renderWidth + x + 3] = 255;
                 break;
             }
-            // if no color found, set to default color
+            // if no color found, set to default sky color
             if (!displayArray[(y * renderWidth + x) * 4]) {
-                displayArray.push(75, 175, 175, 255);
+                displayArray.push(...Const.SKY_COLOR, 255);
             }
         }
     }

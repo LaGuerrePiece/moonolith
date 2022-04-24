@@ -7,8 +7,8 @@ import { imageCatalog } from '../assets/imageData';
 export let monolith;
 
 export function buildMonolith() {
-    monolith = Array.from({ length: 2000 }, () =>
-        Array.from({ length: Const.MONOLITH_COLUMNS }, () => new Klon([30, 30, 40, 255]))
+    monolith = Array.from({ length: Const.MONOLITH_LINES }, () =>
+        Array.from({ length: Const.MONOLITH_COLUMNS }, () => new Klon(Const.DEFAULT_COLOR))
     );
     console.log('//     monolith initialized at ' + Const.MONOLITH_LINES + '    //');
 }
@@ -18,7 +18,7 @@ export function drawPixel(x, y, zIndex, color) {
     if (!monolith[y][x].isEditable(zIndex)) return; //IF IT IS NOT EDITABLE, return
     // if (monolith[y][x].color === color && monolith[y][x].zIndex === zIndex) return; //IF IT IS THE SAME, return
     if (zIndex === 0) addToCurrentEvent(x, y, monolith[y][x]); //IF IT IS BEING DRAW BY USER, ADD TO CURRENT EVENT
-    monolith[y][x] = new Klon([255, 0, 0, 255], zIndex);
+    monolith[y][x] = new Klon(color, zIndex);
 }
 
 export function getColor(x, y) {
@@ -37,7 +37,6 @@ export function eraseAllPixel() {
     }
     closeCurrentEvent();
     console.log('eraseAllPixel');
-    update();
 }
 
 export function erasePixel(x, y) {
@@ -72,7 +71,6 @@ export function increaseMonolithHeight(newRows) {
                 const thisLayer = imageCatalog[layer];
                 if (thisLayer.type === 'side') thisLayer.startY++;
             }
-            update(true);
         }, scalingValue + 15 * rowAdded);
     }
 }

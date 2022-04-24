@@ -72,7 +72,7 @@ async function initialChunkImport() {
     previousNbChunks = meta.nbChunks;
     const monolithHeightFormula = Const.COLUMNS * 64 + (meta.nbKlon * meta.threshold) / 1000000;
     const monolithHeight = Math.floor(monolithHeightFormula / Const.COLUMNS);
-    Const.setMonolithHeight(2000);
+    Const.setMonolithHeight(monolithHeight);
 
     // async function allChunks() {
     for (let i = 1; i <= meta.nbChunks; i++) {
@@ -132,8 +132,6 @@ async function importNewChunks() {
                 paid: res[2].toNumber(),
                 yMaxLegal: res[1].toNumber() * 4, // yMaxLegal à vérifier
                 zIndex: i,
-            }).then(() => {
-                update(true);
             });
         });
     }
