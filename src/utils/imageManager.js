@@ -65,6 +65,7 @@ async function prepareBufferForApi(data)
     pixArray.forEach(pix => {
         colors.push(hexToRgb(palette[pix]));
     });
+    console.log('pixArray.length', pixArray.length)
     return [colors, rgba8.width, rgba8.height];
 }
 

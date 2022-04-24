@@ -59,19 +59,29 @@ function initApiDisplay(id){
     getChunk(parseInt(id)).then((chunk) => {
         prepareBufferForApi(base64ToBuffer(chunk[3])).then((data)=> {
            let dataToDisplay = Array.from(data[0]);
-           console.log(dataToDisplay);
-           //while(dataToDisplay[dataToDisplay.length - 1][0] == dataToDisplay[dataToDisplay.length - 1][1] && 
-            //dataToDisplay[dataToDisplay.length - 1][0]  == dataToDisplay[dataToDisplay.length - 1][2] == 0)
-            console.log(dataToDisplay.length, data[1]*data[2]);
+
             while(dataToDisplay.length < data[1]*data[2])
             {
                 dataToDisplay.push[0, 0, 0];
             }
-            console.log(dataToDisplay.length, data[1]*data[2]);
-           displayGrid = new DisplayGrid(data[1], data[2]);
-           displayGrid.initialize(document.body);
-           canvas = displayGrid.pixels.canvas;
-           displayGrid.updateDisplay(data[0]);
+            dataToDisplay.pop();
+
+            dataToDisplay = dataToDisplay.map(a => a.map(b => b * 255))
+            console.log(dataToDisplay);
+            console.log(dataToDisplay);
+            console.log(dataToDisplay.length, data[1], data[2]);
+           //displayGrid = new DisplayGrid(data[1], data[2]);
+           //displayGrid.initialize(document.body);
+           //canvas = displayGrid.pixels.canvas;
+           //displayGrid.updateDisplay(dataToDisplay);
+           canvas = document.createElement('canvas');
+           const ctx = canvas.getContext('2d');
+           document.body.appendChild(canvas);
+           canvas.style.imageRendering = 'pixelated';
+           let myImageData = ctx.createImageData(data[1], data[2]);
+            myImageData.data.set(dataToDisplay);
+            ctx.putImageData(myImageData, 0, 0);
+
        });
     });
 }

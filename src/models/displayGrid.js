@@ -30,7 +30,7 @@ export default class DisplayGrid {
         this.pixels = null;
 
         // les futures datas de PixelGrid
-        this.initialData = Array.from({ length: this.length }, () => [0.9137, 0.9607, 0.6156]);
+        this.initialData = Array.from({ length: this.length }, () => [0.9137, 0.07, 0.6156]);
     }
 
     /**
@@ -52,10 +52,12 @@ export default class DisplayGrid {
             root,
             ...this.options,
         });
-        this.pixels.canvas.style.width = width;
+        console.log(this.initialData)
+        //this.pixels.canvas.style.width = width;
     }
 
     updateDisplay(data) {
         this.pixels.update(data);
+        console.log(data)
     }
 }
