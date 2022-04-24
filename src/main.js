@@ -25,8 +25,9 @@ export let renderHeight = Math.ceil(windowHeight / pixelSize);
 let InitialImports = 13;
 
 async function initApp() {
-    let splittedUri=document.URL.split('/runes/');
-    if(!isNaN(splittedUri[1]) && !isNaN(parseInt(splittedUri[1]))){ // si on tape sur l'api
+    let splittedUri = document.URL.split('/runes/');
+    if (!isNaN(splittedUri[1]) && !isNaN(parseInt(splittedUri[1]))) {
+        // si on tape sur l'api
         initApiDisplay(splittedUri[1]);
     } else {
         let initPerf = performance.now();
@@ -36,13 +37,12 @@ async function initApp() {
         buildMonolith();
         initDisplay();
         lateDecodeLandscape(InitialImports);
-        console.log('//         End of init', 
-        Math.floor(performance.now() - initPerf), 'ms        //');
+        console.log('//         End of init', Math.floor(performance.now() - initPerf), 'ms        //');
         console.log('//////  INITIALIZATION COMPLETE   //////');
         setTimeout(() => {
-        update();
+            update();
         }, 501);
-    } 
+    }
 }
 
 initApp();
@@ -52,41 +52,35 @@ function initDisplay() {
     displayGrid.initialize(document.body);
     canvas = displayGrid.pixels.canvas;
     canvas.onmousedown = clickManager;
-    console.log('//      displayGrid initialized       //');   
+    console.log('//      displayGrid initialized       //');
 }
 
-function initApiDisplay(id){
+function initApiDisplay(id) {
     getChunk(parseInt(id)).then((chunk) => {
-        prepareBufferForApi(base64ToBuffer(chunk[3])).then((data)=> {
-           let dataToDisplay = Array.from(data[0]);
+        prepareBufferForApi(base64ToBuffer(chunk[3])).then((data) => {
+            let dataToDisplay = Array.from(data[0]);
 
-            while(dataToDisplay.length < data[1]*data[2])
-            {
-                dataToDisplay.push[0, 0, 0];
+            while (dataToDisplay.length < data[1] * data[2]) {
+                dataToDisplay.push[(0, 0, 0)];
             }
             dataToDisplay.pop();
 
-            dataToDisplay = dataToDisplay.map(a => a.map(b => b * 255))
-            console.log(dataToDisplay);
-            console.log(dataToDisplay);
-            console.log(dataToDisplay.length, data[1], data[2]);
-           //displayGrid = new DisplayGrid(data[1], data[2]);
-           //displayGrid.initialize(document.body);
-           //canvas = displayGrid.pixels.canvas;
-           //displayGrid.updateDisplay(dataToDisplay);
-           canvas = document.createElement('canvas');
-           const ctx = canvas.getContext('2d');
-           document.body.appendChild(canvas);
-           canvas.style.imageRendering = 'pixelated';
-           let myImageData = ctx.createImageData(data[1], data[2]);
+            // Convert to Uint8ClampedArray
+            dataToDisplay.forEach((x) => x.push(1));
+            dataToDisplay = dataToDisplay.flat().map((x) => x * 255);
+
+            // Create canvas
+            canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            document.body.appendChild(canvas);
+            canvas.style.imageRendering = 'pixelated';
+            let myImageData = ctx.createImageData(data[1], data[2]);
+            console.log('myImageData', myImageData);
             myImageData.data.set(dataToDisplay);
             ctx.putImageData(myImageData, 0, 0);
-
-       });
+        });
     });
 }
-
-
 
 export function update() {
     if (new Date() - lastCall < 10) return;
@@ -132,7 +126,6 @@ export function zoom() {
     initDisplay();
     update();
 }
-
 
 // TENTATIVE DE POINTEUR
 
