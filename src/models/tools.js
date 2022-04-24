@@ -78,23 +78,23 @@ export function clickManager(e) {
 
         //SMALL
         //FIRST CIRCLE POSITION : 3, 21
-        if (GUICircle(mousePos, GUIstartY, GUIstartX, 3, 21, 3)) colorPicked = Const.RGB1;
-        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 1, 3, 21, 3)) colorPicked = Const.RGB2;
-        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 2, 3, 21, 3)) colorPicked = Const.RGB3;
-        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 3, 3, 21, 3)) colorPicked = Const.RGB4;
-        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 4, 3, 21, 3)) colorPicked = Const.RGB5;
-        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 5, 3, 21, 3)) colorPicked = Const.RGB6;
-        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 6, 3, 21, 3)) colorPicked = Const.RGB7;
-        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 7, 3, 21, 3)) colorPicked = Const.RGB8;
+        if (GUICircle(mousePos, GUIstartY, GUIstartX, 3, 21, 4)) colorPicked = Const.RGB1;
+        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 1, 3, 21, 4)) colorPicked = Const.RGB2;
+        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 2, 3, 21, 4)) colorPicked = Const.RGB3;
+        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 3, 3, 21, 4)) colorPicked = Const.RGB4;
+        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 4, 3, 21, 4)) colorPicked = Const.RGB5;
+        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 5, 3, 21, 4)) colorPicked = Const.RGB6;
+        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 6, 3, 21, 4)) colorPicked = Const.RGB7;
+        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 7, 3, 21, 4)) colorPicked = Const.RGB8;
         //ROW 2
-        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX, 3, 21, 3)) colorPicked = Const.RGB9;
-        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 1, 3, 21, 3)) colorPicked = Const.RGB10;
-        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 2, 3, 21, 3)) colorPicked = Const.RGB11;
-        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 3, 3, 21, 3)) colorPicked = Const.RGB12;
-        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 4, 3, 21, 3)) colorPicked = Const.RGB13;
-        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 5, 3, 21, 3)) colorPicked = Const.RGB14;
-        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 6, 3, 21, 3)) colorPicked = Const.RGB15;
-        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 7, 3, 21, 3)) colorPicked = Const.RGB16;
+        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX, 3, 21, 4)) colorPicked = Const.RGB9;
+        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 1, 3, 21, 4)) colorPicked = Const.RGB10;
+        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 2, 3, 21, 4)) colorPicked = Const.RGB11;
+        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 3, 3, 21, 4)) colorPicked = Const.RGB12;
+        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 4, 3, 21, 4)) colorPicked = Const.RGB13;
+        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 5, 3, 21, 4)) colorPicked = Const.RGB14;
+        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 6, 3, 21, 4)) colorPicked = Const.RGB15;
+        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 7, 3, 21, 4)) colorPicked = Const.RGB16;
     } else {
         //CASE MONOLITH OR LANDSCAPE
         mousePos = convertToMonolithPos(mousePos);

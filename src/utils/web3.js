@@ -18,7 +18,7 @@ if (window.ethereum) {
     var metamaskContract = new ethers.Contract(contractAddress, contractABI, signer);
 }
 
-let previousNbChunks = 0;
+let previousNbChunks = 1;
 
 const chunkCreator = async (res) => {
     await metamaskProvider.send('eth_requestAccounts', []);
@@ -68,31 +68,33 @@ async function getMetaData() {
 
 async function chunkImport() {
     let meta = await getMetaData();
-
-    for (let i = previousNbChunks + 1; i <= meta.nbChunks - previousNbChunks; i++) {
-        if (i == 1 || i == 10 || i == 17) continue;
-        getChunk(i).then((res) => {
-            bufferOnMonolith({
-                buffer: base64ToBuffer(res[3]),
-                x: res[0].toNumber() % Const.MONOLITH_COLUMNS,
-                y: Math.floor(res[0].toNumber() / Const.MONOLITH_COLUMNS),
-                paid: res[2].toNumber(),
-                yMaxLegal: res[1].toNumber() * 4,
-                zIndex: i,
+    console.log('previousNbChunks', previousNbChunks, 'meta.nbChunks', meta.nbChunks);
+    if (previousNbChunks < meta.nbChunks) {
+        for (let i = previousNbChunks; i <= meta.nbChunks; i++) {
+            if (i == 1 || i == 10 || i == 17 || i == 59) continue;
+            getChunk(i).then((res) => {
+                bufferOnMonolith({
+                    buffer: base64ToBuffer(res[3]),
+                    x: res[0].toNumber() % Const.MONOLITH_COLUMNS,
+                    y: Math.floor(res[0].toNumber() / Const.MONOLITH_COLUMNS),
+                    paid: res[2].toNumber(),
+                    yMaxLegal: res[1].toNumber() * 4,
+                    zIndex: i,
+                });
+                console.log('chunk ' + i + ' of ' + meta.nbChunks + ' imported');
             });
-        });
-    }
+        }
 
-    const monolithHeightFormula = Const.COLUMNS * 64 + (meta.nbKlon * meta.threshold) / 1000000;
-    const monolithHeight = Math.floor(monolithHeightFormula / Const.COLUMNS);
-    if (Const.MONOLITH_LINES) {
-        increaseMonolithHeight(monolithHeight - Const.MONOLITH_LINES);
-        update(true);
-    } else {
-        console.log(`//     Metadata gotten: ${meta.nbChunks} chunks     //`);
-        Const.setMonolithHeight(monolithHeight);
+        const monolithHeightFormula = Const.COLUMNS * 64 + (meta.nbKlon * meta.threshold) / 1000000;
+        const monolithHeight = Math.floor(monolithHeightFormula / Const.COLUMNS);
+        if (Const.MONOLITH_LINES) {
+            increaseMonolithHeight(monolithHeight - Const.MONOLITH_LINES);
+            update(true);
+        } else {
+            console.log(`//     Metadata gotten: ${meta.nbChunks} chunks     //`);
+            Const.setMonolithHeight(monolithHeight);
+        }
     }
-
     previousNbChunks = meta.nbChunks;
 }
 
