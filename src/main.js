@@ -1,9 +1,7 @@
 // Imports des composants
-import DisplayGrid from './models/displayGrid';
 import { initialDecodeLandscape, lateDecodeLandscape, initialDecodeAnim } from './assets/imageData';
 // Imports des fonctionnalités
 import { clickManager, keyManager, scrollManager } from './models/tools';
-
 import Const from './models/constants';
 import { chunkImport } from './utils/web3';
 import { assemble } from './models/assembler';
@@ -13,14 +11,13 @@ let displayGrid;
 export let canvas;
 export let viewPosY = 0;
 export let viewPosX = 0;
-let lastCall = 0;
-let frameRate = 10;
 
 export const windowHeight = window.innerHeight;
 export const windowWidth = window.innerWidth;
 export let renderWidth = Const.COLUMNS;
 const pixelSize = windowWidth / renderWidth;
-export let renderHeight = Math.ceil(windowHeight / pixelSize);
+export let renderHeight = Math.ceil((windowHeight * renderWidth) / windowWidth);
+
 let InitialImports = 13;
 
 async function initApp() {
@@ -34,25 +31,36 @@ async function initApp() {
     lateDecodeLandscape(InitialImports);
     console.log('//         End of init', Math.floor(performance.now() - initPerf), 'ms        //');
     console.log('//////  INITIALIZATION COMPLETE   //////');
-    setTimeout(() => {
-        update();
-    }, 501);
 }
 
 initApp();
 
 function initDisplay() {
-    displayGrid = new DisplayGrid(renderWidth, renderHeight);
-    displayGrid.initialize(document.body);
-    canvas = displayGrid.pixels.canvas;
-    canvas.onmousedown = clickManager;
-    console.log('//      displayGrid initialized       //');
-}
+    canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    document.body.appendChild(canvas);
 
-export function update(force) {
-    if (new Date() - lastCall < frameRate && !force) return;
-    displayGrid.updateDisplay(assemble(force));
-    lastCall = new Date();
+    // Set canvas dimensions to the ratio of the screen size
+    canvas.width = renderWidth;
+    canvas.height = renderHeight;
+    canvas.onmousedown = clickManager;
+
+    // Set canvas size to size of screen
+    canvas.style.width = windowWidth + 'px';
+    canvas.style.height = windowHeight + 'px';
+    canvas.style.imageRendering = 'pixelated';
+    document.body.style.cssText = 'margin:0;padding:0;';
+
+    // Create image data of size nbColumns * nbRows
+    let myImageData = ctx.createImageData(renderWidth, renderHeight);
+    function update() {
+        myImageData.data.set(assemble(true));
+        ctx.putImageData(myImageData, 0, 0);
+        requestAnimationFrame(update);
+    }
+    requestAnimationFrame(update);
+
+    console.log('//      displayGrid initialized       //');
 }
 
 //prettier-ignore
@@ -69,7 +77,6 @@ export function changeViewPos(inputX, inputY) {
     if (viewPosY < -30) viewPosY = -30;
     if (viewPosX < 0) viewPosX = 0;
     if (viewPosX + renderWidth > Const.COLUMNS) viewPosX = Const.COLUMNS - renderWidth;
-    update();
 }
 
 export function zoom() {
@@ -89,16 +96,14 @@ export function zoom() {
     }
     document.body.removeChild(displayGrid.pixels.canvas);
     initDisplay();
-    setTimeout(() => {
-        update();
-    }, 50);
 }
 
 setInterval(() => {
     chunkImport();
 }, 5000);
 
-setInterval(() => { //animation showcase
+setInterval(() => {
+    //animation showcase
     update(true);
 }, 100);
 

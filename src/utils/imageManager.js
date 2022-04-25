@@ -118,11 +118,7 @@ async function bufferOnMonolith(data) {
             if (pixelDrawn >= data.paid) return;
             if (!monolith[y]?.[x]) continue;
             if (rgba8.buffer[decalage + 3] > 0) {
-                let color = [
-                    rgba8.buffer[decalage] / 255,
-                    rgba8.buffer[decalage + 1] / 255,
-                    rgba8.buffer[decalage + 2] / 255,
-                ];
+                let color = [rgba8.buffer[decalage], rgba8.buffer[decalage + 1], rgba8.buffer[decalage + 2]];
                 drawPixel(x, y, data.zIndex, color);
                 pixelDrawn++;
             }
@@ -212,8 +208,7 @@ function gridToArray() {
     for (let i = highLow.lowY; i <= highLow.highY; i++) {
         for (let j = highLow.lowX; j <= highLow.highX; j++) {
             if (monolith[i][j].zIndex == Klon.USERPAINTED) {
-                saveArray.push(...monolith[i][j].color.map((a) => a * 255));
-                saveArray.push(255);
+                saveArray.push(...monolith[i][j].color, 255);
                 nbPix++;
             } else {
                 saveArray.push(...[0, 0, 0, 0]);

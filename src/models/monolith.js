@@ -1,7 +1,7 @@
 import Klon from './klon';
 import Const from './constants';
 import { addToCurrentEvent, closeCurrentEvent } from './undoStack';
-import { renderWidth, renderHeight, viewPosX, viewPosY, update } from '../main';
+import { renderWidth, renderHeight, viewPosX, viewPosY } from '../main';
 import { imageCatalog } from '../assets/imageData';
 
 export let monolith;
@@ -37,7 +37,6 @@ export function eraseAllPixel() {
     }
     closeCurrentEvent();
     console.log('eraseAllPixel');
-    update();
 }
 
 export function erasePixel(x, y) {
@@ -61,22 +60,6 @@ export function convertToMonolithPos(mousePos) {
     return mousePos;
 }
 
-export function getMonolithArray() {
-    let monolithArray = [];
-    const startY = Const.MONOLITH_LINES + Const.MARGIN_BOTTOM - viewPosY - renderHeight;
-    const startX = viewPosX - Const.MARGIN_LEFT;
-    for (let i = 0; i < renderHeight; i++) {
-        for (let j = 0; j < renderWidth; j++) {
-            if (monolith[startY + i]?.[startX + j]) {
-                monolithArray.push(monolith[startY + i][startX + j].color);
-            } else {
-                monolithArray.push(undefined);
-            }
-        }
-    }
-    return monolithArray;
-}
-
 export function increaseMonolithHeight(newRows) {
     for (let rowAdded = 0; rowAdded < newRows; rowAdded++) {
         let scalingValue = 1000 * Math.log(rowAdded);
@@ -88,7 +71,6 @@ export function increaseMonolithHeight(newRows) {
                 const thisLayer = imageCatalog[layer];
                 if (thisLayer.type === 'side') thisLayer.startY++;
             }
-            update(true);
         }, scalingValue + 15 * rowAdded);
     }
 }

@@ -1,5 +1,5 @@
 //prettier-ignore
-import {update, canvas, windowHeight, windowWidth, renderWidth, renderHeight, changeViewPos, viewPosX, viewPosY, zoom} from '../main';
+import { windowHeight, windowWidth, renderWidth, renderHeight, changeViewPos, viewPosX, viewPosY, zoom, canvas} from '../main';
 import { imageCatalog } from '../assets/imageData';
 import {
     drawPixel,
@@ -40,7 +40,7 @@ export function keyManager(e){
     if (e.metaKey && e.key === 'y') redo();
     if (e.key === 'x') eraseAllPixel();
     if (e.key === 'c') console.log('Total H', Const.COLUMNS, 'Total W', Const.LINES, 'render W', renderWidth, 'render H', renderHeight, 'viewPosX', viewPosX, 'viewPosY', viewPosY, 'mousePos', mousePosInGrid(e).x, mousePosInGrid(e).y);
-    if (e.key === 'm') { moveDrawing(50, 400); update() }
+    if (e.key === 'm') { moveDrawing(50, 400) }
     if (e.key === 'y') zoom();
     if (e.key === 'i') importImage();
     if (e.key === 'p') increaseMonolithHeight(1000)
@@ -60,7 +60,9 @@ export function scrollManager(e) {
 
 export function clickManager(e) {
     let mousePos = mousePosInGrid(e);
-    //console.log('mousePos', mousePos);
+
+    console.log('mousePos', mousePos);
+
     const GUIstartY = Math.floor((renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y);
     const GUIstartX = Math.floor((renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X);
     if (
@@ -96,7 +98,7 @@ export function clickManager(e) {
         if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 6, 3, 21, 4)) colorPicked = Const.RGB15;
         if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 7, 3, 21, 4)) colorPicked = Const.RGB16;
     } else {
-        //CASE MONOLITH OR LANDSCAPE
+        // //CASE MONOLITH OR LANDSCAPE
         mousePos = convertToMonolithPos(mousePos);
         if (mousePos) startUsingTool(e, mousePos);
     }
@@ -154,7 +156,6 @@ function useTool(e) {
             moveDrawing(mousePos.x, mousePos.y);
             break;
     }
-    update();
 }
 
 function useDeleteTool(e) {
@@ -180,7 +181,6 @@ function useDeleteTool(e) {
             }
             break;
     }
-    update();
 }
 
 function brushSwitch() {
