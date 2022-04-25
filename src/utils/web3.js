@@ -11,8 +11,8 @@ const contractAddress = '0xe2aBFe6c4b360aF197AD421FCFC69A6fbF5C4598';
 // const contractAddress = '0x2a1068d93BF2aD8a2b93b6DF8a6B607B3A648570';
 const contract = new ethers.Contract(contractAddress, contractABI, provider);
 
-const metamaskProvider = new ethers.providers.Web3Provider(window.ethereum);
 if (window.ethereum) {
+    const metamaskProvider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = metamaskProvider.getSigner();
     var metamaskContract = new ethers.Contract(contractAddress, contractABI, signer);
 }
@@ -72,7 +72,7 @@ async function getMetaData() {
 
 async function chunkImport() {
     let meta = await getMetaData();
-    console.log('previousNbChunks', previousNbChunks, 'meta.nbChunks', meta.nbChunks);
+    // console.log('previousNbChunks', previousNbChunks, 'meta.nbChunks', meta.nbChunks);
     if (previousNbChunks < meta.nbChunks) {
         for (let i = previousNbChunks; i <= meta.nbChunks; i++) {
             if (i == 1 || i == 10 || i == 17 || i == 59) continue;
@@ -85,7 +85,7 @@ async function chunkImport() {
                     yMaxLegal: res[1].toNumber() * 4,
                     zIndex: i,
                 });
-                console.log('chunk ' + i + ' of ' + meta.nbChunks + ' imported');
+                // console.log('chunk ' + i + ' of ' + meta.nbChunks + ' imported');
             });
         }
 
