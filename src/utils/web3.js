@@ -7,29 +7,30 @@ import { increaseMonolithHeight } from '../models/monolith';
 
 const provider = new ethers.providers.InfuraProvider('rinkeby');
 const iface = new Interface(contractABI);
-const contractAddress = '0xe2aBFe6c4b360aF197AD421FCFC69A6fbF5C4598';
-// const contractAddress = '0x2a1068d93BF2aD8a2b93b6DF8a6B607B3A648570';
+const contractAddress = '0x1593f13eC77e01Ec93B8c51846613Fe567b2258a';
 const contract = new ethers.Contract(contractAddress, contractABI, provider);
+let metamaskProvider;
+var metamaskContract;
 
 if (window.ethereum) {
-    const metamaskProvider = new ethers.providers.Web3Provider(window.ethereum);
+    metamaskProvider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = metamaskProvider.getSigner();
-    var metamaskContract = new ethers.Contract(contractAddress, contractABI, signer);
+    metamaskContract = new ethers.Contract(contractAddress, contractABI, signer);
 }
 
 let previousNbChunks = 1;
 
 const chunkCreator = async (res) => {
-    if(window.ethereum.chainId == "0x4"){
+    if (window.ethereum.chainId == '0x4') {
         await metamaskProvider.send('eth_requestAccounts', []);
         const oneGwei = ethers.BigNumber.from('1000000000');
         let overrides = {
             value: oneGwei.mul(res.nbPix),
         };
-        console.log("Minting: ", res.position, res.ymax, res.nbPix, res.imgURI);
+        console.log('Minting: ', res.position, res.ymax, res.nbPix, res.imgURI);
         let tx = metamaskContract.mint_One_4d(res.position, res.ymax, res.nbPix, res.imgURI, overrides);
-    } else{
-        alert("Mets le testnet sale PD");
+    } else {
+        alert('Mets le testnet sale PD');
     }
 };
 
@@ -72,32 +73,33 @@ async function getMetaData() {
 
 async function chunkImport() {
     let meta = await getMetaData();
-    // console.log('previousNbChunks', previousNbChunks, 'meta.nbChunks', meta.nbChunks);
-    if (previousNbChunks < meta.nbChunks) {
-        for (let i = previousNbChunks; i <= meta.nbChunks; i++) {
-            if (i == 1 || i == 10 || i == 17 || i == 59) continue;
-            getChunk(i).then((res) => {
-                bufferOnMonolith({
-                    buffer: base64ToBuffer(res[3]),
-                    x: res[0].toNumber() % Const.MONOLITH_COLUMNS,
-                    y: Math.floor(res[0].toNumber() / Const.MONOLITH_COLUMNS),
-                    paid: res[2].toNumber(),
-                    yMaxLegal: res[1].toNumber() * 4,
-                    zIndex: i,
-                });
-                // console.log('chunk ' + i + ' of ' + meta.nbChunks + ' imported');
-            });
-        }
 
-        const monolithHeightFormula = Const.COLUMNS * 64 + (meta.nbKlon * meta.threshold) / 1000000;
-        const monolithHeight = Math.floor(monolithHeightFormula / Const.COLUMNS);
-        if (Const.MONOLITH_LINES) {
-            increaseMonolithHeight(monolithHeight - Const.MONOLITH_LINES);
-        } else {
-            console.log(`//     Metadata gotten: ${meta.nbChunks} chunks     //`);
-            Const.setMonolithHeight(monolithHeight);
-        }
+    console.log('previousNbChunks', previousNbChunks, 'meta.nbChunks', meta.nbChunks);
+
+    for (let i = previousNbChunks; i < meta.nbChunks; i++) {
+        // if (i == 1 || i == 10 || i == 17 || i == 59) continue;
+        getChunk(i).then((res) => {
+            bufferOnMonolith({
+                buffer: base64ToBuffer(res[3]),
+                x: res[0].toNumber() % Const.MONOLITH_COLUMNS,
+                y: Math.floor(res[0].toNumber() / Const.MONOLITH_COLUMNS),
+                paid: res[2].toNumber(),
+                yMaxLegal: res[1].toNumber() * 4,
+                zIndex: i,
+            });
+            // console.log('chunk ' + i + ' of ' + meta.nbChunks + ' imported');
+        });
     }
+
+    const monolithHeightFormula = Const.COLUMNS * 64 + (meta.nbKlon * meta.threshold) / 1000000;
+    const monolithHeight = Math.floor(monolithHeightFormula / Const.COLUMNS);
+    if (Const.MONOLITH_LINES) {
+        increaseMonolithHeight(monolithHeight - Const.MONOLITH_LINES);
+    } else {
+        console.log(`//     Metadata gotten: ${meta.nbChunks} chunks     //`);
+        Const.setMonolithHeight(monolithHeight);
+    }
+
     previousNbChunks = meta.nbChunks;
 }
 
