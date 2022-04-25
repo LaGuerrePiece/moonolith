@@ -1,9 +1,9 @@
-import { GUI, caly0, caly1, caly2, caly3, caly4, caly5, caly6, calySide0, calySide1 } from './base64';
-import { base64ToBuffer, pngToBufferToRGBA8 } from '../utils/imageManager';
+import { GUI, caly0, caly1, caly2, caly3, caly4, caly5, caly6, calySide0, calySide1, slug, GUISweetie15 } from './base64';
+import { base64ToBuffer, pngToBufferToRGBA8, ApngToBuffer } from '../utils/imageManager';
 import Const from '../models/constants';
 
 export var imageCatalog = {
-    GUI: { name: 'GUI', type: 'GUI', startX: 0, startY: 0, parallax: 0, base64: GUI },
+    GUI: { name: 'GUI', type: 'GUI', startX: 0, startY: 0, parallax: 0, base64: GUISweetie15 },
     caly0: { name: 'caly0', type: 'landscape', startX: 0, startY: 45, parallax: 0, base64: caly0 },
     calySide0: { name: 'calySide0', type: 'side', startX: 47, startY: 17, parallax: 0, base64: calySide0 },
     calySide1: { name: 'calySide1', type: 'side', startX: 196, startY: -310, parallax: 0, base64: calySide1 },
@@ -21,7 +21,53 @@ export var imageCatalog = {
     caly6: { name: 'caly6', type: 'landscape', startX: 0, startY: 790, parallax: 1, base64: caly6 },
 };
 
-export async function initialDecodeLandscape(numberOfImports, viewPosY) {
+export var animationCatalog = {
+    slug: { name: 'slug', type: 'anim', startX: 15, startY: 10, parallax: 0, base64: slug, loop: true },
+};
+
+export async function initialDecodeAnim(numberOfImports) {
+    //Imports a few layers of animation
+    let startImport = Date.now();
+    let importedAnimations = 0;
+    let animations = Object.keys(animationCatalog);
+
+    for (let i = animations.length - 1; i >= 0; i--) {
+        if (importedAnimations >= numberOfImports) continue;
+        decodeAndFormatAnimation(animations[i]);
+        importedAnimations++;
+    }
+    console.log('//     First animation import of', animations.length, ':', Date.now() - startImport, 'ms     //');
+}
+
+async function decodeAndFormatAnimation(index) {
+    let thisAnim = animationCatalog[index];
+    let decoded = await ApngToBuffer(base64ToBuffer(thisAnim.base64)).catch(console.error);
+    let width = decoded.width;
+    let framesObj = {};
+    let frames = Array.from({ length: decoded.frames.length }, () =>
+        Array.from({ length: decoded.frames[0].length / width / 4 }, () => Array.from(Const.COLUMNS))
+    );
+
+    for (let frame in decoded.frames) {
+        for (let y = 0; y < decoded.frames[frame].length / width / 4; y++) {
+            for (let x = 0; x < width; x++) {
+                if (decoded.frames[frame][(x + y * width) * 4 + 3] === 0) continue;
+                frames[frame][y][x] = [
+                    decoded.frames[frame][(x + y * width) * 4] / 255,
+                    decoded.frames[frame][(x + y * width) * 4 + 1] / 255,
+                    decoded.frames[frame][(x + y * width) * 4 + 2] / 255,
+                ];
+            }
+        }
+        framesObj[frame] = { buffer: frames[frame], delay: decoded.delay[frame] };
+    }
+
+    thisAnim.frames = framesObj;
+    thisAnim.width = width;
+    thisAnim.height = decoded.height;
+}
+
+export async function initialDecodeLandscape(numberOfImports) {
     //Imports a few layers of landscape
     let startImport = Date.now();
     let importedLayers = 0;
@@ -62,9 +108,10 @@ async function decodeAndFormatLayer(index) {
         for (let x = 0; x < width; x++) {
             if (buffer[(x + y * width) * 4 + 3] === 0) continue;
             convertedYX[y][x] = [
-                buffer[(x + y * width) * 4] / 255,
-                buffer[(x + y * width) * 4 + 1] / 255,
-                buffer[(x + y * width) * 4 + 2] / 255,
+                buffer[(x + y * width) * 4],
+                buffer[(x + y * width) * 4 + 1],
+                buffer[(x + y * width) * 4 + 2],
+                255,
             ];
         }
     }

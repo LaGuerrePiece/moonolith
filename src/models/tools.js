@@ -1,11 +1,18 @@
 //prettier-ignore
-import {update, canvas, windowHeight, windowWidth, renderWidth, renderHeight, changeViewPos, viewPosX, viewPosY, zoom} from '../main';
+import { windowHeight, windowWidth, renderWidth, renderHeight, changeViewPos, viewPosX, viewPosY, zoom, canvas} from '../main';
 import { imageCatalog } from '../assets/imageData';
-import { drawPixel, getColor, eraseAllPixel, erasePixel, convertToMonolithPos } from './monolith';
+import {
+    drawPixel,
+    getColor,
+    eraseAllPixel,
+    erasePixel,
+    convertToMonolithPos,
+    increaseMonolithHeight,
+} from './monolith';
 import Klon from './klon';
 import { closeCurrentEvent, undo, redo } from './undoStack';
 
-import { moveDrawing, bufferOnMonolith, saveToEthernity } from '../utils/imageManager';
+import { moveDrawing, bufferOnMonolith, saveToEthernity, APNGtoMonolith } from '../utils/imageManager';
 import Const from './constants';
 
 //prettier-ignore
@@ -33,9 +40,10 @@ export function keyManager(e){
     if (e.metaKey && e.key === 'y') redo();
     if (e.key === 'x') eraseAllPixel();
     if (e.key === 'c') console.log('Total H', Const.COLUMNS, 'Total W', Const.LINES, 'render W', renderWidth, 'render H', renderHeight, 'viewPosX', viewPosX, 'viewPosY', viewPosY, 'mousePos', mousePosInGrid(e).x, mousePosInGrid(e).y);
-    if (e.key === 'm') { moveDrawing(50, 400); update() }
+    if (e.key === 'm') { moveDrawing(50, 400) }
     if (e.key === 'y') zoom();
     if (e.key === 'i') importImage();
+    if (e.key === 'p') increaseMonolithHeight(1000)
     if (e.key === 'ArrowUp') { changeViewPos(0, 6); }
     if (e.key === 'ArrowDown') { changeViewPos(0, -6); }
     if (e.key === 'ArrowLeft') { changeViewPos(-6, 0); }
@@ -52,7 +60,9 @@ export function scrollManager(e) {
 
 export function clickManager(e) {
     let mousePos = mousePosInGrid(e);
-    //console.log('mousePos', mousePos);
+
+    console.log('mousePos', mousePos);
+
     const GUIstartY = Math.floor((renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y);
     const GUIstartX = Math.floor((renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X);
     if (
@@ -70,25 +80,25 @@ export function clickManager(e) {
 
         //SMALL
         //FIRST CIRCLE POSITION : 3, 21
-        if (GUICircle(mousePos, GUIstartY, GUIstartX, 3, 21, 3)) colorPicked = Const.RGB1;
-        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 1, 3, 21, 3)) colorPicked = Const.RGB2;
-        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 2, 3, 21, 3)) colorPicked = Const.RGB3;
-        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 3, 3, 21, 3)) colorPicked = Const.RGB4;
-        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 4, 3, 21, 3)) colorPicked = Const.RGB5;
-        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 5, 3, 21, 3)) colorPicked = Const.RGB6;
-        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 6, 3, 21, 3)) colorPicked = Const.RGB7;
-        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 7, 3, 21, 3)) colorPicked = Const.RGB8;
+        if (GUICircle(mousePos, GUIstartY, GUIstartX, 3, 21, 4)) colorPicked = Const.RGB1;
+        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 1, 3, 21, 4)) colorPicked = Const.RGB2;
+        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 2, 3, 21, 4)) colorPicked = Const.RGB3;
+        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 3, 3, 21, 4)) colorPicked = Const.RGB4;
+        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 4, 3, 21, 4)) colorPicked = Const.RGB5;
+        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 5, 3, 21, 4)) colorPicked = Const.RGB6;
+        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 6, 3, 21, 4)) colorPicked = Const.RGB7;
+        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 7, 3, 21, 4)) colorPicked = Const.RGB8;
         //ROW 2
-        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX, 3, 21, 3)) colorPicked = Const.RGB9;
-        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 1, 3, 21, 3)) colorPicked = Const.RGB10;
-        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 2, 3, 21, 3)) colorPicked = Const.RGB11;
-        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 3, 3, 21, 3)) colorPicked = Const.RGB12;
-        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 4, 3, 21, 3)) colorPicked = Const.RGB13;
-        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 5, 3, 21, 3)) colorPicked = Const.RGB14;
-        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 6, 3, 21, 3)) colorPicked = Const.RGB15;
-        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 7, 3, 21, 3)) colorPicked = Const.RGB16;
+        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX, 3, 21, 4)) colorPicked = Const.RGB9;
+        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 1, 3, 21, 4)) colorPicked = Const.RGB10;
+        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 2, 3, 21, 4)) colorPicked = Const.RGB11;
+        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 3, 3, 21, 4)) colorPicked = Const.RGB12;
+        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 4, 3, 21, 4)) colorPicked = Const.RGB13;
+        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 5, 3, 21, 4)) colorPicked = Const.RGB14;
+        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 6, 3, 21, 4)) colorPicked = Const.RGB15;
+        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 7, 3, 21, 4)) colorPicked = Const.RGB16;
     } else {
-        //CASE MONOLITH OR LANDSCAPE
+        // //CASE MONOLITH OR LANDSCAPE
         mousePos = convertToMonolithPos(mousePos);
         if (mousePos) startUsingTool(e, mousePos);
     }
@@ -146,7 +156,6 @@ function useTool(e) {
             moveDrawing(mousePos.x, mousePos.y);
             break;
     }
-    update();
 }
 
 function useDeleteTool(e) {
@@ -172,7 +181,6 @@ function useDeleteTool(e) {
             }
             break;
     }
-    update();
 }
 
 function brushSwitch() {
@@ -221,11 +229,12 @@ function importImage() {
             bufferOnMonolith({
                 buffer: importedImage,
                 x: 1,
-                y: 400,
+                y: 1,
                 paid: Const.FREE_DRAWING,
                 yMaxLegal: Const.FREE_DRAWING,
                 zIndex: Klon.USERPAINTED,
             });
+            APNGtoMonolith(importedImage);
 
             //! NE PAS SUPPRIMER LES LIGNES CI-DESSOUS !//
             let base64 = btoa(

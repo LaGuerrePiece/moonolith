@@ -1,32 +1,80 @@
 import {UPNG} from './upmc';
 import Klon from '../models/klon';
 import Const from '../models/constants';
-import { monolith, eraseAllPixel } from '../models/monolith';
+import { monolith, eraseAllPixel, drawPixel } from '../models/monolith';
 import { chunkCreator } from '../utils/web3';
-
-const palette = [
-    '#000000',
-    '#fff7e4',
-    '#6c5671',
-    '#d9c8bf',
-    '#f98284',
-    '#b0a9e4',
-    '#accce4',
-    '#b3e3da',
-    '#feaae4',
-    '#87a889',
-    '#b0eb93',
-    '#e9f59d',
-    '#ffe6c6',
-    '#dea38b',
-    '#ffc384',
-    '#fff7a0',
-   // '#28282e' 
-];
 
 function saveToEthernity() {
     monolithToBase64().then((data) => {
         chunkCreator(data);
+    });
+}
+
+async function APNGtoMonolith(buffer) {
+    new Promise((resolve) => {
+        buffer = UPNG.decode(buffer);
+        resolve(buffer);
+    }).then((buffer) => {
+        console.log('anim buffer', buffer);
+        for (let frame = 0; frame < 51; frame++) {
+            let decodedFrame = UPNG.toRGBA8(buffer)[frame];
+            // console.log('decodedFrame', frame, decodedFrame);
+
+            setTimeout(() => {
+                animBufferOnMonolith({
+                    buffer: new Uint8Array(decodedFrame),
+                    width: buffer.width,
+                    height: buffer.height,
+                    x: 5,
+                    y: 45,
+                    zIndex: 0,
+                    paid: 99999,
+                });
+                eraseAllPixel();
+            }, 100 * frame);
+        }
+    });
+
+    async function animBufferOnMonolith(data) {
+        let pixelDrawn = 0;
+        let decalage = 0;
+        for (let y = data.y; y < 350; y++) {
+            for (let x = data.x; x < data.width + data.x; x++) {
+                if (pixelDrawn >= data.paid) return;
+                if (!monolith[y]?.[x]) continue;
+                if (data.buffer[decalage + 3] > 0) {
+                    monolith[y][x].color = [
+                        data.buffer[decalage] / 255,
+                        data.buffer[decalage + 1] / 255,
+                        data.buffer[decalage + 2] / 255,
+                    ];
+                    monolith[y][x].zIndex = data.zIndex;
+                    pixelDrawn++;
+                }
+                decalage += 4;
+            }
+        }
+    }
+}
+
+export async function ApngToBuffer(buffer) {
+    return new Promise((resolve) => {
+        buffer = UPNG.decode(buffer);
+        resolve(buffer);
+    }).then((buffer) => {
+        let framesArray = [];
+        let delayArray = [];
+        for (let frame = 0; frame < buffer.frames.length; frame++) {
+            delayArray.push(buffer.frames[frame].delay);
+            framesArray.push(new Uint8Array(UPNG.toRGBA8(buffer)[frame]));
+        }
+        return {
+            decodedYX: new Uint8Array(UPNG.toRGBA8(buffer)[0]),
+            frames: framesArray,
+            delay: delayArray,
+            height: buffer.height,
+            width: buffer.width,
+        };
     });
 }
 
@@ -63,7 +111,7 @@ async function prepareBufferForApi(data)
     }
     let colors = [];
     pixArray.forEach(pix => {
-        colors.push(hexToRgb(palette[pix]));
+        colors.push(Const.PALETTE[pix]);
     });
     console.log('pixArray.length', pixArray.length)
     return [colors, rgba8.width, rgba8.height];
@@ -90,7 +138,7 @@ async function bufferOnMonolith(data) {
             if (pixelDrawn >= data.paid) return;
             if (!monolith[y]?.[x]) continue;
             if (pixArray[p] > 0) {
-                monolith[y][x].color = hexToRgb(palette[pixArray[p]])
+                monolith[y][x].color = Const.PALETTE[pixArray[p]]
                 monolith[y][x].zIndex = data.zIndex;
                 pixelDrawn++;
             }
@@ -154,8 +202,7 @@ function gridToArray()
     for (let i = highLow.lowY; i <= highLow.highY; i++) {
         for (let j = highLow.lowX; j <= highLow.highX; j++) {
             if (monolith[i][j].zIndex == Klon.USERPAINTED) {
-                saveArray.push(...monolith[i][j].color.map((a) => a * 255));
-                saveArray.push(255);
+                saveArray.push(...monolith[i][j].color, 255);
                 nbPix++;
             } else {
                 saveArray.push(...[0, 0, 0, 0]);
@@ -169,7 +216,7 @@ function gridToArray()
         //console.log(saveArray[i], saveArray[i+1],  saveArray[i+2]);
         let hex = RGBToHex(saveArray[i]/255, saveArray[i+1]/255,  saveArray[i+2]/255);
         //console.log('color:', hex)
-        let c = parseInt(getKeyByValue(palette, hex));
+        let c = parseInt(getKeyByValue(Const.PALETTE, hex));
         //console.log("Un entier:", c);
         addUintTo4bitArray(encoded, c);
         raw.push(c);
@@ -239,15 +286,15 @@ function componentToHex(c) {
     return hex.length == 1 ? '0' + hex : hex;
 }
 function getKeyByValue(object, value) {
-    return Object.keys(object).find(key => object[key] === value);
+    return Object.keys(object).find((key) => object[key] === value);
 }
 
 function hexToRgb(hex) {
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result ? [
-      parseInt(result[1], 16)/255,
-      parseInt(result[2], 16)/255,
-      parseInt(result[3], 16)/255
+      parseInt(result[1], 16),
+      parseInt(result[2], 16),
+      parseInt(result[3], 16)
      ] : null;
   }
 
@@ -272,4 +319,4 @@ export function moveDrawing(x, y) {
     );
 }
 
-export { saveToEthernity, base64ToBuffer, pngToBufferToRGBA8, pngToBufferToRGB, prepareBufferForApi, bufferOnMonolith };
+export { saveToEthernity, base64ToBuffer, pngToBufferToRGBA8, pngToBufferToRGB, prepareBufferForApi, bufferOnMonolith, APNGtoMonolith };

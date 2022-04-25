@@ -24,91 +24,56 @@ export default class Const {
 
     // COLORS
 
-    static get RGB1() { return [
-      1,
-      0.9686274509803922,
-      0.8941176470588236
-    ] } // #fff7e4
-    static get RGB2() { return [
-      0.4235294117647059,
-      0.33725490196078434,
-      0.44313725490196076
-    ] } // #6c5671
-    static get RGB3() { return [
-      0.8509803921568627,
-      0.7843137254901961,
-      0.7490196078431373
-    ] } // #d9c8bf
-    static get RGB4() { return [
-      0.9764705882352941,
-      0.5098039215686274,
-      0.5176470588235295
-    ] } // #f98284
-    static get RGB5() { return [
-      0.6901960784313725,
-      0.6627450980392157,
-      0.8941176470588236
-    ] } // #b0a9e4
-    static get RGB6() { return [
-      0.6745098039215687,
-      0.8,
-      0.8941176470588236
-    ]} // #accce4
-    static get RGB7() { return [
-      0.7019607843137254,
-      0.8901960784313725,
-      0.8549019607843137
-    ] } // #b3e3da
-    static get RGB8() { return [
-      0.996078431372549,
-      0.6666666666666666,
-      0.8941176470588236
-    ] } // #feaae4
-    static get RGB9() { return [
-      0.5294117647058824,
-      0.6588235294117647,
-      0.5372549019607843
-    ] } // #87a889
-    static get RGB10() { return [
-      0.6901960784313725,
-      0.9215686274509803,
-      0.5764705882352941
-    ] } // #b0eb93
-    static get RGB11() { return [
-  0.9137254901960784,
-  0.9607843137254902,
-  0.615686274509804
-]} // #e9f59d
-    static get RGB12() { return [
-      1,
-      0.9019607843137255,
-      0.7764705882352941
-    ]} // #ffe6c6
-    static get RGB13() { return [
-      0.8705882352941177,
-      0.6392156862745098,
-      0.5450980392156862
-    ]} // #dea38b
-    static get RGB14() { return [
-      1,
-      0.7647058823529411,
-      0.5176470588235295
-    ] } // #ffc384
-    static get RGB15() { return [
-      1,
-      0.9686274509803922,
-      0.6274509803921569
-    ]} // #fff7a0
-    static get RGB16() { return [
-      0.1568627450980392,
-      0.1568627450980392,
-      0.1803921568627451
-    ] } // #28282e SAME AS DEFAULT_COLOR
+    static get RGB1() { return [ 37, 113, 121 ] } // #257179
+    static get RGB2() { return [ 56, 183, 100 ] } // #38b764
+    static get RGB3() { return [ 167, 240, 112 ] } // #a7f070
+    static get RGB4() { return [ 255, 205, 117 ] } // #ffcd75
+    static get RGB5() { return [ 239, 125, 87 ] } // #ef7d57
+    static get RGB6() { return [ 177, 62, 83 ] } // #b13e53
+    static get RGB7() { return [ 93, 39, 93 ] } // #5d275d
+    static get RGB8() { return [ 26, 28, 44 ] } // #1a1c2c
+    static get RGB9() { return [ 41, 54, 111 ] } // #29366f
+    static get RGB10() { return [ 59, 93, 201 ] } // #3b5dc9
+    static get RGB11() { return [ 65, 166, 246 ] } // #41a6f6
+    static get RGB12() { return [ 115, 239, 247 ] } // #73eff7
+    static get RGB13() { return [ 244, 244, 244 ] } // #f4f4f4
+    static get RGB14() { return [ 148, 176, 194 ] } // #94b0c2
+    static get RGB15() { return [ 86, 108, 134 ] } // #566c86
+    static get RGB16() { return [ 51, 60, 87 ] } // #333c57
 
-    static get DEFAULT_COLOR() { return [0.1568, 0.1568, 0.1803] } // #28282e
-    static get SKY_COLOR() { return [0.2902, 0.6431, 0.6549] }  // #4d8c9e
+    static get DEFAULT_COLOR() { return [40, 40, 46] } // #28282e
+    static get SKY_COLOR() { return [74, 164, 167] }  // #4d8c9e
 
 
     static get PALETTE() { return [this.RGB1, this.RGB2, this.RGB3, this.RGB4, this.RGB5, this.RGB6, this.RGB7, this.RGB8, this.RGB9, this.RGB10, this.RGB11, this.RGB12, this.RGB13, this.RGB14, this.RGB15, this.RGB16] }
     
   }
+
+// let arrayToConvert = [
+//     '257179',
+//     '38b764',
+//     'a7f070',
+//     'ffcd75',
+//     'ef7d57',
+//     'b13e53',
+//     '5d275d',
+//     '1a1c2c',
+//     '29366f',
+//     '3b5dc9',
+//     '41a6f6',
+//     '73eff7',
+//     'f4f4f4',
+//     '94b0c2',
+//     '566c86',
+//     '333c57',
+// ];
+// arrayToConvert.forEach((hex) => {
+//     console.log(hexToRGB(hex));
+// });
+
+function hexToRGB(hex) {
+    var r = Math.floor((parseInt(hex.slice(0, 2), 16) / 255) * 10000) / 10000,
+        g = Math.floor((parseInt(hex.slice(2, 4), 16) / 255) * 10000) / 10000,
+        b = Math.floor((parseInt(hex.slice(4, 6), 16) / 255) * 10000) / 10000;
+    return [r, g, b];
+}

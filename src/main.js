@@ -1,11 +1,9 @@
 // Imports des composants
-import DisplayGrid from './models/displayGrid';
-import { initialDecodeLandscape, lateDecodeLandscape } from './assets/imageData';
+import { initialDecodeLandscape, lateDecodeLandscape, initialDecodeAnim } from './assets/imageData';
 // Imports des fonctionnalités
 import { clickManager, keyManager, scrollManager } from './models/tools';
-
 import Const from './models/constants';
-import { initialChunkImport, getChunk } from './utils/web3';
+import { chunkImport, getChunk } from './utils/web3';
 import { assemble } from './models/assembler';
 import { buildMonolith } from './models/monolith';
 import { base64ToBuffer, pngToBufferToRGB, prepareBufferForApi } from './utils/imageManager';
@@ -14,14 +12,13 @@ let displayGrid;
 export let canvas;
 export let viewPosY = 0;
 export let viewPosX = 0;
-let lastCall = 0;
-export let displayData;
 
 export const windowHeight = window.innerHeight;
 export const windowWidth = window.innerWidth;
 export let renderWidth = Const.COLUMNS;
 const pixelSize = windowWidth / renderWidth;
-export let renderHeight = Math.ceil(windowHeight / pixelSize);
+export let renderHeight = Math.ceil((windowHeight * renderWidth) / windowWidth);
+
 let InitialImports = 13;
 
 async function initApp() {
@@ -32,26 +29,44 @@ async function initApp() {
     } else {
         let initPerf = performance.now();
         console.log('/////////   INITIALIZING APP   /////////');
-        await initialChunkImport();
+        await chunkImport();
         initialDecodeLandscape(InitialImports);
         buildMonolith();
+        initialDecodeAnim(InitialImports);
         initDisplay();
         lateDecodeLandscape(InitialImports);
         console.log('//         End of init', Math.floor(performance.now() - initPerf), 'ms        //');
         console.log('//////  INITIALIZATION COMPLETE   //////');
-        setTimeout(() => {
-            update();
-        }, 501);
     }
 }
 
 initApp();
 
 function initDisplay() {
-    displayGrid = new DisplayGrid(renderWidth, renderHeight);
-    displayGrid.initialize(document.body);
-    canvas = displayGrid.pixels.canvas;
+    canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    document.body.appendChild(canvas);
+
+    // Set canvas dimensions to the ratio of the screen size
+    canvas.width = renderWidth;
+    canvas.height = renderHeight;
     canvas.onmousedown = clickManager;
+
+    // Set canvas size to size of screen
+    canvas.style.width = windowWidth + 'px';
+    canvas.style.height = windowHeight + 'px';
+    canvas.style.imageRendering = 'pixelated';
+    document.body.style.cssText = 'margin:0;padding:0;';
+
+    // Create image data of size nbColumns * nbRows
+    let myImageData = ctx.createImageData(renderWidth, renderHeight);
+    function update() {
+        myImageData.data.set(assemble(true));
+        ctx.putImageData(myImageData, 0, 0);
+        requestAnimationFrame(update);
+    }
+    requestAnimationFrame(update);
+
     console.log('//      displayGrid initialized       //');
 }
 
@@ -90,13 +105,7 @@ function initApiDisplay(id) {
     });
 }
 
-export function update() {
-    if (new Date() - lastCall < 10) return;
-    //data is the array of the displayed klons
-    displayData = assemble();
-    displayGrid.updateDisplay(displayData);
-    lastCall = new Date();
-}
+
 
 //prettier-ignore
 document.addEventListener('contextmenu', (e) => { e.preventDefault(); }, false);
@@ -108,11 +117,10 @@ window.onwheel = function (e) { scrollManager(e) };
 export function changeViewPos(inputX, inputY) {
     viewPosX += inputX;
     viewPosY += inputY;
-    if (viewPosY < -30) viewPosY = -30;
     if (viewPosY + renderHeight > Const.LINES) viewPosY = Const.LINES - renderHeight;
+    if (viewPosY < -30) viewPosY = -30;
     if (viewPosX < 0) viewPosX = 0;
     if (viewPosX + renderWidth > Const.COLUMNS) viewPosX = Const.COLUMNS - renderWidth;
-    update();
 }
 
 export function zoom() {
@@ -132,8 +140,11 @@ export function zoom() {
     }
     document.body.removeChild(displayGrid.pixels.canvas);
     initDisplay();
-    update();
 }
+
+setInterval(() => {
+    chunkImport();
+}, 5000);
 
 // TENTATIVE DE POINTEUR
 
