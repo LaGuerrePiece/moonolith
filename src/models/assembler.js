@@ -1,7 +1,7 @@
-import { monolith } from './monolith';
+import { convertToMonolithPos, monolith } from './monolith';
 import { imageCatalog, animationCatalog } from '../assets/imageData';
 import Const from './constants';
-import { renderHeight, renderWidth, viewPosX, viewPosY } from '../main';
+import { renderHeight, renderWidth, viewPosX, viewPosY, pointer } from '../main';
 
 // var previousViewPosY;
 // var previousViewPosX;
@@ -90,6 +90,13 @@ export function assemble(force) {
     }
     // previousLandscape = displayArray;
     // console.log('render', Math.floor(performance.now() - startAssemble), 'ms');
+
+    if (!convertToMonolithPos({ x: pointer.x, y: pointer.y })) return displayArray;
+
+    const whitePixelPos = (pointer.y * renderWidth + pointer.x) * 4;
+    displayArray[whitePixelPos] = 255;
+    displayArray[whitePixelPos + 1] = 255;
+    displayArray[whitePixelPos + 2] = 255;
 
     return displayArray;
 }

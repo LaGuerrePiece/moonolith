@@ -1,7 +1,7 @@
 // Imports des composants
 import { initialDecodeLandscape, lateDecodeLandscape, initialDecodeAnim } from './assets/imageData';
 // Imports des fonctionnalités
-import { clickManager, keyManager, scrollManager } from './models/tools';
+import { clickManager, keyManager, scrollManager, mousePosInGrid } from './models/tools';
 import Const from './models/constants';
 import { chunkImport } from './utils/web3';
 import { assemble } from './models/assembler';
@@ -46,8 +46,7 @@ function initDisplay() {
     canvas.onmousedown = clickManager;
 
     // Set canvas size to size of screen
-    canvas.style.width = windowWidth + 'px';
-    canvas.style.height = windowHeight + 'px';
+    canvas.style.width = '100%';
     canvas.style.imageRendering = 'pixelated';
     document.body.style.cssText = 'margin:0;padding:0;';
 
@@ -104,28 +103,7 @@ setInterval(() => {
 
 // TENTATIVE DE POINTEUR
 
-// let oldColor = [0, 0, 0];
-// let oldY = 100;
-// let oldX = 100;
-
-// document.addEventListener('mousemove', (e) => {
-//     const mousePos = convertToMonolithPos(mousePosInGrid({ x: e.x, y: e.y }));
-//     if (!mousePos) return;
-//     for (let i = -1; i <= 1; i++) {
-//         for (let j = -1; j <= 1; j++) {
-//             monolith[oldY + i][oldX + j].color = oldColor;
-//         }
-//     }
-
-//     oldColor = monolith[mousePos.y][mousePos.x].color;
-
-//     oldY = mousePos.y;
-//     oldX = mousePos.x;
-
-//     for (let i = -1; i <= 1; i++) {
-//         for (let j = -1; j <= 1; j++) {
-//             monolith[mousePos.y + i][mousePos.x + j].color = [1, 1, 1];
-//         }
-//     }
-//console.log('mousePos', mousePos);
-// });
+export let pointer;
+document.addEventListener('mousemove', (e) => {
+    pointer = mousePosInGrid({ x: e.x, y: e.y });
+});
