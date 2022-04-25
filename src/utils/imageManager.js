@@ -3,7 +3,6 @@ import Klon from '../models/klon';
 import Const from '../models/constants';
 import { monolith, eraseAllPixel, drawPixel } from '../models/monolith';
 import { chunkCreator } from '../utils/web3';
-import { update } from '../main';
 
 const palette = [
     '#000000',
@@ -50,7 +49,6 @@ async function APNGtoMonolith(buffer) {
                     zIndex: 0,
                     paid: 99999,
                 });
-                update();
                 eraseAllPixel();
             }, 100 * frame);
         }

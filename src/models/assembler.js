@@ -6,6 +6,7 @@ import { renderHeight, renderWidth, viewPosX, viewPosY } from '../main';
 // var previousViewPosY;
 // var previousViewPosX;
 // var previousLandscape;
+// var clock = 0;
 
 export function assemble(force) {
     let startAssemble = performance.now();
@@ -20,17 +21,17 @@ export function assemble(force) {
         startX: Math.floor(-(renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X),
     });
     // Push animations to layersToDisplay
-    clock++;
-    if (clock > 49) clock = 0;
-    for (let animation in animationCatalog) {
-        const thisAnim = animationCatalog[animation];
-        layersToDisplay.push({
-            name: thisAnim.name,
-            colorsArray: thisAnim.frames[clock].buffer,
-            startY: thisAnim.startY - viewPosY - renderHeight,
-            startX: viewPosX - thisAnim.startX,
-        });
-    }
+    // clock++;
+    // if (clock > 49) clock = 0;
+    // for (let animation in animationCatalog) {
+    //     const thisAnim = animationCatalog[animation];
+    //     layersToDisplay.push({
+    //         name: thisAnim.name,
+    //         colorsArray: thisAnim.frames[clock].buffer,
+    //         startY: thisAnim.startY - viewPosY - renderHeight,
+    //         startX: viewPosX - thisAnim.startX,
+    //     });
+    // }
 
     // Push monolith to layersToDisplay
     layersToDisplay.push({
@@ -40,7 +41,6 @@ export function assemble(force) {
         startX: viewPosX - Const.MARGIN_LEFT,
     });
 
-    // Push landscape to layersToDisplay if viewPos changed or update forced
     // if (previousViewPosY !== viewPosY || previousViewPosX !== viewPosX || force) {
     for (let layer in imageCatalog) {
         const thisLayer = imageCatalog[layer];

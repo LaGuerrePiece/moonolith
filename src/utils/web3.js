@@ -88,7 +88,6 @@ async function chunkImport() {
         const monolithHeight = Math.floor(monolithHeightFormula / Const.COLUMNS);
         if (Const.MONOLITH_LINES) {
             increaseMonolithHeight(monolithHeight - Const.MONOLITH_LINES);
-            update(true);
         } else {
             console.log(`//     Metadata gotten: ${meta.nbChunks} chunks     //`);
             Const.setMonolithHeight(monolithHeight);
