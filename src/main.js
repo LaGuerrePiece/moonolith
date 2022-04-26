@@ -7,17 +7,17 @@ import { chunkImport } from './utils/web3';
 import { assemble } from './models/assembler';
 import { buildMonolith } from './models/monolith';
 
-let displayGrid;
 export let canvas;
 export let viewPosY = 0;
 export let viewPosX = 0;
+let myImageData;
+let ctx;
 
 export const windowHeight = window.innerHeight;
 export const windowWidth = window.innerWidth;
 export let renderWidth = Const.COLUMNS;
 const pixelSize = windowWidth / renderWidth;
 export let renderHeight = Math.ceil((windowHeight * renderWidth) / windowWidth);
-
 let InitialImports = 13;
 
 async function initApp() {
@@ -37,7 +37,7 @@ initApp();
 
 function initDisplay() {
     canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
+    ctx = canvas.getContext('2d');
     document.body.appendChild(canvas);
 
     // Set canvas dimensions to the ratio of the screen size
@@ -51,15 +51,19 @@ function initDisplay() {
     document.body.style.cssText = 'margin:0;padding:0;';
 
     // Create image data of size nbColumns * nbRows
-    let myImageData = ctx.createImageData(renderWidth, renderHeight);
-    function update() {
-        myImageData.data.set(assemble(true));
-        ctx.putImageData(myImageData, 0, 0);
-        requestAnimationFrame(update);
-    }
+    myImageData = ctx.createImageData(renderWidth, renderHeight);
     requestAnimationFrame(update);
 
+    const providedY = parseInt(window.location.href.split('=')[1]);
+    if (providedY) changeViewPos(0, providedY);
+
     console.log('//      displayGrid initialized       //');
+}
+
+function update() {
+    myImageData.data.set(assemble(true));
+    ctx.putImageData(myImageData, 0, 0);
+    requestAnimationFrame(update);
 }
 
 //prettier-ignore
@@ -79,31 +83,30 @@ export function changeViewPos(inputX, inputY) {
 }
 
 export function zoom() {
-    if (renderWidth == Const.COLUMNS) {
-        let zoomFactor = 2;
-        console.log(`Zoomed x${zoomFactor} | renderWidth`, renderWidth, 'renderHeight', renderHeight);
-        renderWidth = renderWidth / zoomFactor;
+    if (renderWidth === Const.COLUMNS) {
+        let zoomFactor = 2.5;
+        renderWidth = Math.floor(renderWidth / zoomFactor);
         renderHeight = Math.floor((windowHeight / pixelSize + 1) / zoomFactor);
+        console.log(`Zoomed x${zoomFactor} | renderWidth`, renderWidth, 'renderHeight', renderHeight);
         viewPosX = Math.floor(viewPosX + renderWidth / 2);
         viewPosY = Math.floor(viewPosY + renderHeight / 2);
     } else {
-        console.log('unzoomed');
+        // console.log('unzoomed');
         viewPosX = Math.floor(viewPosX - renderWidth / 2);
         viewPosY = Math.floor(viewPosY - renderHeight / 2);
         renderWidth = Const.COLUMNS;
         renderHeight = Math.ceil(windowHeight / pixelSize);
     }
-    document.body.removeChild(displayGrid.pixels.canvas);
-    initDisplay();
+    myImageData = ctx.createImageData(renderWidth, renderHeight);
+    canvas.width = renderWidth;
+    canvas.height = renderHeight;
 }
 
 setInterval(() => {
     chunkImport();
 }, 5000);
 
-// TENTATIVE DE POINTEUR
-
-export let pointer;
+export let pointer = { x: 0, y: 0 };
 document.addEventListener('mousemove', (e) => {
     pointer = mousePosInGrid({ x: e.x, y: e.y });
 });

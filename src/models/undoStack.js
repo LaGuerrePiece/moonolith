@@ -24,15 +24,12 @@ const addToCurrentEvent = (x, y, oldKlon) => {
 const undo = () => {
     if (eventStack.length === 0) return;
     const eventToUndo = eventStack.pop();
-    console.log('eventToUndo', eventToUndo);
-    for (let i = 0; i < eventToUndo.length; i++) {
-        inverseCurrentEvent.push([
-            eventToUndo[i][0],
-            eventToUndo[i][1],
-            monolith[eventToUndo[i][1]][eventToUndo[i][0]],
-        ]);
-        monolith[eventToUndo[i][1]][eventToUndo[i][0]] = eventToUndo[i][2];
+
+    for (let change of eventToUndo) {
+        inverseCurrentEvent.push([change[0], change[1], monolith[change[1]][change[0]]]);
+        monolith[change[1]][change[0]] = change[2];
     }
+
     inverseEventStack.push(inverseCurrentEvent);
     if (inverseEventStack.length > 20) inverseEventStack.shift();
     inverseCurrentEvent = [];
@@ -42,10 +39,11 @@ const redo = () => {
     if (inverseEventStack.length === 0) return;
     const eventToRedo = inverseEventStack.pop();
 
-    for (let i = 0; i < eventToRedo.length; i++) {
-        currentEvent.push([eventToRedo[i][0], eventToRedo[i][1], monolith[eventToRedo[i][1]][eventToRedo[i][0]]]);
-        monolith[eventToRedo[i][1]][eventToRedo[i][0]] = eventToRedo[i][2];
+    for (let change of eventToRedo) {
+        currentEvent.push([change[0], change[1], monolith[change[1]][change[0]]]);
+        monolith[change[1]][change[0]] = change[2];
     }
+
     eventStack.push(currentEvent);
     if (eventStack.length > 20) eventStack.shift();
     currentEvent = [];

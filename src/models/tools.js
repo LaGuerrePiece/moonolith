@@ -16,7 +16,7 @@ import { moveDrawing, bufferOnMonolith, saveToEthernity, APNGtoMonolith } from '
 import Const from './constants';
 
 //prettier-ignore
-class Tool {
+export class Tool {
 
     static get DONE() { return 0 }
     static get SMOL() { return 1 }
@@ -27,7 +27,7 @@ class Tool {
     static get DELETE() { return 6 }
 }
 
-let tool = Tool.HUGE;
+export let tool = Tool.HUGE;
 let colorPicked = Const.RGB7;
 
 //prettier-ignore
@@ -43,18 +43,19 @@ export function keyManager(e){
     if (e.key === 'm') { moveDrawing(50, 400) }
     if (e.key === 'y') zoom();
     if (e.key === 'i') importImage();
-    if (e.key === 'p') increaseMonolithHeight(1000)
+    if (e.key === 'p') increaseMonolithHeight(100)
     if (e.key === 'ArrowUp') { changeViewPos(0, 6); }
     if (e.key === 'ArrowDown') { changeViewPos(0, -6); }
     if (e.key === 'ArrowLeft') { changeViewPos(-6, 0); }
     if (e.key === 'ArrowRight') { changeViewPos(6, 0); }
+    if (e.key === 't') { changeViewPos(0, 999999); }
 }
 
 export function scrollManager(e) {
     if (e.deltaY > 0) {
-        changeViewPos(0, -3);
+        changeViewPos(0, -10);
     } else {
-        changeViewPos(0, 3);
+        changeViewPos(0, 10);
     }
 }
 
@@ -99,7 +100,7 @@ export function clickManager(e) {
         if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 7, 3, 21, 4)) colorPicked = Const.RGB16;
     } else {
         // //CASE MONOLITH OR LANDSCAPE
-        mousePos = convertToMonolithPos(mousePos);
+        convertToMonolithPos(mousePos);
         if (mousePos) startUsingTool(e, mousePos);
     }
 }
@@ -137,19 +138,20 @@ function useTool(e) {
             drawPixel(mousePos.x, mousePos.y, Klon.USERPAINTED, colorPicked);
             break;
         case Tool.BIG:
-            for (let i = -2; i <= 2; i++) {
-                for (let j = -2; j <= 2; j++) {
-                    if (mousePos.x + i < renderWidth && mousePos.x + i > -1)
-                        drawPixel(mousePos.x + i, mousePos.y + j, Klon.USERPAINTED, colorPicked);
-                }
-            }
+            for (let i = -1; i <= 1; i++) drawPixel(mousePos.x + i, mousePos.y, Klon.USERPAINTED, colorPicked);
+            for (let j = -1; j <= 1; j++) drawPixel(mousePos.x, mousePos.y + j, Klon.USERPAINTED, colorPicked);
             break;
         case Tool.HUGE:
-            for (let i = -15; i <= 15; i++) {
-                for (let j = -15; j <= 15; j++) {
-                    if (mousePos.x + i < renderWidth && mousePos.x + i > -1)
-                        drawPixel(mousePos.x + i, mousePos.y + j, Klon.USERPAINTED, colorPicked);
+            for (let i = -2; i <= 2; i++) {
+                for (let j = -2; j <= 2; j++) {
+                    drawPixel(mousePos.x + i, mousePos.y + j, Klon.USERPAINTED, colorPicked);
                 }
+            }
+            for (let i = -1; i <= 1; i++) {
+                drawPixel(mousePos.x + i, mousePos.y + 3, Klon.USERPAINTED, colorPicked);
+                drawPixel(mousePos.x + i, mousePos.y - 3, Klon.USERPAINTED, colorPicked);
+                drawPixel(mousePos.x + 3, mousePos.y + i, Klon.USERPAINTED, colorPicked);
+                drawPixel(mousePos.x - 3, mousePos.y + i, Klon.USERPAINTED, colorPicked);
             }
             break;
         case Tool.MOVE:

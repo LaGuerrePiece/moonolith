@@ -2,6 +2,7 @@ import { convertToMonolithPos, monolith } from './monolith';
 import { imageCatalog, animationCatalog } from '../assets/imageData';
 import Const from './constants';
 import { renderHeight, renderWidth, viewPosX, viewPosY, pointer } from '../main';
+import { tool, Tool } from './tools';
 
 // var previousViewPosY;
 // var previousViewPosX;
@@ -64,6 +65,7 @@ export function assemble(force) {
     // displayArray = previousLandscape;
     // }
     // console.log('layersToDisplay', layersToDisplay);
+
     for (let y = 0; y < renderHeight; y++) {
         for (let x = 0; x < renderWidth; x++) {
             for (let layer of layersToDisplay) {
@@ -91,12 +93,34 @@ export function assemble(force) {
     // previousLandscape = displayArray;
     // console.log('render', Math.floor(performance.now() - startAssemble), 'ms');
 
-    if (!convertToMonolithPos({ x: pointer.x, y: pointer.y })) return displayArray;
-
-    const whitePixelPos = (pointer.y * renderWidth + pointer.x) * 4;
-    displayArray[whitePixelPos] = 255;
-    displayArray[whitePixelPos + 1] = 255;
-    displayArray[whitePixelPos + 2] = 255;
-
+    // Add the pointer
+    if (tool === Tool.SMOL) {
+        whiten(displayArray, pointer.y, pointer.x);
+    } else if (tool === Tool.BIG) {
+        for (let i = -1; i <= 1; i++) whiten(displayArray, pointer.y, pointer.x + i);
+        for (let j = -1; j <= 1; j++) whiten(displayArray, pointer.y + j, pointer.x);
+    } else if (tool === Tool.HUGE) {
+        for (let i = -3; i <= 3; i++) {
+            for (let j = -1; j <= 1; j++) {
+                whiten(displayArray, pointer.y + j, pointer.x + i);
+                whiten(displayArray, pointer.y + i, pointer.x + j);
+            }
+        }
+        for (let i = -2; i <= 2; i++) {
+            for (let j = -2; j <= 2; j++) whiten(displayArray, pointer.y + i, pointer.x + j);
+        }
+    }
     return displayArray;
+}
+
+function whiten(displayArray, y, x) {
+    if (x < 0 || x >= renderWidth) return;
+    const displayPos = (y * renderWidth + x) * 4;
+    const monolithPos = convertToMonolithPos({ x: x, y: y });
+    // If not on the monolith or  being put off the screen during the zoom
+    if (!monolithPos || displayPos > displayArray.length) return;
+    if (!monolith[monolithPos.y]?.[monolithPos.x].isEditable(0)) return;
+    displayArray[displayPos] += (255 - displayArray[displayPos]) / 3;
+    displayArray[displayPos + 1] += (255 - displayArray[displayPos + 1]) / 3;
+    displayArray[displayPos + 2] += (255 - displayArray[displayPos + 2]) / 3;
 }
