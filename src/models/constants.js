@@ -24,7 +24,7 @@ export default class Const {
 
     // COLORS
 
-    static get RGB1() { return [ 37, 113, 121 ] } // #257179
+    static get RGB16() { return [ 37, 113, 121 ] } // #257179
     static get RGB2() { return [ 56, 183, 100 ] } // #38b764
     static get RGB3() { return [ 167, 240, 112 ] } // #a7f070
     static get RGB4() { return [ 255, 205, 117 ] } // #ffcd75
@@ -39,7 +39,7 @@ export default class Const {
     static get RGB13() { return [ 244, 244, 244 ] } // #f4f4f4
     static get RGB14() { return [ 148, 176, 194 ] } // #94b0c2
     static get RGB15() { return [ 86, 108, 134 ] } // #566c86
-    static get RGB16() { return [ 51, 60, 87 ] } // #333c57
+    static get RGB1() { return [ 0, 0, 0 ] } // #000000
 
     static get DEFAULT_COLOR() { return [40, 40, 46] } // #28282e
     static get SKY_COLOR() { return [74, 164, 167] }  // #4d8c9e

@@ -10,7 +10,6 @@ export function buildMonolith() {
     monolith = Array.from({ length: Const.MONOLITH_LINES }, () =>
         Array.from({ length: Const.MONOLITH_COLUMNS }, () => new Klon(Const.DEFAULT_COLOR))
     );
-    console.log('//     monolith initialized at ' + Const.MONOLITH_LINES + '    //');
 }
 
 export function drawPixel(x, y, zIndex, color) {
@@ -36,7 +35,6 @@ export function eraseAllPixel() {
         }
     }
     closeCurrentEvent();
-    console.log('eraseAllPixel');
 }
 
 export function erasePixel(x, y) {

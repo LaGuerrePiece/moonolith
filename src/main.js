@@ -3,9 +3,10 @@ import { initialDecodeLandscape, lateDecodeLandscape, initialDecodeAnim } from '
 // Imports des fonctionnalités
 import { clickManager, keyManager, scrollManager, mousePosInGrid } from './models/tools';
 import Const from './models/constants';
-import { chunkImport } from './utils/web3';
+import { chunkImport, getChunk } from './utils/web3';
 import { assemble } from './models/assembler';
 import { buildMonolith } from './models/monolith';
+import { base64ToBuffer, pngToBufferToRGB, prepareBufferForApi } from './utils/imageManager';
 
 export let canvas;
 export let viewPosY = 0;
@@ -18,19 +19,23 @@ export const windowWidth = window.innerWidth;
 export let renderWidth = Const.COLUMNS;
 const pixelSize = windowWidth / renderWidth;
 export let renderHeight = Math.ceil((windowHeight * renderWidth) / windowWidth);
-let InitialImports = 13;
+
+let InitialImports = 18;
 
 async function initApp() {
-    let initPerf = performance.now();
-    console.log('/////////   INITIALIZING APP   /////////');
-    await chunkImport();
-    initialDecodeLandscape(InitialImports);
-    buildMonolith();
-    initialDecodeAnim(InitialImports);
-    initDisplay();
-    lateDecodeLandscape(InitialImports);
-    console.log('//         End of init', Math.floor(performance.now() - initPerf), 'ms        //');
-    console.log('//////  INITIALIZATION COMPLETE   //////');
+    let splittedUri = document.URL.split('?rune=');
+    if (!isNaN(splittedUri[1]) && !isNaN(parseInt(splittedUri[1]))) {
+        // si on tape sur l'api
+        initApiDisplay(splittedUri[1]);
+    } else {
+        let initPerf = performance.now();
+        await chunkImport();
+        initialDecodeLandscape(InitialImports);
+        buildMonolith();
+        initialDecodeAnim(InitialImports);
+        initDisplay();
+        lateDecodeLandscape(InitialImports);
+    }
 }
 
 initApp();
@@ -58,6 +63,40 @@ function initDisplay() {
     if (providedY) changeViewPos(0, providedY);
 
     console.log('//      displayGrid initialized       //');
+}
+
+function initApiDisplay(id) {
+    getChunk(parseInt(id)).then((chunk) => {
+        prepareBufferForApi(base64ToBuffer(chunk[3])).then((data) => {
+            let dataToDisplay = Array.from(data[0]);
+            console.log(dataToDisplay.length, data[1], data[2]);
+
+            while (dataToDisplay.length < data[1] * data[2]) {
+                dataToDisplay[dataToDisplay.length] = [(0, 0, 0)];
+                console.log(dataToDisplay.length, data[1], data[2]);
+                console.log('pushed');
+            }
+            console.log(dataToDisplay, data[1], data[2]);
+            while (dataToDisplay.length > data[1] * data[2]) {
+                dataToDisplay.pop();
+                console.log('poped');
+            }
+            console.log(dataToDisplay, data[1], data[2]);
+            // Convert to Uint8ClampedArray
+            dataToDisplay.forEach((x) => x.push(1));
+            dataToDisplay = dataToDisplay.flat().map((x) => x * 255);
+
+            // Create canvas
+            canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            document.body.appendChild(canvas);
+            canvas.style.imageRendering = 'pixelated';
+            let myImageData = ctx.createImageData(data[1], data[2]);
+            console.log('myImageData', myImageData);
+            myImageData.data.set(dataToDisplay);
+            ctx.putImageData(myImageData, 0, 0);
+        });
+    });
 }
 
 function update() {

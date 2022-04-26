@@ -7,10 +7,11 @@
     "preview": "vite preview --port 5050"
   },
   "dependencies": {
+    "@vitejs/plugin-vue": "^2.3.1",
     "ethers": "^5.5.4",
     "express": "^4.17.3",
+    "pako": "^2.0.4",
     "pixel-grid": "^1.0.2",
-    "upng-js": "^2.1.0",
     "web3": "^1.7.1"
   },
   "devDependencies": {
