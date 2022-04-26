@@ -109,13 +109,13 @@ export function assemble(force) {
                 break;
             }
             // if no color found, set to default sky color
-            if (!displayArray[(y * renderWidth + x) * 4]) {
+            if (!displayArray[(y * renderWidth + x) * 4 + 3]) {
                 displayArray.push(...Const.SKY_COLOR, 255);
             }
         }
     }
 
-    if (lol == 0) console.log('displayArray', displayArray);
+    if (lol === 0) console.log('displayArray', displayArray);
     lol++;
     // previousLandscape = displayArray;
 
