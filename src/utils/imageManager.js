@@ -15,7 +15,6 @@ async function APNGtoMonolith(buffer) {
         buffer = UPNG.decode(buffer);
         resolve(buffer);
     }).then((buffer) => {
-        console.log('anim buffer', buffer);
         for (let frame = 0; frame < 51; frame++) {
             let decodedFrame = UPNG.toRGBA8(buffer)[frame];
             // console.log('decodedFrame', frame, decodedFrame);
@@ -268,7 +267,7 @@ function decode4bitsArray(array) {
     for (let i = 0; i < array.length; i++) {
         decoded.push((array[i] - (array[i] % 16)) / 16);
         decoded.push(array[i] % 16);
-        console.log('received', array[i], 'pushed', (array[i] - (array[i] % 16)) / 16, array[i] % 16);
+        // console.log('received', array[i], 'pushed', (array[i] - (array[i] % 16)) / 16, array[i] % 16);
     }
     return decoded;
 }

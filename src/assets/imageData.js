@@ -1,9 +1,13 @@
-import { GUI, caly0, caly1, caly2, caly3, caly4, caly5, caly6, calySide0, calySide1, slug, GUISweetie15 } from './base64';
+//prettier-ignore
+import { GUI, selectColorRed, selectColorBlue, caly0, caly1, caly2, caly3, caly4, caly5, caly6, calySide0, calySide1, slug, GUISweetie15, menu} from './base64';
 import { base64ToBuffer, pngToBufferToRGBA8, ApngToBuffer } from '../utils/imageManager';
 import Const from '../models/constants';
 
 export var imageCatalog = {
     GUI: { name: 'GUI', type: 'GUI', startX: 0, startY: 0, parallax: 0, base64: GUISweetie15 },
+    select1: { name: 'select1', type: 'GUI', startX: 0, startY: 0, parallax: 0, base64: selectColorBlue },
+    select2: { name: 'select2', type: 'GUI', startX: 0, startY: 0, parallax: 0, base64: selectColorRed },
+    menu: { name: 'menu', type: 'GUI', startX: 0, startY: 0, parallax: 0, base64: menu },
     caly0: { name: 'caly0', type: 'landscape', startX: 0, startY: 45, parallax: 0, base64: caly0 },
     calySide0: { name: 'calySide0', type: 'side', startX: 47, startY: 17, parallax: 0, base64: calySide0 },
     calySide1: { name: 'calySide1', type: 'side', startX: 196, startY: -310, parallax: 0, base64: calySide1 },
@@ -27,7 +31,6 @@ export var animationCatalog = {
 
 export async function initialDecodeAnim(numberOfImports) {
     //Imports a few layers of animation
-    let startImport = Date.now();
     let importedAnimations = 0;
     let animations = Object.keys(animationCatalog);
 
@@ -36,7 +39,6 @@ export async function initialDecodeAnim(numberOfImports) {
         decodeAndFormatAnimation(animations[i]);
         importedAnimations++;
     }
-    console.log('//     First animation import of', animations.length, ':', Date.now() - startImport, 'ms     //');
 }
 
 async function decodeAndFormatAnimation(index) {
@@ -69,7 +71,6 @@ async function decodeAndFormatAnimation(index) {
 
 export async function initialDecodeLandscape(numberOfImports) {
     //Imports a few layers of landscape
-    let startImport = Date.now();
     let importedLayers = 0;
     let landscape = Object.keys(imageCatalog);
 
@@ -78,12 +79,10 @@ export async function initialDecodeLandscape(numberOfImports) {
         decodeAndFormatLayer(landscape[i]);
         importedLayers++;
     }
-    console.log('//     First import of', numberOfImports, ':', Date.now() - startImport, 'ms     //');
 }
 
 export async function lateDecodeLandscape(numberOfImports) {
     //Imports the rest of the landscape
-    let startImport = Date.now();
     let importedLayers = 0;
     let landscape = Object.keys(imageCatalog);
 
@@ -92,8 +91,6 @@ export async function lateDecodeLandscape(numberOfImports) {
         decodeAndFormatLayer(landscape[landscape.length - i]);
         importedLayers++;
     }
-    //prettier-ignore
-    console.log('//      Second import of', landscape.length - numberOfImports, ':', Date.now() - startImport, 'ms     //');
 }
 
 async function decodeAndFormatLayer(index) {

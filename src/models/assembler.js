@@ -8,10 +8,22 @@ import { renderHeight, renderWidth, viewPosX, viewPosY } from '../main';
 // var previousLandscape;
 // var clock = 0;
 
+var displayMenu = true; // quand true, dezoom et desac draw
+let lol = 0;
+
 export function assemble(force) {
     let startAssemble = performance.now();
     let displayArray = [];
     let layersToDisplay = [];
+
+    // if (displayMenu) {
+    //     layersToDisplay.push({
+    //         name: 'menu',
+    //         colorsArray: imageCatalog.menu.decodedYX,
+    //         startY: Math.floor(-(renderHeight + viewPosY - imageCatalog.menu.height - 50)),
+    //         startX: Math.floor(-(Const.COLUMNS - imageCatalog.menu.width) / 2),
+    //     });
+    // }
 
     // Push GUI to layersToDisplay
     layersToDisplay.push({
@@ -20,6 +32,21 @@ export function assemble(force) {
         startY: Math.floor(-(renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y),
         startX: Math.floor(-(renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X),
     });
+
+    layersToDisplay.push({
+        name: 'select1',
+        colorsArray: imageCatalog.select1.decodedYX,
+        startY: Math.floor(-(renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y) + 1,
+        startX: Math.floor(-(renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X) - 42,
+    });
+
+    layersToDisplay.push({
+        name: 'select2',
+        colorsArray: imageCatalog.select2.decodedYX,
+        startY: Math.floor(-(renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y) - 7,
+        startX: Math.floor(-(renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X) - 26,
+    });
+
     // Push animations to layersToDisplay
     // clock++;
     // if (clock > 49) clock = 0;
@@ -46,7 +73,7 @@ export function assemble(force) {
         const thisLayer = imageCatalog[layer];
         const parallaxOffset = Math.floor(thisLayer.parallax * viewPosY);
 
-        if (thisLayer.name == 'GUI') continue;
+        if (thisLayer.type == 'GUI') continue;
         if (thisLayer.startY - thisLayer.height - parallaxOffset > viewPosY + renderHeight) continue; // If the layer above render, skip it
         if (Const.LINES - thisLayer.startY + parallaxOffset > Const.LINES - viewPosY) continue; // If the layer under render, skip it
 
@@ -76,10 +103,7 @@ export function assemble(force) {
                 if (!pixel) continue;
                 if (layer.name === 'monolith') displayArray.push(pixel.color[0], pixel.color[1], pixel.color[2], 255);
                 else displayArray.push(pixel[0], pixel[1], pixel[2], 255);
-                // displayArray[y * renderWidth + x] = pixel[0];
-                // displayArray[y * renderWidth + x + 1] = pixel[1];
-                // displayArray[y * renderWidth + x + 2] = pixel[2];
-                // displayArray[y * renderWidth + x + 3] = 255;
+                // else displayArray.push(...pixel, 255);
                 break;
             }
             // if no color found, set to default sky color
@@ -88,8 +112,10 @@ export function assemble(force) {
             }
         }
     }
+
+    if (lol == 0) console.log('displayArray', displayArray);
+    lol++;
     // previousLandscape = displayArray;
-    // console.log('render', Math.floor(performance.now() - startAssemble), 'ms');
 
     return displayArray;
 }

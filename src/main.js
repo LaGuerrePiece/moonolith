@@ -19,7 +19,7 @@ export let renderWidth = Const.COLUMNS;
 const pixelSize = windowWidth / renderWidth;
 export let renderHeight = Math.ceil((windowHeight * renderWidth) / windowWidth);
 
-let InitialImports = 13;
+let InitialImports = 18;
 
 async function initApp() {
     let splittedUri = document.URL.split('?rune=');
@@ -28,15 +28,12 @@ async function initApp() {
         initApiDisplay(splittedUri[1]);
     } else {
         let initPerf = performance.now();
-        console.log('/////////   INITIALIZING APP   /////////');
         await chunkImport();
         initialDecodeLandscape(InitialImports);
         buildMonolith();
         initialDecodeAnim(InitialImports);
         initDisplay();
         lateDecodeLandscape(InitialImports);
-        console.log('//         End of init', Math.floor(performance.now() - initPerf), 'ms        //');
-        console.log('//////  INITIALIZATION COMPLETE   //////');
     }
 }
 
@@ -67,7 +64,6 @@ function initDisplay() {
     }
     requestAnimationFrame(update);
 
-    console.log('//      displayGrid initialized       //');
 }
 
 function initApiDisplay(id) {
@@ -79,13 +75,12 @@ function initApiDisplay(id) {
             while (dataToDisplay.length < data[1] * data[2]) {
                 dataToDisplay[dataToDisplay.length] = [(0, 0, 0)];
                 console.log(dataToDisplay.length, data[1], data[2]);
-                console.log("pushed");
+                console.log('pushed');
             }
             console.log(dataToDisplay, data[1], data[2]);
             while (dataToDisplay.length > data[1] * data[2]) {
                 dataToDisplay.pop();
-                console.log("poped");
-
+                console.log('poped');
             }
             console.log(dataToDisplay, data[1], data[2]);
             // Convert to Uint8ClampedArray
@@ -104,8 +99,6 @@ function initApiDisplay(id) {
         });
     });
 }
-
-
 
 //prettier-ignore
 document.addEventListener('contextmenu', (e) => { e.preventDefault(); }, false);
