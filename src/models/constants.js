@@ -40,9 +40,10 @@ export default class Const {
     static get RGB14() { return [ 148, 176, 194 ] } // #94b0c2
     static get RGB15() { return [ 86, 108, 134 ] } // #566c86
     static get RGB1() { return [ 0, 0, 0 ] } // #000000
-
+    
     static get DEFAULT_COLOR() { return [40, 40, 46] } // #28282e
     static get SKY_COLOR() { return [74, 164, 167] }  // #4d8c9e
+    static get RANDOM_COLOR() { return [ Math.random()*255, Math.random()*255, Math.random()*255 ] } // #??????
 
 
     static get PALETTE() { return [this.RGB1, this.RGB2, this.RGB3, this.RGB4, this.RGB5, this.RGB6, this.RGB7, this.RGB8, this.RGB9, this.RGB10, this.RGB11, this.RGB12, this.RGB13, this.RGB14, this.RGB15, this.RGB16] }

@@ -16,8 +16,10 @@ export function drawPixel(x, y, zIndex, color) {
     if (x < 0 || x >= Const.MONOLITH_COLUMNS || y < 0 || y >= Const.MONOLITH_LINES) return; //IF OUT OF BOUNDS, return
     if (!monolith[y][x].isEditable(zIndex)) return; //IF IT IS NOT EDITABLE, return
     if (monolith[y][x].color === color && monolith[y][x].zIndex === zIndex) return; //IF IT IS THE SAME, return
+    if (monolith[y][x].target === color) return; //If target same, return
     if (zIndex === 0) addToCurrentEvent(x, y, monolith[y][x]); //IF IT IS BEING DRAWN BY USER, ADD TO CURRENT EVENT
-    monolith[y][x] = new Klon(color, zIndex);
+    monolith[y][x].setTargetColor(color);
+    monolith[y][x].zIndex = zIndex;
 }
 
 export function getColor(x, y) {
@@ -39,12 +41,6 @@ export function erasePixel(x, y) {
         addToCurrentEvent(x, y, monolith[y][x]);
         monolith[y][x] = new Klon(Const.DEFAULT_COLOR);
     }
-}
-
-export function convertIndexToXY(index) {
-    let x = index % Const.MONOLITH_COLUMNS;
-    let y = Math.floor(index / Const.MONOLITH_COLUMNS);
-    return { x, y };
 }
 
 export function convertToMonolithPos(mousePos) {

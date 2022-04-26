@@ -1,6 +1,7 @@
 //prettier-ignore
 import { windowHeight, windowWidth, renderWidth, renderHeight, changeViewPos, viewPosX, viewPosY, zoom, canvas} from '../main';
 import { imageCatalog } from '../assets/imageData';
+import { playSound } from '../assets/sounds';
 import {
     drawPixel,
     getColor,
@@ -98,6 +99,8 @@ export function clickManager(e) {
         if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 5, 3, 21, 4)) colorPicked = Const.RGB14;
         if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 6, 3, 21, 4)) colorPicked = Const.RGB15;
         if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 7, 3, 21, 4)) colorPicked = Const.RGB16;
+
+        playSound('click');
     } else {
         // //CASE MONOLITH OR LANDSCAPE
         convertToMonolithPos(mousePos);

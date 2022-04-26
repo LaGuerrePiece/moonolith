@@ -92,7 +92,6 @@ export function assemble(force) {
     // displayArray = previousLandscape;
     // }
     // console.log('layersToDisplay', layersToDisplay);
-
     for (let y = 0; y < renderHeight; y++) {
         for (let x = 0; x < renderWidth; x++) {
             for (let layer of layersToDisplay) {
@@ -103,9 +102,10 @@ export function assemble(force) {
                 if (startY + y < 0 || startX + x < 0) continue; // If pixel is out of bounds in this layer, skip it
                 const pixel = array[startY + y]?.[startX + x];
                 if (!pixel) continue;
-                if (layer.name === 'monolith') displayArray.push(pixel.color[0], pixel.color[1], pixel.color[2], 255);
-                else displayArray.push(pixel[0], pixel[1], pixel[2], 255);
-                // else displayArray.push(...pixel, 255);
+                if (layer.name === 'monolith') {
+                    displayArray.push(pixel.color[0], pixel.color[1], pixel.color[2], 255);
+                    if (pixel.transitionCount % 10 !== 0) pixel.transition();
+                } else displayArray.push(pixel[0], pixel[1], pixel[2], 255);
                 break;
             }
             // if no color found, set to default sky color
