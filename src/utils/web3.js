@@ -77,7 +77,6 @@ async function chunkImport() {
     // console.log('previousNbChunks', previousNbChunks, 'meta.nbChunks', meta.nbChunks);
 
     for (let i = previousNbChunks; i < meta.nbChunks; i++) {
-        // if (i == 1 || i == 10 || i == 17 || i == 59) continue;
         getChunk(i).then((res) => {
             bufferOnMonolith({
                 buffer: base64ToBuffer(res[3]),
@@ -87,7 +86,6 @@ async function chunkImport() {
                 yMaxLegal: res[1].toNumber() * 4,
                 zIndex: i,
             });
-            // console.log('chunk ' + i + ' of ' + meta.nbChunks + ' imported');
         });
     }
 

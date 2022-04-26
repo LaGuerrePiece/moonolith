@@ -214,7 +214,6 @@ function gridToArray() {
         let rgb = [saveArray[i], saveArray[i + 1], saveArray[i + 2]];
         const eq = (element) => element[0] == rgb[0] && element[1] == rgb[1] && element[2] == rgb[2];
         let d = Const.PALETTE.findIndex(eq);
-        console.log('d', d);
         addUintTo4bitArray(encoded, d);
     }
     if (encoded[encoded.length - 1] == 256) encoded[encoded.length - 1] = 0;

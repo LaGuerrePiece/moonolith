@@ -37,15 +37,15 @@ export function assemble(force) {
     layersToDisplay.push({
         name: 'select1',
         colorsArray: imageCatalog.select1.decodedYX,
-        startY: Math.floor(-(renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y) + 1,
-        startX: Math.floor(-(renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X) - 42,
+        startY: imageCatalog.select1.startY,
+        startX: imageCatalog.select1.startX,
     });
 
     layersToDisplay.push({
         name: 'select2',
         colorsArray: imageCatalog.select2.decodedYX,
-        startY: Math.floor(-(renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y) - 7,
-        startX: Math.floor(-(renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X) - 26,
+        startY: imageCatalog.select2.startY,
+        startX: imageCatalog.select2.startX,
     });
 
     // Push animations to layersToDisplay
