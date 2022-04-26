@@ -169,17 +169,20 @@ function useDeleteTool(e) {
             erasePixel(mousePos.x, mousePos.y);
             break;
         case Tool.BIG:
+            for (let i = -1; i <= 1; i++) erasePixel(mousePos.x + i, mousePos.y);
+            for (let j = -1; j <= 1; j++) erasePixel(mousePos.x, mousePos.y + j);
+            break;
+        case Tool.HUGE:
             for (let i = -2; i <= 2; i++) {
                 for (let j = -2; j <= 2; j++) {
                     erasePixel(mousePos.x + i, mousePos.y + j);
                 }
             }
-            break;
-        case Tool.HUGE:
-            for (let i = -15; i <= 15; i++) {
-                for (let j = -15; j <= 15; j++) {
-                    erasePixel(mousePos.x + i, mousePos.y + j);
-                }
+            for (let i = -1; i <= 1; i++) {
+                erasePixel(mousePos.x + i, mousePos.y + 3);
+                erasePixel(mousePos.x + i, mousePos.y - 3);
+                erasePixel(mousePos.x + 3, mousePos.y + i);
+                erasePixel(mousePos.x - 3, mousePos.y + i);
             }
             break;
     }

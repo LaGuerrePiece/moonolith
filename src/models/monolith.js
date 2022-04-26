@@ -28,10 +28,7 @@ export function getColor(x, y) {
 export function eraseAllPixel() {
     for (let j = 0; j < Const.MONOLITH_LINES; j++) {
         for (let i = 0; i < Const.MONOLITH_COLUMNS; i++) {
-            if (monolith[j][i].zIndex === 0) {
-                addToCurrentEvent(i, j, monolith[j][i]);
-                monolith[j][i] = new Klon(Const.DEFAULT_COLOR);
-            }
+            erasePixel(i, j);
         }
     }
     closeCurrentEvent();
