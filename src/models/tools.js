@@ -66,13 +66,13 @@ export function clickManager(e) {
 
     console.log('mousePos', mousePos);
 
-    const GUIstartY = Math.floor((renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y);
-    const GUIstartX = Math.floor((renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X);
+    const GUIstartY = Math.floor((renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y);
+    const GUIstartX = Math.floor((renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X);
     if (
         mousePos.x > GUIstartX &&
-        mousePos.x < GUIstartX + imageCatalog.GUI.width &&
+        mousePos.x < GUIstartX + imageCatalog.palette.width &&
         mousePos.y > GUIstartY &&
-        mousePos.y < GUIstartY + imageCatalog.GUI.height
+        mousePos.y < GUIstartY + imageCatalog.palette.height
     ) {
         //CASE : CLICK ON THE GUI
         // console.log('GUI!!');
@@ -197,14 +197,17 @@ function brushSwitch() {
     switch (tool) {
         case Tool.SMOL:
             console.log('BIG BRUSH');
+            imageCatalog.palette.decodedYX = imageCatalog.paletteBIG.decodedYX;
             tool = Tool.BIG;
             break;
         case Tool.BIG:
             console.log('HUGE BRUSH');
+            imageCatalog.palette.decodedYX = imageCatalog.paletteHUGE.decodedYX
             tool = Tool.HUGE;
             break;
         case Tool.HUGE:
             console.log('SMOL BRUSH');
+            imageCatalog.palette.decodedYX = imageCatalog.paletteSMOL.decodedYX
             tool = Tool.SMOL;
             break;
     }
@@ -262,232 +265,232 @@ function colorSwitch(e, color) {
             case 1:
                 colorPicked1 = Const.RGB1;
                 imageCatalog.select1.startX =
-                    Math.floor(-(renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X) - 18;
+                    Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X) + 2 - 18;
                 imageCatalog.select1.startY =
-                    Math.floor(-(renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y) + 1;
+                    Math.floor(-(renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y) + 1;
                 break;
             case 2:
                 colorPicked1 = Const.RGB2;
                 imageCatalog.select1.startX =
-                    Math.floor(-(renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X) - 26;
+                    Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X) + 2 - 26;
                 imageCatalog.select1.startY =
-                    Math.floor(-(renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y) + 1;
+                    Math.floor(-(renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y) + 1;
                 break;
 
             case 3:
                 colorPicked1 = Const.RGB3;
                 imageCatalog.select1.startX =
-                    Math.floor(-(renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X) - 34;
+                    Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X) + 2 - 34;
                 imageCatalog.select1.startY =
-                    Math.floor(-(renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y) + 1;
+                    Math.floor(-(renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y) + 1;
                 break;
             case 4:
                 colorPicked1 = Const.RGB4;
                 imageCatalog.select1.startX =
-                    Math.floor(-(renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X) - 42;
+                    Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X) + 2 - 42;
                 imageCatalog.select1.startY =
-                    Math.floor(-(renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y) + 1;
+                    Math.floor(-(renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y) + 1;
                 break;
             case 5:
                 colorPicked1 = Const.RGB5;
                 imageCatalog.select1.startX =
-                    Math.floor(-(renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X) - 50;
+                    Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X) + 2 - 50;
                 imageCatalog.select1.startY =
-                    Math.floor(-(renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y) + 1;
+                    Math.floor(-(renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y) + 1;
                 break;
             case 6:
                 colorPicked1 = Const.RGB6;
                 imageCatalog.select1.startX =
-                    Math.floor(-(renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X) - 58;
+                    Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X) + 2 - 58;
                 imageCatalog.select1.startY =
-                    Math.floor(-(renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y) + 1;
+                    Math.floor(-(renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y) + 1;
                 break;
             case 7:
                 colorPicked1 = Const.RGB7;
                 imageCatalog.select1.startX =
-                    Math.floor(-(renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X) - 66;
+                    Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X) + 2 - 66;
                 imageCatalog.select1.startY =
-                    Math.floor(-(renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y) + 1;
+                    Math.floor(-(renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y) + 1;
                 break;
             case 8:
                 colorPicked1 = Const.RGB8;
                 imageCatalog.select1.startX =
-                    Math.floor(-(renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X) - 74;
+                    Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X) + 2 - 74;
                 imageCatalog.select1.startY =
-                    Math.floor(-(renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y) + 1;
+                    Math.floor(-(renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y) + 1;
                 break;
             case 9:
                 colorPicked1 = Const.RGB9;
                 imageCatalog.select1.startX =
-                    Math.floor(-(renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X) - 18;
+                    Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X) + 2 - 18;
                 imageCatalog.select1.startY =
-                    Math.floor(-(renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y) - 7;
+                    Math.floor(-(renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y) - 7;
                 break;
             case 10:
                 colorPicked1 = Const.RGB10;
                 imageCatalog.select1.startX =
-                    Math.floor(-(renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X) - 26;
+                    Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X) + 2 - 26;
                 imageCatalog.select1.startY =
-                    Math.floor(-(renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y) - 7;
+                    Math.floor(-(renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y) - 7;
                 break;
             case 11:
                 colorPicked1 = Const.RGB11;
                 imageCatalog.select1.startX =
-                    Math.floor(-(renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X) - 34;
+                    Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X) + 2 - 34;
                 imageCatalog.select1.startY =
-                    Math.floor(-(renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y) - 7;
+                    Math.floor(-(renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y) - 7;
                 break;
             case 12:
                 colorPicked1 = Const.RGB12;
                 imageCatalog.select1.startX =
-                    Math.floor(-(renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X) - 42;
+                    Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X) + 2 - 42;
                 imageCatalog.select1.startY =
-                    Math.floor(-(renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y) - 7;
+                    Math.floor(-(renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y) - 7;
                 break;
             case 13:
                 colorPicked1 = Const.RGB13;
                 imageCatalog.select1.startX =
-                    Math.floor(-(renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X) - 50;
+                    Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X) + 2 - 50;
                 imageCatalog.select1.startY =
-                    Math.floor(-(renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y) - 7;
+                    Math.floor(-(renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y) - 7;
                 break;
             case 14:
                 colorPicked1 = Const.RGB14;
                 imageCatalog.select1.startX =
-                    Math.floor(-(renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X) - 58;
+                    Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X) + 2 - 58;
                 imageCatalog.select1.startY =
-                    Math.floor(-(renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y) - 7;
+                    Math.floor(-(renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y) - 7;
                 break;
             case 15:
                 colorPicked1 = Const.RGB15;
                 imageCatalog.select1.startX =
-                    Math.floor(-(renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X) - 66;
+                    Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X) + 2 - 66;
                 imageCatalog.select1.startY =
-                    Math.floor(-(renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y) - 7;
+                    Math.floor(-(renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y) - 7;
                 break;
             case 16:
                 colorPicked1 = Const.RGB16;
                 imageCatalog.select1.startX =
-                    Math.floor(-(renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X) - 74;
+                    Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X) + 2 - 74;
                 imageCatalog.select1.startY =
-                    Math.floor(-(renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y) - 7;
+                    Math.floor(-(renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y) - 7;
                 break;
         }
-    } else if (e.button == 2){
+    } else if (e.button == 2) {
         switch (color) {
             case 1:
                 colorPicked2 = Const.RGB1;
                 imageCatalog.select2.startX =
-                    Math.floor(-(renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X) - 18;
+                    Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X) + 2 - 18;
                 imageCatalog.select2.startY =
-                    Math.floor(-(renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y) + 1;
+                    Math.floor(-(renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y) + 1;
                 break;
             case 2:
                 colorPicked2 = Const.RGB2;
                 imageCatalog.select2.startX =
-                    Math.floor(-(renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X) - 26;
+                    Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X) + 2 - 26;
                 imageCatalog.select2.startY =
-                    Math.floor(-(renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y) + 1;
+                    Math.floor(-(renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y) + 1;
                 break;
 
             case 3:
                 colorPicked2 = Const.RGB3;
                 imageCatalog.select2.startX =
-                    Math.floor(-(renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X) - 34;
+                    Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X) + 2 - 34;
                 imageCatalog.select2.startY =
-                    Math.floor(-(renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y) + 1;
+                    Math.floor(-(renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y) + 1;
                 break;
             case 4:
                 colorPicked2 = Const.RGB4;
                 imageCatalog.select2.startX =
-                    Math.floor(-(renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X) - 42;
+                    Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X) + 2 - 42;
                 imageCatalog.select2.startY =
-                    Math.floor(-(renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y) + 1;
+                    Math.floor(-(renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y) + 1;
                 break;
             case 5:
                 colorPicked2 = Const.RGB5;
                 imageCatalog.select2.startX =
-                    Math.floor(-(renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X) - 50;
+                    Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X) + 2 - 50;
                 imageCatalog.select2.startY =
-                    Math.floor(-(renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y) + 1;
+                    Math.floor(-(renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y) + 1;
                 break;
             case 6:
                 colorPicked2 = Const.RGB6;
                 imageCatalog.select2.startX =
-                    Math.floor(-(renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X) - 58;
+                    Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X) + 2 - 58;
                 imageCatalog.select2.startY =
-                    Math.floor(-(renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y) + 1;
+                    Math.floor(-(renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y) + 1;
                 break;
             case 7:
                 colorPicked2 = Const.RGB7;
                 imageCatalog.select2.startX =
-                    Math.floor(-(renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X) - 66;
+                    Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X) + 2 - 66;
                 imageCatalog.select2.startY =
-                    Math.floor(-(renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y) + 1;
+                    Math.floor(-(renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y) + 1;
                 break;
             case 8:
                 colorPicked2 = Const.RGB8;
                 imageCatalog.select2.startX =
-                    Math.floor(-(renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X) - 74;
+                    Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X) + 2 - 74;
                 imageCatalog.select2.startY =
-                    Math.floor(-(renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y) + 1;
+                    Math.floor(-(renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y) + 1;
                 break;
             case 9:
                 colorPicked2 = Const.RGB9;
                 imageCatalog.select2.startX =
-                    Math.floor(-(renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X) - 18;
+                    Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X) + 2 - 18;
                 imageCatalog.select2.startY =
-                    Math.floor(-(renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y) - 7;
+                    Math.floor(-(renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y) - 7;
                 break;
             case 10:
                 colorPicked2 = Const.RGB10;
                 imageCatalog.select2.startX =
-                    Math.floor(-(renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X) - 26;
+                    Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X) + 2 - 26;
                 imageCatalog.select2.startY =
-                    Math.floor(-(renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y) - 7;
+                    Math.floor(-(renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y) - 7;
                 break;
             case 11:
                 colorPicked2 = Const.RGB11;
                 imageCatalog.select2.startX =
-                    Math.floor(-(renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X) - 34;
+                    Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X) + 2 - 34;
                 imageCatalog.select2.startY =
-                    Math.floor(-(renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y) - 7;
+                    Math.floor(-(renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y) - 7;
                 break;
             case 12:
                 colorPicked2 = Const.RGB12;
                 imageCatalog.select2.startX =
-                    Math.floor(-(renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X) - 42;
+                    Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X) + 2 - 42;
                 imageCatalog.select2.startY =
-                    Math.floor(-(renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y) - 7;
+                    Math.floor(-(renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y) - 7;
                 break;
             case 13:
                 colorPicked2 = Const.RGB13;
                 imageCatalog.select2.startX =
-                    Math.floor(-(renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X) - 50;
+                    Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X) + 2 - 50;
                 imageCatalog.select2.startY =
-                    Math.floor(-(renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y) - 7;
+                    Math.floor(-(renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y) - 7;
                 break;
             case 14:
                 colorPicked2 = Const.RGB14;
                 imageCatalog.select2.startX =
-                    Math.floor(-(renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X) - 58;
+                    Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X) + 2 - 58;
                 imageCatalog.select2.startY =
-                    Math.floor(-(renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y) - 7;
+                    Math.floor(-(renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y) - 7;
                 break;
             case 15:
                 colorPicked2 = Const.RGB15;
                 imageCatalog.select2.startX =
-                    Math.floor(-(renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X) - 66;
+                    Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X) + 2 - 66;
                 imageCatalog.select2.startY =
-                    Math.floor(-(renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y) - 7;
+                    Math.floor(-(renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y) - 7;
                 break;
             case 16:
                 colorPicked2 = Const.RGB16;
                 imageCatalog.select2.startX =
-                    Math.floor(-(renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X) - 74;
+                    Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X) + 2 - 74;
                 imageCatalog.select2.startY =
-                    Math.floor(-(renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y) - 7;
+                    Math.floor(-(renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y) - 7;
                 break;
         }
-}
+    }
 }

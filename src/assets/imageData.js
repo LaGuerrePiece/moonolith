@@ -1,5 +1,5 @@
 //prettier-ignore
-import { GUI, selectColorRed, selectColorBlue, caly0, caly1, caly2, caly3, caly4, caly5, caly6, calySide0, calySide1, slug, GUISweetie15, menu} from './base64';
+import { selectColorRed, selectColorBlue, caly0, caly1, caly2, caly3, caly4, caly5, caly6, calySide0, calySide1, slug, GUISweetie15, menu, paletteSMOL, paletteBIG, paletteHUGE } from './base64';
 import { renderWidth, renderHeight } from '../main';
 import { base64ToBuffer, pngToBufferToRGBA8, ApngToBuffer } from '../utils/imageManager';
 import Const from '../models/constants';
@@ -7,7 +7,10 @@ import Const from '../models/constants';
 export var imageCatalog = {
     select2: { name: 'select2', type: 'GUI', startX: 0, startY: 0, parallax: 0, base64: selectColorRed },
     select1: { name: 'select1', type: 'GUI', startX: 0, startY: 0, parallax: 0, base64: selectColorBlue },
-    GUI: { name: 'GUI', type: 'GUI', startX: 0, startY: 0, parallax: 0, base64: GUISweetie15 },
+    palette: { name: 'palette', type: 'GUI', startX: 0, startY: 0, parallax: 0, base64: paletteHUGE },
+    paletteSMOL: { name: 'paletteSMOL', type: 'GUI', startX: 0, startY: 0, parallax: 0, base64: paletteSMOL },
+    paletteBIG: { name: 'paletteBIG', type: 'GUI', startX: 0, startY: 0, parallax: 0, base64: paletteBIG },
+    paletteHUGE: { name: 'paletteHUGE', type: 'GUI', startX: 0, startY: 0, parallax: 0, base64: paletteHUGE },
     menu: { name: 'menu', type: 'GUI', startX: 0, startY: 0, parallax: 0, base64: menu },
     caly0: { name: 'caly0', type: 'landscape', startX: 0, startY: 45, parallax: 0, base64: caly0 },
     calySide0: { name: 'calySide0', type: 'side', startX: 47, startY: 17, parallax: 0, base64: calySide0 },
@@ -120,12 +123,12 @@ async function decodeAndFormatLayer(index) {
     if (thisLayer.type === 'side') thisLayer.startY = Const.LINES - Const.MARGIN_TOP + thisLayer.startY;
     if (thisLayer.type === 'GUI') {
         if (thisLayer.name === 'select1') {
-            thisLayer.startY = Math.floor(-(renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y) + 1;
-            thisLayer.startX = Math.floor(-(renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X) - 66;
+            thisLayer.startY = Math.floor(-(renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y) + 1;
+            thisLayer.startX = Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X) - 64;
         }
         if (thisLayer.name === 'select2') {
-            thisLayer.startY = Math.floor(-(renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y) - 7;
-            thisLayer.startX = Math.floor(-(renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X) - 74;
+            thisLayer.startY = Math.floor(-(renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y) - 7;
+            thisLayer.startX = Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X) - 72;
         }
 
         if (thisLayer.name == 'GUIMPORT') console.log('GUIMPORT', thisLayer.decodedYX); // NE PAS SUPPRIMER

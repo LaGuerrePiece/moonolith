@@ -28,10 +28,10 @@ export function assemble(force) {
 
     // Push GUI to layersToDisplay
     layersToDisplay.push({
-        name: 'GUI',
-        colorsArray: imageCatalog.GUI.decodedYX,
-        startY: Math.floor(-(renderHeight - imageCatalog.GUI.height) / Const.GUI_RELATIVE_Y),
-        startX: Math.floor(-(renderWidth - imageCatalog.GUI.width) / Const.GUI_RELATIVE_X),
+        name: 'palette',
+        colorsArray: imageCatalog.palette.decodedYX,
+        startY: Math.floor(-(renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y),
+        startX: Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X),
     });
 
     layersToDisplay.push({

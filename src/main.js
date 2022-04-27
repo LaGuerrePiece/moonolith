@@ -61,8 +61,6 @@ function initDisplay() {
 
     const providedY = parseInt(window.location.href.split('=')[1]);
     if (providedY) changeViewPos(0, providedY);
-
-    console.log('//      displayGrid initialized       //');
 }
 
 function initApiDisplay(id) {
