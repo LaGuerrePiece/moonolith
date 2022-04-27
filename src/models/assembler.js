@@ -12,19 +12,18 @@ import { tool, Tool } from './tools';
 var displayMenu = true; // quand true, dezoom et desac draw
 let lol = 0;
 
-export function assemble(force) {
-    let startAssemble = performance.now();
+export function assemble() {
     let displayArray = [];
     let layersToDisplay = [];
 
-    // if (displayMenu) {
-    //     layersToDisplay.push({
-    //         name: 'menu',
-    //         colorsArray: imageCatalog.menu.decodedYX,
-    //         startY: Math.floor(-(renderHeight + viewPosY - imageCatalog.menu.height - 50)),
-    //         startX: Math.floor(-(Const.COLUMNS - imageCatalog.menu.width) / 2),
-    //     });
-    // }
+    if (isInSquare(180, 187, 14, 18, pointer.x, pointer.y)) {
+        layersToDisplay.push({
+            name: 'menu',
+            colorsArray: imageCatalog.menu.decodedYX,
+            startY: Math.floor(-(renderHeight + viewPosY - imageCatalog.menu.height - 50)),
+            startX: Math.floor(-(Const.COLUMNS - imageCatalog.menu.width) / 2),
+        });
+    }
 
     // Push GUI to layersToDisplay
     layersToDisplay.push({
@@ -149,4 +148,17 @@ function whiten(displayArray, y, x) {
     displayArray[displayPos] += (255 - displayArray[displayPos]) / 3;
     displayArray[displayPos + 1] += (255 - displayArray[displayPos + 1]) / 3;
     displayArray[displayPos + 2] += (255 - displayArray[displayPos + 2]) / 3;
+}
+
+function isInSquare(xmin, xmax, ymin, ymax, pointerX, pointerY) {
+    let pos = absolutePosition(pointerX, pointerY);
+    if (pos.x >= xmin && pos.x <= xmax && pos.y >= ymin && pos.y <= ymax) return true;
+    return false;
+}
+
+function absolutePosition(pointerX, pointerY) {
+    return {
+        x: viewPosX + pointerX,
+        y: renderHeight - pointerY + viewPosY,
+    };
 }

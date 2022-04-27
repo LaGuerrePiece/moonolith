@@ -41,11 +41,11 @@ export function keyManager(e){
     if (e.ctrlKey && e.key === 'y') redo();
     if (e.metaKey && e.key === 'y') redo();
     if (e.key === 'x') eraseAllPixel();
-    if (e.key === 'c') console.log('Total H', Const.COLUMNS, 'Total W', Const.LINES, 'render W', renderWidth, 'render H', renderHeight, 'viewPosX', viewPosX, 'viewPosY', viewPosY, 'mousePos', mousePosInGrid(e).x, mousePosInGrid(e).y);
+    if (e.key === 'c') console.log('Total H', Const.COLUMNS, 'Total W', Const.LINES, 'render W', renderWidth, 'render H', renderHeight, 'viewPosX', viewPosX, 'viewPosY', viewPosY);
     if (e.key === 'm') { moveDrawing(50, 400) }
     if (e.key === 'y') zoom();
     if (e.key === 'i') importImage();
-    if (e.key === 'p') increaseMonolithHeight(100)
+    if (e.key === 'p') increaseMonolithHeight(1000)
     if (e.key === 'ArrowUp') { changeViewPos(0, 6); }
     if (e.key === 'ArrowDown') { changeViewPos(0, -6); }
     if (e.key === 'ArrowLeft') { changeViewPos(-6, 0); }
@@ -63,7 +63,6 @@ export function scrollManager(e) {
 
 export function clickManager(e) {
     let mousePos = mousePosInGrid(e);
-
     console.log('mousePos', mousePos);
 
     const GUIstartY = Math.floor((renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y);
@@ -104,7 +103,7 @@ export function clickManager(e) {
 
         playSound('click');
     } else {
-        // //CASE MONOLITH OR LANDSCAPE
+        //CASE MONOLITH OR LANDSCAPE
         convertToMonolithPos(mousePos);
         if (mousePos) startUsingTool(e, mousePos);
     }
@@ -202,12 +201,12 @@ function brushSwitch() {
             break;
         case Tool.BIG:
             console.log('HUGE BRUSH');
-            imageCatalog.palette.decodedYX = imageCatalog.paletteHUGE.decodedYX
+            imageCatalog.palette.decodedYX = imageCatalog.paletteHUGE.decodedYX;
             tool = Tool.HUGE;
             break;
         case Tool.HUGE:
             console.log('SMOL BRUSH');
-            imageCatalog.palette.decodedYX = imageCatalog.paletteSMOL.decodedYX
+            imageCatalog.palette.decodedYX = imageCatalog.paletteSMOL.decodedYX;
             tool = Tool.SMOL;
             break;
     }
