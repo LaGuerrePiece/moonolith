@@ -94,9 +94,9 @@ export function keyManager(e){
 
 export function scrollManager(e) {
     if (e.deltaY > 0) {
-        changeViewPos(0, -10);
+        changeViewPos(0, -6);
     } else {
-        changeViewPos(0, 10);
+        changeViewPos(0, 6);
     }
 }
 
@@ -181,8 +181,11 @@ function useTool(e) {
             drawPixel(mousePos.x, mousePos.y, Klon.USERPAINTED, colorPicked1);
             break;
         case Tool.BIG:
-            for (let i = -1; i <= 1; i++) drawPixel(mousePos.x + i, mousePos.y, Klon.USERPAINTED, colorPicked1);
-            for (let j = -1; j <= 1; j++) drawPixel(mousePos.x, mousePos.y + j, Klon.USERPAINTED, colorPicked1);
+            for (let i = -1; i <= 1; i++) {
+                for (let j = -1; j <= 1; j++) {
+                    drawPixel(mousePos.x + i, mousePos.y + j, Klon.USERPAINTED, colorPicked1);
+                }
+            }
             break;
         case Tool.HUGE:
             for (let i = -2; i <= 2; i++) {
