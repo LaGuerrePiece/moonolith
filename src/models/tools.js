@@ -43,14 +43,53 @@ export function keyManager(e){
     if (e.key === 'x') eraseAllPixel();
     if (e.key === 'c') console.log('Total H', Const.COLUMNS, 'Total W', Const.LINES, 'render W', renderWidth, 'render H', renderHeight, 'viewPosX', viewPosX, 'viewPosY', viewPosY);
     if (e.key === 'm') { moveDrawing(50, 400) }
-    if (e.key === 'y') zoom();
+    // if (e.key === 'e') zoom();
     if (e.key === 'i') importImage();
     if (e.key === 'p') increaseMonolithHeight(1000)
-    if (e.key === 'ArrowUp') { changeViewPos(0, 6); }
-    if (e.key === 'ArrowDown') { changeViewPos(0, -6); }
-    if (e.key === 'ArrowLeft') { changeViewPos(-6, 0); }
-    if (e.key === 'ArrowRight') { changeViewPos(6, 0); }
+    // if (e.key === 'ArrowUp') { changeViewPos(0, 6); }
+    // if (e.key === 'ArrowDown') { changeViewPos(0, -6); }
+    // if (e.key === 'ArrowLeft') { changeViewPos(-6, 0); }
+    // if (e.key === 'ArrowRight') { changeViewPos(6, 0); }
     if (e.key === 't') { changeViewPos(0, 999999); }
+
+    switch (e.code || e.key || e.keyCode) {
+        case 'KeyW':
+        case 'ArrowUp':
+        case 'Numpad8':
+        case 38: // keyCode for arrow up
+        changeViewPos(0, 6)
+        break;
+
+        case 'KeyA':
+        case 'ArrowLeft':
+        case 'Numpad4':
+        case 37: // keyCode for arrow left
+        changeViewPos(-6, 0)
+        break;
+
+        case 'KeyS':
+        case 'ArrowDown':
+        case 'Numpad5':
+        case 'Numpad2':
+        case 40: // keyCode for arrow down
+        changeViewPos(0, -6)
+        break;
+
+        case 'KeyD':
+        case 'ArrowRight':
+        case 'Numpad6':
+        case 39: // keyCode for arrow right
+        changeViewPos(6, 0)
+        break;
+
+        case 'KeyZ':
+        zoom()
+        break;
+
+        case 'KeyE':
+        brushSwitch()
+        break;
+      }
 }
 
 export function scrollManager(e) {
