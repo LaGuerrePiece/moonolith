@@ -3,10 +3,11 @@ import { selectColorRed, selectColorBlue, caly0, caly1, caly2, caly3, caly4, cal
 import { renderWidth, renderHeight } from '../main';
 import { base64ToBuffer, pngToBufferToRGBA8, ApngToBuffer } from '../utils/imageManager';
 import Const from '../models/constants';
+import { colorNumber1, colorNumber2 } from '../models/tools';
 
 export var imageCatalog = {
-    select2: { name: 'select2', type: 'GUI', startX: 0, startY: 0, parallax: 0, base64: selectColorRed },
-    select1: { name: 'select1', type: 'GUI', startX: 0, startY: 0, parallax: 0, base64: selectColorBlue },
+    selector2: { name: 'selector2', type: 'GUI', startX: 0, startY: 0, parallax: 0, base64: selectColorRed },
+    selector1: { name: 'selector1', type: 'GUI', startX: 0, startY: 0, parallax: 0, base64: selectColorBlue },
     palette: { name: 'palette', type: 'GUI', startX: 0, startY: 0, parallax: 0, base64: paletteHUGE },
     paletteSMOL: { name: 'paletteSMOL', type: 'GUI', startX: 0, startY: 0, parallax: 0, base64: paletteSMOL },
     paletteBIG: { name: 'paletteBIG', type: 'GUI', startX: 0, startY: 0, parallax: 0, base64: paletteBIG },
@@ -122,15 +123,27 @@ async function decodeAndFormatLayer(index) {
 
     if (thisLayer.type === 'side') thisLayer.startY = Const.LINES - Const.MARGIN_TOP + thisLayer.startY;
     if (thisLayer.type === 'GUI') {
-        if (thisLayer.name === 'select1') {
+        if (thisLayer.name === 'selector1') {
             thisLayer.startY = Math.floor(-(renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y) + 1;
             thisLayer.startX = Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X) - 64;
         }
-        if (thisLayer.name === 'select2') {
+        if (thisLayer.name === 'selector2') {
             thisLayer.startY = Math.floor(-(renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y) - 7;
             thisLayer.startX = Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X) - 72;
         }
 
         if (thisLayer.name == 'GUIMPORT') console.log('GUIMPORT', thisLayer.decodedYX); // NE PAS SUPPRIMER
     }
+}
+
+export function selectorUpdate() {
+    let offset = 8;
+
+    let xPalette = Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X);
+    let yPalette = Math.floor(-(renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y);
+
+    imageCatalog.selector1.startX = xPalette - offset - colorNumber1 * 8 + Math.floor(colorNumber1 / 9) * 64;
+    imageCatalog.selector1.startY = yPalette + 1 - Math.floor(colorNumber1 / 9) * 8;
+    imageCatalog.selector2.startX = xPalette - offset - colorNumber2 * 8 + Math.floor(colorNumber2 / 9) * 64;
+    imageCatalog.selector2.startY = yPalette + 1 - Math.floor(colorNumber2 / 9) * 8;
 }
