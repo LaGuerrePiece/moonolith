@@ -52,16 +52,51 @@ export function convertToMonolithPos(mousePos) {
 }
 
 export function increaseMonolithHeight(newRows) {
-    for (let rowAdded = 0; rowAdded < newRows; rowAdded++) {
-        let scalingValue = 1000 * Math.log(rowAdded);
-        setTimeout(() => {
-            Const.setMonolithHeight(Const.MONOLITH_LINES + 1);
-            monolith.push(...[Array.from({ length: Const.MONOLITH_COLUMNS }, () => new Klon(Const.DEFAULT_COLOR))]);
-            //MET A JOUR LES STARTY :
-            for (let layer in imageCatalog) {
-                const thisLayer = imageCatalog[layer];
-                if (thisLayer.type === 'side') thisLayer.startY++;
+    //shake landscapes
+    const shakeLandscape = setInterval(() => {
+        for (let layer in imageCatalog) {
+            const thisLayer = imageCatalog[layer];
+            if (thisLayer.type === 'landscape' && thisLayer.name !== 'caly0') {
+                let offset = Math.floor(Math.random() * 3);
+                let direction = Math.floor(Math.random() * 2) * 2 - 1; //-1 or 1
+                console.log(direction);
+                switch (offset) {
+                    case 0:
+                        thisLayer.startX = 1 * direction;
+                        break;
+                    case 1:
+                    case 2:
+                        thisLayer.startX = 0;
+                        break;
+                }
             }
-        }, scalingValue);
-    }
+        }
+    }, 200);
+
+    //grows monolith
+    setTimeout(() => {
+        for (let rowAdded = 0; rowAdded < newRows; rowAdded++) {
+            let scalingValue = 1000 * Math.log(rowAdded);
+            setTimeout(() => {
+                Const.setMonolithHeight(Const.MONOLITH_LINES + 1);
+                monolith.push(...[Array.from({ length: Const.MONOLITH_COLUMNS }, () => new Klon(Const.DEFAULT_COLOR))]);
+                //MET A JOUR LES STARTY :
+                for (let layer in imageCatalog) {
+                    const thisLayer = imageCatalog[layer];
+                    if (thisLayer.type === 'side') thisLayer.startY++;
+                }
+            }, scalingValue);
+        }
+    }, 2000);
+
+    //clear landscape shake
+    setTimeout(() => {
+        clearInterval(shakeLandscape);
+        for (let layer in imageCatalog) {
+            const thisLayer = imageCatalog[layer];
+            if (thisLayer.type === 'landscape') {
+                thisLayer.startX = 0;
+            }
+        }
+    }, 2000 + 1000 * Math.log(newRows));
 }

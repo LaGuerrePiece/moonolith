@@ -91,7 +91,7 @@ async function chunkImport() {
 
     const monolithHeightFormula = Const.COLUMNS * 64 + (meta.nbKlon * meta.threshold) / 1000000;
     const monolithHeight = Math.floor(monolithHeightFormula / Const.COLUMNS);
-    if (Const.MONOLITH_LINES) {
+    if (monolithHeight - Const.MONOLITH_LINES) {
         increaseMonolithHeight(monolithHeight - Const.MONOLITH_LINES);
     } else {
         Const.setMonolithHeight(monolithHeight);
