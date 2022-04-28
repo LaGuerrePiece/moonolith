@@ -49,10 +49,10 @@ export function erasePixel(x, y) {
         addToCurrentEvent(x, y, monolith[y][x]);
         monolith[y][x].setTargetColor(Const.DEFAULT_COLOR);
         monolith[y][x].zIndex = undefined;
-    }
-    if (lastPlayedSound + 120 < Date.now()) {
-        playSound('revBip');
-        lastPlayedSound = Date.now();
+        if (lastPlayedSound + 120 < Date.now()) {
+            playSound('revBip');
+            lastPlayedSound = Date.now();
+        }
     }
 }
 

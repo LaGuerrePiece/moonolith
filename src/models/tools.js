@@ -78,7 +78,8 @@ export function keyManager(e){
         break;
 
         case 'KeyZ':
-        zoom()
+        zoom();
+        playSound('click6');
         break;
       }
 }
@@ -94,7 +95,7 @@ export function scrollManager(e) {
 export function clickManager(e) {
     let mousePos = mousePosInGrid(e);
     console.log('mousePos', mousePos);
-    
+
     const GUIstartY = Math.floor((renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y);
     const GUIstartX = Math.floor((renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X);
     if (
@@ -102,16 +103,22 @@ export function clickManager(e) {
         mousePos.x < GUIstartX + imageCatalog.palette.width &&
         mousePos.y > GUIstartY &&
         mousePos.y < GUIstartY + imageCatalog.palette.height
-        ) {
-            //CASE : CLICK ON THE GUI
-            // console.log('GUI!!');
-            console.log(e);
-            
-            //BIG
-            if (GUICircle(mousePos, GUIstartY, GUIstartX, 7, 7, 8)) {saveToEthernity(); return} // !!! BUTTON
-            if (GUICircle(mousePos, GUIstartY, GUIstartX, 7, 91, 8)) {brushSwitch(); return} // ??? BUTTON
-            
-            playSound('click6');
+    ) {
+        //CASE : CLICK ON THE GUI
+        // console.log('GUI!!');
+        console.log(e);
+
+        //BIG
+        if (GUICircle(mousePos, GUIstartY, GUIstartX, 7, 7, 8)) {
+            saveToEthernity();
+            return;
+        } // !!! BUTTON
+        if (GUICircle(mousePos, GUIstartY, GUIstartX, 7, 91, 8)) {
+            brushSwitch();
+            return;
+        } // ??? BUTTON
+
+        playSound('click6');
         //SMALL
         //FIRST CIRCLE POSITION : 3, 21
         if (GUICircle(mousePos, GUIstartY, GUIstartX, 3, 21, 4)) colorSwitch(e, 1);
