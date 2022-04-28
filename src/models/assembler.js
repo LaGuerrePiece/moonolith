@@ -34,17 +34,17 @@ export function assemble() {
     });
 
     layersToDisplay.push({
-        name: 'select1',
-        colorsArray: imageCatalog.select1.decodedYX,
-        startY: imageCatalog.select1.startY,
-        startX: imageCatalog.select1.startX,
+        name: 'selector1',
+        colorsArray: imageCatalog.selector1.decodedYX,
+        startY: imageCatalog.selector1.startY,
+        startX: imageCatalog.selector1.startX,
     });
 
     layersToDisplay.push({
-        name: 'select2',
-        colorsArray: imageCatalog.select2.decodedYX,
-        startY: imageCatalog.select2.startY,
-        startX: imageCatalog.select2.startX,
+        name: 'selector2',
+        colorsArray: imageCatalog.selector2.decodedYX,
+        startY: imageCatalog.selector2.startY,
+        startX: imageCatalog.selector2.startX,
     });
 
     // Push animations to layersToDisplay

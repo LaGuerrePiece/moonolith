@@ -1,5 +1,11 @@
 // Imports des composants
-import { initialDecodeLandscape, lateDecodeLandscape, initialDecodeAnim } from './assets/imageData';
+import {
+    initialDecodeLandscape,
+    lateDecodeLandscape,
+    initialDecodeAnim,
+    imageCatalog,
+    selectorUpdate,
+} from './assets/imageData';
 // Imports des fonctionnalités
 import { clickManager, keyManager, scrollManager, mousePosInGrid } from './models/tools';
 import Const from './models/constants';
@@ -121,11 +127,13 @@ export function zoom() {
         console.log(`Zoomed x${zoomFactor} | renderWidth`, renderWidth, 'renderHeight', renderHeight);
         viewPosX = Math.floor(renderWidth / 2);
         viewPosY = Math.floor(viewPosY + renderHeight / 2);
+        selectorUpdate();
     } else {
         // console.log('unzoomed');
         renderWidth = Const.COLUMNS;
         renderHeight = Math.ceil((windowHeight * renderWidth) / windowWidth);
         changeViewPos(0, -Math.floor(renderHeight / 4));
+        selectorUpdate();
     }
     myImageData = ctx.createImageData(renderWidth, renderHeight);
     canvas.width = renderWidth;
