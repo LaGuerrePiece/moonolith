@@ -41,16 +41,30 @@ export default class Klon {
             (color1[2] + color2[2] * weightOf2) / (1 + weightOf2),
         ];
     }
+
     transition() {
-        if (this.transitionCount % 10 === 1) this.color = [254, 1, 255];
-        else if (this.transitionCount % 10 === 2) this.color = [255, 116, 139];
-        else if (this.transitionCount % 10 === 3) this.color = [255, 246, 10];
-        else if (this.transitionCount % 10 === 4) this.color = [158, 255, 97];
-        else if (this.transitionCount % 10 === 5) this.color = [16, 255, 239];
-        else if (this.transitionCount % 10 === 6) this.color = [108, 147, 255];
-        else this.color = this.avg(this.target, this.color, 1);
-        this.transitionCount++;
-        if (this.transitionCount % 10 === 0) this.color = this.target;
+        if (
+            this.target[0] === Const.DEFAULT_COLOR[0] &&
+            this.target[1] === Const.DEFAULT_COLOR[1] &&
+            this.target[2] === Const.DEFAULT_COLOR[2]
+        ) {
+            //ERASE
+            if (this.transitionCount % 10 === 1) this.color = [0, 118, 255];
+            else this.color = this.avg(this.target, this.color, 1);
+            this.transitionCount++;
+            if (this.transitionCount % 10 === 0) this.color = this.target;
+        } else {
+            //DRAW
+            if (this.transitionCount % 10 === 1) this.color = [254, 1, 255];
+            else if (this.transitionCount % 10 === 2) this.color = [255, 116, 139];
+            else if (this.transitionCount % 10 === 3) this.color = [255, 246, 10];
+            else if (this.transitionCount % 10 === 4) this.color = [158, 255, 97];
+            else if (this.transitionCount % 10 === 5) this.color = [16, 255, 239];
+            else if (this.transitionCount % 10 === 6) this.color = [108, 147, 255];
+            else this.color = this.avg(this.target, this.color, 1);
+            this.transitionCount++;
+            if (this.transitionCount % 10 === 0) this.color = this.target;
+        }
     }
 
     setTargetColor(color) {

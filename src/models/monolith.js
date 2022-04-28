@@ -11,6 +11,7 @@ export function buildMonolith() {
     monolith = Array.from({ length: Const.MONOLITH_LINES }, () =>
         Array.from({ length: Const.MONOLITH_COLUMNS }, () => new Klon(Const.DEFAULT_COLOR))
     );
+    monolith[Const.MONOLITH_LINES - 1][Const.MONOLITH_COLUMNS - 1].transitionCount = 1;
 }
 
 export function drawPixel(x, y, zIndex, color) {
@@ -40,7 +41,8 @@ export function eraseAllPixel() {
 export function erasePixel(x, y) {
     if (monolith[y]?.[x]?.zIndex === 0) {
         addToCurrentEvent(x, y, monolith[y][x]);
-        monolith[y][x] = new Klon(Const.DEFAULT_COLOR);
+        monolith[y][x].setTargetColor(Const.DEFAULT_COLOR);
+        monolith[y][x].zIndex = undefined;
     }
 }
 

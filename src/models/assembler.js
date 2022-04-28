@@ -127,6 +127,7 @@ export function assemble() {
                 whiten(displayArray, pointer.y + j, pointer.x + i);
             }
         }
+        whiten(displayArray, pointer.y, pointer.x);
     } else if (tool === Tool.HUGE) {
         for (let i = -3; i <= 3; i++) {
             for (let j = -1; j <= 1; j++) {

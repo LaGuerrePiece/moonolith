@@ -29,7 +29,7 @@ export class Tool {
 }
 
 export let tool = Tool.HUGE;
-let colorPicked1 = Const.RGB7;
+let colorPicked1 = Const.RGB2;
 let colorPicked2 = Const.RGB8;
 
 //prettier-ignore
@@ -215,8 +215,11 @@ function useDeleteTool(e) {
             erasePixel(mousePos.x, mousePos.y);
             break;
         case Tool.BIG:
-            for (let i = -1; i <= 1; i++) erasePixel(mousePos.x + i, mousePos.y);
-            for (let j = -1; j <= 1; j++) erasePixel(mousePos.x, mousePos.y + j);
+            for (let i = -1; i <= 1; i++) {
+                for (let j = -1; j <= 1; j++) {
+                    erasePixel(mousePos.x + i, mousePos.y + j);
+                }
+            }
             break;
         case Tool.HUGE:
             for (let i = -2; i <= 2; i++) {
