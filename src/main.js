@@ -131,7 +131,7 @@ export function zoom() {
         // console.log('unzoomed');
         renderWidth = Const.COLUMNS;
         renderHeight = Math.ceil((windowHeight * renderWidth) / windowWidth);
-        changeViewPos(0, - Math.floor((windowHeight / pixelSize + 1) / zoomFactor) / 2);
+        changeViewPos(0, -Math.floor(renderHeight / 4));
     }
     myImageData = ctx.createImageData(renderWidth, renderHeight);
     canvas.width = renderWidth;

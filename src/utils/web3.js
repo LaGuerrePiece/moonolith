@@ -18,7 +18,7 @@ if (window.ethereum) {
     metamaskContract = new ethers.Contract(contractAddress, contractABI, signer);
 }
 
-let previousNbChunks = 1;
+let importedChunks = 0;
 
 const chunkCreator = async (res) => {
     if (window.ethereum.chainId == '0x4') {
@@ -73,21 +73,23 @@ async function getMetaData() {
 
 async function chunkImport() {
     let meta = await getMetaData();
+    // console.log('importedChunks', importedChunks, 'meta.nbChunks', meta.nbChunks);
 
-    // console.log('previousNbChunks', previousNbChunks, 'meta.nbChunks', meta.nbChunks);
-
-    for (let i = previousNbChunks; i < meta.nbChunks; i++) {
-        getChunk(i).then((res) => {
-            bufferOnMonolith({
-                buffer: base64ToBuffer(res[3]),
-                x: res[0].toNumber() % Const.MONOLITH_COLUMNS,
-                y: Math.floor(res[0].toNumber() / Const.MONOLITH_COLUMNS),
-                paid: res[2].toNumber(),
-                yMaxLegal: res[1].toNumber() * 4,
-                zIndex: i,
+    if (importedChunks !== meta.nbChunks) {
+        for (let i = importedChunks; i <= meta.nbChunks; i++) {
+            getChunk(i).then((res) => {
+                bufferOnMonolith({
+                    buffer: base64ToBuffer(res[3]),
+                    x: res[0].toNumber() % Const.MONOLITH_COLUMNS,
+                    y: Math.floor(res[0].toNumber() / Const.MONOLITH_COLUMNS),
+                    paid: res[2].toNumber(),
+                    yMaxLegal: res[1].toNumber() * 4,
+                    zIndex: i,
+                });
             });
-        });
+        }
     }
+    importedChunks = meta.nbChunks;
 
     const monolithHeightFormula = Const.COLUMNS * 64 + (meta.nbKlon * meta.threshold) / 1000000;
     const monolithHeight = Math.floor(monolithHeightFormula / Const.COLUMNS);
@@ -96,8 +98,6 @@ async function chunkImport() {
     } else {
         Const.setMonolithHeight(monolithHeight);
     }
-
-    previousNbChunks = meta.nbChunks;
 }
 
 export { chunkCreator, getChunk, getChunksFromPosition, chunkImport };

@@ -1,7 +1,7 @@
 //prettier-ignore
 import { windowHeight, windowWidth, renderWidth, renderHeight, changeViewPos, viewPosX, viewPosY, zoom, canvas} from '../main';
 import { imageCatalog } from '../assets/imageData';
-import { playSound } from '../assets/sounds';
+import { toggleMusic, playSound } from '../assets/sounds';
 import {
     drawPixel,
     getColor,
@@ -23,9 +23,10 @@ export class Tool {
     static get SMOL() { return 1 }
     static get BIG() { return 3 }
     static get HUGE() { return 4 }
+    static get GIGA() { return 5 }
     static get PIPETTE() { return 2 }
-    static get MOVE() { return 5 }
     static get DELETE() { return 6 }
+    static get MOVE() { return 7 }
 }
 
 export let tool = Tool.HUGE;
@@ -45,6 +46,7 @@ export function keyManager(e){
     if (e.key === 'm') { moveDrawing(50, 400) }
     // if (e.key === 'e') zoom();
     if (e.key === 'i') importImage();
+    if (e.key === 'k') toggleMusic();
     if (e.key === 'p') increaseMonolithHeight(1000)
     // if (e.key === 'ArrowUp') { changeViewPos(0, 6); }
     // if (e.key === 'ArrowDown') { changeViewPos(0, -6); }
@@ -88,6 +90,10 @@ export function keyManager(e){
 
         case 'KeyE':
         brushSwitch()
+        break;
+        
+        case 'KeyR':
+        tool = Tool.GIGA    
         break;
       }
 }
@@ -200,6 +206,13 @@ function useTool(e) {
                 drawPixel(mousePos.x - 3, mousePos.y + i, Klon.USERPAINTED, colorPicked1);
             }
             break;
+        case Tool.GIGA:
+            for (let i = -20; i <= 20; i++) {
+                for (let j = -20; j <= 20; j++) {
+                    drawPixel(mousePos.x + i, mousePos.y + j, Klon.USERPAINTED, colorPicked1);
+                }
+            }
+            break;
         case Tool.MOVE:
             moveDrawing(mousePos.x, mousePos.y);
             break;
@@ -234,6 +247,13 @@ function useDeleteTool(e) {
                 erasePixel(mousePos.x - 3, mousePos.y + i);
             }
             break;
+        case Tool.GIGA:
+            for (let i = -20; i <= 20; i++) {
+                for (let j = -20; j <= 20; j++) {
+                    erasePixel(mousePos.x + i, mousePos.y + j);
+                }
+            }
+            break;
     }
 }
 
@@ -250,6 +270,11 @@ function brushSwitch() {
             tool = Tool.HUGE;
             break;
         case Tool.HUGE:
+            console.log('SMOL BRUSH');
+            imageCatalog.palette.decodedYX = imageCatalog.paletteSMOL.decodedYX;
+            tool = Tool.SMOL;
+            break;
+        case Tool.GIGA:
             console.log('SMOL BRUSH');
             imageCatalog.palette.decodedYX = imageCatalog.paletteSMOL.decodedYX;
             tool = Tool.SMOL;
