@@ -3,6 +3,7 @@ import { initialDecodeLandscape, lateDecodeLandscape, initialDecodeAnim } from '
 // Imports des fonctionnalités
 import { clickManager, keyManager, scrollManager, mousePosInGrid } from './models/tools';
 import Const from './models/constants';
+import { createApiDisplayPage } from './models/apiDisplayPage';
 import { chunkImport, getChunk } from './utils/web3';
 import { assemble } from './models/assembler';
 import { buildMonolith } from './models/monolith';
@@ -23,11 +24,9 @@ export let renderHeight = Math.ceil((windowHeight * renderWidth) / windowWidth);
 let InitialImports = 18;
 
 async function initApp() {
-    let splittedUri = document.URL.split('?rune=');
-    if (!isNaN(splittedUri[1]) && !isNaN(parseInt(splittedUri[1]))) {
-        // si on tape sur l'api
-        initApiDisplay(splittedUri[1]);
-    } else {
+    let runeNumber = parseInt(document.URL.split('?rune=')[1]);
+    if (runeNumber) initApiDisplay(runeNumber);
+    else {
         let initPerf = performance.now();
         await chunkImport();
         initialDecodeLandscape(InitialImports);
@@ -64,7 +63,9 @@ function initDisplay() {
 }
 
 function initApiDisplay(id) {
-    getChunk(parseInt(id)).then((chunk) => {
+    getChunk(id).then((chunk) => {
+        console.log('chunk', chunk);
+        console.log('base64ToBuffer', base64ToBuffer(chunk[3]));
         prepareBufferForApi(base64ToBuffer(chunk[3])).then((data) => {
             let dataToDisplay = Array.from(data[0]);
             console.log(dataToDisplay.length, data[1], data[2]);
@@ -84,15 +85,8 @@ function initApiDisplay(id) {
             dataToDisplay.forEach((x) => x.push(1));
             dataToDisplay = dataToDisplay.flat().map((x) => x * 255);
 
-            // Create canvas
-            canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            document.body.appendChild(canvas);
-            canvas.style.imageRendering = 'pixelated';
-            let myImageData = ctx.createImageData(data[1], data[2]);
-            console.log('myImageData', myImageData);
-            myImageData.data.set(dataToDisplay);
-            ctx.putImageData(myImageData, 0, 0);
+            // Create canvas and put image data
+            createApiDisplayPage(dataToDisplay, data[1], data[2]);
         });
     });
 }
