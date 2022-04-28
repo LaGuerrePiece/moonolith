@@ -120,19 +120,18 @@ export function changeViewPos(inputX, inputY) {
 }
 
 export function zoom() {
+    let zoomFactor = 2.5;
     if (renderWidth === Const.COLUMNS) {
-        let zoomFactor = 2.5;
         renderWidth = Math.floor(renderWidth / zoomFactor);
         renderHeight = Math.floor((windowHeight / pixelSize + 1) / zoomFactor);
         console.log(`Zoomed x${zoomFactor} | renderWidth`, renderWidth, 'renderHeight', renderHeight);
-        viewPosX = Math.floor(viewPosX + renderWidth / 2);
+        viewPosX = Math.floor(renderWidth / 2);
         viewPosY = Math.floor(viewPosY + renderHeight / 2);
     } else {
         // console.log('unzoomed');
-        viewPosX = 0;
-        changeViewPos(0, - renderHeight / 2);
         renderWidth = Const.COLUMNS;
-        renderHeight = Math.ceil(windowHeight / pixelSize);
+        renderHeight = Math.ceil((windowHeight * renderWidth) / windowWidth);
+        changeViewPos(0, - Math.floor((windowHeight / pixelSize + 1) / zoomFactor) / 2);
     }
     myImageData = ctx.createImageData(renderWidth, renderHeight);
     canvas.width = renderWidth;
