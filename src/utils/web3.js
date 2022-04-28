@@ -73,7 +73,8 @@ async function getMetaData() {
 
 async function chunkImport() {
     let meta = await getMetaData();
-    // console.log('importedChunks', importedChunks, 'meta.nbChunks', meta.nbChunks);
+    //console.log(meta);
+    console.log('importedChunks', importedChunks, 'meta.nbChunks', meta.nbChunks);
 
     if (importedChunks !== meta.nbChunks) {
         for (let i = importedChunks; i <= meta.nbChunks; i++) {

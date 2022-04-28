@@ -35,8 +35,8 @@ let colorPicked2 = Const.RGB8;
 
 //prettier-ignore
 export function keyManager(e){
-    if ((e.metaKey || e.ctrlKey) && e.key === 'z') {console.log('undo()'); return}
-    if ((e.metaKey || e.ctrlKey ) && (e.key === 'Z' || e.key === 'y')) {console.log('redo()'); return}
+    if ((e.metaKey || e.ctrlKey) && e.key === 'z') {undo(); return}
+    if ((e.metaKey || e.ctrlKey ) && (e.key === 'Z' || e.key === 'y')) {redo(); return}
     if (e.key === 'x') eraseAllPixel();
     if (e.key === 'c') console.log('Total H', Const.COLUMNS, 'Total W', Const.LINES, 'render W', renderWidth, 'render H', renderHeight, 'viewPosX', viewPosX, 'viewPosY', viewPosY);
     if (e.key === 'm') { moveDrawing(50, 400) }

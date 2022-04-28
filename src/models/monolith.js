@@ -15,11 +15,11 @@ export function buildMonolith() {
 }
 
 export function drawPixel(x, y, zIndex, color) {
-    if (x < 0 || x >= Const.MONOLITH_COLUMNS || y < 0 || y >= Const.MONOLITH_LINES) return; //IF OUT OF BOUNDS, return
-    if (!monolith[y][x].isEditable(zIndex)) return; //IF IT IS NOT EDITABLE, return
-    if (monolith[y][x].color === color && monolith[y][x].zIndex === zIndex) return; //IF IT IS THE SAME, return
+    if (x < 0 || x >= Const.MONOLITH_COLUMNS || y < 0 || y >= Const.MONOLITH_LINES) return; //If out of bounds, return
+    if (!monolith[y][x].isEditable(zIndex)) return; //If not editable, return
+    if (monolith[y][x].color === color && monolith[y][x].zIndex === zIndex) return; //If same, return
     if (monolith[y][x].target === color) return; //If target same, return
-    if (zIndex === 0) addToCurrentEvent(x, y, monolith[y][x]); //IF IT IS BEING DRAWN BY USER, ADD TO CURRENT EVENT
+    if (zIndex === 0) addToCurrentEvent(x, y, monolith[y][x].target, monolith[y][x].zIndex); //If it is being drawn by user, add to curent event
     monolith[y][x].setTargetColor(color);
     monolith[y][x].zIndex = zIndex;
 }

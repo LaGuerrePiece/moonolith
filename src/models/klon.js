@@ -69,7 +69,7 @@ export default class Klon {
 
     setTargetColor(color) {
         this.target = color;
-        this.transitionCount++;
+        if ((this.transitionCount + 1) % 10 !== 0) this.transitionCount++;
         // console.log('set target color to ', color);
     }
 
