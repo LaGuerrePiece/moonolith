@@ -3,7 +3,7 @@ import { Interface } from 'ethers/lib/utils';
 import contractABI from '../utils/abi.json';
 import { base64ToBuffer, bufferOnMonolith } from './imageManager';
 import Const from '../models/constants';
-import { increaseMonolithHeight } from '../models/monolith';
+import { increaseMonolithHeight, monolith } from '../models/monolith';
 
 const provider = new ethers.providers.InfuraProvider('rinkeby');
 const iface = new Interface(contractABI);
@@ -99,5 +99,9 @@ async function chunkImport() {
 
     previousNbChunks = meta.nbChunks;
 }
+
+setInterval(() => {
+    if (monolith) chunkImport();
+}, 10000);
 
 export { chunkCreator, getChunk, getChunksFromPosition, chunkImport };
