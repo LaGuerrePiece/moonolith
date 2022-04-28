@@ -50,7 +50,7 @@ export default class Klon {
         ) {
             //ERASE
             if (this.transitionCount % 10 === 1) this.color = [0, 118, 255];
-            else this.color = this.avg(this.target, this.color, 1);
+            else this.color = this.avg(this.target, this.color, 8);
             this.transitionCount++;
             if (this.transitionCount % 10 === 0) this.color = this.target;
         } else {

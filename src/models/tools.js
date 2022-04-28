@@ -35,23 +35,20 @@ let colorPicked2 = Const.RGB8;
 
 //prettier-ignore
 export function keyManager(e){
-    if (e.ctrlKey && e.key === 'z') undo();
-    if (e.metaKey && e.key === 'z') undo();
-    if (e.ctrlKey && e.key === 'Z') redo();
-    if (e.metaKey && e.key === 'Z') redo();
-    if (e.ctrlKey && e.key === 'y') redo();
-    if (e.metaKey && e.key === 'y') redo();
+    if (e.metaKey && e.key === 'z') {console.log('undo()'); return}
+    if (e.ctrlKey && e.key === 'z') {console.log('undo()'); return}
+    if (e.ctrlKey && e.key === 'Z') {console.log('redo()'); return}
+    if (e.metaKey && e.key === 'Z') {console.log('redo()'); return}
+    if (e.ctrlKey && e.key === 'y') {console.log('redo()'); return}
+    if (e.metaKey && e.key === 'y') {console.log('redo()'); return}
     if (e.key === 'x') eraseAllPixel();
     if (e.key === 'c') console.log('Total H', Const.COLUMNS, 'Total W', Const.LINES, 'render W', renderWidth, 'render H', renderHeight, 'viewPosX', viewPosX, 'viewPosY', viewPosY);
     if (e.key === 'm') { moveDrawing(50, 400) }
-    // if (e.key === 'e') zoom();
+    if (e.key === 'e') brushSwitch();
     if (e.key === 'i') importImage();
+    if (e.key === 'r') tool = Tool.GIGA   
     if (e.key === 'k') toggleMusic();
     if (e.key === 'p') increaseMonolithHeight(1000)
-    // if (e.key === 'ArrowUp') { changeViewPos(0, 6); }
-    // if (e.key === 'ArrowDown') { changeViewPos(0, -6); }
-    // if (e.key === 'ArrowLeft') { changeViewPos(-6, 0); }
-    // if (e.key === 'ArrowRight') { changeViewPos(6, 0); }
     if (e.key === 't') { changeViewPos(0, 999999); }
 
     switch (e.code || e.key || e.keyCode) {
@@ -86,14 +83,6 @@ export function keyManager(e){
 
         case 'KeyZ':
         zoom()
-        break;
-
-        case 'KeyE':
-        brushSwitch()
-        break;
-        
-        case 'KeyR':
-        tool = Tool.GIGA    
         break;
       }
 }
