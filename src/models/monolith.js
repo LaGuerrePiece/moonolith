@@ -3,6 +3,7 @@ import Const from './constants';
 import { addToCurrentEvent, closeCurrentEvent } from './undoStack';
 import { renderWidth, renderHeight, viewPosX, viewPosY } from '../main';
 import { imageCatalog } from '../assets/imageData';
+import { toggleRumble } from '../assets/sounds';
 
 export let monolith;
 
@@ -52,6 +53,8 @@ export function convertToMonolithPos(mousePos) {
 }
 
 export function increaseMonolithHeight(newRows) {
+    toggleRumble();
+
     //shake landscapes
     const shakeLandscape = setInterval(() => {
         for (let layer in imageCatalog) {
@@ -59,7 +62,6 @@ export function increaseMonolithHeight(newRows) {
             if (thisLayer.type === 'landscape' && thisLayer.name !== 'caly0') {
                 let offset = Math.floor(Math.random() * 3);
                 let direction = Math.floor(Math.random() * 2) * 2 - 1; //-1 or 1
-                console.log(direction);
                 switch (offset) {
                     case 0:
                         thisLayer.startX = 1 * direction;
@@ -98,5 +100,6 @@ export function increaseMonolithHeight(newRows) {
                 thisLayer.startX = 0;
             }
         }
+        toggleRumble();
     }, 2000 + 1000 * Math.log(newRows));
 }
