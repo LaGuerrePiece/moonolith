@@ -129,8 +129,8 @@ export function zoom() {
         viewPosY = Math.floor(viewPosY + renderHeight / 2);
     } else {
         // console.log('unzoomed');
-        viewPosX = Math.floor(viewPosX - renderWidth / 2);
-        viewPosY = Math.floor(viewPosY - renderHeight / 2);
+        viewPosX = 0;
+        changeViewPos(0, - renderHeight / 2);
         renderWidth = Const.COLUMNS;
         renderHeight = Math.ceil(windowHeight / pixelSize);
     }
