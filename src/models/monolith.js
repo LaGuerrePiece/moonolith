@@ -3,7 +3,7 @@ import Const from './constants';
 import { addToCurrentEvent, closeCurrentEvent } from './undoStack';
 import { renderWidth, renderHeight, viewPosX, viewPosY } from '../main';
 import { imageCatalog } from '../assets/imageData';
-import { toggleRumble } from '../assets/sounds';
+import { toggleRumble, playSound } from '../assets/sounds';
 
 export let monolith;
 
@@ -13,6 +13,7 @@ export function buildMonolith() {
     );
     monolith[Const.MONOLITH_LINES - 1][Const.MONOLITH_COLUMNS - 1].transitionCount = 1;
 }
+let lastPlayedSound = Date.now();
 
 export function drawPixel(x, y, zIndex, color) {
     if (x < 0 || x >= Const.MONOLITH_COLUMNS || y < 0 || y >= Const.MONOLITH_LINES) return; //If out of bounds, return
@@ -22,6 +23,10 @@ export function drawPixel(x, y, zIndex, color) {
     if (zIndex === 0) addToCurrentEvent(x, y, monolith[y][x].target, monolith[y][x].zIndex); //If it is being drawn by user, add to curent event
     monolith[y][x].setTargetColor(color);
     monolith[y][x].zIndex = zIndex;
+    if (lastPlayedSound + 40 < Date.now()) {
+        playSound('click5p26');
+        lastPlayedSound = Date.now();
+    }
 }
 
 export function getColor(x, y) {
@@ -36,6 +41,7 @@ export function eraseAllPixel() {
         }
     }
     closeCurrentEvent();
+    playSound('dwouipPitched');
 }
 
 export function erasePixel(x, y) {
@@ -43,6 +49,10 @@ export function erasePixel(x, y) {
         addToCurrentEvent(x, y, monolith[y][x]);
         monolith[y][x].setTargetColor(Const.DEFAULT_COLOR);
         monolith[y][x].zIndex = undefined;
+    }
+    if (lastPlayedSound + 120 < Date.now()) {
+        playSound('revBip');
+        lastPlayedSound = Date.now();
     }
 }
 

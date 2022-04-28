@@ -42,7 +42,7 @@ export function keyManager(e){
     if (e.key === 'm') { moveDrawing(50, 400) }
     if (e.key === 'e') brushSwitch();
     if (e.key === 'i') importImage();
-    if (e.key === 'r') tool = Tool.GIGA   
+    if (e.key === 'r') {tool = Tool.GIGA; playSound('kick');}
     if (e.key === 'k') toggleMusic();
     if (e.key === 'p') increaseMonolithHeight(1000)
     if (e.key === 't') { changeViewPos(0, 999999); }
@@ -94,7 +94,7 @@ export function scrollManager(e) {
 export function clickManager(e) {
     let mousePos = mousePosInGrid(e);
     console.log('mousePos', mousePos);
-
+    
     const GUIstartY = Math.floor((renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y);
     const GUIstartX = Math.floor((renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X);
     if (
@@ -102,15 +102,16 @@ export function clickManager(e) {
         mousePos.x < GUIstartX + imageCatalog.palette.width &&
         mousePos.y > GUIstartY &&
         mousePos.y < GUIstartY + imageCatalog.palette.height
-    ) {
-        //CASE : CLICK ON THE GUI
-        // console.log('GUI!!');
-        console.log(e);
-
-        //BIG
-        if (GUICircle(mousePos, GUIstartY, GUIstartX, 7, 7, 8)) saveToEthernity(); // !!! BUTTON
-        if (GUICircle(mousePos, GUIstartY, GUIstartX, 7, 91, 8)) brushSwitch(); // ??? BUTTON
-
+        ) {
+            //CASE : CLICK ON THE GUI
+            // console.log('GUI!!');
+            console.log(e);
+            
+            //BIG
+            if (GUICircle(mousePos, GUIstartY, GUIstartX, 7, 7, 8)) {saveToEthernity(); return} // !!! BUTTON
+            if (GUICircle(mousePos, GUIstartY, GUIstartX, 7, 91, 8)) {brushSwitch(); return} // ??? BUTTON
+            
+            playSound('click6');
         //SMALL
         //FIRST CIRCLE POSITION : 3, 21
         if (GUICircle(mousePos, GUIstartY, GUIstartX, 3, 21, 4)) colorSwitch(e, 1);
@@ -130,8 +131,6 @@ export function clickManager(e) {
         if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 5, 3, 21, 4)) colorSwitch(e, 14);
         if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 6, 3, 21, 4)) colorSwitch(e, 15);
         if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 7, 3, 21, 4)) colorSwitch(e, 16);
-
-        playSound('click');
     } else {
         //CASE MONOLITH OR LANDSCAPE
         convertToMonolithPos(mousePos);
@@ -245,16 +244,19 @@ function useDeleteTool(e) {
 function brushSwitch() {
     switch (tool) {
         case Tool.SMOL:
+            playSound('clickB2B');
             console.log('BIG BRUSH');
             imageCatalog.palette.decodedYX = imageCatalog.paletteBIG.decodedYX;
             tool = Tool.BIG;
             break;
         case Tool.BIG:
+            playSound('clickB2C');
             console.log('HUGE BRUSH');
             imageCatalog.palette.decodedYX = imageCatalog.paletteHUGE.decodedYX;
             tool = Tool.HUGE;
             break;
         case Tool.HUGE:
+            playSound('clickB2');
             console.log('SMOL BRUSH');
             imageCatalog.palette.decodedYX = imageCatalog.paletteSMOL.decodedYX;
             tool = Tool.SMOL;
