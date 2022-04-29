@@ -3,7 +3,7 @@ import Const from './constants';
 import { addToCurrentEvent, closeCurrentEvent } from './undoStack';
 import { renderWidth, renderHeight, viewPosX, viewPosY } from '../main';
 import { imageCatalog } from '../assets/imageData';
-import { toggleRumble, playSound } from '../assets/sounds';
+import { toggleRumble, playSound, muteState } from '../assets/sounds';
 
 export let monolith;
 
@@ -24,10 +24,10 @@ export function drawPixel(x, y, zIndex, color) {
     currentKlon.setTargetColor(color);
     currentKlon.zIndex = zIndex;
 
-    if (zIndex === 0 && lastPlayedSound + 40 < Date.now()) {
+    if (zIndex === 0 && lastPlayedSound + 40 < Date.now() && !muteState) {
         playSound('click5p26');
         lastPlayedSound = Date.now();
-    } else if (zIndex === undefined && lastPlayedSound + 120 < Date.now()) {
+    } else if (zIndex === undefined && lastPlayedSound + 120 < Date.now() && !muteState) {
         playSound('revBip');
         lastPlayedSound = Date.now();
     }

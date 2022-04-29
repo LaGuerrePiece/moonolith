@@ -1,7 +1,7 @@
 //prettier-ignore
 import { windowHeight, windowWidth, renderWidth, renderHeight, changeViewPos, viewPosX, viewPosY, zoom, canvas} from '../main';
 import { imageCatalog } from '../assets/imageData';
-import { toggleMusic, playSound } from '../assets/sounds';
+import { toggleMusic, playSound, toggleMute } from '../assets/sounds';
 import { drawPixel, getColor, eraseAllPixel, convertToMonolithPos, increaseMonolithHeight } from './monolith';
 import Klon from './klon';
 import { closeCurrentEvent, undo, redo } from './undoStack';
@@ -44,12 +44,13 @@ export function keyManager(e){
     if ((e.metaKey || e.ctrlKey) && e.key === 'z') {undo(); return}
     if ((e.metaKey || e.ctrlKey ) && (e.key === 'Z' || e.key === 'y')) {redo(); return}
     if (e.key === 'x') eraseAllPixel();
-    if (e.key === 'c') //console.log('Total H', Const.COLUMNS, 'Total W', Const.LINES, 'render W', renderWidth, 'render H', renderHeight, 'viewPosX', viewPosX, 'viewPosY', viewPosY);
+    if (e.key === 'c') console.log('Total H', Const.COLUMNS, 'Total W', Const.LINES, 'render W', renderWidth, 'render H', renderHeight, 'viewPosX', viewPosX, 'viewPosY', viewPosY, '\nE : Brush Switch \nX : Erase All \nI : Import \nL : Mute \nK : Pause music \nP : Grow Monolith \nR : GIGA tool \nT : Go to top');
     if (e.key === 'm') { moveDrawing(50, 400) }
     if (e.key === 'e') brushSwitch();
     if (e.key === 'i') importImage();
     if (e.key === 'r') {tool = Tool.GIGA; playSound('kick');}
     if (e.key === 'k') toggleMusic();
+    if (e.key === 'l') toggleMute();
     if (e.key === 'p') increaseMonolithHeight(1000)
     if (e.key === 't') { changeViewPos(0, 999999); }
 
@@ -352,13 +353,13 @@ function importImage() {
                 yMaxLegal: Const.FREE_DRAWING,
                 zIndex: Klon.USERPAINTED,
             });
-            APNGtoMonolith(importedImage);
+            // APNGtoMonolith(importedImage);
 
             //! NE PAS SUPPRIMER LES LIGNES CI-DESSOUS !//
             let base64 = btoa(
                 new Uint8Array(importedImage).reduce((data, byte) => data + String.fromCharCode(byte), '')
             );
-            //console.log('base64', base64);
+            console.log('base64', base64);
         };
     };
     input.click();
