@@ -178,7 +178,12 @@ function startUsingTool(e, mousePos) {
 
 function useTool(e) {
     const color = button === 0 ? colorPicked1 : colorPicked2;
-    const zIndex = color === Const.DEFAULT_COLOR ? 0 : undefined;
+    const zIndex =
+        color[0] === Const.DEFAULT_COLOR[0] &&
+        color[1] === Const.DEFAULT_COLOR[1] &&
+        color[2] === Const.DEFAULT_COLOR[2]
+            ? undefined
+            : 0;
 
     //If e is passed it's already formated, else it's a mouse event
     const mousePos = e.type ? convertToMonolithPos(mousePosInGrid({ x: e.x, y: e.y })) : e;
