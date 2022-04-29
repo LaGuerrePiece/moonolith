@@ -148,6 +148,12 @@ export function assemble() {
         for (let i = -2; i <= 2; i++) {
             for (let j = -2; j <= 2; j++) whiten(displayArray, pointer.y + i, pointer.x + j);
         }
+    } else if (tool === Tool.GIGA) {
+        for (let i = -20; i <= 20; i++) {
+            for (let j = -20; j <= 20; j++) {
+                whiten(displayArray, pointer.y + j, pointer.x + i);
+            }
+        }
     }
     activateOnce++;
     return displayArray;
