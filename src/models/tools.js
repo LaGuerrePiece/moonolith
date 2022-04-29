@@ -1,6 +1,6 @@
 //prettier-ignore
 import { windowHeight, windowWidth, renderWidth, renderHeight, changeViewPos, viewPosX, viewPosY, zoom, canvas} from '../main';
-import { imageCatalog, selectorUpdate } from '../assets/imageData';
+import { imageCatalog } from '../assets/imageData';
 import { toggleMusic, playSound } from '../assets/sounds';
 import {
     drawPixel,
@@ -323,9 +323,10 @@ function importImage() {
 export let colorNumber1, colorNumber2;
 function colorSwitch(e, color) {
     if (e.button == 0) {
-        colorNumber1 = color;}
-    else if (e.button == 2) {
-        colorNumber2 = color;}
+        colorNumber1 = color;
+    } else if (e.button == 2) {
+        colorNumber2 = color;
+    }
 
     switch (color) {
         case 1:
@@ -378,4 +379,16 @@ function colorSwitch(e, color) {
             break;
     }
     selectorUpdate();
+}
+
+export function selectorUpdate() {
+    let offset = 8;
+
+    let xPalette = Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X);
+    let yPalette = Math.floor(-(renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y);
+
+    imageCatalog.selector1.startX = xPalette - offset - colorNumber1 * 8 + Math.floor(colorNumber1 / 9) * 64;
+    imageCatalog.selector1.startY = yPalette + 1 - Math.floor(colorNumber1 / 9) * 8;
+    imageCatalog.selector2.startX = xPalette - offset - colorNumber2 * 8 + Math.floor(colorNumber2 / 9) * 64;
+    imageCatalog.selector2.startY = yPalette + 1 - Math.floor(colorNumber2 / 9) * 8;
 }
