@@ -140,7 +140,7 @@ export function clickManager(e) {
 
 function startUsingTool(e, mousePos) {
     //prettier-ignore
-    if (e.button == 1) {useColorPicker(mousePos); return;}
+    if (e.button == 1) {useColorPicker(mousePos); e.preventDefault(); return;}
     button = e.button;
     useTool(e);
     canvas.onmousemove = useTool;
@@ -228,7 +228,18 @@ export function mousePosInGrid(e) {
 }
 
 function useColorPicker(mousePos) {
-    colorPicked1 = getColor(mousePos.x, mousePos.y);
+    const color = getColor(mousePos.x, mousePos.y);
+    for (let i = 0; i < Const.GUI_PALETTE.length; i++) {
+        if (
+            color[0] === Const.GUI_PALETTE[i][0] &&
+            color[1] === Const.GUI_PALETTE[i][1] &&
+            color[2] === Const.GUI_PALETTE[i][2]
+        ) {
+            console.log('colorPicked1', color, i);
+            colorSwitch({ button: 0 }, i + 1);
+            return;
+        }
+    }
 }
 
 function importImage() {
@@ -275,9 +286,6 @@ function colorSwitch(e, color) {
 }
 
 export function selectorUpdate() {
-    console.log('selectorUpdate');
-    console.log('colorNumber1', colorNumber1);
-    console.log('colorNumber2', colorNumber2);
     let offset = 8;
 
     let xPalette = Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X);

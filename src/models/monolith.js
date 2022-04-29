@@ -46,7 +46,6 @@ function sameKlon(currentKlon, zIndex, color) {
 
 export function getColor(x, y) {
     console.log('monolith[y][x]', x, y, monolith[y][x]);
-    if (monolith[y][x].zIndex === undefined) console.log('picked default color');
     return monolith[y][x].color;
 }
 

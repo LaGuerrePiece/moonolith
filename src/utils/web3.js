@@ -30,7 +30,7 @@ const chunkCreator = async (res) => {
         console.log('Minting: ', res.position, res.ymax, res.nbPix, res.imgURI);
         let tx = metamaskContract.mint_One_4d(res.position, res.ymax, res.nbPix, res.imgURI, overrides);
     } else {
-        alert('Mets le testnet l\'ami');
+        alert("Mets le testnet l'ami");
     }
 };
 
@@ -74,7 +74,7 @@ async function getMetaData() {
 async function chunkImport() {
     let meta = await getMetaData();
     //console.log(meta);
-    console.log('importedChunks', importedChunks, 'meta.nbChunks', meta.nbChunks);
+    // console.log('importedChunks', importedChunks, 'meta.nbChunks', meta.nbChunks);
     if (importedChunks !== meta.nbChunks || importedChunks == 1) {
         for (let i = importedChunks; i <= meta.nbChunks; i++) {
             getChunk(i).then((res) => {
@@ -83,7 +83,7 @@ async function chunkImport() {
                     x: res[0].toNumber() % Const.MONOLITH_COLUMNS,
                     y: Math.floor(res[0].toNumber() / Const.MONOLITH_COLUMNS),
                     paid: res[3].toNumber(),
-                    yMaxLegal: res[2].toNumber() / 1000000 ,
+                    yMaxLegal: res[2].toNumber() / 1000000,
                     zIndex: i,
                 });
             });
