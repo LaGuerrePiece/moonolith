@@ -50,6 +50,7 @@ async function decodeAndFormatAnimation(index) {
     let decoded = await ApngToBuffer(base64ToBuffer(thisAnim.base64)).catch(console.error);
     let width = decoded.width;
     let framesObj = {};
+    let totalDelay = 0;
     let frames = Array.from({ length: decoded.frames.length }, () =>
         Array.from({ length: decoded.frames[0].length / width / 4 }, () => Array.from(Const.COLUMNS))
     );
@@ -65,12 +66,14 @@ async function decodeAndFormatAnimation(index) {
                 ];
             }
         }
+        totalDelay += decoded.delay[frame];
         framesObj[frame] = { buffer: frames[frame], delay: decoded.delay[frame] };
     }
 
     thisAnim.frames = framesObj;
     thisAnim.width = width;
     thisAnim.height = decoded.height;
+    thisAnim.totalDelay = totalDelay;
 }
 
 export async function initialDecodeLandscape(numberOfImports) {
