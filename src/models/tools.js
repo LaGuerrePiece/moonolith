@@ -118,7 +118,7 @@ export function scrollManager(e) {
     }, 10));
     if(viewPosY == 0 || viewPosY == renderHeight)
     {
-        scrollInformation.inertiaEvents(event => {
+        scrollInformation.inertiaEvents.forEach(event => {
             clearTimeout(event);
         });
     }       

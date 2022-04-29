@@ -125,7 +125,7 @@ export function zoom() {
         // console.log('unzoomed');
         renderWidth = Const.COLUMNS;
         renderHeight = Math.ceil((windowHeight * renderWidth) / windowWidth);
-        changeViewPos(0, -Math.floor(renderHeight / 4));
+        changeViewPos(0, - Math.floor(renderHeight / 4));
         selectorUpdate();
     }
     myImageData = ctx.createImageData(renderWidth, renderHeight);
