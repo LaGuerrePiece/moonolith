@@ -3,7 +3,6 @@ import { selectColorRed, selectColorBlue, caly0, caly1, caly2, caly3, caly4, cal
 import { renderWidth, renderHeight } from '../main';
 import { base64ToBuffer, pngToBufferToRGBA8, ApngToBuffer } from '../utils/imageManager';
 import Const from '../models/constants';
-import { colorNumber1, colorNumber2 } from '../models/tools';
 
 export var imageCatalog = {
     selector2: { name: 'selector2', type: 'GUI', startX: 0, startY: 0, parallax: 0, base64: selectColorRed },
@@ -134,16 +133,4 @@ async function decodeAndFormatLayer(index) {
 
         if (thisLayer.name == 'GUIMPORT') console.log('GUIMPORT', thisLayer.decodedYX); // NE PAS SUPPRIMER
     }
-}
-
-export function selectorUpdate() {
-    let offset = 8;
-
-    let xPalette = Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X);
-    let yPalette = Math.floor(-(renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y);
-
-    imageCatalog.selector1.startX = xPalette - offset - colorNumber1 * 8 + Math.floor(colorNumber1 / 9) * 64;
-    imageCatalog.selector1.startY = yPalette + 1 - Math.floor(colorNumber1 / 9) * 8;
-    imageCatalog.selector2.startX = xPalette - offset - colorNumber2 * 8 + Math.floor(colorNumber2 / 9) * 64;
-    imageCatalog.selector2.startY = yPalette + 1 - Math.floor(colorNumber2 / 9) * 8;
 }

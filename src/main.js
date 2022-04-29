@@ -1,13 +1,7 @@
 // Imports des composants
-import {
-    initialDecodeLandscape,
-    lateDecodeLandscape,
-    initialDecodeAnim,
-    imageCatalog,
-    selectorUpdate,
-} from './assets/imageData';
+import { initialDecodeLandscape, lateDecodeLandscape, initialDecodeAnim, imageCatalog } from './assets/imageData';
 // Imports des fonctionnalités
-import { clickManager, keyManager, scrollManager, mousePosInGrid } from './models/tools';
+import { clickManager, keyManager, scrollManager, mousePosInGrid, selectorUpdate } from './models/tools';
 import Const from './models/constants';
 import { createApiDisplayPage } from './models/apiDisplayPage';
 import { chunkImport, getChunk } from './utils/web3';
