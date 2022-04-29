@@ -48,6 +48,12 @@
 			{
 				"indexed": false,
 				"internalType": "uint256",
+				"name": "ymaxLegal",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
 				"name": "nbpix",
 				"type": "uint256"
 			},
@@ -308,6 +314,19 @@
 	{
 		"inputs": [
 			{
+				"internalType": "string",
+				"name": "newProxy",
+				"type": "string"
+			}
+		],
+		"name": "setDataProxyUri",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
 				"internalType": "uint256",
 				"name": "newValue",
 				"type": "uint256"
@@ -407,6 +426,19 @@
 				"internalType": "uint256[]",
 				"name": "balances",
 				"type": "uint256[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "dataProxyUri",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
 			}
 		],
 		"stateMutability": "view",

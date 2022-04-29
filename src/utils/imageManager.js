@@ -133,7 +133,7 @@ async function bufferOnMonolith(data) {
     let p = 0;
     for (let y = data.y; y < data.yMaxLegal; y++) {
         for (let x = data.x; x < rgba8.width + data.x; x++) {
-            // if (y >= data.yMaxLegal) return;
+            if (y >= data.yMaxLegal) return;
             if (pixelDrawn >= data.paid) return;
             if (!monolith[y]?.[x]) continue;
             if (pixArray[p] > 0) {

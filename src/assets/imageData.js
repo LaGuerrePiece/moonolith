@@ -59,9 +59,9 @@ async function decodeAndFormatAnimation(index) {
             for (let x = 0; x < width; x++) {
                 if (decoded.frames[frame][(x + y * width) * 4 + 3] === 0) continue;
                 frames[frame][y][x] = [
-                    decoded.frames[frame][(x + y * width) * 4] / 255,
-                    decoded.frames[frame][(x + y * width) * 4 + 1] / 255,
-                    decoded.frames[frame][(x + y * width) * 4 + 2] / 255,
+                    decoded.frames[frame][(x + y * width) * 4],
+                    decoded.frames[frame][(x + y * width) * 4 + 1],
+                    decoded.frames[frame][(x + y * width) * 4 + 2],
                 ];
             }
         }
