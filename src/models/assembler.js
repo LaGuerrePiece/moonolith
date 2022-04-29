@@ -154,6 +154,21 @@ export function assemble() {
                 whiten(displayArray, pointer.y + j, pointer.x + i);
             }
         }
+        for (let i = -15; i <= 15; i++) {
+            for (let j = -15; j <= 15; j++) {
+                whiten(displayArray, pointer.y + j, pointer.x + i);
+            }
+        }
+        for (let i = -8; i <= 8; i++) {
+            for (let j = -5; j <= 5; j++) {
+                whiten(displayArray, pointer.y + j, pointer.x + i);
+                whiten(displayArray, pointer.y + i, pointer.x + j);
+            }
+        }
+        for (let i = -2; i <= 2; i++) {
+            for (let j = -2; j <= 2; j++) whiten(displayArray, pointer.y + i, pointer.x + j);
+        }
+        whiten(displayArray, pointer.y, pointer.x);
     }
     activateOnce++;
     return displayArray;
