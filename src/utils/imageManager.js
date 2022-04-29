@@ -132,8 +132,7 @@ async function bufferOnMonolith(data) {
             if (pixelDrawn >= data.paid) return;
             if (!monolith[y]?.[x]) continue;
             if (pixArray[p] > 0) {
-                monolith[y][x].color = Const.PALETTE[pixArray[p]];
-                monolith[y][x].zIndex = data.zIndex;
+                drawPixel(x, y, data.zIndex, Const.PALETTE[pixArray[p]]);
                 pixelDrawn++;
             }
             p++;

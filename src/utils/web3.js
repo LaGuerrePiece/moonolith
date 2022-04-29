@@ -30,7 +30,7 @@ const chunkCreator = async (res) => {
         console.log('Minting: ', res.position, res.ymax, res.nbPix, res.imgURI);
         let tx = metamaskContract.mint_One_4d(res.position, res.ymax, res.nbPix, res.imgURI, overrides);
     } else {
-        alert('Mets le testnet sale PD');
+        alert('Mets le testnet l\'ami');
     }
 };
 
