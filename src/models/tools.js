@@ -24,7 +24,7 @@ export class Tool {
 
 export let tool = Tool.HUGE;
 let colorPicked1 = Const.RGB2;
-let colorPicked2 = Const.RGB8;
+let colorPicked2 = Const.DEFAULT_COLOR;
 let button;
 
 //prettier-ignore
@@ -151,8 +151,8 @@ function startUsingTool(e, mousePos) {
 }
 
 function useTool(e) {
-    const zIndex = button === 0 ? 0 : undefined;
-    const color = button === 0 ? colorPicked1 : Const.DEFAULT_COLOR;
+    const color = button === 0 ? colorPicked1 : colorPicked2;
+    const zIndex = color === Const.DEFAULT_COLOR ? 0 : undefined;
 
     //If e is passed it's already formated, else it's a mouse event
     const mousePos = e.type ? convertToMonolithPos(mousePosInGrid({ x: e.x, y: e.y })) : e;
@@ -261,68 +261,23 @@ function importImage() {
     input.click();
 }
 
-export let colorNumber1, colorNumber2;
+export let colorNumber1 = 2;
+export let colorNumber2 = 16;
 function colorSwitch(e, color) {
     if (e.button == 0) {
         colorNumber1 = color;
+        colorPicked1 = Const.GUI_PALETTE[color - 1];
     } else if (e.button == 2) {
         colorNumber2 = color;
-    }
-
-    switch (color) {
-        case 1:
-            colorPicked1 = Const.RGB1;
-            break;
-        case 2:
-            colorPicked1 = Const.RGB2;
-            break;
-        case 3:
-            colorPicked1 = Const.RGB3;
-            break;
-        case 4:
-            colorPicked1 = Const.RGB4;
-            break;
-        case 5:
-            colorPicked1 = Const.RGB5;
-            break;
-        case 6:
-            colorPicked1 = Const.RGB6;
-            break;
-        case 7:
-            colorPicked1 = Const.RGB7;
-            break;
-        case 8:
-            colorPicked1 = Const.RGB8;
-            break;
-        case 9:
-            colorPicked1 = Const.RGB9;
-            break;
-        case 10:
-            colorPicked1 = Const.RGB10;
-            break;
-        case 11:
-            colorPicked1 = Const.RGB11;
-            break;
-        case 12:
-            colorPicked1 = Const.RGB12;
-            break;
-        case 13:
-            colorPicked1 = Const.RGB13;
-            break;
-        case 14:
-            colorPicked1 = Const.RGB14;
-            break;
-        case 15:
-            colorPicked1 = Const.RGB15;
-            break;
-        case 16:
-            colorPicked1 = Const.RGB16;
-            break;
+        colorPicked2 = Const.GUI_PALETTE[color - 1];
     }
     selectorUpdate();
 }
 
 export function selectorUpdate() {
+    console.log('selectorUpdate');
+    console.log('colorNumber1', colorNumber1);
+    console.log('colorNumber2', colorNumber2);
     let offset = 8;
 
     let xPalette = Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X);

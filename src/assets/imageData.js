@@ -121,16 +121,5 @@ async function decodeAndFormatLayer(index) {
     thisLayer.height = decoded.height;
 
     if (thisLayer.type === 'side') thisLayer.startY = Const.LINES - Const.MARGIN_TOP + thisLayer.startY;
-    if (thisLayer.type === 'GUI') {
-        if (thisLayer.name === 'selector1') {
-            thisLayer.startY = Math.floor(-(renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y) + 1;
-            thisLayer.startX = Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X) - 64;
-        }
-        if (thisLayer.name === 'selector2') {
-            thisLayer.startY = Math.floor(-(renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y) - 7;
-            thisLayer.startX = Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X) - 72;
-        }
-
-        if (thisLayer.name == 'GUIMPORT') console.log('GUIMPORT', thisLayer.decodedYX); // NE PAS SUPPRIMER
-    }
+    if (thisLayer.name == 'GUIMPORT') console.log('GUIMPORT', thisLayer.decodedYX); // NE PAS SUPPRIMER
 }
