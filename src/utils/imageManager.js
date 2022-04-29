@@ -17,8 +17,6 @@ async function APNGtoMonolith(buffer) {
     }).then((buffer) => {
         for (let frame = 0; frame < 51; frame++) {
             let decodedFrame = UPNG.toRGBA8(buffer)[frame];
-            // console.log('decodedFrame', frame, decodedFrame);
-
             setTimeout(() => {
                 animBufferOnMonolith({
                     buffer: new Uint8Array(decodedFrame),
@@ -97,7 +95,6 @@ function pngToBufferToRGB(buffer) {
 
 async function prepareBufferForApi(data) {
     let rgba8 = await pngToBufferToRGB(data).catch(console.error);
-    //console.log("Data from image:", rgba8);
     let pixArray = decode4bitsArray(rgba8.buffer);
     while (pixArray[pixArray.length - 1] === 0) {
         // virer les 0 de la fin
@@ -112,13 +109,11 @@ async function prepareBufferForApi(data) {
     pixArray.forEach((pix) => {
         colors.push(Const.PALETTE[pix]);
     });
-    console.log('pixArray.length', pixArray.length);
     return [colors, rgba8.width, rgba8.height];
 }
 
 async function bufferOnMonolith(data) {
     let rgba8 = await pngToBufferToRGB(data.buffer).catch(console.error);
-    //console.log("Data from image:", rgba8);
     let pixArray = decode4bitsArray(rgba8.buffer);
     while (pixArray[pixArray.length - 1] === 0) {
         // virer les 0 de la fin
@@ -148,14 +143,11 @@ async function bufferOnMonolith(data) {
 
 function monolithToBase64() {
     return new Promise((resolve) => {
-        let { highLow, nbPix, encoded } = gridToArray();
+        let { highLow, nbPix, pixelArray } = gridToArray();
         let firstPix = highLow.lowY * Const.MONOLITH_COLUMNS + highLow.lowX;
-        encoded = new Uint8Array(encoded);
-        console.log("data avant encodage:", encoded);
-        var png = UPNG.encodeLL([encoded.buffer], highLow.longueur, highLow.largeur, 1, 0, 4); // on encode
-         console.log("data encoded", png);
+        pixelArray = new Uint8Array(pixelArray);
+        var png = UPNG.encodeLL([pixelArray.buffer], highLow.longueur, highLow.largeur, 1, 0, 4); // on encode
         let buff = UPNG.decode(png);
-        console.log("data apres decodage", buff);
         let buffer = bufferToBase64(png); //on passe au format base64
         saveLocally(buffer);
 
@@ -195,38 +187,23 @@ function base64ToBuffer(base64) {
 
 function gridToArray() {
     let highLow = getHighLow();
-    let saveArray = [];
+    let pixelArray = [];
     let nbPix = 0;
     for (let i = highLow.lowY; i <= highLow.highY; i++) {
         for (let j = highLow.lowX; j <= highLow.highX; j++) {
             if (monolith[i][j].zIndex == Klon.USERPAINTED) {
-                saveArray.push(...monolith[i][j].color, 255);
+                pixelArray.push(...monolith[i][j].color, 255);
                 nbPix++;
             } else {
-                saveArray.push(...[0, 0, 0, 0]);
+                pixelArray.push(...[0, 0, 0, 0]);
             }
         }
     }
-    let encoded = [];
-    console.log("saveArray.len", saveArray.length);
-    console.log("saveArray", saveArray);
-    for (let i = 0; i < saveArray.length; i += 4) {
-        let rgb = [saveArray[i], saveArray[i + 1], saveArray[i + 2]];
-        const eq = (element) => element[0] == rgb[0] && element[1] == rgb[1] && element[2] == rgb[2];
-        let d = Const.PALETTE.findIndex(eq);
-        addUintTo4bitArray(encoded, d);
-    }
-    if (encoded[encoded.length - 1] == 256) encoded[encoded.length - 1] = 0;
-    console.log('encoded', encoded);
- 
-    while (encoded.length % 4 != 0) {
-        encoded.push(0);
-    }
-    //console.log("From drawing raw data:", raw)
-    console.log('encoded', encoded);
-    console.log('decode4bitsArray(encoded)', decode4bitsArray(encoded));
-    return { highLow, nbPix, encoded };
+    pixelArray = rgbaToColorArray(pixelArray); // convert array to the paletted format
+    pixelArray = encode4bitsArray(pixelArray); // encode array with 4 bits per color
+    return { highLow, nbPix, pixelArray };
 }
+
 function getHighLow() {
     let lowX = Const.MONOLITH_COLUMNS,
         lowY = Const.MONOLITH_LINES,
@@ -243,13 +220,19 @@ function getHighLow() {
             }
         }
     }
-
     let longueur = highX - lowX + 1;
     let largeur = highY - lowY + 1;
-    /*console.log(
-        `lowX : ${lowX} | lowY : ${lowY} | highX : ${highX} | highY : ${highY} | longueur : ${longueur} | largeur : ${largeur}`
-    );*/
+
     return { lowX, lowY, highX, highY, longueur, largeur };
+}
+function rgbaToColorArray(array){ // [r, g, b, a, r, g, b, a] => [colordId, colorId]
+    let converted = [];
+    for (let i = 0; i < array.length; i += 4) {
+        let rgb = [array[i], array[i + 1], array[i + 2]];
+        const eq = (element) => element[0] == rgb[0] && element[1] == rgb[1] && element[2] == rgb[2];
+        converted.push(Const.PALETTE.findIndex(eq));
+    }
+    return converted;
 }
 function addUintTo4bitArray(array, uint) {
     if (array.length == 0) {
@@ -261,40 +244,37 @@ function addUintTo4bitArray(array, uint) {
         array.push(256);
     }
 }
+function encode4bitsArray(array) {
+    let encoded = [];
+    for(let i = 0; i < array.length; i++)
+    {
+        addUintTo4bitArray(encoded, array[i]);
+    }
+    if(array.length % 2 != 0) {
+        encoded[Math.ceil(array.length/2) - 1] *= 16;
+    } else if (encoded[encoded.length - 1] == 256) encoded[encoded.length - 1] = 0;
+    while (encoded.length % 4 != 0) {
+        encoded.push(0);
+    }
+    return encoded;
+}
 function decode4bitsArray(array) {
     let decoded = [];
-    for (let i = 0; i < array.length; i++) {
+    let arrayEnd = array.length - 1;
+    while(array[arrayEnd] == 0){
+        arrayEnd --;
+    }
+    for (let i = 0; i <= arrayEnd; i++) {
         decoded.push((array[i] - (array[i] % 16)) / 16);
         decoded.push(array[i] % 16);
-        // console.log('received', array[i], 'pushed', (array[i] - (array[i] % 16)) / 16, array[i] % 16);
     }
     return decoded;
-}
-function RGBToHex(r, g, b) {
-    r = Math.floor(r * 255);
-    g = Math.floor(g * 255);
-    b = Math.floor(b * 255);
-    return '#' + componentToHex(r) + componentToHex(g) + componentToHex(b);
-}
-function componentToHex(c) {
-    let hex = c.toString(16);
-    return hex.length == 1 ? '0' + hex : hex;
-}
-function getKeyByValue(object, value) {
-    return Object.keys(object).find((key) => object[key] === value);
-}
-
-function hexToRgb(hex) {
-    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)] : null;
 }
 
 export function moveDrawing(x, y) {
     //TODO : À BOUGER DANS TOOLS ?
     const drawing = gridToArray();
-    //console.log('x', x, 'y', y, 'drawing', drawing);
-    //console.log('saveArray', drawing.saveArray);
-    //console.log('highLow', drawing.highLow);
+
     eraseAllPixel();
     // if (outx > 127) outx = 127;
     // if (outx < 0) outx = 0;
