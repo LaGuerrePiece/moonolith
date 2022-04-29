@@ -138,6 +138,7 @@ export function clickManager(e) {
         if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 7, 3, 21, 4)) colorSwitch(e, 16);
     } else {
         //CASE MONOLITH OR LANDSCAPE
+        convertToMonolithPos(mousePos);
         if (mousePos) startUsingTool(e, mousePos);
     }
 }

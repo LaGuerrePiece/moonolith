@@ -10,7 +10,7 @@ import { tool, Tool } from './tools';
 // var clock = 0;
 
 var displayMenu = true; // quand true, dezoom et desac draw
-let lol = 0;
+let activateOnce = 0;
 
 export function assemble() {
     let displayArray = [];
@@ -114,8 +114,8 @@ export function assemble() {
         }
     }
 
-    if (lol === 0) console.log('displayArray', displayArray);
-    lol++;
+    if (activateOnce === 0) console.log('displayArray', displayArray);
+    activateOnce++;
     // previousLandscape = displayArray;
 
     // Add the pointer
