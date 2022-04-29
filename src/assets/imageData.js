@@ -3,6 +3,7 @@ import { selectColorRed, selectColorBlue, caly0, caly1, caly2, caly3, caly4, cal
 import { renderWidth, renderHeight } from '../main';
 import { base64ToBuffer, pngToBufferToRGBA8, ApngToBuffer } from '../utils/imageManager';
 import Const from '../models/constants';
+import { selectorUpdate } from '../models/tools';
 
 export var imageCatalog = {
     selector2: { name: 'selector2', type: 'GUI', startX: 0, startY: 0, parallax: 0, base64: selectColorRed },
@@ -124,5 +125,6 @@ async function decodeAndFormatLayer(index) {
     thisLayer.height = decoded.height;
 
     if (thisLayer.type === 'side') thisLayer.startY = Const.LINES - Const.MARGIN_TOP + thisLayer.startY;
+    if (thisLayer.name === 'selector1') selectorUpdate();
     if (thisLayer.name == 'GUIMPORT') console.log('GUIMPORT', thisLayer.decodedYX); // NE PAS SUPPRIMER
 }
