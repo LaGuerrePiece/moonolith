@@ -113,23 +113,23 @@ function inertia(isUp = true)
     let now = Date.now();
     if(scrollInformation.consecutiveUp > 15){
         console.log("Up");
-        for(let i = parseInt(scrollInformation.consecutiveUp / 2); i > 0 ; i--){
+        for(let i = parseInt(scrollInformation.consecutiveUp /5); i > 0 ; i--){
             setTimeout(function() {
-                changeViewPos(0, 6); 
+                changeViewPos(0, 1); 
             }, i*100);  
         }
         setTimeout(function() {
             scrollInformation.consecutiveUp = 0;
-        }, parseInt(scrollInformation.consecutiveUp) + 1 * 50);  
+        }, parseInt(scrollInformation.consecutiveUp / 5) + 1 * 50);  
     } if(scrollInformation.consecutiveDown > 15){
-        for(let i = parseInt(scrollInformation.consecutiveDown / 2); i > 0 ; i--){
+        for(let i = parseInt(scrollInformation.consecutiveDown / 5); i > 0 ; i--){
             setTimeout(function() {
-                changeViewPos(0, -6); 
+                changeViewPos(0, -1); 
             }, i*100);        
         }
         setTimeout(function() {
             scrollInformation.consecutiveDown = 0;
-        }, parseInt(scrollInformation.consecutiveDown / 2) + 1 * 50);    
+        }, parseInt(scrollInformation.consecutiveDown / 5) + 1 * 50);    
     }
 }
 
