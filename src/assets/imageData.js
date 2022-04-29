@@ -3,6 +3,7 @@ import { selectColorRed, selectColorBlue, caly0, caly1, caly2, caly3, caly4, cal
 import { renderWidth, renderHeight } from '../main';
 import { base64ToBuffer, pngToBufferToRGBA8, ApngToBuffer } from '../utils/imageManager';
 import Const from '../models/constants';
+import { selectorUpdate } from '../models/tools';
 
 export var imageCatalog = {
     selector2: { name: 'selector2', type: 'GUI', startX: 0, startY: 0, parallax: 0, base64: selectColorRed },
@@ -50,6 +51,7 @@ async function decodeAndFormatAnimation(index) {
     let decoded = await ApngToBuffer(base64ToBuffer(thisAnim.base64)).catch(console.error);
     let width = decoded.width;
     let framesObj = {};
+    let totalDelay = 0;
     let frames = Array.from({ length: decoded.frames.length }, () =>
         Array.from({ length: decoded.frames[0].length / width / 4 }, () => Array.from(Const.COLUMNS))
     );
@@ -65,12 +67,14 @@ async function decodeAndFormatAnimation(index) {
                 ];
             }
         }
+        totalDelay += decoded.delay[frame];
         framesObj[frame] = { buffer: frames[frame], delay: decoded.delay[frame] };
     }
 
     thisAnim.frames = framesObj;
     thisAnim.width = width;
     thisAnim.height = decoded.height;
+    thisAnim.totalDelay = totalDelay;
 }
 
 export async function initialDecodeLandscape(numberOfImports) {
@@ -121,16 +125,6 @@ async function decodeAndFormatLayer(index) {
     thisLayer.height = decoded.height;
 
     if (thisLayer.type === 'side') thisLayer.startY = Const.LINES - Const.MARGIN_TOP + thisLayer.startY;
-    if (thisLayer.type === 'GUI') {
-        if (thisLayer.name === 'selector1') {
-            thisLayer.startY = Math.floor(-(renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y) + 1;
-            thisLayer.startX = Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X) - 64;
-        }
-        if (thisLayer.name === 'selector2') {
-            thisLayer.startY = Math.floor(-(renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y) - 7;
-            thisLayer.startX = Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X) - 72;
-        }
-
-        if (thisLayer.name == 'GUIMPORT') console.log('GUIMPORT', thisLayer.decodedYX); // NE PAS SUPPRIMER
-    }
+    if (thisLayer.name === 'selector1') selectorUpdate();
+    if (thisLayer.name == 'GUIMPORT') console.log('GUIMPORT', thisLayer.decodedYX); // NE PAS SUPPRIMER
 }

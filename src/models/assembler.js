@@ -10,13 +10,25 @@ import { tool, Tool } from './tools';
 let activateOnce = 0;
 var clock = 0;
 setInterval(() => {
-    clock++;
+    clock += 100;
 }, 100);
+
+function frameInClock(anim) {
+    let frame = 0;
+    let delaySum = 0;
+    while (delaySum < clock % anim.totalDelay) {
+        delaySum += anim.frames[frame].delay;
+        frame++;
+    }
+    if (frame >= Object.keys(anim.frames).length) frame = 0;
+    return frame;
+}
 
 export function assemble() {
     let displayArray = [];
     let layersToDisplay = [];
 
+    // Push Tooltip on pancarte
     if (isInSquare(180, 187, 14, 18, pointer.x, pointer.y)) {
         layersToDisplay.push({
             name: 'menu',
@@ -53,7 +65,7 @@ export function assemble() {
         const thisAnim = animationCatalog[animation];
         layersToDisplay.push({
             name: thisAnim.name,
-            colorsArray: thisAnim.frames[clock % Object.keys(thisAnim.frames).length].buffer,
+            colorsArray: thisAnim.frames[frameInClock(thisAnim)].buffer,
             startY: thisAnim.startY - viewPosY - renderHeight,
             startX: viewPosX - thisAnim.startX,
         });
@@ -113,8 +125,7 @@ export function assemble() {
         }
     }
 
-    if (activateOnce === 0) console.log('displayArray', displayArray);
-    activateOnce++;
+    // if (activateOnce === 0) console.log('displayArray', displayArray);
     // previousLandscape = displayArray;
 
     // Add the pointer
@@ -138,6 +149,7 @@ export function assemble() {
             for (let j = -2; j <= 2; j++) whiten(displayArray, pointer.y + i, pointer.x + j);
         }
     }
+    activateOnce++;
     return displayArray;
 }
 

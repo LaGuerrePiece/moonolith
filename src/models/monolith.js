@@ -27,8 +27,7 @@ export function drawPixel(x, y, zIndex, color) {
     if (zIndex === 0 && lastPlayedSound + 40 < Date.now()) {
         playSound('click5p26');
         lastPlayedSound = Date.now();
-    }
-    if (zIndex === undefined && lastPlayedSound + 120 < Date.now()) {
+    } else if (zIndex === undefined && lastPlayedSound + 120 < Date.now()) {
         playSound('revBip');
         lastPlayedSound = Date.now();
     }
