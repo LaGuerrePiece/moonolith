@@ -16,44 +16,49 @@ export function buildMonolith() {
 let lastPlayedSound = Date.now();
 
 export function drawPixel(x, y, zIndex, color) {
-    if (x < 0 || x >= Const.MONOLITH_COLUMNS || y < 0 || y >= Const.MONOLITH_LINES) return; //If out of bounds, return
-    if (!monolith[y][x].isEditable(zIndex)) return; //If not editable, return
-    if (monolith[y][x].color === color && monolith[y][x].zIndex === zIndex) return; //If same, return
-    if (monolith[y][x].target === color) return; //If target same, return
-    if (zIndex === 0) addToCurrentEvent(x, y, monolith[y][x].target, monolith[y][x].zIndex); //If it is being drawn by user, add to curent event
-    monolith[y][x].setTargetColor(color);
-    monolith[y][x].zIndex = zIndex;
-    if (lastPlayedSound + 40 < Date.now()) {
+    const currentKlon = monolith[y]?.[x];
+    if (!currentKlon) return; //If out of bounds, return
+    if (!currentKlon.isEditable(zIndex)) return; //If not editable, return
+    if (sameKlon(currentKlon, zIndex, color)) return; //If same, return
+    if (zIndex === 0 || zIndex === undefined) addToCurrentEvent(x, y, currentKlon.target, currentKlon.zIndex); //If being drawn by user, add to curent event
+    currentKlon.setTargetColor(color);
+    currentKlon.zIndex = zIndex;
+
+    if (zIndex === 0 && lastPlayedSound + 40 < Date.now()) {
         playSound('click5p26');
+        lastPlayedSound = Date.now();
+    }
+    if (zIndex === undefined && lastPlayedSound + 120 < Date.now()) {
+        playSound('revBip');
         lastPlayedSound = Date.now();
     }
 }
 
+function sameKlon(currentKlon, zIndex, color) {
+    if (
+        currentKlon.target[0] === color[0] &&
+        currentKlon.target[1] === color[1] &&
+        currentKlon.target[2] === color[2] &&
+        currentKlon.zIndex === zIndex
+    )
+        return true;
+    return false;
+}
+
 export function getColor(x, y) {
     console.log('monolith[y][x]', x, y, monolith[y][x]);
+    if (monolith[y][x].zIndex === undefined) console.log('picked default color');
     return monolith[y][x].color;
 }
 
 export function eraseAllPixel() {
     for (let j = 0; j < Const.MONOLITH_LINES; j++) {
         for (let i = 0; i < Const.MONOLITH_COLUMNS; i++) {
-            erasePixel(i, j);
+            drawPixel(i, j, undefined, Const.DEFAULT_COLOR);
         }
     }
     closeCurrentEvent();
     playSound('dwouipPitched');
-}
-
-export function erasePixel(x, y) {
-    if (monolith[y]?.[x]?.zIndex === 0) {
-        addToCurrentEvent(x, y, monolith[y][x]);
-        monolith[y][x].setTargetColor(Const.DEFAULT_COLOR);
-        monolith[y][x].zIndex = undefined;
-        if (lastPlayedSound + 120 < Date.now()) {
-            playSound('revBip');
-            lastPlayedSound = Date.now();
-        }
-    }
 }
 
 export function convertToMonolithPos(mousePos) {
