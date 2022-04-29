@@ -1,13 +1,13 @@
 // Imports des composants
 import { initialDecodeLandscape, lateDecodeLandscape, initialDecodeAnim, imageCatalog } from './assets/imageData';
 // Imports des fonctionnalités
-import { clickManager, keyManager, scrollManager, mousePosInGrid, selectorUpdate } from './models/tools';
+import { clickManager, keyManager, scrollManager, mousePosInGrid, selectorUpdate, touchManager } from './models/tools';
 import Const from './models/constants';
 import { createApiDisplayPage } from './models/apiDisplayPage';
 import { chunkImport, getChunk } from './utils/web3';
 import { assemble } from './models/assembler';
 import { buildMonolith } from './models/monolith';
-import { base64ToBuffer, pngToBufferToRGB, prepareBufferForApi } from './utils/imageManager';
+import { base64ToBuffer, prepareBufferForApi } from './utils/imageManager';
 
 export let canvas;
 export let viewPosY = 0;
@@ -103,6 +103,23 @@ document.addEventListener('keydown', (e) => { keyManager(e) });
 //prettier-ignore
 window.onwheel = function (e) { scrollManager(e) };
 
+document.addEventListener(
+    'touchmove',
+    (e) => {
+        e.preventDefault();
+        touchManager(e);
+    },
+    { passive: false }
+);
+document.addEventListener('touchend', (e) => {
+    touchManager(e);
+});
+document.addEventListener('touchstart', (e) => {
+    touchManager(e);
+});
+
+
+
 export function changeViewPos(inputX, inputY) {
     viewPosX += inputX;
     viewPosY += inputY;
@@ -125,7 +142,7 @@ export function zoom() {
         // console.log('unzoomed');
         renderWidth = Const.COLUMNS;
         renderHeight = Math.ceil((windowHeight * renderWidth) / windowWidth);
-        changeViewPos(0, - Math.floor(renderHeight / 4));
+        changeViewPos(0, -Math.floor(renderHeight / 4));
         selectorUpdate();
     }
     myImageData = ctx.createImageData(renderWidth, renderHeight);
