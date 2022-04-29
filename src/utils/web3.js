@@ -27,7 +27,7 @@ const chunkCreator = async (res) => {
         let overrides = {
             value: oneGwei.mul(res.nbPix),
         };
-        console.log('Minting: ', res.position, res.ymax, res.nbPix, res.imgURI);
+        // console.log('Minting: ', res.position, res.ymax, res.nbPix, res.imgURI);
         let tx = metamaskContract.mint_One_4d(res.position, res.ymax, res.nbPix, res.imgURI, overrides);
     } else {
         alert("Mets le testnet l'ami");

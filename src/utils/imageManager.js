@@ -142,13 +142,13 @@ async function bufferOnMonolith(data) {
 
 function monolithToBase64() {
     return new Promise((resolve) => {
-        let { highLow, nbPix, pixelArray } = gridToArray();
+        let { highLow, nbPix, pixelArray, pixelArray24bits } = gridToArray();
         let firstPix = highLow.lowY * Const.MONOLITH_COLUMNS + highLow.lowX;
         pixelArray = new Uint8Array(pixelArray);
         var png = UPNG.encodeLL([pixelArray.buffer], highLow.longueur, highLow.largeur, 1, 0, 4); // on encode
-        let buff = UPNG.decode(png);
         let buffer = bufferToBase64(png); //on passe au format base64
         saveLocally(buffer);
+        saveLocally(bufferToBase64(UPNG.encode([new Uint8Array(pixelArray24bits).buffer], highLow.longueur, highLow.largeur, 0)));
 
         resolve({ position: firstPix, ymax: highLow.highY, nbPix: nbPix, imgURI: buffer });
     });
@@ -198,9 +198,10 @@ function gridToArray() {
             }
         }
     }
+    let pixelArray24bits = pixelArray; // pour pouvoir save en couleur
     pixelArray = rgbaToColorArray(pixelArray); // convert array to the paletted format
     pixelArray = encode4bitsArray(pixelArray); // encode array with 4 bits per color
-    return { highLow, nbPix, pixelArray };
+    return { highLow, nbPix, pixelArray, pixelArray24bits };
 }
 
 function getHighLow() {
@@ -224,7 +225,8 @@ function getHighLow() {
 
     return { lowX, lowY, highX, highY, longueur, largeur };
 }
-function rgbaToColorArray(array){ // [r, g, b, a, r, g, b, a] => [colordId, colorId]
+function rgbaToColorArray(array) {
+    // [r, g, b, a, r, g, b, a] => [colordId, colorId]
     let converted = [];
     for (let i = 0; i < array.length; i += 4) {
         let rgb = [array[i], array[i + 1], array[i + 2]];
@@ -245,12 +247,11 @@ function addUintTo4bitArray(array, uint) {
 }
 function encode4bitsArray(array) {
     let encoded = [];
-    for(let i = 0; i < array.length; i++)
-    {
+    for (let i = 0; i < array.length; i++) {
         addUintTo4bitArray(encoded, array[i]);
     }
-    if(array.length % 2 != 0) {
-        encoded[Math.ceil(array.length/2) - 1] *= 16;
+    if (array.length % 2 != 0) {
+        encoded[Math.ceil(array.length / 2) - 1] *= 16;
     } else if (encoded[encoded.length - 1] == 256) encoded[encoded.length - 1] = 0;
     while (encoded.length % 4 != 0) {
         encoded.push(0);
@@ -260,8 +261,8 @@ function encode4bitsArray(array) {
 function decode4bitsArray(array) {
     let decoded = [];
     let arrayEnd = array.length - 1;
-    while(array[arrayEnd] == 0){
-        arrayEnd --;
+    while (array[arrayEnd] == 0) {
+        arrayEnd--;
     }
     for (let i = 0; i <= arrayEnd; i++) {
         decoded.push((array[i] - (array[i] % 16)) / 16);

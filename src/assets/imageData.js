@@ -1,6 +1,5 @@
 //prettier-ignore
 import { selectColorRed, selectColorBlue, caly0, caly1, caly2, caly3, caly4, caly5, caly6, calySide0, calySide1, slug, GUISweetie15, menu, paletteSMOL, paletteBIG, paletteHUGE } from './base64';
-import { renderWidth, renderHeight } from '../main';
 import { base64ToBuffer, pngToBufferToRGBA8, ApngToBuffer } from '../utils/imageManager';
 import Const from '../models/constants';
 import { selectorUpdate } from '../models/tools';
