@@ -40,7 +40,7 @@ export function keyManager(e){
     if ((e.metaKey || e.ctrlKey) && e.key === 'z') {undo(); return}
     if ((e.metaKey || e.ctrlKey ) && (e.key === 'Z' || e.key === 'y')) {redo(); return}
     if (e.key === 'x') eraseAllPixel();
-    if (e.key === 'c') console.log('Total H', Const.COLUMNS, 'Total W', Const.LINES, 'render W', renderWidth, 'render H', renderHeight, 'viewPosX', viewPosX, 'viewPosY', viewPosY);
+    if (e.key === 'c') //console.log('Total H', Const.COLUMNS, 'Total W', Const.LINES, 'render W', renderWidth, 'render H', renderHeight, 'viewPosX', viewPosX, 'viewPosY', viewPosY);
     if (e.key === 'm') { moveDrawing(50, 400) }
     if (e.key === 'e') brushSwitch();
     if (e.key === 'i') importImage();
@@ -87,32 +87,54 @@ export function keyManager(e){
 }
 
 export function scrollManager(e) {
-    console.log(e.deltaY);
-    console.log(scrollInformation);
     let now = Date.now();
     if (e.deltaY > 0) {
-        console.log(scrollInformation.lastScrollDown - now);
-        if (now - scrollInformation.lastScrollDown < 1000) {
+        if (now - scrollInformation.lastScrollDown < 500) {
             scrollInformation.consecutiveDown++;
         } else {
             scrollInformation.consecutiveDown = 0;
         }
         scrollInformation.lastScrollDown = now;
         changeViewPos(0, -6 - parseInt(scrollInformation.consecutiveDown / 5) * 2);
-        console.log('movment:', -6 - parseInt(scrollInformation.consecutiveUp / 5));
     } else {
-        if (now - scrollInformation.lastScrollUp < 1000) {
+        if (now - scrollInformation.lastScrollUp < 500) {
             scrollInformation.consecutiveUp++;
         } else {
             scrollInformation.consecutiveUp = 0;
         }
         scrollInformation.lastScrollUp = now;
-        console.log('movment:', 6 + parseInt(scrollInformation.consecutiveUp / 5));
         changeViewPos(0, 6 + parseInt(scrollInformation.consecutiveUp / 5));
+    }
+    setTimeout(inertia(true, 1000));
+}
+
+function inertia(isUp = true)
+{
+    let now = Date.now();
+    if(scrollInformation.consecutiveUp > 15){
+        console.log("Up");
+        for(let i = parseInt(scrollInformation.consecutiveUp / 2); i > 0 ; i--){
+            setTimeout(function() {
+                changeViewPos(0, 6); 
+            }, i*100);  
+        }
+        setTimeout(function() {
+            scrollInformation.consecutiveUp = 0;
+        }, parseInt(scrollInformation.consecutiveUp) + 1 * 50);  
+    } if(scrollInformation.consecutiveDown > 15){
+        for(let i = parseInt(scrollInformation.consecutiveDown / 2); i > 0 ; i--){
+            setTimeout(function() {
+                changeViewPos(0, -6); 
+            }, i*100);        
+        }
+        setTimeout(function() {
+            scrollInformation.consecutiveDown = 0;
+        }, parseInt(scrollInformation.consecutiveDown / 2) + 1 * 50);    
     }
 }
 
 export function clickManager(e) {
+
     let mousePos = mousePosInGrid(e);
     // console.log('mousePos', mousePos);
 
@@ -222,24 +244,24 @@ function brushSwitch() {
     switch (tool) {
         case Tool.SMOL:
             playSound('clickB2B');
-            console.log('BIG BRUSH');
+            //console.log('BIG BRUSH');
             imageCatalog.palette.decodedYX = imageCatalog.paletteBIG.decodedYX;
             tool = Tool.BIG;
             break;
         case Tool.BIG:
             playSound('clickB2C');
-            console.log('HUGE BRUSH');
+            //console.log('HUGE BRUSH');
             imageCatalog.palette.decodedYX = imageCatalog.paletteHUGE.decodedYX;
             tool = Tool.HUGE;
             break;
         case Tool.HUGE:
             playSound('clickB2');
-            console.log('SMOL BRUSH');
+            //console.log('SMOL BRUSH');
             imageCatalog.palette.decodedYX = imageCatalog.paletteSMOL.decodedYX;
             tool = Tool.SMOL;
             break;
         case Tool.GIGA:
-            console.log('SMOL BRUSH');
+            //console.log('SMOL BRUSH');
             imageCatalog.palette.decodedYX = imageCatalog.paletteSMOL.decodedYX;
             tool = Tool.SMOL;
             break;
@@ -261,7 +283,7 @@ function useColorPicker(mousePos) {
             color[1] === Const.GUI_PALETTE[i][1] &&
             color[2] === Const.GUI_PALETTE[i][2]
         ) {
-            console.log('colorPicked1', color, i);
+            //console.log('colorPicked1', color, i);
             colorSwitch({ button: 0 }, i + 1);
             return;
         }
@@ -292,7 +314,7 @@ function importImage() {
             let base64 = btoa(
                 new Uint8Array(importedImage).reduce((data, byte) => data + String.fromCharCode(byte), '')
             );
-            console.log('base64', base64);
+            //console.log('base64', base64);
         };
     };
     input.click();
