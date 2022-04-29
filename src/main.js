@@ -27,7 +27,6 @@ async function initApp() {
     let runeNumber = parseInt(document.URL.split('?rune=')[1]);
     if (runeNumber) initApiDisplay(runeNumber);
     else {
-        let initPerf = performance.now();
         await chunkImport();
         initialDecodeLandscape(InitialImports);
         buildMonolith();

@@ -29,12 +29,11 @@ let colorPicked2 = Const.DEFAULT_COLOR;
 let button;
 
 let scrollInformation = {
-    lastScrollDown : Date.now(),
-    lastScrollUp :  Date.now(),
+    lastScrollDown: Date.now(),
+    lastScrollUp: Date.now(),
     consecutiveDown: 0,
-    consecutiveUp: 0
-}
-
+    consecutiveUp: 0,
+};
 
 //prettier-ignore
 export function keyManager(e){
@@ -93,24 +92,22 @@ export function scrollManager(e) {
     let now = Date.now();
     if (e.deltaY > 0) {
         console.log(scrollInformation.lastScrollDown - now);
-        if(now - scrollInformation.lastScrollDown  < 1000){
+        if (now - scrollInformation.lastScrollDown < 1000) {
             scrollInformation.consecutiveDown++;
         } else {
             scrollInformation.consecutiveDown = 0;
         }
         scrollInformation.lastScrollDown = now;
         changeViewPos(0, -6 - parseInt(scrollInformation.consecutiveDown / 5) * 2);
-        console.log("movment:", -6 - parseInt(scrollInformation.consecutiveUp / 5))
-
+        console.log('movment:', -6 - parseInt(scrollInformation.consecutiveUp / 5));
     } else {
-        if(now - scrollInformation.lastScrollUp < 1000)
-        {
+        if (now - scrollInformation.lastScrollUp < 1000) {
             scrollInformation.consecutiveUp++;
         } else {
             scrollInformation.consecutiveUp = 0;
         }
         scrollInformation.lastScrollUp = now;
-        console.log("movment:", 6 + parseInt(scrollInformation.consecutiveUp / 5))
+        console.log('movment:', 6 + parseInt(scrollInformation.consecutiveUp / 5));
         changeViewPos(0, 6 + parseInt(scrollInformation.consecutiveUp / 5));
     }
 }
@@ -294,9 +291,17 @@ export let colorNumber1 = 2;
 export let colorNumber2 = 16;
 function colorSwitch(e, color) {
     if (e.button == 0) {
+        if (color === colorNumber2) {
+            colorNumber2 = colorNumber1;
+            colorPicked2 = Const.GUI_PALETTE[colorNumber1 - 1];
+        }
         colorNumber1 = color;
         colorPicked1 = Const.GUI_PALETTE[color - 1];
     } else if (e.button == 2) {
+        if (color === colorNumber1) {
+            colorNumber1 = colorNumber2;
+            colorPicked1 = Const.GUI_PALETTE[colorNumber2 - 1];
+        }
         colorNumber2 = color;
         colorPicked2 = Const.GUI_PALETTE[color - 1];
     }
@@ -304,9 +309,6 @@ function colorSwitch(e, color) {
 }
 
 export function selectorUpdate() {
-    console.log('selectorUpdate');
-    console.log('colorNumber1', colorNumber1);
-    console.log('colorNumber2', colorNumber2);
     let offset = 8;
 
     let xPalette = Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X);
