@@ -2,14 +2,7 @@
 import { windowHeight, windowWidth, renderWidth, renderHeight, changeViewPos, viewPosX, viewPosY, zoom, canvas} from '../main';
 import { imageCatalog } from '../assets/imageData';
 import { toggleMusic, playSound } from '../assets/sounds';
-import {
-    drawPixel,
-    getColor,
-    eraseAllPixel,
-    erasePixel,
-    convertToMonolithPos,
-    increaseMonolithHeight,
-} from './monolith';
+import { drawPixel, getColor, eraseAllPixel, convertToMonolithPos, increaseMonolithHeight } from './monolith';
 import Klon from './klon';
 import { closeCurrentEvent, undo, redo } from './undoStack';
 
@@ -18,7 +11,7 @@ import Const from './constants';
 
 //prettier-ignore
 export class Tool {
-
+    
     static get DONE() { return 0 }
     static get SMOL() { return 1 }
     static get BIG() { return 3 }
@@ -32,6 +25,7 @@ export class Tool {
 export let tool = Tool.HUGE;
 let colorPicked1 = Const.RGB2;
 let colorPicked2 = Const.RGB8;
+let button;
 
 //prettier-ignore
 export function keyManager(e){
@@ -104,7 +98,7 @@ export function clickManager(e) {
         mousePos.y > GUIstartY &&
         mousePos.y < GUIstartY + imageCatalog.palette.height
     ) {
-        //CASE : CLICK ON THE GUI
+        // clicked on GUI
 
         //BIG
         if (GUICircle(mousePos, GUIstartY, GUIstartX, 7, 7, 8)) {
@@ -136,110 +130,62 @@ export function clickManager(e) {
         if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 5, 3, 21, 4)) colorSwitch(e, 14);
         if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 6, 3, 21, 4)) colorSwitch(e, 15);
         if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 7, 3, 21, 4)) colorSwitch(e, 16);
+    } else if (convertToMonolithPos(mousePos)) {
+        // clicked on monolith
+        startUsingTool(e, mousePos);
     } else {
-        //CASE MONOLITH OR LANDSCAPE
-        convertToMonolithPos(mousePos);
-        if (mousePos) startUsingTool(e, mousePos);
+        // clicked on landscape
     }
-}
-
-function GUICircle(mousePos, GUIstartY, GUIstartX, y, x, radius) {
-    // Coordinates of the center are input in the GUI
-    y += GUIstartY;
-    x += GUIstartX;
-    return Math.floor(mousePos.x - x) ** 2 + Math.floor(mousePos.y - y) ** 2 <= radius ** 2;
 }
 
 function startUsingTool(e, mousePos) {
-    if (e.button == 0) {
-        useTool(mousePos);
-        canvas.onmousemove = useTool;
-        canvas.onmouseup = stopUsingTool;
-    }
-    if (e.button == 2) {
-        useDeleteTool(mousePos);
-        canvas.onmousemove = useDeleteTool;
-        canvas.onmouseup = stopUsingTool;
-    }
-    if (e.button == 1) {
-        useColorPicker(mousePos);
-    }
+    //prettier-ignore
+    if (e.button == 1) {useColorPicker(mousePos); return;}
+    button = e.button;
+    useTool(e);
+    canvas.onmousemove = useTool;
+    canvas.onmouseup = () => {
+        closeCurrentEvent();
+        canvas.onmousemove = null;
+    };
 }
 
 function useTool(e) {
-    //IF E IS PASSED IT'S ALREADY FORMATED, ELSE IT'S A MOUSE EVENT
+    const zIndex = button === 0 ? 0 : undefined;
+    const color = button === 0 ? colorPicked1 : Const.DEFAULT_COLOR;
+
+    //If e is passed it's already formated, else it's a mouse event
     const mousePos = e.type ? convertToMonolithPos(mousePosInGrid({ x: e.x, y: e.y })) : e;
     if (!mousePos) return;
 
     switch (tool) {
         case Tool.SMOL:
-            drawPixel(mousePos.x, mousePos.y, Klon.USERPAINTED, colorPicked1);
+            drawPixel(mousePos.x, mousePos.y, zIndex, color);
             break;
         case Tool.BIG:
             for (let i = -1; i <= 1; i++) {
                 for (let j = -1; j <= 1; j++) {
-                    drawPixel(mousePos.x + i, mousePos.y + j, Klon.USERPAINTED, colorPicked1);
+                    drawPixel(mousePos.x + i, mousePos.y + j, zIndex, color);
                 }
             }
             break;
         case Tool.HUGE:
             for (let i = -2; i <= 2; i++) {
                 for (let j = -2; j <= 2; j++) {
-                    drawPixel(mousePos.x + i, mousePos.y + j, Klon.USERPAINTED, colorPicked1);
+                    drawPixel(mousePos.x + i, mousePos.y + j, zIndex, color);
                 }
             }
             for (let i = -1; i <= 1; i++) {
-                drawPixel(mousePos.x + i, mousePos.y + 3, Klon.USERPAINTED, colorPicked1);
-                drawPixel(mousePos.x + i, mousePos.y - 3, Klon.USERPAINTED, colorPicked1);
-                drawPixel(mousePos.x + 3, mousePos.y + i, Klon.USERPAINTED, colorPicked1);
-                drawPixel(mousePos.x - 3, mousePos.y + i, Klon.USERPAINTED, colorPicked1);
+                drawPixel(mousePos.x + i, mousePos.y + 3, zIndex, color);
+                drawPixel(mousePos.x + i, mousePos.y - 3, zIndex, color);
+                drawPixel(mousePos.x + 3, mousePos.y + i, zIndex, color);
+                drawPixel(mousePos.x - 3, mousePos.y + i, zIndex, color);
             }
             break;
         case Tool.GIGA:
             for (let i = -20; i <= 20; i++) {
                 for (let j = -20; j <= 20; j++) {
-                    drawPixel(mousePos.x + i, mousePos.y + j, Klon.USERPAINTED, colorPicked1);
-                }
-            }
-            break;
-        case Tool.MOVE:
-            moveDrawing(mousePos.x, mousePos.y);
-            break;
-    }
-}
-
-function useDeleteTool(e) {
-    //IF E IS PASSED IT'S ALREADY FORMATED, ELSE IT'S A MOUSE EVENT
-    const mousePos = e.type ? convertToMonolithPos(mousePosInGrid({ x: e.x, y: e.y })) : e;
-    if (!mousePos) return;
-    switch (tool) {
-        case Tool.SMOL:
-            erasePixel(mousePos.x, mousePos.y);
-            break;
-        case Tool.BIG:
-            for (let i = -1; i <= 1; i++) {
-                for (let j = -1; j <= 1; j++) {
-                    erasePixel(mousePos.x + i, mousePos.y + j);
-                }
-            }
-            break;
-        case Tool.HUGE:
-            for (let i = -2; i <= 2; i++) {
-                for (let j = -2; j <= 2; j++) {
-                    erasePixel(mousePos.x + i, mousePos.y + j);
-                }
-            }
-            for (let i = -1; i <= 1; i++) {
-                erasePixel(mousePos.x + i, mousePos.y + 3);
-                erasePixel(mousePos.x + i, mousePos.y - 3);
-                erasePixel(mousePos.x + 3, mousePos.y + i);
-                erasePixel(mousePos.x - 3, mousePos.y + i);
-            }
-            break;
-        case Tool.GIGA:
-            for (let i = -20; i <= 20; i++) {
-                for (let j = -20; j <= 20; j++) {
-                    erasePixel(mousePos.x + i, mousePos.y + j);
+                    drawPixel(mousePos.x + i, mousePos.y + j, zIndex, color);
                 }
             }
             break;
@@ -272,11 +218,6 @@ function brushSwitch() {
             tool = Tool.SMOL;
             break;
     }
-}
-
-function stopUsingTool() {
-    closeCurrentEvent();
-    canvas.onmousemove = null;
 }
 
 export function mousePosInGrid(e) {
@@ -391,4 +332,11 @@ export function selectorUpdate() {
     imageCatalog.selector1.startY = yPalette + 1 - Math.floor(colorNumber1 / 9) * 8;
     imageCatalog.selector2.startX = xPalette - offset - colorNumber2 * 8 + Math.floor(colorNumber2 / 9) * 64;
     imageCatalog.selector2.startY = yPalette + 1 - Math.floor(colorNumber2 / 9) * 8;
+}
+
+function GUICircle(mousePos, GUIstartY, GUIstartX, y, x, radius) {
+    // Coordinates of the center are input in the GUI
+    y += GUIstartY;
+    x += GUIstartX;
+    return Math.floor(mousePos.x - x) ** 2 + Math.floor(mousePos.y - y) ** 2 <= radius ** 2;
 }

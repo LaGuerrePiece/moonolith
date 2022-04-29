@@ -7,10 +7,11 @@ import { tool, Tool } from './tools';
 // var previousViewPosY;
 // var previousViewPosX;
 // var previousLandscape;
-// var clock = 0;
-
-var displayMenu = true; // quand true, dezoom et desac draw
 let activateOnce = 0;
+var clock = 0;
+setInterval(() => {
+    clock++;
+}, 100);
 
 export function assemble() {
     let displayArray = [];
@@ -47,18 +48,16 @@ export function assemble() {
         startX: imageCatalog.selector2.startX,
     });
 
-    // Push animations to layersToDisplay
-    // clock++;
-    // if (clock > 49) clock = 0;
-    // for (let animation in animationCatalog) {
-    //     const thisAnim = animationCatalog[animation];
-    //     layersToDisplay.push({
-    //         name: thisAnim.name,
-    //         colorsArray: thisAnim.frames[clock].buffer,
-    //         startY: thisAnim.startY - viewPosY - renderHeight,
-    //         startX: viewPosX - thisAnim.startX,
-    //     });
-    // }
+    //Push animations to layersToDisplay
+    for (let animation in animationCatalog) {
+        const thisAnim = animationCatalog[animation];
+        layersToDisplay.push({
+            name: thisAnim.name,
+            colorsArray: thisAnim.frames[clock % Object.keys(thisAnim.frames).length].buffer,
+            startY: thisAnim.startY - viewPosY - renderHeight,
+            startX: viewPosX - thisAnim.startX,
+        });
+    }
 
     // Push monolith to layersToDisplay
     layersToDisplay.push({

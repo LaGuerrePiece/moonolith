@@ -1,4 +1,6 @@
 const music = new Audio('/src/assets/audio/ghibli8bit.mp3');
+music.loop = true;
+
 const rumble = new Audio('/src/assets/audio/rumble.mp3');
 
 export function playSound(name) {
