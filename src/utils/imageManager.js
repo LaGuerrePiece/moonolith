@@ -3,6 +3,8 @@ import Klon from '../models/klon';
 import Const from '../models/constants';
 import { monolith, eraseAllPixel, drawPixel } from '../models/monolith';
 import { chunkCreator } from '../utils/web3';
+import LZString from 'lz-String';
+import { Buffer } from 'buffer';
 
 function saveToEthernity() {
     monolithToBase64().then((data) => {
@@ -94,17 +96,16 @@ function pngToBufferToRGB(buffer) {
 }
 
 async function prepareBufferForApi(data) {
-    let rgba8 = await pngToBufferToRGB(data).catch(console.error);
-    let pixArray = decode4bitsArray(rgba8.buffer);
+    let pixArray = new Uint8Array(base64ToBuffer(LZString.decompressFromUTF16(data.buffer)));
+    pixArray = Array.from(pixArray);
+    let width = pixArray.shift();
+    let height = pixArray.shift();
+    pixArray = decode4bitsArray(pixArray);
     while (pixArray[pixArray.length - 1] === 0) {
         // virer les 0 de la fin
         pixArray.pop();
     }
-    if (pixArray.length > rgba8.height * rgba8.width) {
-        // corriger le tableau en cas de dernier entier qui coderait une seule valeur
-        pixArray[pixArray.length - 2] = pixArray[pixArray.length - 1];
-        pixArray[pixArray.length - 1] = 0;
-    }
+
     let colors = [];
     pixArray.forEach((pix) => {
         colors.push(Const.PALETTE[pix]);
@@ -113,21 +114,20 @@ async function prepareBufferForApi(data) {
 }
 
 async function bufferOnMonolith(data) {
-    let rgba8 = await pngToBufferToRGB(data.buffer).catch(console.error);
-    let pixArray = decode4bitsArray(rgba8.buffer);
+    //console.log(LZString.decompressFromUTF16(data.buffer));
+    let pixArray = new Uint8Array(base64ToBuffer(LZString.decompressFromUTF16(data.buffer)));
+    pixArray = Array.from(pixArray);
+    let width = pixArray.shift();
+    let height = pixArray.shift();
+    pixArray = decode4bitsArray(pixArray);
     while (pixArray[pixArray.length - 1] === 0) {
         // virer les 0 de la fin
         pixArray.pop();
     }
-    if (pixArray.length > rgba8.height * rgba8.width) {
-        // corriger le tableau en cas de dernier entier qui coderait une seule valeur
-        pixArray[pixArray.length - 2] = pixArray[pixArray.length - 1];
-        pixArray[pixArray.length - 1] = 0;
-    }
     let pixelDrawn = 0;
     let p = 0;
     for (let y = data.y; y < data.yMaxLegal; y++) {
-        for (let x = data.x; x < rgba8.width + data.x; x++) {
+        for (let x = data.x; x < width + data.x; x++) {
             if (y >= data.yMaxLegal) return;
             if (pixelDrawn >= data.paid) return;
             if (!monolith[y]?.[x]) continue;
@@ -144,13 +144,15 @@ function monolithToBase64() {
     return new Promise((resolve) => {
         let { highLow, nbPix, pixelArray, pixelArray24bits } = gridToArray();
         let firstPix = highLow.lowY * Const.MONOLITH_COLUMNS + highLow.lowX;
+        pixelArray.unshift(highLow.largeur);
+        pixelArray.unshift(highLow.longueur);
         pixelArray = new Uint8Array(pixelArray);
-        var png = UPNG.encodeLL([pixelArray.buffer], highLow.longueur, highLow.largeur, 1, 0, 4); // on encode
-        let buffer = bufferToBase64(png); //on passe au format base64
-        saveLocally(buffer);
-        saveLocally(bufferToBase64(UPNG.encode([new Uint8Array(pixelArray24bits).buffer], highLow.longueur, highLow.largeur, 0)));
-
-        resolve({ position: firstPix, ymax: highLow.highY, nbPix: nbPix, imgURI: buffer });
+        saveLocally(
+            bufferToBase64(UPNG.encode([new Uint8Array(pixelArray24bits).buffer], highLow.longueur, highLow.largeur, 0))
+        );
+        let compressed = LZString.compressToUTF16(bufferToBase64(pixelArray.buffer));
+        let pArray = new Uint8Array(base64ToBuffer(LZString.decompressFromUTF16(compressed)));
+        resolve({ position: firstPix, ymax: highLow.highY, nbPix: nbPix, imgURI: compressed });
     });
 }
 

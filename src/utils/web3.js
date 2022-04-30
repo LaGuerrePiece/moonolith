@@ -7,7 +7,7 @@ import { increaseMonolithHeight } from '../models/monolith';
 
 const provider = new ethers.providers.InfuraProvider('rinkeby');
 const iface = new Interface(contractABI);
-const contractAddress = '0xf727151C96eCA0Fe0D8f3c3b603647460cb2b3A0';
+const contractAddress = '0x7191AF67bDB873B7b4ebEA02Bd37A73276cbf547';
 const contract = new ethers.Contract(contractAddress, contractABI, provider);
 let metamaskProvider;
 var metamaskContract;
@@ -21,17 +21,17 @@ if (window.ethereum) {
 let importedChunks = 1;
 
 const chunkCreator = async (res) => {
-    if (window.ethereum.chainId == '0x4') {
-        await metamaskProvider.send('eth_requestAccounts', []);
-        const oneGwei = ethers.BigNumber.from('1000000000');
-        let overrides = {
-            value: oneGwei.mul(res.nbPix),
-        };
-        // console.log('Minting: ', res.position, res.ymax, res.nbPix, res.imgURI);
-        let tx = metamaskContract.mint_One_4d(res.position, res.ymax, res.nbPix, res.imgURI, overrides);
-    } else {
-        alert("Mets le testnet l'ami");
-    }
+    // if (window.ethereum.chainId == '0x4') {
+    await metamaskProvider.send('eth_requestAccounts', []);
+    const oneGwei = ethers.BigNumber.from('1000000000');
+    let overrides = {
+        value: oneGwei.mul(res.nbPix),
+    };
+    // console.log('Minting: ', res.position, res.ymax, res.nbPix, res.imgURI);
+    let tx = metamaskContract.mint_One_4d(res.position, res.ymax, res.nbPix, res.imgURI, overrides);
+    //  } else {
+    //    alert("Mets le testnet l'ami");
+    // }
 };
 
 /**
@@ -61,7 +61,7 @@ const getChunksFromPosition = async (min, max) => {
             res.push(chunk);
         }
     }
-    console.log(res);
+    //console.log(res);
     return res;
 };
 
@@ -78,8 +78,9 @@ async function chunkImport() {
     if (importedChunks !== meta.nbChunks || importedChunks == 1) {
         for (let i = importedChunks; i <= meta.nbChunks; i++) {
             getChunk(i).then((res) => {
+                //console.log(res);
                 bufferOnMonolith({
-                    buffer: base64ToBuffer(res[4]),
+                    buffer: res[4],
                     x: res[0].toNumber() % Const.MONOLITH_COLUMNS,
                     y: Math.floor(res[0].toNumber() / Const.MONOLITH_COLUMNS),
                     paid: res[3].toNumber(),
