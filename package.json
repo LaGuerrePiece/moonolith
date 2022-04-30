@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@vitejs/plugin-vue": "^2.3.1",
+    "contactjs": "^1.4.1",
     "ethers": "^5.5.4",
     "express": "^4.17.3",
     "pako": "^2.0.4",
