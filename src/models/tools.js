@@ -34,9 +34,9 @@ let scrollInformation = {
     consecutiveDown: 0,
     consecutiveUp: 0,
     upInertia: 0,
-    downInertia:0,
+    downInertia: 0,
     lastDirUp: false,
-    inertiaEvents : []
+    inertiaEvents: [],
 };
 
 //prettier-ignore
@@ -101,7 +101,10 @@ export function scrollManager(e) {
         }
         scrollInformation.lastScrollDown = now;
         changeViewPos(0, -6 - parseInt(scrollInformation.consecutiveDown / 5) * 2);
-        scrollInformation.lastDirUp = false;
+        if (scrollInformation.lastDirUp) {
+            clearInertia();
+            scrollInformation.lastDirUp = false;
+        }
     } else {
         if (now - scrollInformation.lastScrollUp < 500) {
             scrollInformation.consecutiveUp++;
@@ -111,42 +114,57 @@ export function scrollManager(e) {
         }
         scrollInformation.lastScrollUp = now;
         changeViewPos(0, 6 + parseInt(scrollInformation.consecutiveUp / 5) * 2);
-        scrollInformation.lastDirUp = true;
+        if (!scrollInformation.lastDirUp) {
+            clearInertia();
+            scrollInformation.lastDirUp = true;
+        }
     }
-    scrollInformation.inertiaEvents.push(setTimeout(function() {
-        inertia(scrollInformation.consecutiveUp, scrollInformation.consecutiveDown);
-    }, 10));
-    if(viewPosY == 0 || viewPosY == renderHeight)
-    {
-        scrollInformation.inertiaEvents.forEach(event => {
-            clearTimeout(event);
-        });
-    }       
+    scrollInformation.inertiaEvents.push(
+        setTimeout(function () {
+            inertia(scrollInformation.consecutiveUp, scrollInformation.consecutiveDown);
+        }, 10)
+    );
+    if (viewPosY == 0 || viewPosY == renderHeight) {
+        clearInertia();
+    }
 }
 
-function inertia(consecutiveUp, consecutiveDown)
-{
-    if(scrollInformation.upInertia > 6 && consecutiveUp === scrollInformation.consecutiveUp && scrollInformation.lastDirUp){
-        console.log("Inertia Up");
-        for(let i = parseInt(scrollInformation.consecutiveUp); i > 0 ; i--){
-            setTimeout(function() {
-                changeViewPos(0, 1); 
-            }, i*25);  
+function clearInertia() {
+    scrollInformation.inertiaEvents.forEach((event) => {
+        clearTimeout(event);
+    });
+}
+
+function inertia(consecutiveUp, consecutiveDown) {
+    if (
+        scrollInformation.upInertia > 6 &&
+        consecutiveUp === scrollInformation.consecutiveUp &&
+        scrollInformation.lastDirUp
+    ) {
+        //console.log('Inertia Up');
+        for (let i = parseInt(scrollInformation.consecutiveUp); i > 0; i--) {
+            setTimeout(function () {
+                changeViewPos(0, 1);
+            }, i * 25);
         }
         scrollInformation.upInertia = 0;
-    } if(scrollInformation.downInertia > 7 && consecutiveDown == scrollInformation.consecutiveDown &&! scrollInformation.lastDirUp){
-        console.log("Inertia Dwn");
-        for(let i = parseInt(scrollInformation.consecutiveDown); i > 0 ; i--){
-            setTimeout(function() {
-                changeViewPos(0, -1); 
-            }, i*25);        
+    }
+    if (
+        scrollInformation.downInertia > 7 &&
+        consecutiveDown == scrollInformation.consecutiveDown &&
+        !scrollInformation.lastDirUp
+    ) {
+        // console.log('Inertia Dwn');
+        for (let i = parseInt(scrollInformation.consecutiveDown); i > 0; i--) {
+            setTimeout(function () {
+                changeViewPos(0, -1);
+            }, i * 25);
         }
         scrollInformation.downInertia = 0;
     }
 }
 
 export function clickManager(e) {
-
     let mousePos = mousePosInGrid(e);
     // console.log('mousePos', mousePos);
 
