@@ -11,8 +11,8 @@
     "contactjs": "^1.4.1",
     "ethers": "^5.5.4",
     "express": "^4.17.3",
+    "lz-string": "^1.4.4",
     "pako": "^2.0.4",
-    "pixel-grid": "^1.0.2",
     "web3": "^1.7.1"
   },
   "devDependencies": {
