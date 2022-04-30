@@ -8,7 +8,6 @@ import { closeCurrentEvent, undo, redo } from './undoStack';
 
 import { moveDrawing, bufferOnMonolith, saveToEthernity, APNGtoMonolith } from '../utils/imageManager';
 import Const from './constants';
-import { parse } from '@ethersproject/transactions';
 
 //prettier-ignore
 export class Tool {
