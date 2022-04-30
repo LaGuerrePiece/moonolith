@@ -51,9 +51,9 @@ export function keyManager(e){
     if (e.key === 'r') {tool = Tool.GIGA; playSound('kick');}
     if (e.key === 'k') toggleMusic();
     if (e.key === 'l') toggleMute();
-    if (e.key === 'p') increaseMonolithHeight(1000); seisme();
+    if (e.key === 'p') {increaseMonolithHeight(1000); seisme();}
     if (e.key === 't') { changeViewPos(0, 999999); }
-    if (e.key === 's') {seisme();}
+    if (e.key === 'u') {seisme();}
 
     switch (e.code || e.key || e.keyCode) {
         case 'KeyW':
