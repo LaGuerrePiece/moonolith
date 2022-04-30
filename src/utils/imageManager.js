@@ -2,7 +2,9 @@ import { UPNG } from './upmc';
 import Klon from '../models/klon';
 import Const from '../models/constants';
 import { monolith, eraseAllPixel, drawPixel } from '../models/monolith';
-import { chunkCreator } from '../utils/web3';
+import { chunkCreator, importedChunks } from '../utils/web3';
+
+export let chunkStock = [];
 
 function saveToEthernity() {
     monolithToBase64().then((data) => {
@@ -124,6 +126,18 @@ async function bufferOnMonolith(data) {
         pixArray[pixArray.length - 2] = pixArray[pixArray.length - 1];
         pixArray[pixArray.length - 1] = 0;
     }
+
+    // Condition pour animer le chunk
+    if (data.zIndex >= 0) {
+        chunkStock[data.zIndex] = {
+            x: data.x,
+            y: data.y,
+            paid: data.paid,
+            width: rgba8.width,
+            height: rgba8.height,
+        };
+    }
+
     let pixelDrawn = 0;
     let p = 0;
     for (let y = data.y; y < data.yMaxLegal; y++) {
@@ -224,7 +238,8 @@ function getHighLow() {
 
     return { lowX, lowY, highX, highY, longueur, largeur };
 }
-function rgbaToColorArray(array){ // [r, g, b, a, r, g, b, a] => [colordId, colorId]
+function rgbaToColorArray(array) {
+    // [r, g, b, a, r, g, b, a] => [colordId, colorId]
     let converted = [];
     for (let i = 0; i < array.length; i += 4) {
         let rgb = [array[i], array[i + 1], array[i + 2]];
@@ -245,12 +260,11 @@ function addUintTo4bitArray(array, uint) {
 }
 function encode4bitsArray(array) {
     let encoded = [];
-    for(let i = 0; i < array.length; i++)
-    {
+    for (let i = 0; i < array.length; i++) {
         addUintTo4bitArray(encoded, array[i]);
     }
-    if(array.length % 2 != 0) {
-        encoded[Math.ceil(array.length/2) - 1] *= 16;
+    if (array.length % 2 != 0) {
+        encoded[Math.ceil(array.length / 2) - 1] *= 16;
     } else if (encoded[encoded.length - 1] == 256) encoded[encoded.length - 1] = 0;
     while (encoded.length % 4 != 0) {
         encoded.push(0);
@@ -260,8 +274,8 @@ function encode4bitsArray(array) {
 function decode4bitsArray(array) {
     let decoded = [];
     let arrayEnd = array.length - 1;
-    while(array[arrayEnd] == 0){
-        arrayEnd --;
+    while (array[arrayEnd] == 0) {
+        arrayEnd--;
     }
     for (let i = 0; i <= arrayEnd; i++) {
         decoded.push((array[i] - (array[i] % 16)) / 16);

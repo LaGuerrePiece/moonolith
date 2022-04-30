@@ -18,7 +18,7 @@ if (window.ethereum) {
     metamaskContract = new ethers.Contract(contractAddress, contractABI, signer);
 }
 
-let importedChunks = 1;
+export let importedChunks = 1;
 
 const chunkCreator = async (res) => {
     if (window.ethereum.chainId == '0x4') {
@@ -89,15 +89,16 @@ async function chunkImport() {
             });
         }
     }
-    importedChunks = meta.nbChunks;
 
     const monolithHeightFormula = Const.COLUMNS * 64 + (meta.nbKlon * meta.threshold) / 1000000;
     const monolithHeight = Math.floor(monolithHeightFormula / Const.COLUMNS);
     if (monolithHeight - Const.MONOLITH_LINES) {
         increaseMonolithHeight(monolithHeight - Const.MONOLITH_LINES);
-    } else {
+    } else if (importedChunks === 1) {
+        console.log('meta.nbChunks', meta.nbChunks);
         Const.setMonolithHeight(monolithHeight);
     }
+    importedChunks = meta.nbChunks;
 }
 
 export { chunkCreator, getChunk, getChunksFromPosition, chunkImport };

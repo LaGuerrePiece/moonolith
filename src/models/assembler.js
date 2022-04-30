@@ -84,7 +84,7 @@ export function assemble() {
         const thisLayer = imageCatalog[layer];
         const parallaxOffset = Math.floor(thisLayer.parallax * viewPosY);
 
-        if (thisLayer.type == 'GUI') continue;
+        if (thisLayer.type == 'GUI' || thisLayer.type == 'rune') continue;
         if (thisLayer.startY - thisLayer.height - parallaxOffset > viewPosY + renderHeight) continue; // If the layer above render, skip it
         if (Const.LINES - thisLayer.startY + parallaxOffset > Const.LINES - viewPosY) continue; // If the layer under render, skip it
 
@@ -114,7 +114,7 @@ export function assemble() {
                 if (!pixel) continue;
                 if (layer.name === 'monolith') {
                     displayArray.push(pixel.color[0], pixel.color[1], pixel.color[2], 255);
-                    if (pixel.transitionCount % 10 !== 0) pixel.transition();
+                    // if (pixel.transitionType) pixel.transition();
                 } else displayArray.push(pixel[0], pixel[1], pixel[2], 255);
                 break;
             }
@@ -122,6 +122,13 @@ export function assemble() {
             if (!displayArray[(y * renderWidth + x) * 4 + 3]) {
                 displayArray.push(...Const.SKY_COLOR, 255);
             }
+        }
+    }
+
+    for (let j = 0; j < Const.MONOLITH_LINES; j++) {
+        for (let i = 0; i < Const.MONOLITH_COLUMNS; i++) {
+            const pixel = monolith[j][i];
+            if (pixel.transitionType) pixel.transition();
         }
     }
 

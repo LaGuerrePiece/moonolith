@@ -1,11 +1,17 @@
 //prettier-ignore
-import { selectColorRed, selectColorBlue, caly0, caly1, caly2, caly3, caly4, caly5, caly6, calySide0, calySide1, slug, GUISweetie15, menu, paletteSMOL, paletteBIG, paletteHUGE } from './base64';
+import { selectColorRed, selectColorBlue, caly0, caly1, caly2, caly3, caly4, caly5, caly6, calySide0, calySide1, slug, GUISweetie15, menu, paletteSMOL, paletteBIG, paletteHUGE, runeBlueAnimSmoll, runeBlueAnimMid, runeBlueAnimHuge } from './base64';
 import { renderWidth, renderHeight } from '../main';
 import { base64ToBuffer, pngToBufferToRGBA8, ApngToBuffer } from '../utils/imageManager';
 import Const from '../models/constants';
 import { selectorUpdate } from '../models/tools';
 
 export var imageCatalog = {
+    //prettier-ignore
+    runeBlueAnimSmoll: { name: 'runeBlueAnimSmoll', type: 'rune', startX: 0, startY: 0, parallax: 0, base64: runeBlueAnimSmoll },
+    //prettier-ignore
+    runeBlueAnimMid: { name: 'runeBlueAnimMid', type: 'rune', startX: 0, startY: 0, parallax: 0, base64: runeBlueAnimMid },
+    //prettier-ignore
+    runeBlueAnimHuge: { name: 'runeBlueAnimHuge', type: 'rune', startX: 0, startY: 0, parallax: 0, base64: runeBlueAnimHuge },
     selector2: { name: 'selector2', type: 'GUI', startX: 0, startY: 0, parallax: 0, base64: selectColorRed },
     selector1: { name: 'selector1', type: 'GUI', startX: 0, startY: 0, parallax: 0, base64: selectColorBlue },
     palette: { name: 'palette', type: 'GUI', startX: 0, startY: 0, parallax: 0, base64: paletteHUGE },

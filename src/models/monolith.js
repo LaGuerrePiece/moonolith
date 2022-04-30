@@ -4,6 +4,7 @@ import { addToCurrentEvent, closeCurrentEvent } from './undoStack';
 import { renderWidth, renderHeight, viewPosX, viewPosY } from '../main';
 import { imageCatalog } from '../assets/imageData';
 import { toggleRumble, playSound } from '../assets/sounds';
+import { importedChunks } from '../utils/web3';
 
 export let monolith;
 
@@ -21,8 +22,7 @@ export function drawPixel(x, y, zIndex, color) {
     if (!currentKlon.isEditable(zIndex)) return; //If not editable, return
     if (sameKlon(currentKlon, zIndex, color)) return; //If same, return
     if (zIndex === 0 || zIndex === undefined) addToCurrentEvent(x, y, currentKlon.target, currentKlon.zIndex); //If being drawn by user, add to curent event
-    currentKlon.setTargetColor(color);
-    currentKlon.zIndex = zIndex;
+    currentKlon.setTargetColor(color, zIndex);
 
     if (zIndex === 0 && lastPlayedSound + 40 < Date.now()) {
         playSound('click5p26');

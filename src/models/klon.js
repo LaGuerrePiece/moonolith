@@ -1,4 +1,6 @@
 import Const from './constants';
+import { importedChunks } from '../utils/web3';
+import { animateRune } from '../utils/runeAnims';
 
 /**
  * Classe d'un pixel nommé "klon" de la Grille
@@ -14,6 +16,7 @@ export default class Klon {
         this.zIndex = zIndex;
         this.target = color;
         this.transitionCount = 0;
+        this.transitionType;
     }
 
     /**
@@ -43,36 +46,89 @@ export default class Klon {
     }
 
     transition() {
-        if (
-            this.target[0] === Const.DEFAULT_COLOR[0] &&
-            this.target[1] === Const.DEFAULT_COLOR[1] &&
-            this.target[2] === Const.DEFAULT_COLOR[2]
-        ) {
-            //ERASE
-            if (this.transitionCount % 10 === 1) this.color = [0, 118, 255];
+        if (this.transitionType === 'erase') {
+            // erase
+            if (this.transitionCount === 1) this.color = [0, 118, 255];
             else this.color = this.avg(this.target, this.color, 8);
-            this.transitionCount++;
-            if (this.transitionCount % 10 === 0) this.color = this.target;
-        } else {
-            //DRAW
-            if (this.transitionCount % 10 === 1) this.color = [254, 1, 255];
-            else if (this.transitionCount % 10 === 2) this.color = [255, 116, 139];
-            else if (this.transitionCount % 10 === 3) this.color = [255, 246, 10];
-            else if (this.transitionCount % 10 === 4) this.color = [158, 255, 97];
-            else if (this.transitionCount % 10 === 5) this.color = [16, 255, 239];
-            else if (this.transitionCount % 10 === 6) this.color = [108, 147, 255];
+
+            if (this.transitionCount === 10) this.endTransition();
+        } else if (this.transitionType === 'draw') {
+            // draw
+            if (this.transitionCount === 1) this.color = [254, 1, 255];
+            else if (this.transitionCount === 2) this.color = [255, 116, 139];
+            else if (this.transitionCount === 3) this.color = [255, 246, 10];
+            else if (this.transitionCount === 4) this.color = [158, 255, 97];
+            else if (this.transitionCount === 5) this.color = [16, 255, 239];
+            else if (this.transitionCount === 6) this.color = [108, 147, 255];
             else this.color = this.avg(this.target, this.color, 1);
-            this.transitionCount++;
-            if (this.transitionCount % 10 === 0) this.color = this.target;
+
+            //prettier-ignore
+            if (this.transitionCount === 10) {this.endTransition(); return}
+        } else if (this.transitionType === 'import') {
+            // import
+            const rand = Math.random() * 20;
+            if (this.transitionCount === 1) {
+                animateRune(this.zIndex);
+                this.color = Const.DEFAULT_COLOR;
+            } else if (this.transitionCount === 2) this.color = Const.DEFAULT_COLOR;
+            else if (this.transitionCount === 3) this.color = [88, 141, 190];
+            else if (this.transitionCount === 5) this.color = [132, 172, 228];
+            else if (this.transitionCount === 7) this.color = [166, 252, 219];
+            else if (this.transitionCount === 9) this.color = [88, 141, 190];
+            else if (this.transitionCount === 11) this.color = [166, 252, 219];
+            else if (this.transitionCount === 13) this.color = [132, 172, 228];
+            else if (this.transitionCount === 15) this.color = [88, 141, 190];
+            else if (this.transitionCount > 15) this.color = this.avg(this.target, this.color, 5);
+            //prettier-ignore
+            if (this.transitionCount === 22) {this.endTransition(); return}
+        } else if (this.transitionType === 'whiteOnRune') {
+            // whiteOnRune
+            if (this.transitionCount === 97) {
+                this.target = this.color;
+                this.color = [255, 255, 255];
+            } else if (this.transitionCount === 100) {
+                this.endTransition();
+                return;
+            }
+        } else if (this.transitionType === 'runeBlueAnim') {
+            //runeBlueAnim
+            if (this.transitionCount === 1) this.color = [32, 214, 199];
+            else if (this.transitionCount < 10) this.color = [32, 214, 199];
+            else this.color = this.avg(this.target, this.color, 10);
+            //prettier-ignore
+            if (this.transitionCount === 50) {this.endTransition(); return}
+        } else if (this.transitionType === 'runeContour') {
+            //runeContour
+            if (this.transitionCount === 1) this.color = [10, 10, 10];
+            else if (this.transitionCount < 10) this.color = [10, 10, 10];
+            else this.color = this.avg(this.target, this.color, 10);
+            //prettier-ignore
+            if (this.transitionCount === 50) {this.endTransition(); return}
         }
+
+        this.transitionCount++;
     }
 
-    setTargetColor(color) {
-        this.target = color;
-        if ((this.transitionCount + 1) % 10 !== 0) this.transitionCount++;
-        // console.log('set target color to ', color);
+    setTargetColor(target, zIndex) {
+        if (zIndex === 0) this.transitionType = 'draw';
+        else if (zIndex === undefined) this.transitionType = 'erase';
+        else if (zIndex >= 0) {
+            // Condition pour animer le chunk
+            this.transitionType = 'import';
+        } else if (zIndex > 0) this.color = target;
+        else console.log('autre zIndex', zIndex);
+
+        this.zIndex = zIndex;
+        this.target = target;
+
+        if (this.transitionCount + 1 !== 10) this.transitionCount++;
     }
 
+    endTransition() {
+        this.color = this.target;
+        this.transitionType = undefined;
+        this.transitionCount = 0;
+    }
     static get USERPAINTED() {
         return 0;
     }
