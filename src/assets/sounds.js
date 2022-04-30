@@ -3,6 +3,19 @@ music.loop = true;
 
 const rumble = new Audio('/src/assets/audio/rumble.mp3');
 
+export let muteState = false;
+
+export function toggleMute() {
+    if (muteState) {
+        music.play();
+        muteState = false;
+    } else {
+        music.pause();
+        rumble.pause();
+        muteState = true;
+    }
+}
+
 export function playSound(name) {
     const audio = new Audio('/src/assets/audio/' + name + '.mp3');
     audio.play();
