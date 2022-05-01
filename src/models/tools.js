@@ -49,7 +49,7 @@ export function keyManager(e){
     if (e.key === 'm') { moveDrawing(50, 400) }
     if (e.key === 'e') brushSwitch();
     if (e.key === 'i') importImage();
-    if (e.key === 'r') {tool = Tool.GIGA; playSound('kick');}
+    if (e.key === 'r') {tool = Tool.GIGA; playSound('kick'); paletteUpdate();}
     if (e.key === 'k') toggleMusic();
     if (e.key === 'l') toggleMute();
     if (e.key === 'p') {increaseMonolithHeight(1000); seisme();}
@@ -102,8 +102,13 @@ export function togglePanMode() {
     console.log('Pan mode', panMode);
 }
 export function touchManager(e) {
-    if (panMode) touchPan(e);
-    else if (!panMode) touchDraw(e);
+    if (panMode) {
+        touchPan(e);
+        imageCatalog.palette.decodedYX = imageCatalog.palettePAN.decodedYX;
+    } else if (!panMode) {
+        touchDraw(e);
+        paletteUpdate();
+    }
 
     function touchDraw(e) {
         e = {
@@ -335,26 +340,36 @@ function brushSwitch() {
     switch (tool) {
         case Tool.SMOL:
             playSound('clickB2B');
-            //console.log('BIG BRUSH');
-            imageCatalog.palette.decodedYX = imageCatalog.paletteBIG.decodedYX;
             tool = Tool.BIG;
             break;
         case Tool.BIG:
             playSound('clickB2C');
-            //console.log('HUGE BRUSH');
-            imageCatalog.palette.decodedYX = imageCatalog.paletteHUGE.decodedYX;
             tool = Tool.HUGE;
             break;
         case Tool.HUGE:
             playSound('clickB2');
-            //console.log('SMOL BRUSH');
-            imageCatalog.palette.decodedYX = imageCatalog.paletteSMOL.decodedYX;
             tool = Tool.SMOL;
             break;
         case Tool.GIGA:
-            //console.log('SMOL BRUSH');
-            imageCatalog.palette.decodedYX = imageCatalog.paletteSMOL.decodedYX;
             tool = Tool.SMOL;
+            break;
+    }
+    paletteUpdate();
+}
+
+function paletteUpdate() {
+    switch (tool) {
+        case Tool.SMOL:
+            imageCatalog.palette.decodedYX = imageCatalog.paletteSMOL.decodedYX;
+            break;
+        case Tool.BIG:
+            imageCatalog.palette.decodedYX = imageCatalog.paletteBIG.decodedYX;
+            break;
+        case Tool.HUGE:
+            imageCatalog.palette.decodedYX = imageCatalog.paletteHUGE.decodedYX;
+            break;
+        case Tool.GIGA:
+            imageCatalog.palette.decodedYX = imageCatalog.paletteGIGA.decodedYX;
             break;
     }
 }

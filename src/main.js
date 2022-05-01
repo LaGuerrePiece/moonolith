@@ -63,7 +63,7 @@ function initDisplay() {
     // Set canvas dimensions to the ratio of the screen size
     canvas.width = renderWidth;
     canvas.height = renderHeight;
-    if(deviceType != 'mobile') canvas.onmousedown = clickManager;
+    if (deviceType != 'mobile') canvas.onmousedown = clickManager;
 
     // Set canvas size to size of screen
     canvas.style.width = '100%';
@@ -93,6 +93,20 @@ function initDisplay() {
         togglePanMode();
     });
 
+    document.addEventListener(
+        'touchmove',
+        (e) => {
+            e.preventDefault();
+            touchManager(e);
+        },
+        { passive: false }
+    );
+    document.addEventListener('touchend', (e) => {
+        touchManager(e);
+    });
+    document.addEventListener('touchstart', (e) => {
+        touchManager(e);
+    });
 }
 
 function initApiDisplay(id) {
@@ -136,21 +150,6 @@ document.addEventListener('contextmenu', (e) => { e.preventDefault(); }, false);
 document.addEventListener('keydown', (e) => { keyManager(e) });
 //prettier-ignore
 window.onwheel = function (e) { scrollManager(e) };
-
-document.addEventListener(
-    'touchmove',
-    (e) => {
-        e.preventDefault();
-        touchManager(e);
-    },
-    { passive: false }
-);
-document.addEventListener('touchend', (e) => {
-    touchManager(e);
-});
-document.addEventListener('touchstart', (e) => {
-    touchManager(e);
-});
 
 export function changeViewPos(inputX, inputY) {
     viewPosX += inputX;
