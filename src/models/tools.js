@@ -1,5 +1,5 @@
 //prettier-ignore
-import { windowHeight, windowWidth, renderWidth, renderHeight, changeViewPos, viewPosX, viewPosY, zoom, canvas} from '../main';
+import { windowHeight, windowWidth, renderWidth, renderHeight, changeViewPos, viewPosX, viewPosY, toggleZoom, canvas} from '../main';
 import { imageCatalog } from '../assets/imageData';
 import { toggleMusic, playSound, toggleMute } from '../assets/sounds';
 import { drawPixel, getColor, eraseAllPixel, convertToMonolithPos, increaseMonolithHeight } from './monolith';
@@ -10,8 +10,7 @@ import { moveDrawing, bufferOnMonolith, saveToEthernity, APNGtoMonolith } from '
 import Const from './constants';
 
 //prettier-ignore
-export class Tool {
-    
+export class Tool {   
     static get DONE() { return 0 }
     static get SMOL() { return 1 }
     static get BIG() { return 3 }
@@ -50,9 +49,9 @@ export function keyManager(e){
     if (e.key === 'r') {tool = Tool.GIGA; playSound('kick');}
     if (e.key === 'k') toggleMusic();
     if (e.key === 'l') toggleMute();
-    if (e.key === 'p') increaseMonolithHeight(1000); seisme();
+    if (e.key === 'p') {increaseMonolithHeight(1000); seisme();}
     if (e.key === 't') { changeViewPos(0, 999999); }
-    if (e.key === 's') {seisme();}
+    if (e.key === 'u') {seisme();}
 
     switch (e.code || e.key || e.keyCode) {
         case 'KeyW':
@@ -85,7 +84,7 @@ export function keyManager(e){
         break;
 
         case 'KeyZ':
-        zoom();
+        toggleZoom();
         playSound('click6');
         break;
       }
@@ -99,13 +98,13 @@ export function touchManager(e) {
         const touch = e.touches[0];
         // console.log('touch', touch);
         let deltaY = e.changedTouches[0].clientY - e.touches[0].clientY;
-        console.log('deltaY', deltaY);
+        // console.log('deltaY', deltaY);
         const changedY = touch.clientY - prevScrollPos;
-        console.log('changedY', touch.clientY, '-', prevScrollPos, '=', changedY);
+        // console.log('changedY', touch.clientY, '-', prevScrollPos, '=', changedY);
         changeViewPos(0, Math.floor(changedY));
-        prevScrollPos = e.changedTouches[0].clientY;
+        prevScrollPos = Math.floor(e.changedTouches[0].clientY);
     } else if (e.type === 'touchend') {
-        console.log('touchManager end', prevScrollPos);
+        // console.log('touchManager end', prevScrollPos);
         prevScrollPos = null;
     }
 }
@@ -245,8 +244,6 @@ export function clickManager(e) {
     } else if (convertToMonolithPos(mousePos)) {
         // clicked on monolith
         startUsingTool(e, mousePos);
-    } else {
-        // clicked on landscape
     }
 }
 

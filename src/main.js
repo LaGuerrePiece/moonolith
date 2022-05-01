@@ -8,7 +8,7 @@ import { chunkImport, getChunk } from './utils/web3';
 import { assemble } from './models/assembler';
 import { buildMonolith } from './models/monolith';
 import { base64ToBuffer, prepareBufferForApi } from './utils/imageManager';
-import { PointerListener } from 'contactjs';
+import { hammer } from 'hammerjs';
 
 export let canvas;
 export let viewPosY = 0;
@@ -61,26 +61,13 @@ function initDisplay() {
     const providedY = parseInt(window.location.href.split('=')[1]);
     if (providedY) changeViewPos(0, providedY);
 
-    var pointerListener = new PointerListener(canvas);
-
-    document.addEventListener('tap', function (event) {
-        // do something on tap
-        console.log('tap');
-    });
-
-    document.addEventListener('pinch', function (event) {
-        // console.log('event', event, Math.floor(event.detail.global.distance), event.detail.global.scale);
-        if (event.detail.contact.multipointer.globalParameters.distanceChange > 100) zoom('in');
-        else if (event.detail.contact.multipointer.globalParameters.distanceChange < -100) zoom('out');
-        console.log('event', event.detail.contact.multipointer.globalParameters.distanceChange);
-    });
-
-    document.addEventListener('pan', function (event) {
-        let pointerId = event.detail.contact.primaryPointerId;
-        let deltaX = event.detail.contact.pointerInputs[pointerId].globalParameters.deltaX;
-        let deltaY = event.detail.contact.pointerInputs[pointerId].globalParameters.deltaY;
-        console.log('PAN', Math.floor(deltaX / 30), Math.floor(deltaY / 30));
-        changeViewPos(Math.floor(deltaX / -30), Math.floor(deltaY / 30));
+    var hammertime = new Hammer(canvas);
+    hammertime.get('pinch').set({ enable: true });
+    hammertime.on('pinch', function (ev) {
+        // console.log('HAMMER', ev.scale);
+        if (ev.scale > 2 && !zoomState) zoomIn();
+        else if (ev.scale < 0.5 && zoomState) zoomOut();
+        // changeViewPos(ev.deltaX, ev.deltaY);
     });
 }
 
@@ -130,16 +117,16 @@ document.addEventListener(
     'touchmove',
     (e) => {
         e.preventDefault();
-        // touchManager(e);
+        touchManager(e);
     },
     { passive: false }
 );
-// document.addEventListener('touchend', (e) => {
-//     touchManager(e);
-// });
-// document.addEventListener('touchstart', (e) => {
-//     touchManager(e);
-// });
+document.addEventListener('touchend', (e) => {
+    touchManager(e);
+});
+document.addEventListener('touchstart', (e) => {
+    touchManager(e);
+});
 
 export function changeViewPos(inputX, inputY) {
     viewPosX += inputX;
@@ -150,25 +137,32 @@ export function changeViewPos(inputX, inputY) {
     if (viewPosX + renderWidth > Const.COLUMNS) viewPosX = Const.COLUMNS - renderWidth;
 }
 
-let toggleZoom = false;
-export function zoom(touch) {
-    let zoomFactor = 2.5;
-    if (renderWidth === Const.COLUMNS || (touch === 'in' && toggleZoom === false)) {
-        renderWidth = Math.floor(renderWidth / zoomFactor);
-        renderHeight = Math.floor((windowHeight / pixelSize + 1) / zoomFactor);
-        console.log(`Zoomed x${zoomFactor} | renderWidth`, renderWidth, 'renderHeight', renderHeight);
-        viewPosX = Math.floor(renderWidth / 2);
-        viewPosY = Math.floor(viewPosY + renderHeight / 2);
-        selectorUpdate();
-        toggleZoom = true;
-    } else if (renderWidth !== Const.COLUMNS || (touch === 'out' && toggleZoom === true)) {
-        console.log('unzoomed');
-        renderWidth = Const.COLUMNS;
-        renderHeight = Math.ceil((windowHeight * renderWidth) / windowWidth);
-        changeViewPos(0, -Math.floor(renderHeight / 4));
-        selectorUpdate();
-        toggleZoom = false;
+let zoomState = false;
+let zoomFactor = 2.5;
+export function toggleZoom() {
+    if (renderWidth === Const.COLUMNS) {
+        zoomIn();
+    } else if (renderWidth !== Const.COLUMNS) {
+        zoomOut();
     }
+}
+function zoomIn() {
+    renderWidth = Math.floor(renderWidth / zoomFactor);
+    renderHeight = Math.floor((windowHeight / pixelSize + 1) / zoomFactor);
+    viewPosX = Math.floor(renderWidth / 2);
+    viewPosY = Math.floor(viewPosY + renderHeight / 2);
+    zoomState = true;
+    refreshCanvas();
+}
+function zoomOut() {
+    renderWidth = Const.COLUMNS;
+    renderHeight = Math.ceil((windowHeight * renderWidth) / windowWidth);
+    changeViewPos(0, -Math.floor(renderHeight / 4));
+    zoomState = false;
+    refreshCanvas();
+}
+function refreshCanvas() {
+    selectorUpdate();
     myImageData = ctx.createImageData(renderWidth, renderHeight);
     canvas.width = renderWidth;
     canvas.height = renderHeight;
