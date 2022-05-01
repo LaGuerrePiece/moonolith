@@ -22,7 +22,7 @@ export class Tool {
     static get MOVE() { return 7 }
 }
 
-export let tool = Tool.HUGE;
+export let tool = Tool.GIGA;
 let colorPicked1 = Const.RGB2;
 let colorPicked2 = Const.DEFAULT_COLOR;
 let button;
@@ -144,7 +144,7 @@ export function scrollManager(e) {
             inertia(scrollInformation.consecutiveUp, scrollInformation.consecutiveDown);
         }, 10)
     );
-    if (viewPosY == 0 || viewPosY == renderHeight) {
+    if (viewPosY == -30 || viewPosY == Const.LINES - renderHeight) {
         clearInertia();
     }
 }
@@ -159,12 +159,15 @@ function inertia(consecutiveUp, consecutiveDown) {
     if (
         scrollInformation.upInertia > 6 &&
         consecutiveUp === scrollInformation.consecutiveUp &&
-        scrollInformation.lastDirUp
+        scrollInformation.lastDirUp &&
+        scrollInformation.upInertia != scrollInformation.consecutiveUp
     ) {
-        //console.log('Inertia Up');
         for (let i = parseInt(scrollInformation.consecutiveUp); i > 0; i--) {
             setTimeout(function () {
-                changeViewPos(0, 1);
+                if (scrollInformation.lastDirUp) {
+                    //console.log('Into intertia:', i);
+                    changeViewPos(0, 1);
+                }
             }, i * 25);
         }
         scrollInformation.upInertia = 0;
@@ -174,10 +177,12 @@ function inertia(consecutiveUp, consecutiveDown) {
         consecutiveDown == scrollInformation.consecutiveDown &&
         !scrollInformation.lastDirUp
     ) {
-        // console.log('Inertia Dwn');
         for (let i = parseInt(scrollInformation.consecutiveDown); i > 0; i--) {
             setTimeout(function () {
-                changeViewPos(0, -1);
+                if (!scrollInformation.lastDirUp) {
+                    //console.log('Into intertia:', i);
+                    changeViewPos(0, -1);
+                }
             }, i * 25);
         }
         scrollInformation.downInertia = 0;

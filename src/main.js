@@ -74,14 +74,14 @@ function initDisplay() {
         else if (event.detail.contact.multipointer.globalParameters.distanceChange < -100) zoom('out');
         console.log('event', event.detail.contact.multipointer.globalParameters.distanceChange);
     });
-
+    /*
     document.addEventListener('pan', function (event) {
         let pointerId = event.detail.contact.primaryPointerId;
         let deltaX = event.detail.contact.pointerInputs[pointerId].globalParameters.deltaX;
         let deltaY = event.detail.contact.pointerInputs[pointerId].globalParameters.deltaY;
         console.log('PAN', Math.floor(deltaX / 30), Math.floor(deltaY / 30));
         changeViewPos(Math.floor(deltaX / -30), Math.floor(deltaY / 30));
-    });
+    });*/
 }
 
 function initApiDisplay(id) {
