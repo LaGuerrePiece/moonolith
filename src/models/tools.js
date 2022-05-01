@@ -24,6 +24,9 @@ export class Tool {
 export let tool = Tool.HUGE;
 let colorPicked1 = Const.RGB2;
 let colorPicked2 = Const.DEFAULT_COLOR;
+export let colorNumber1 = 2;
+export let colorNumber2 = 16;
+
 let button;
 
 let scrollInformation = {
@@ -90,22 +93,27 @@ export function keyManager(e){
       }
 }
 
-var prevScrollPos = null;
+var prevTouchY = null;
+var prevTouchX = null;
 export function touchManager(e) {
     if (e.type === 'touchstart') {
-        prevScrollPos = e.touches[0].clientY;
+        prevTouchY = e.touches[0].clientY;
+        prevTouchX = e.touches[0].clientX;
     } else if (e.type === 'touchmove') {
         const touch = e.touches[0];
         // console.log('touch', touch);
         let deltaY = e.changedTouches[0].clientY - e.touches[0].clientY;
         // console.log('deltaY', deltaY);
-        const changedY = touch.clientY - prevScrollPos;
-        // console.log('changedY', touch.clientY, '-', prevScrollPos, '=', changedY);
-        changeViewPos(0, Math.floor(changedY));
-        prevScrollPos = Math.floor(e.changedTouches[0].clientY);
+        const changedY = touch.clientY - prevTouchY;
+        const changedX = touch.clientX - prevTouchX;
+        // console.log('changedY', touch.clientY, '-', prevTouchY, '=', changedY);
+        changeViewPos(-Math.floor(changedX /2), Math.floor(changedY/2));
+        prevTouchY = Math.floor(e.changedTouches[0].clientY);
+        prevTouchX = Math.floor(e.changedTouches[0].clientX);
     } else if (e.type === 'touchend') {
-        // console.log('touchManager end', prevScrollPos);
-        prevScrollPos = null;
+        // console.log('touchManager end', prevTouchY);
+        prevTouchY = null;
+        prevTouchX = null;
     }
 }
 
@@ -386,8 +394,6 @@ function importImage() {
     input.click();
 }
 
-export let colorNumber1 = 2;
-export let colorNumber2 = 16;
 function colorSwitch(e, color) {
     if (e.button == 0) {
         if (color === colorNumber2) {
