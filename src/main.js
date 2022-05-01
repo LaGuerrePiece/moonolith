@@ -23,6 +23,9 @@ export let viewPosY = 0;
 export let viewPosX = 0;
 let myImageData;
 let ctx;
+export let route;
+export let runeNumber;
+export let OS;
 
 export const windowHeight = window.innerHeight;
 export const windowWidth = window.innerWidth;
@@ -41,17 +44,29 @@ export const deviceType = /(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.tes
 let InitialImports = 18;
 
 async function initApp() {
-    let runeNumber = parseInt(document.URL.split('?rune=')[1]);
-    if (runeNumber) initApiDisplay(runeNumber);
-    else {
-        await chunkImport();
-        initialDecodeLandscape(InitialImports);
-        buildMonolith();
-        initialDecodeAnim(InitialImports);
-        initDisplay();
-        if (deviceType == 'mobile') mobileEventListener();
-        lateDecodeLandscape(InitialImports);
+    runeNumber = parseInt(document.URL.split('rune=')[1]);
+    OS = document.URL.split('OS=')[1];
+    // Router
+    if (runeNumber && OS === 'false') {
+        route = 'Simple API';
+        initApiDisplay(runeNumber);
+        return;
+    } else if (runeNumber && OS === 'true') {
+        route = 'Opensea API';
+    } else if (runeNumber) {
+        route = 'Share specific rune';
+    } else {
+        route = 'normal';
     }
+    await chunkImport();
+    initialDecodeLandscape(InitialImports);
+    buildMonolith();
+    await setInitialViewPosY();
+    initialDecodeAnim(InitialImports);
+    initDisplay();
+    if (deviceType == 'mobile') mobileEventListener();
+    lateDecodeLandscape(InitialImports);
+    console.log('route', route);
 }
 
 initApp();
@@ -198,3 +213,31 @@ export let pointer = { x: 0, y: 0 };
 document.addEventListener('mousemove', (e) => {
     pointer = mousePosInGrid({ x: e.x, y: e.y });
 });
+
+async function setInitialViewPosY() {
+    // If runeNumber given, change viewPos to it
+    if (runeNumber && OS !== 'false') {
+        console.log('runeNumber', runeNumber, typeof runeNumber);
+        await getChunk(runeNumber)
+            .then((res) => {
+                prepareBufferForApi(res[4]).then((data) => {
+                    const viewY = Math.floor(
+                        Const.MARGIN_BOTTOM +
+                            Const.MONOLITH_LINES -
+                            res[0].toNumber() / Const.MONOLITH_COLUMNS -
+                            data[2] / 2 -
+                            renderHeight / 2
+                    );
+                    changeViewPos(0, viewY);
+                    console.log('changed viewPos to :', viewY);
+                });
+            })
+            .catch((err) => {
+                console.log('error : rune not found');
+            });
+        // Else, look for a Y in the url
+    } else if (route === 'normal') {
+        const providedY = parseInt(document.URL.split('y=')[1]);
+        if (providedY) changeViewPos(0, providedY);
+    }
+}
