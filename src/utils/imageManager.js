@@ -4,7 +4,6 @@ import Const from '../models/constants';
 import { monolith, eraseAllPixel, drawPixel } from '../models/monolith';
 import { chunkCreator } from '../utils/web3';
 import LZString from 'lz-String';
-import { Buffer } from 'buffer';
 
 function saveToEthernity() {
     monolithToBase64().then((data) => {
