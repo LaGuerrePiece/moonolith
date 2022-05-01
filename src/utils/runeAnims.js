@@ -2,7 +2,6 @@ import { chunkStock } from './imageManager';
 import Const from '../models/constants';
 import { monolith } from '../models/monolith';
 import { imageCatalog } from '../assets/imageData';
-import { viewPosY, renderHeight } from '../main';
 
 export let animatedPixels = {};
 export let counter = 0;
@@ -14,10 +13,8 @@ export function transition() {
             // erase
             if (counter === 1) monolith[y][x].color = [0, 118, 255];
             else monolith[y][x].color = avg(monolith[y][x].target, monolith[y][x].color, 8);
-            if (counter === 10) {
-                endTransition(x, y, i);
-                continue;
-            }
+            //prettier-ignore
+            if (counter === 10) {endTransition(x, y, i);continue;}
         } else if (transitionType === 'draw') {
             // draw
             if (counter === 1) monolith[y][x].color = [254, 1, 255];
@@ -28,20 +25,49 @@ export function transition() {
             else if (counter === 6) monolith[y][x].color = [108, 147, 255];
             else monolith[y][x].color = avg(monolith[y][x].target, monolith[y][x].color, 1);
 
-            if (counter === 10) {
-                endTransition(x, y, i);
-                continue;
-            }
+            //prettier-ignore
+            if (counter === 10) {endTransition(x, y, i);continue;}
+        } else if (transitionType === 'import') {
+            // import
+            if (counter === 1) monolith[y][x].color = Const.DEFAULT_COLOR;
+            else if (counter === 2) monolith[y][x].color = Const.DEFAULT_COLOR;
+            else if (counter === 3) monolith[y][x].color = [88, 141, 190];
+            else if (counter === 5) monolith[y][x].color = [132, 172, 228];
+            else if (counter === 7) monolith[y][x].color = [166, 252, 219];
+            else if (counter === 9) monolith[y][x].color = [88, 141, 190];
+            else if (counter === 11) monolith[y][x].color = [166, 252, 219];
+            else if (counter === 13) monolith[y][x].color = [132, 172, 228];
+            else if (counter === 15) monolith[y][x].color = [88, 141, 190];
+            else if (counter > 15) monolith[y][x].color = avg(monolith[y][x].target, monolith[y][x].color, 5);
+            //prettier-ignore
+            if (counter === 22) {endTransition(x, y, i);continue;}
+        } else if (transitionType === 'whiteOnRune') {
+            // whiteOnRune
+            if (counter === 97) monolith[y][x].color = [255, 255, 255];
+            //prettier-ignore
+            if (counter === 100) {endTransition(x, y, i);continue;}
+        } else if (transitionType === 'runeBlueAnim') {
+            //runeBlueAnim
+            if (counter === 1) monolith[y][x].color = [32, 214, 199];
+            else if (counter < 10) monolith[y][x].color = [32, 214, 199];
+            else monolith[y][x].color = avg(monolith[y][x].target, monolith[y][x].color, 10);
+            //prettier-ignore
+            if (counter === 50) {endTransition(x, y, i);continue;}
+        } else if (transitionType === 'runeContour') {
+            //runeContour
+            if (counter === 1) monolith[y][x].color = [10, 10, 10];
+            else if (counter < 10) monolith[y][x].color = [10, 10, 10];
+            else monolith[y][x].color = avg(monolith[y][x].target, monolith[y][x].color, 10);
+            //prettier-ignore
+            if (counter === 50) {endTransition(x, y, i);continue;}
         }
         animatedPixels[i][3] = counter + 1;
     }
-    // console.log('animatedPixels', animatedPixels);
 }
 
 function endTransition(x, y, i) {
     monolith[y][x].color = monolith[y][x].target;
     delete animatedPixels[i];
-    // animatedPixels[y * Const.MONOLITH_COLUMNS + x] = undefined;
 }
 
 function avg(color1, color2, weightOf2 = 1) {
@@ -52,36 +78,35 @@ function avg(color1, color2, weightOf2 = 1) {
     ];
 }
 
-//Trigger it only once
+//Triggered only once per rune
 let alreadyRuned = {};
 export function animateRune(id) {
     if (alreadyRuned[id]) return;
+    console.log('animateRune', id);
     const rune = chunkStock[id];
-    const startY = Const.MARGIN_BOTTOM + Const.MONOLITH_LINES - viewPosY - renderHeight;
-    console.log('startY', startY);
     // console.log('rune to animate :', rune);
     // Let's animate the rune !
 
     setTimeout(() => {
         const limit = rune.width + Math.max(rune.width, rune.height);
-        // console.log('limit', limit);
         for (let j = 0; j < rune.height; j++) {
             for (let i = 0; i < rune.width; i++) {
-                if (rune.y + j < startY || rune.y + j > startY + renderHeight) continue;
-                const klon = monolith[rune.y + j][rune.x + i];
+                const y = j + rune.y;
+                const x = i + rune.x;
+                const klon = monolith[y][x];
                 if (!klon) continue;
                 if (!klon.zIndex) continue;
-                klon.transitionType = 'whiteOnRune';
-                if (j + i < limit / 5) klon.transitionCount = 90;
-                else if (j + i < limit / 4) klon.transitionCount = 88;
-                else if (j + i < limit / 3) klon.transitionCount = 86;
-                else if (j + i < limit / 2) klon.transitionCount = 84;
-                else if (j + i < limit / 1.5) klon.transitionCount = 82;
-                else if (j + i < limit / 1) klon.transitionCount = 80;
+                if (j + i < limit / 5) animatedPixels[y * Const.MONOLITH_COLUMNS + x] = [x, y, 'whiteOnRune', 90];
+                else if (j + i < limit / 4) animatedPixels[y * Const.MONOLITH_COLUMNS + x] = [x, y, 'whiteOnRune', 88];
+                else if (j + i < limit / 3) animatedPixels[y * Const.MONOLITH_COLUMNS + x] = [x, y, 'whiteOnRune', 86];
+                else if (j + i < limit / 2) animatedPixels[y * Const.MONOLITH_COLUMNS + x] = [x, y, 'whiteOnRune', 84];
+                else if (j + i < limit / 1.5)
+                    animatedPixels[y * Const.MONOLITH_COLUMNS + x] = [x, y, 'whiteOnRune', 82];
+                else if (j + i < limit / 1) animatedPixels[y * Const.MONOLITH_COLUMNS + x] = [x, y, 'whiteOnRune', 80];
             }
         }
+        // console.log('animatedPixels', animatedPixels);
     }, 1600);
-    // console.log('imageCatalog', imageCatalog.runeBlueAnimMid, imageCatalog.runeBlueAnimMid.decodedYX);
 
     // runeBlueAnim
     if (rune.width <= 120 && rune.height <= 120) {
@@ -97,12 +122,15 @@ export function animateRune(id) {
         for (let j = 0; j < runeBlueAnim.height; j++) {
             for (let i = 0; i < runeBlueAnim.width; i++) {
                 if (runeBlueAnim.decodedYX[j][i]) {
-                    if (animStartY + j < startY || animStartY + j > startY + renderHeight) continue;
                     const klon = monolith[animStartY + j]?.[animStartX + i];
                     if (!klon) continue;
                     if (klon.zIndex) continue;
-                    klon.transitionType = 'runeBlueAnim';
-                    klon.transitionCount = 1;
+                    animatedPixels[(animStartY + j) * Const.MONOLITH_COLUMNS + animStartX + i] = [
+                        animStartX + i,
+                        animStartY + j,
+                        'runeBlueAnim',
+                        1,
+                    ];
                 }
             }
         }
@@ -112,7 +140,6 @@ export function animateRune(id) {
     for (let j = 0; j < rune.height; j++) {
         for (let i = 0; i < rune.width; i++) {
             const klon = monolith[rune.y + j]?.[rune.x + i];
-            if (rune.y + j < startY || rune.y + j > startY + renderHeight) continue;
             if (!klon) continue;
             if (!klon.zIndex) continue;
             for (let y = -1; y <= 1; y++) {
@@ -121,20 +148,16 @@ export function animateRune(id) {
                     const klonContour = monolith[rune.y + j + y]?.[rune.x + i + x];
                     if (!klonContour) continue;
                     if (klonContour.zIndex) continue;
-                    klonContour.transitionType = 'runeContour';
-                    klonContour.transitionCount = 1;
+                    animatedPixels[(rune.y + j + y) * Const.MONOLITH_COLUMNS + rune.x + i + x] = [
+                        rune.x + i + x,
+                        rune.y + j + y,
+                        'runeContour',
+                        1,
+                    ];
                 }
             }
         }
     }
 
-    // // Contour
-    // for (let i = -2; i <= 2; i++) {
-    //     for (let j = -2; j <= 2; j++) {
-    //         const klon = monolith[y + i]?.[x + j];
-    //         if (klon && klon.zIndex === undefined && klon.transitionType !== 'import')
-    //             klon.setTargetColor(klon.target, -1);
-    //     }
-    // }
     alreadyRuned[id] = true;
 }

@@ -1,9 +1,3 @@
-import Const from './constants';
-import { importedChunks } from '../utils/web3';
-import { runeNumber } from '../main';
-import { animateRune } from '../utils/runeAnims';
-import { clock } from './assembler';
-
 /**
  * Classe d'un pixel nommé "klon" de la Grille
  */
@@ -37,52 +31,6 @@ export default class Klon {
         if (this.zIndex == Klon.USERPAINTED || this.zIndex == undefined) return true;
         if (zIndex == Klon.USERPAINTED) return this.zIndex <= zIndex;
         return this.zIndex >= zIndex;
-    }
-
-    transition() {
-        if (this.transitionType === 'import') {
-            // import
-            const rand = Math.random() * 20;
-            if (this.transitionCount === 1) {
-                animateRune(this.zIndex);
-                this.color = Const.DEFAULT_COLOR;
-            } else if (this.transitionCount === 2) this.color = Const.DEFAULT_COLOR;
-            else if (this.transitionCount === 3) this.color = [88, 141, 190];
-            else if (this.transitionCount === 5) this.color = [132, 172, 228];
-            else if (this.transitionCount === 7) this.color = [166, 252, 219];
-            else if (this.transitionCount === 9) this.color = [88, 141, 190];
-            else if (this.transitionCount === 11) this.color = [166, 252, 219];
-            else if (this.transitionCount === 13) this.color = [132, 172, 228];
-            else if (this.transitionCount === 15) this.color = [88, 141, 190];
-            else if (this.transitionCount > 15) this.color = this.avg(this.target, this.color, 5);
-            //prettier-ignore
-            if (this.transitionCount === 22) {this.endTransition(); return}
-        } else if (this.transitionType === 'whiteOnRune') {
-            // whiteOnRune
-            if (this.transitionCount === 97) {
-                this.target = this.color;
-                this.color = [255, 255, 255];
-            } else if (this.transitionCount === 100) {
-                this.endTransition();
-                return;
-            }
-        } else if (this.transitionType === 'runeBlueAnim') {
-            //runeBlueAnim
-            if (this.transitionCount === 1) this.color = [32, 214, 199];
-            else if (this.transitionCount < 10) this.color = [32, 214, 199];
-            else this.color = this.avg(this.target, this.color, 10);
-            //prettier-ignore
-            if (this.transitionCount === 50) {this.endTransition(); return}
-        } else if (this.transitionType === 'runeContour') {
-            //runeContour
-            if (this.transitionCount === 1) this.color = [10, 10, 10];
-            else if (this.transitionCount < 10) this.color = [10, 10, 10];
-            else this.color = this.avg(this.target, this.color, 10);
-            //prettier-ignore
-            if (this.transitionCount === 50) {this.endTransition(); return}
-        }
-
-        this.transitionCount++;
     }
 
     setTargetColor(target, zIndex) {

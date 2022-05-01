@@ -28,11 +28,6 @@ export function drawPixel(x, y, zIndex, color) {
     let transitionType;
     if (zIndex === 0) transitionType = 'draw';
     else if (zIndex === undefined) transitionType = 'erase';
-    // else if ((zIndex === importedChunks && !runeNumber) || zIndex === runeNumber) {
-    //     // Si le chunk est le dernier à être arrivé ou si son numéro est spécifié dans l'URL
-    //     // Seulement pour les pixels dans la renderView
-    //     transitionType = 'import';
-    // }
     else if (zIndex > 0) currentKlon.color = color;
     else console.log('autre zIndex', zIndex);
 

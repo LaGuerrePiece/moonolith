@@ -3,9 +3,10 @@ import Klon from '../models/klon';
 import Const from '../models/constants';
 import { monolith, eraseAllPixel, drawPixel } from '../models/monolith';
 import { chunkCreator, importedChunks } from '../utils/web3';
-import { runeNumber, changeViewPos, renderHeight } from '../main';
+import { runeNumber } from '../main';
 
 export let chunkStock = [];
+export let chunksToAnimateInfo = [];
 
 function saveToEthernity() {
     monolithToBase64().then((data) => {
@@ -136,14 +137,10 @@ async function bufferOnMonolith(data) {
         width: rgba8.width,
         height: rgba8.height,
     };
-
-    // // Si le runeNumber donné en url est celui-ci, mettre la viewPos à cet endroit
-    // if (runeNumber === data.zIndex) {
-    //     // console.log('renderHeight', renderHeight);
-    //     const viewY = Const.MARGIN_BOTTOM + Const.MONOLITH_LINES - data.y - rgba8.height / 2 - renderHeight / 2;
-    //     changeViewPos(0, viewY);
-    //     console.log('changed viewPos to :', viewY);
-    // }
+    // Si le chunk est digne d'être animé, l'envoie dans chunkToAnimateInfo
+    if ((data.zIndex <= importedChunks && !runeNumber) || data.zIndex === runeNumber) {
+        chunksToAnimateInfo.push([data.zIndex, data.y + rgba8.height / 2]);
+    }
 
     let pixelDrawn = 0;
     let p = 0;

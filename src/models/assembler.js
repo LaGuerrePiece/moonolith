@@ -3,7 +3,8 @@ import { imageCatalog, animationCatalog } from '../assets/imageData';
 import Const from './constants';
 import { renderHeight, renderWidth, viewPosX, viewPosY, pointer } from '../main';
 import { tool, Tool } from './tools';
-import { transition } from '../utils/runeAnims';
+import { transition, animateRune } from '../utils/runeAnims';
+import { chunksToAnimateInfo } from '../utils/imageManager';
 
 // var previousViewPosY;
 // var previousViewPosX;
@@ -126,6 +127,12 @@ export function assemble() {
         }
     }
     transition();
+
+    // if (activateOnce % 60 === 0) console.log('animatedPixels', animatedPixels);
+    chunksToAnimateInfo.forEach(([zIndex, y]) => {
+        const startY = Const.MONOLITH_LINES + Const.MARGIN_BOTTOM - viewPosY - renderHeight;
+        if (y > startY && y < startY + renderHeight) animateRune(zIndex);
+    });
 
     // if (activateOnce === 0) console.log('displayArray', displayArray);
     // previousLandscape = displayArray;
