@@ -86,7 +86,7 @@ function initDisplay() {
     });
 
     hammertime.on('tap', function (e) {
-        // console.log('tap');
+        touchManager(e);
     });
 
     hammertime.on('doubletap', function (e) {

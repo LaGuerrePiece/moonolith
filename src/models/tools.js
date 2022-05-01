@@ -102,7 +102,15 @@ export function togglePanMode() {
     console.log('Pan mode', panMode);
 }
 export function touchManager(e) {
-    if (panMode) {
+    if (e.type == 'tap') {
+        e = {
+            x: Math.floor(e.center.x),
+            y: Math.floor(e.center.y),
+            type: 'touch',
+            button: 0,
+        };
+        clickManager(e);
+    } else if (panMode) {
         touchPan(e);
         imageCatalog.palette.decodedYX = imageCatalog.palettePAN.decodedYX;
     } else if (!panMode) {
@@ -229,7 +237,6 @@ function seisme() {
 
 export function clickManager(e) {
     let mousePos = mousePosInGrid(e);
-    // console.log('mousePos', mousePos);
 
     const GUIstartY = Math.floor((renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y);
     const GUIstartX = Math.floor((renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X);
@@ -375,7 +382,6 @@ function paletteUpdate() {
 }
 
 export function mousePosInGrid(e) {
-    // console.log('mousePosInGrid', e);
     let x = Math.floor((e.x / windowWidth) * renderWidth);
     let y = Math.floor((e.y / windowHeight) * renderHeight);
     return { x: x, y: y };
