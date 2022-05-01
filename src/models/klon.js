@@ -1,6 +1,8 @@
 import Const from './constants';
 import { importedChunks } from '../utils/web3';
+import { runeNumber } from '../main';
 import { animateRune } from '../utils/runeAnims';
+import { clock } from './assembler';
 
 /**
  * Classe d'un pixel nommé "klon" de la Grille
@@ -37,34 +39,8 @@ export default class Klon {
         return this.zIndex >= zIndex;
     }
 
-    avg(color1, color2, weightOf2 = 1) {
-        return [
-            (color1[0] + color2[0] * weightOf2) / (1 + weightOf2),
-            (color1[1] + color2[1] * weightOf2) / (1 + weightOf2),
-            (color1[2] + color2[2] * weightOf2) / (1 + weightOf2),
-        ];
-    }
-
     transition() {
-        if (this.transitionType === 'erase') {
-            // erase
-            if (this.transitionCount === 1) this.color = [0, 118, 255];
-            else this.color = this.avg(this.target, this.color, 8);
-
-            if (this.transitionCount === 10) this.endTransition();
-        } else if (this.transitionType === 'draw') {
-            // draw
-            if (this.transitionCount === 1) this.color = [254, 1, 255];
-            else if (this.transitionCount === 2) this.color = [255, 116, 139];
-            else if (this.transitionCount === 3) this.color = [255, 246, 10];
-            else if (this.transitionCount === 4) this.color = [158, 255, 97];
-            else if (this.transitionCount === 5) this.color = [16, 255, 239];
-            else if (this.transitionCount === 6) this.color = [108, 147, 255];
-            else this.color = this.avg(this.target, this.color, 1);
-
-            //prettier-ignore
-            if (this.transitionCount === 10) {this.endTransition(); return}
-        } else if (this.transitionType === 'import') {
+        if (this.transitionType === 'import') {
             // import
             const rand = Math.random() * 20;
             if (this.transitionCount === 1) {
@@ -110,25 +86,10 @@ export default class Klon {
     }
 
     setTargetColor(target, zIndex) {
-        if (zIndex === 0) this.transitionType = 'draw';
-        else if (zIndex === undefined) this.transitionType = 'erase';
-        else if (zIndex >= 0) {
-            // Condition pour animer le chunk
-            this.transitionType = 'import';
-        } else if (zIndex > 0) this.color = target;
-        else console.log('autre zIndex', zIndex);
-
         this.zIndex = zIndex;
         this.target = target;
-
-        if (this.transitionCount + 1 !== 10) this.transitionCount++;
     }
 
-    endTransition() {
-        this.color = this.target;
-        this.transitionType = undefined;
-        this.transitionCount = 0;
-    }
     static get USERPAINTED() {
         return 0;
     }

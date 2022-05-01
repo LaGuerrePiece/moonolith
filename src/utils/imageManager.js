@@ -3,6 +3,7 @@ import Klon from '../models/klon';
 import Const from '../models/constants';
 import { monolith, eraseAllPixel, drawPixel } from '../models/monolith';
 import { chunkCreator, importedChunks } from '../utils/web3';
+import { runeNumber, changeViewPos, renderHeight } from '../main';
 
 export let chunkStock = [];
 
@@ -127,16 +128,22 @@ async function bufferOnMonolith(data) {
         pixArray[pixArray.length - 1] = 0;
     }
 
-    // Condition pour animer le chunk
-    if (data.zIndex >= 0) {
-        chunkStock[data.zIndex] = {
-            x: data.x,
-            y: data.y,
-            paid: data.paid,
-            width: rgba8.width,
-            height: rgba8.height,
-        };
-    }
+    // Stocke les données du chunk pour qu'elles puissent être utilisées par les animations
+    chunkStock[data.zIndex] = {
+        x: data.x,
+        y: data.y,
+        paid: data.paid,
+        width: rgba8.width,
+        height: rgba8.height,
+    };
+
+    // // Si le runeNumber donné en url est celui-ci, mettre la viewPos à cet endroit
+    // if (runeNumber === data.zIndex) {
+    //     // console.log('renderHeight', renderHeight);
+    //     const viewY = Const.MARGIN_BOTTOM + Const.MONOLITH_LINES - data.y - rgba8.height / 2 - renderHeight / 2;
+    //     changeViewPos(0, viewY);
+    //     console.log('changed viewPos to :', viewY);
+    // }
 
     let pixelDrawn = 0;
     let p = 0;

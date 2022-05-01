@@ -14,6 +14,9 @@ export let viewPosY = 0;
 export let viewPosX = 0;
 let myImageData;
 let ctx;
+export let route;
+export let runeNumber;
+export let OS;
 
 export const windowHeight = window.innerHeight;
 export const windowWidth = window.innerWidth;
@@ -24,15 +27,55 @@ export let renderHeight = Math.ceil((windowHeight * renderWidth) / windowWidth);
 let InitialImports = 18;
 
 async function initApp() {
-    let runeNumber = parseInt(document.URL.split('?rune=')[1]);
-    if (runeNumber) initApiDisplay(runeNumber);
-    else {
-        await chunkImport();
-        initialDecodeLandscape(InitialImports);
-        buildMonolith();
-        initialDecodeAnim(InitialImports);
-        initDisplay();
-        lateDecodeLandscape(InitialImports);
+    runeNumber = parseInt(document.URL.split('rune=')[1]);
+    OS = document.URL.split('OS=')[1];
+    // Router
+    if (runeNumber && OS === 'false') {
+        route = 'Simple API';
+        initApiDisplay(runeNumber);
+        return;
+    } else if (runeNumber && OS === 'true') {
+        route = 'Opensea API';
+    } else if (runeNumber) {
+        route = 'Share specific rune';
+    } else {
+        route = 'normal';
+    }
+    await chunkImport();
+    initialDecodeLandscape(InitialImports);
+    buildMonolith();
+    await setInitialViewPosY();
+    initialDecodeAnim(InitialImports);
+    initDisplay();
+    lateDecodeLandscape(InitialImports);
+    console.log('route', route);
+}
+
+async function setInitialViewPosY() {
+    // If runeNumber given, change viewPos to it
+    if (runeNumber && OS !== 'false') {
+        await getChunk(runeNumber)
+            .then((res) => {
+                prepareBufferForApi(base64ToBuffer(res[4])).then((data) => {
+                    const viewY = Math.floor(
+                        Const.MARGIN_BOTTOM +
+                            Const.MONOLITH_LINES -
+                            res[0].toNumber() / Const.MONOLITH_COLUMNS -
+                            data[2] / 2 -
+                            renderHeight / 2
+                    );
+                    changeViewPos(0, viewY);
+                    console.log('changed viewPos to :', viewY);
+                });
+            })
+            .catch(() => {
+                console.log('error : rune not found');
+                // console.log(err);
+            });
+        // Else, look for a Y in the url
+    } else if (route === 'normal') {
+        const providedY = parseInt(document.URL.split('y=')[1]);
+        if (providedY) changeViewPos(0, providedY);
     }
 }
 
@@ -56,9 +99,6 @@ function initDisplay() {
     // Create image data of size nbColumns * nbRows
     myImageData = ctx.createImageData(renderWidth, renderHeight);
     requestAnimationFrame(update);
-
-    const providedY = parseInt(window.location.href.split('=')[1]);
-    if (providedY) changeViewPos(0, providedY);
 }
 
 function initApiDisplay(id) {

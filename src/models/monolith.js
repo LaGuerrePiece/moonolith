@@ -1,10 +1,11 @@
 import Klon from './klon';
 import Const from './constants';
 import { addToCurrentEvent, closeCurrentEvent } from './undoStack';
-import { renderWidth, renderHeight, viewPosX, viewPosY } from '../main';
+import { renderWidth, renderHeight, viewPosX, viewPosY, runeNumber } from '../main';
 import { imageCatalog } from '../assets/imageData';
 import { toggleRumble, playSound } from '../assets/sounds';
 import { importedChunks } from '../utils/web3';
+import { animatedPixels } from '../utils/runeAnims';
 
 export let monolith;
 
@@ -23,6 +24,19 @@ export function drawPixel(x, y, zIndex, color) {
     if (sameKlon(currentKlon, zIndex, color)) return; //If same, return
     if (zIndex === 0 || zIndex === undefined) addToCurrentEvent(x, y, currentKlon.target, currentKlon.zIndex); //If being drawn by user, add to curent event
     currentKlon.setTargetColor(color, zIndex);
+
+    let transitionType;
+    if (zIndex === 0) transitionType = 'draw';
+    else if (zIndex === undefined) transitionType = 'erase';
+    // else if ((zIndex === importedChunks && !runeNumber) || zIndex === runeNumber) {
+    //     // Si le chunk est le dernier à être arrivé ou si son numéro est spécifié dans l'URL
+    //     // Seulement pour les pixels dans la renderView
+    //     transitionType = 'import';
+    // }
+    else if (zIndex > 0) currentKlon.color = color;
+    else console.log('autre zIndex', zIndex);
+
+    if (transitionType) animatedPixels[y * Const.MONOLITH_COLUMNS + x] = [x, y, transitionType, 1];
 
     if (zIndex === 0 && lastPlayedSound + 40 < Date.now()) {
         playSound('click5p26');

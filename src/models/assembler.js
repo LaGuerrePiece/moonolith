@@ -3,12 +3,13 @@ import { imageCatalog, animationCatalog } from '../assets/imageData';
 import Const from './constants';
 import { renderHeight, renderWidth, viewPosX, viewPosY, pointer } from '../main';
 import { tool, Tool } from './tools';
+import { transition } from '../utils/runeAnims';
 
 // var previousViewPosY;
 // var previousViewPosX;
 // var previousLandscape;
 let activateOnce = 0;
-var clock = 0;
+export var clock = 0;
 setInterval(() => {
     clock += 100;
 }, 100);
@@ -102,6 +103,7 @@ export function assemble() {
     // displayArray = previousLandscape;
     // }
     // console.log('layersToDisplay', layersToDisplay);
+    // let start = performance.now();
     for (let y = 0; y < renderHeight; y++) {
         for (let x = 0; x < renderWidth; x++) {
             for (let layer of layersToDisplay) {
@@ -114,7 +116,6 @@ export function assemble() {
                 if (!pixel) continue;
                 if (layer.name === 'monolith') {
                     displayArray.push(pixel.color[0], pixel.color[1], pixel.color[2], 255);
-                    // if (pixel.transitionType) pixel.transition();
                 } else displayArray.push(pixel[0], pixel[1], pixel[2], 255);
                 break;
             }
@@ -124,13 +125,7 @@ export function assemble() {
             }
         }
     }
-
-    for (let j = 0; j < Const.MONOLITH_LINES; j++) {
-        for (let i = 0; i < Const.MONOLITH_COLUMNS; i++) {
-            const pixel = monolith[j][i];
-            if (pixel.transitionType) pixel.transition();
-        }
-    }
+    transition();
 
     // if (activateOnce === 0) console.log('displayArray', displayArray);
     // previousLandscape = displayArray;
