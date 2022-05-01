@@ -112,26 +112,22 @@ function initDisplay() {
 function initApiDisplay(id) {
     getChunk(id).then((chunk) => {
         console.log('chunk', chunk);
-        console.log('base64ToBuffer', base64ToBuffer(chunk[3]));
-        prepareBufferForApi(base64ToBuffer(chunk[3])).then((data) => {
+        //console.log('base64ToBuffer', base64ToBuffer(chunk[4]));
+        prepareBufferForApi(chunk[4]).then((data) => {
             let dataToDisplay = Array.from(data[0]);
+            console.log(dataToDisplay);
             console.log(dataToDisplay.length, data[1], data[2]);
 
-            while (dataToDisplay.length < data[1] * data[2]) {
-                dataToDisplay[dataToDisplay.length] = [(0, 0, 0)];
-                console.log(dataToDisplay.length, data[1], data[2]);
-                console.log('pushed');
-            }
-            console.log(dataToDisplay, data[1], data[2]);
-            while (dataToDisplay.length > data[1] * data[2]) {
-                dataToDisplay.pop();
-                console.log('poped');
-            }
             console.log(dataToDisplay, data[1], data[2]);
             // Convert to Uint8ClampedArray
-            dataToDisplay.forEach((x) => x.push(1));
-            dataToDisplay = dataToDisplay.flat().map((x) => x * 255);
-
+            dataToDisplay.forEach((pixel) => {
+                if (pixel[0] == pixel[1] && pixel[2] == pixel[1] && pixel[1] == 0) {
+                    pixel.push(0);
+                } else {
+                    pixel.push(255);
+                }
+            });
+            dataToDisplay = dataToDisplay.flat();
             // Create canvas and put image data
             createApiDisplayPage(dataToDisplay, data[1], data[2]);
         });

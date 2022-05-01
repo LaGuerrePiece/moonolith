@@ -7,7 +7,7 @@ import { increaseMonolithHeight } from '../models/monolith';
 
 const provider = new ethers.providers.InfuraProvider('rinkeby');
 const iface = new Interface(contractABI);
-const contractAddress = '0x7191AF67bDB873B7b4ebEA02Bd37A73276cbf547';
+const contractAddress = '0xF119ee077eA217716F38Eb263781C3DC95740C4d';
 const contract = new ethers.Contract(contractAddress, contractABI, provider);
 let metamaskProvider;
 var metamaskContract;

@@ -4,7 +4,6 @@ import Const from '../models/constants';
 import { monolith, eraseAllPixel, drawPixel } from '../models/monolith';
 import { chunkCreator } from '../utils/web3';
 import LZString from 'lz-String';
-import { Buffer } from 'buffer';
 
 function saveToEthernity() {
     monolithToBase64().then((data) => {
@@ -96,7 +95,7 @@ function pngToBufferToRGB(buffer) {
 }
 
 async function prepareBufferForApi(data) {
-    let pixArray = new Uint8Array(base64ToBuffer(LZString.decompressFromUTF16(data.buffer)));
+    let pixArray = new Uint8Array(base64ToBuffer(LZString.decompressFromUTF16(data)));
     pixArray = Array.from(pixArray);
     let width = pixArray.shift();
     let height = pixArray.shift();
@@ -110,7 +109,7 @@ async function prepareBufferForApi(data) {
     pixArray.forEach((pix) => {
         colors.push(Const.PALETTE[pix]);
     });
-    return [colors, rgba8.width, rgba8.height];
+    return [colors, width, height];
 }
 
 async function bufferOnMonolith(data) {
