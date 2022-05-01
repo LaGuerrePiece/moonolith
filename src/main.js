@@ -30,6 +30,14 @@ export let renderWidth = Const.COLUMNS;
 const pixelSize = windowWidth / renderWidth;
 export let renderHeight = Math.ceil((windowHeight * renderWidth) / windowWidth);
 
+export const deviceType = /(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(navigator.userAgent)
+    ? 'tablet'
+    : /Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(
+          navigator.userAgent
+      )
+    ? 'mobile'
+    : 'desktop';
+
 let InitialImports = 18;
 
 async function initApp() {
@@ -41,17 +49,10 @@ async function initApp() {
         buildMonolith();
         initialDecodeAnim(InitialImports);
         initDisplay();
+        if (deviceType == 'mobile') mobileEventListener();
         lateDecodeLandscape(InitialImports);
     }
 }
-
-export const deviceType = /(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(navigator.userAgent)
-    ? 'tablet'
-    : /Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(
-          navigator.userAgent
-      )
-    ? 'mobile'
-    : 'desktop';
 
 initApp();
 
@@ -76,7 +77,9 @@ function initDisplay() {
 
     const providedY = parseInt(window.location.href.split('=')[1]);
     if (providedY) changeViewPos(0, providedY);
+}
 
+function mobileEventListener() {
     var hammertime = new Hammer(canvas);
 
     hammertime.get('pinch').set({ enable: true });
