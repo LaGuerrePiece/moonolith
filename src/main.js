@@ -47,16 +47,18 @@ async function initApp() {
     runeNumber = parseInt(document.URL.split('rune=')[1]);
     OS = document.URL.split('OS=')[1];
     // Router
-    if (runeNumber && OS === 'false') {
-        route = 'Simple API';
+    route =
+        runeNumber && OS === 'false'
+            ? 'Simple API'
+            : runeNumber && OS === 'true'
+            ? 'Opensea API'
+            : runeNumber
+            ? 'Share specific rune'
+            : 'normal';
+
+    if (route === 'Simple API') {
         initApiDisplay(runeNumber);
         return;
-    } else if (runeNumber && OS === 'true') {
-        route = 'Opensea API';
-    } else if (runeNumber) {
-        route = 'Share specific rune';
-    } else {
-        route = 'normal';
     }
     await chunkImport();
     initialDecodeLandscape(InitialImports);
