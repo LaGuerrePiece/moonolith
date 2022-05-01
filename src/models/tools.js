@@ -95,25 +95,42 @@ export function keyManager(e){
 
 var prevTouchY = null;
 var prevTouchX = null;
+var panMode = false;
+
+export function togglePanMode() {
+    panMode = !panMode;
+    console.log('Pan mode', panMode);
+}
 export function touchManager(e) {
-    if (e.type === 'touchstart') {
-        prevTouchY = e.touches[0].clientY;
-        prevTouchX = e.touches[0].clientX;
-    } else if (e.type === 'touchmove') {
-        const touch = e.touches[0];
-        // console.log('touch', touch);
-        let deltaY = e.changedTouches[0].clientY - e.touches[0].clientY;
-        // console.log('deltaY', deltaY);
-        const changedY = touch.clientY - prevTouchY;
-        const changedX = touch.clientX - prevTouchX;
-        // console.log('changedY', touch.clientY, '-', prevTouchY, '=', changedY);
-        changeViewPos(-Math.floor(changedX /2), Math.floor(changedY/2));
-        prevTouchY = Math.floor(e.changedTouches[0].clientY);
-        prevTouchX = Math.floor(e.changedTouches[0].clientX);
-    } else if (e.type === 'touchend') {
-        // console.log('touchManager end', prevTouchY);
-        prevTouchY = null;
-        prevTouchX = null;
+    if (panMode) touchPan(e);
+    else if (!panMode) touchDraw(e);
+
+    function touchDraw(e) {
+        e = {
+            x: Math.floor(e.changedTouches[0].clientX),
+            y: Math.floor(e.changedTouches[0].clientY),
+            type: 'touch',
+            button: 0,
+        };
+        startUsingTool(e);
+    }
+
+    function touchPan(e) {
+        if (e.type === 'touchstart') {
+            prevTouchY = e.touches[0].clientY;
+            prevTouchX = e.touches[0].clientX;
+        } else if (e.type === 'touchmove') {
+            const touch = e.touches[0];
+            let deltaY = e.changedTouches[0].clientY - e.touches[0].clientY;
+            const changedY = touch.clientY - prevTouchY;
+            const changedX = touch.clientX - prevTouchX;
+            changeViewPos(-Math.floor(changedX / 2), Math.floor(changedY / 2));
+            prevTouchY = Math.floor(e.changedTouches[0].clientY);
+            prevTouchX = Math.floor(e.changedTouches[0].clientX);
+        } else if (e.type === 'touchend') {
+            prevTouchY = null;
+            prevTouchX = null;
+        }
     }
 }
 

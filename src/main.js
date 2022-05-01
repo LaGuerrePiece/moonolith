@@ -1,7 +1,15 @@
 // Imports des composants
 import { initialDecodeLandscape, lateDecodeLandscape, initialDecodeAnim, imageCatalog } from './assets/imageData';
 // Imports des fonctionnalités
-import { clickManager, keyManager, scrollManager, mousePosInGrid, selectorUpdate, touchManager } from './models/tools';
+import {
+    clickManager,
+    keyManager,
+    scrollManager,
+    mousePosInGrid,
+    selectorUpdate,
+    touchManager,
+    togglePanMode,
+} from './models/tools';
 import Const from './models/constants';
 import { createApiDisplayPage } from './models/apiDisplayPage';
 import { chunkImport, getChunk } from './utils/web3';
@@ -37,6 +45,14 @@ async function initApp() {
     }
 }
 
+export const deviceType = /(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(navigator.userAgent)
+    ? 'tablet'
+    : /Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(
+          navigator.userAgent
+      )
+    ? 'mobile'
+    : 'desktop';
+
 initApp();
 
 function initDisplay() {
@@ -47,7 +63,7 @@ function initDisplay() {
     // Set canvas dimensions to the ratio of the screen size
     canvas.width = renderWidth;
     canvas.height = renderHeight;
-    canvas.onmousedown = clickManager;
+    if(deviceType != 'mobile') canvas.onmousedown = clickManager;
 
     // Set canvas size to size of screen
     canvas.style.width = '100%';
@@ -62,13 +78,21 @@ function initDisplay() {
     if (providedY) changeViewPos(0, providedY);
 
     var hammertime = new Hammer(canvas);
+
     hammertime.get('pinch').set({ enable: true });
-    hammertime.on('pinch', function (ev) {
-        // console.log('HAMMER', ev.scale);
-        if (ev.scale > 2 && !zoomState) zoomIn();
-        else if (ev.scale < 0.5 && zoomState) zoomOut();
-        // changeViewPos(ev.deltaX, ev.deltaY);
+    hammertime.on('pinch', function (e) {
+        if (e.scale > 2 && !zoomState) zoomIn();
+        else if (e.scale < 0.5 && zoomState) zoomOut();
     });
+
+    hammertime.on('tap', function (e) {
+        // console.log('tap');
+    });
+
+    hammertime.on('doubletap', function (e) {
+        togglePanMode();
+    });
+
 }
 
 function initApiDisplay(id) {

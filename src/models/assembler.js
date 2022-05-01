@@ -1,7 +1,7 @@
 import { convertToMonolithPos, monolith } from './monolith';
 import { imageCatalog, animationCatalog } from '../assets/imageData';
 import Const from './constants';
-import { renderHeight, renderWidth, viewPosX, viewPosY, pointer } from '../main';
+import { renderHeight, renderWidth, viewPosX, viewPosY, pointer, deviceType } from '../main';
 import { tool, Tool } from './tools';
 
 // var previousViewPosY;
@@ -53,12 +53,14 @@ export function assemble() {
         startX: imageCatalog.selector1.startX,
     });
 
-    layersToDisplay.push({
-        name: 'selector2',
-        colorsArray: imageCatalog.selector2.decodedYX,
-        startY: imageCatalog.selector2.startY,
-        startX: imageCatalog.selector2.startX,
-    });
+    if (deviceType !== 'mobile') {
+        layersToDisplay.push({
+            name: 'selector2',
+            colorsArray: imageCatalog.selector2.decodedYX,
+            startY: imageCatalog.selector2.startY,
+            startX: imageCatalog.selector2.startX,
+        });
+    }
 
     //Push animations to layersToDisplay
     for (let animation in animationCatalog) {
