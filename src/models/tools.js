@@ -1,5 +1,5 @@
 //prettier-ignore
-import { windowHeight, windowWidth, renderWidth, renderHeight, changeViewPos, viewPosX, viewPosY, zoom, canvas} from '../main';
+import { windowHeight, windowWidth, renderWidth, renderHeight, changeViewPos, viewPosX, viewPosY, toggleZoom, canvas} from '../main';
 import { imageCatalog } from '../assets/imageData';
 import { toggleMusic, playSound, toggleMute } from '../assets/sounds';
 import { drawPixel, getColor, eraseAllPixel, convertToMonolithPos, increaseMonolithHeight } from './monolith';
@@ -10,8 +10,7 @@ import { moveDrawing, bufferOnMonolith, saveToEthernity, APNGtoMonolith } from '
 import Const from './constants';
 
 //prettier-ignore
-export class Tool {
-    
+export class Tool {   
     static get DONE() { return 0 }
     static get SMOL() { return 1 }
     static get BIG() { return 3 }
@@ -25,6 +24,9 @@ export class Tool {
 export let tool = Tool.GIGA;
 let colorPicked1 = Const.RGB2;
 let colorPicked2 = Const.DEFAULT_COLOR;
+export let colorNumber1 = 2;
+export let colorNumber2 = 16;
+
 let button;
 
 let scrollInformation = {
@@ -47,7 +49,7 @@ export function keyManager(e){
     if (e.key === 'm') { moveDrawing(50, 400) }
     if (e.key === 'e') brushSwitch();
     if (e.key === 'i') importImage();
-    if (e.key === 'r') {tool = Tool.GIGA; playSound('kick');}
+    if (e.key === 'r') {tool = Tool.GIGA; playSound('kick'); paletteUpdate();}
     if (e.key === 'k') toggleMusic();
     if (e.key === 'l') toggleMute();
     if (e.key === 'p') {increaseMonolithHeight(1000); seisme();}
@@ -85,28 +87,63 @@ export function keyManager(e){
         break;
 
         case 'KeyZ':
-        zoom();
+        toggleZoom();
         playSound('click6');
         break;
       }
 }
 
-var prevScrollPos = null;
+var prevTouchY = null;
+var prevTouchX = null;
+var panMode = false;
+
+export function togglePanMode() {
+    panMode = !panMode;
+    console.log('Pan mode', panMode);
+}
 export function touchManager(e) {
-    if (e.type === 'touchstart') {
-        prevScrollPos = e.touches[0].clientY;
-    } else if (e.type === 'touchmove') {
-        const touch = e.touches[0];
-        // console.log('touch', touch);
-        let deltaY = e.changedTouches[0].clientY - e.touches[0].clientY;
-        console.log('deltaY', deltaY);
-        const changedY = touch.clientY - prevScrollPos;
-        console.log('changedY', touch.clientY, '-', prevScrollPos, '=', changedY);
-        changeViewPos(0, Math.floor(changedY));
-        prevScrollPos = e.changedTouches[0].clientY;
-    } else if (e.type === 'touchend') {
-        console.log('touchManager end', prevScrollPos);
-        prevScrollPos = null;
+    if (e.type == 'tap') {
+        e = {
+            x: Math.floor(e.center.x),
+            y: Math.floor(e.center.y),
+            type: 'touch',
+            button: 0,
+        };
+        clickManager(e);
+    } else if (panMode) {
+        touchPan(e);
+        imageCatalog.palette.decodedYX = imageCatalog.palettePAN.decodedYX;
+    } else if (!panMode) {
+        touchDraw(e);
+        paletteUpdate();
+    }
+
+    function touchDraw(e) {
+        e = {
+            x: Math.floor(e.changedTouches[0].clientX),
+            y: Math.floor(e.changedTouches[0].clientY),
+            type: 'touch',
+            button: 0,
+        };
+        startUsingTool(e);
+    }
+
+    function touchPan(e) {
+        if (e.type === 'touchstart') {
+            prevTouchY = e.touches[0].clientY;
+            prevTouchX = e.touches[0].clientX;
+        } else if (e.type === 'touchmove') {
+            const touch = e.touches[0];
+            let deltaY = e.changedTouches[0].clientY - e.touches[0].clientY;
+            const changedY = touch.clientY - prevTouchY;
+            const changedX = touch.clientX - prevTouchX;
+            changeViewPos(-Math.floor(changedX / 2), Math.floor(changedY / 2));
+            prevTouchY = Math.floor(e.changedTouches[0].clientY);
+            prevTouchX = Math.floor(e.changedTouches[0].clientX);
+        } else if (e.type === 'touchend') {
+            prevTouchY = null;
+            prevTouchX = null;
+        }
     }
 }
 
@@ -205,7 +242,6 @@ function seisme() {
 
 export function clickManager(e) {
     let mousePos = mousePosInGrid(e);
-    // console.log('mousePos', mousePos);
 
     const GUIstartY = Math.floor((renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y);
     const GUIstartX = Math.floor((renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X);
@@ -250,8 +286,6 @@ export function clickManager(e) {
     } else if (convertToMonolithPos(mousePos)) {
         // clicked on monolith
         startUsingTool(e, mousePos);
-    } else {
-        // clicked on landscape
     }
 }
 
@@ -318,32 +352,41 @@ function brushSwitch() {
     switch (tool) {
         case Tool.SMOL:
             playSound('clickB2B');
-            //console.log('BIG BRUSH');
-            imageCatalog.palette.decodedYX = imageCatalog.paletteBIG.decodedYX;
             tool = Tool.BIG;
             break;
         case Tool.BIG:
             playSound('clickB2C');
-            //console.log('HUGE BRUSH');
-            imageCatalog.palette.decodedYX = imageCatalog.paletteHUGE.decodedYX;
             tool = Tool.HUGE;
             break;
         case Tool.HUGE:
             playSound('clickB2');
-            //console.log('SMOL BRUSH');
-            imageCatalog.palette.decodedYX = imageCatalog.paletteSMOL.decodedYX;
             tool = Tool.SMOL;
             break;
         case Tool.GIGA:
-            //console.log('SMOL BRUSH');
-            imageCatalog.palette.decodedYX = imageCatalog.paletteSMOL.decodedYX;
             tool = Tool.SMOL;
+            break;
+    }
+    paletteUpdate();
+}
+
+function paletteUpdate() {
+    switch (tool) {
+        case Tool.SMOL:
+            imageCatalog.palette.decodedYX = imageCatalog.paletteSMOL.decodedYX;
+            break;
+        case Tool.BIG:
+            imageCatalog.palette.decodedYX = imageCatalog.paletteBIG.decodedYX;
+            break;
+        case Tool.HUGE:
+            imageCatalog.palette.decodedYX = imageCatalog.paletteHUGE.decodedYX;
+            break;
+        case Tool.GIGA:
+            imageCatalog.palette.decodedYX = imageCatalog.paletteGIGA.decodedYX;
             break;
     }
 }
 
 export function mousePosInGrid(e) {
-    // console.log('mousePosInGrid', e);
     let x = Math.floor((e.x / windowWidth) * renderWidth);
     let y = Math.floor((e.y / windowHeight) * renderHeight);
     return { x: x, y: y };
@@ -394,8 +437,6 @@ function importImage() {
     input.click();
 }
 
-export let colorNumber1 = 2;
-export let colorNumber2 = 16;
 function colorSwitch(e, color) {
     if (e.button == 0) {
         if (color === colorNumber2) {
