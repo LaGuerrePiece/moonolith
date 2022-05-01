@@ -11,7 +11,6 @@ import {
     togglePanMode,
 } from './models/tools';
 import Const from './models/constants';
-import { createApiDisplayPage } from './models/apiDisplayPage';
 import { chunkImport, getChunk } from './utils/web3';
 import { assemble } from './models/assembler';
 import { buildMonolith } from './models/monolith';
@@ -23,6 +22,8 @@ export let viewPosY = 0;
 export let viewPosX = 0;
 let myImageData;
 let ctx;
+export let route;
+export let runeNumber;
 
 export const windowHeight = window.innerHeight;
 export const windowWidth = window.innerWidth;
@@ -41,17 +42,19 @@ export const deviceType = /(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.tes
 let InitialImports = 18;
 
 async function initApp() {
-    let runeNumber = parseInt(document.URL.split('?rune=')[1]);
-    if (runeNumber) initApiDisplay(runeNumber);
-    else {
-        await chunkImport();
-        initialDecodeLandscape(InitialImports);
-        buildMonolith();
-        initialDecodeAnim(InitialImports);
-        initDisplay();
-        if (deviceType == 'mobile') mobileEventListener();
-        lateDecodeLandscape(InitialImports);
-    }
+    runeNumber = parseInt(document.URL.split('rune=')[1]);
+    const OS = document.URL.split('OS=')[1];
+    // Router
+    route = runeNumber && OS ? 'Opensea API' : runeNumber ? 'Share specific rune' : 'normal';
+    await chunkImport();
+    initialDecodeLandscape(InitialImports);
+    buildMonolith();
+    await setInitialViewPos();
+    initialDecodeAnim(InitialImports);
+    initDisplay();
+    if (deviceType == 'mobile') mobileEventListener();
+    lateDecodeLandscape(InitialImports);
+    console.log('route', route);
 }
 
 initApp();
@@ -109,31 +112,6 @@ function mobileEventListener() {
     });
     document.addEventListener('touchstart', (e) => {
         touchManager(e);
-    });
-}
-
-function initApiDisplay(id) {
-    getChunk(id).then((chunk) => {
-        console.log('chunk', chunk);
-        //console.log('base64ToBuffer', base64ToBuffer(chunk[4]));
-        prepareBufferForApi(chunk[4]).then((data) => {
-            let dataToDisplay = Array.from(data[0]);
-            console.log(dataToDisplay);
-            console.log(dataToDisplay.length, data[1], data[2]);
-
-            console.log(dataToDisplay, data[1], data[2]);
-            // Convert to Uint8ClampedArray
-            dataToDisplay.forEach((pixel) => {
-                if (pixel[0] == pixel[1] && pixel[2] == pixel[1] && pixel[1] == 0) {
-                    pixel.push(0);
-                } else {
-                    pixel.push(255);
-                }
-            });
-            dataToDisplay = dataToDisplay.flat();
-            // Create canvas and put image data
-            createApiDisplayPage(dataToDisplay, data[1], data[2]);
-        });
     });
 }
 
@@ -198,3 +176,62 @@ export let pointer = { x: 0, y: 0 };
 document.addEventListener('mousemove', (e) => {
     pointer = mousePosInGrid({ x: e.x, y: e.y });
 });
+
+async function setInitialViewPos() {
+    // If runeNumber given, change viewPos to it
+    if (runeNumber) {
+        await getChunk(runeNumber)
+            .then((res) => {
+                prepareBufferForApi(res[4]).then((data) => {
+                    const viewY = Math.floor(
+                        Const.MARGIN_BOTTOM +
+                            Const.MONOLITH_LINES -
+                            res[0].toNumber() / Const.MONOLITH_COLUMNS -
+                            data[2] / 2 -
+                            renderHeight / 2
+                    );
+                    // const viewX = Math.floor(
+                    //     Const.MARGIN_RIGHT +
+                    //         Const.MONOLITH_COLUMNS -
+                    //         (res[0].toNumber() % Const.MONOLITH_COLUMNS) -
+                    //         data[1] / 2 -
+                    //         renderWidth / 2
+                    // );
+                    changeViewPos(0, viewY);
+                    console.log('changed viewPos to :', viewY);
+                });
+            })
+            .catch((err) => {
+                console.log('error : rune not found');
+            });
+        // Else, look for a Y in the url
+    } else if (route === 'normal') {
+        const providedY = parseInt(document.URL.split('y=')[1]);
+        if (providedY) changeViewPos(0, providedY);
+    }
+}
+
+function initApiDisplay(id) {
+    getChunk(id).then((chunk) => {
+        console.log('chunk', chunk);
+        //console.log('base64ToBuffer', base64ToBuffer(chunk[4]));
+        prepareBufferForApi(chunk[4]).then((data) => {
+            let dataToDisplay = Array.from(data[0]);
+            console.log(dataToDisplay);
+            console.log(dataToDisplay.length, data[1], data[2]);
+
+            console.log(dataToDisplay, data[1], data[2]);
+            // Convert to Uint8ClampedArray
+            dataToDisplay.forEach((pixel) => {
+                if (pixel[0] == pixel[1] && pixel[2] == pixel[1] && pixel[1] == 0) {
+                    pixel.push(0);
+                } else {
+                    pixel.push(255);
+                }
+            });
+            dataToDisplay = dataToDisplay.flat();
+            // Create canvas and put image data
+            createApiDisplayPage(dataToDisplay, data[1], data[2]);
+        });
+    });
+}
