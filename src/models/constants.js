@@ -3,7 +3,7 @@ var monolithHeight;
 //prettier-ignore
 export default class Const { 
 
-  static get COLUMNS() { return 256 }
+  static get COLUMNS() { return 370 }
   static get LINES() { return monolithHeight + this.MARGIN_TOP + this.MARGIN_BOTTOM }
   static get MONOLITH_COLUMNS() { return this.COLUMNS - this.MARGIN_LEFT - this.MARGIN_RIGHT }
   static get MONOLITH_LINES() { return monolithHeight }
