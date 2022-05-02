@@ -4,6 +4,7 @@ import { addToCurrentEvent, closeCurrentEvent } from './undoStack';
 import { renderWidth, renderHeight, viewPosX, viewPosY } from '../main';
 import { imageCatalog } from '../assets/imageData';
 import { toggleRumble, playSound, muteState } from '../assets/sounds';
+import { displayArray } from './assembler';
 
 export let monolith;
 
@@ -23,6 +24,18 @@ export function drawPixel(x, y, zIndex, color) {
     if (zIndex === 0 || zIndex === undefined) addToCurrentEvent(x, y, currentKlon.target, currentKlon.zIndex); //If being drawn by user, add to curent event
     currentKlon.setTargetColor(color);
     currentKlon.zIndex = zIndex;
+
+    // if (zIndex === 0) {
+    //     const pos =
+    //         ((-(Const.MONOLITH_LINES + Const.MARGIN_BOTTOM - viewPosY - renderHeight) + y) * renderWidth -
+    //             (viewPosX - Const.MARGIN_LEFT) +
+    //             x) *
+    //         4;
+
+    //     displayArray[pos] = color[0];
+    //     displayArray[pos + 1] = color[1];
+    //     displayArray[pos + 2] = color[2];
+    // }
 
     if (zIndex === 0 && lastPlayedSound + 40 < Date.now() && !muteState) {
         playSound('click5p26');

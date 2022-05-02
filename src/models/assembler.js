@@ -27,9 +27,7 @@ function frameInClock(anim) {
 export let displayArray;
 
 export function assemble() {
-    displayArray = firstTime
-        ? Array.from({ length: renderWidth * renderHeight }, () => [74, 164, 167, 255]).flat()
-        : previousLandscape;
+    if (firstTime) displayArray = Array.from({ length: renderWidth * renderHeight }, () => [74, 164, 167, 255]).flat();
     let layersToDisplay = [];
 
     // Push Tooltip on pancarte
@@ -85,59 +83,94 @@ export function assemble() {
         startX: viewPosX - Const.MARGIN_LEFT,
     });
     // If viewPos did change, push landscape layers
-    if (previousViewPosY !== viewPosY || previousViewPosX !== viewPosX) {
-        for (let layer in imageCatalog) {
-            const thisLayer = imageCatalog[layer];
-            const parallaxOffset = Math.floor(thisLayer.parallax * viewPosY);
 
-            if (thisLayer.type == 'GUI') continue;
-            if (thisLayer.startY - thisLayer.height - parallaxOffset > viewPosY + renderHeight) continue; // If the layer above render, skip it
-            if (Const.LINES - thisLayer.startY + parallaxOffset > Const.LINES - viewPosY) continue; // If the layer under render, skip it
-
-            layersToDisplay.push({
-                name: thisLayer.name,
-                colorsArray: thisLayer.decodedYX,
-                startY: thisLayer.startY - parallaxOffset - viewPosY - renderHeight,
-                startX: viewPosX - thisLayer.startX,
-            });
-        }
-        previousViewPosY = viewPosY;
-        previousViewPosX = viewPosX;
-    }
     // console.log('layersToDisplay', layersToDisplay);
-    for (let y = 0; y < renderHeight; y++) {
-        for (let x = 0; x < renderWidth; x++) {
-            const pos = (y * renderWidth + x) * 4;
-            for (let layer of layersToDisplay) {
-                const array = layer.colorsArray;
-                const startY = layer.startY;
-                const startX = layer.startX;
+    for (let layer in imageCatalog) {
+        const thisLayer = imageCatalog[layer];
+        const parallaxOffset = Math.floor(thisLayer.parallax * viewPosY);
 
-                if (startY + y < 0 || startX + x < 0) continue; // If pixel is out of bounds in this layer, skip it
-                const pixel = array[startY + y]?.[startX + x];
-                if (!pixel) continue;
-                if (layer.name === 'monolith') {
-                    displayArray[pos] = pixel.color[0];
-                    displayArray[pos + 1] = pixel.color[1];
-                    displayArray[pos + 2] = pixel.color[2];
-                    if (pixel.transitionCount % 10 !== 0) pixel.transition();
-                } else {
-                    displayArray[pos] = pixel[0];
-                    displayArray[pos + 1] = pixel[1];
-                    displayArray[pos + 2] = pixel[2];
+        if (thisLayer.type == 'GUI') continue;
+        if (thisLayer.startY - thisLayer.height - parallaxOffset > viewPosY + renderHeight) continue; // If the layer above render, skip it
+        if (Const.LINES - thisLayer.startY + parallaxOffset > Const.LINES - viewPosY) continue; // If the layer under render, skip it
+
+        layersToDisplay.push({
+            name: thisLayer.name,
+            colorsArray: thisLayer.decodedYX,
+            startY: thisLayer.startY - parallaxOffset - viewPosY - renderHeight,
+            startX: viewPosX - thisLayer.startX,
+        });
+    }
+
+    if (firstTime) {
+        for (let y = 0; y < renderHeight; y++) {
+            for (let x = 0; x < renderWidth; x++) {
+                const pos = (y * renderWidth + x) * 4;
+                for (let layer of layersToDisplay) {
+                    const array = layer.colorsArray;
+                    const startY = layer.startY;
+                    const startX = layer.startX;
+
+                    if (startY + y < 0 || startX + x < 0) continue; // If pixel is out of bounds in this layer, skip it
+                    const pixel = array[startY + y]?.[startX + x];
+                    if (!pixel) continue;
+                    if (layer.name === 'monolith') {
+                        displayArray[pos] = pixel.color[0];
+                        displayArray[pos + 1] = pixel.color[1];
+                        displayArray[pos + 2] = pixel.color[2];
+                        if (pixel.transitionCount % 10 !== 0) pixel.transition();
+                    } else {
+                        displayArray[pos] = pixel[0];
+                        displayArray[pos + 1] = pixel[1];
+                        displayArray[pos + 2] = pixel[2];
+                    }
+                    break;
                 }
-                break;
             }
+        }
+        console.log(displayArray.length);
+    }
+
+    if (previousViewPosY !== viewPosY || previousViewPosX !== viewPosX) {
+        const dif = viewPosY - previousViewPosY;
+        console.log('dif', dif);
+        if (!isNaN(dif)) {
+            for (let y = 0; y < dif; y++) {
+                let newRow = [];
+                for (let x = 0; x < renderWidth; x++) {
+                    for (let layer of layersToDisplay) {
+                        const array = layer.colorsArray;
+                        const startY = layer.startY;
+                        const startX = layer.startX;
+                        if (startY + y < 0 || startX + x < 0) continue; // If pixel is out of bounds in this layer, skip it
+                        const pixel = array[startY + y]?.[startX + x];
+                        if (!pixel) continue;
+                        if (layer.name === 'monolith') {
+                            newRow.push(pixel.color[0], pixel.color[1], pixel.color[2], 255);
+                        } else {
+                            newRow.push(pixel[0], pixel[1], pixel[2], 255);
+                        }
+                        break;
+                    }
+                    if (!newRow[x * 4 + 3]) newRow.push(...Const.SKY_COLOR, 255);
+                }
+                displayArray.unshift(...newRow);
+                console.log('added :', newRow.length);
+                displayArray = displayArray.slice(0, renderWidth * renderHeight * 4);
+                console.log('only kept :', displayArray.length);
+            }
+            console.log(displayArray.length);
         }
     }
 
     // if (firstTime) console.log('displayArray', displayArray);
-    previousLandscape = displayArray;
+    // previousLandscape = displayArray;
 
     // Add the pointer
-    addPointer(displayArray, layersToDisplay);
+    // addPointer(displayArray, layersToDisplay);
 
     firstTime = false;
+    previousViewPosY = viewPosY;
+    previousViewPosX = viewPosX;
     return displayArray;
 }
 
