@@ -11,9 +11,9 @@ export function buildMonolith() {
     // monolith = Array.from({ length: Const.MONOLITH_LINES * Const.MONOLITH_COLUMNS }, () => [40, 40, 46, 255]).flat();
     monolith = new Uint8ClampedArray(Const.MONOLITH_LINES * Const.MONOLITH_COLUMNS * 4);
     for (let i = 0; i < Const.MONOLITH_LINES * Const.MONOLITH_COLUMNS * 4; i += 4) {
-        monolith[i] = 40;
-        monolith[i + 1] = 40;
-        monolith[i + 2] = 46;
+        monolith[i] = 50;
+        monolith[i + 1] = 44;
+        monolith[i + 2] = 60;
         monolith[i + 3] = 255;
     }
     console.log('time :', performance.now() - start);

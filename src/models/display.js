@@ -5,18 +5,17 @@ import { clickManager, colorNumber1, colorNumber2 } from './tools';
 import { tool, Tool } from './tools';
 
 export let imageCatalog = {
-    caly6: { fileName: 'caly6', type: 'landscape', startX: 0, startY: 420, parallax: 1, display: true },
-    caly5: { fileName: 'caly5', type: 'landscape', startX: 0, startY: 343, parallax: 0.9, display: true },
-    caly4: { fileName: 'caly4', type: 'landscape', startX: 0, startY: 290, parallax: 0.4, display: true },
-    caly3: { fileName: 'caly3', type: 'landscape', startX: 0, startY: 225, parallax: 0.3, display: true },
-    caly2: { fileName: 'caly2', type: 'landscape', startX: 0, startY: 150, parallax: 0.2, display: true },
-    caly1: { fileName: 'caly1', type: 'landscape', startX: 0, startY: 85, parallax: 0.1, display: true },
-    calySide3: { fileName: 'calySideRepet', type: 'side', startX: 0, startY: 742, parallax: 0, display: true },
-    calySide2: { fileName: 'calySideRepet', type: 'side', startX: 0, startY: 526, parallax: 0, display: true },
-    calySide1: { fileName: 'calySideRepet', type: 'side', startX: 0, startY: 310, parallax: 0, display: true },
-    calySide0: { fileName: 'calySide0', type: 'side', startX: -149, startY: -17, parallax: 0, display: true },
-    caly0: { fileName: 'caly0', type: 'landscape', startX: 0, startY: 85, parallax: 0.1, display: true },
-    menu: { fileName: 'menu', type: 'GUI', startX: 0, startY: 0, parallax: 0, display: false },
+    plan5: { fileName: 'plan5', type: 'landscape', startX: 0, startY: 343, parallax: 0.9, display: true },
+    plan4: { fileName: 'plan4', type: 'landscape', startX: 0, startY: 290, parallax: 0.4, display: true },
+    plan3: { fileName: 'plan3', type: 'landscape', startX: 0, startY: 225, parallax: 0.3, display: true },
+    plan2: { fileName: 'plan2', type: 'landscape', startX: 0, startY: 150, parallax: 0.2, display: true },
+    plan1: { fileName: 'plan1', type: 'landscape', startX: 0, startY: 85, parallax: 0.1, display: true },
+    // calySide3: { fileName: 'calySideRepet', type: 'side', startX: 0, startY: 742, parallax: 0, display: true },
+    // calySide2: { fileName: 'calySideRepet', type: 'side', startX: 0, startY: 526, parallax: 0, display: true },
+    // calySide1: { fileName: 'calySideRepet', type: 'side', startX: 0, startY: 310, parallax: 0, display: true },
+    moonolithSide: { fileName: 'moonolithSide', type: 'side', startX: -149, startY: -17, parallax: 0, display: true },
+    plan0: { fileName: 'plan0', type: 'landscape', startX: 0, startY: 85, parallax: 0.1, display: true },
+    panneau: { fileName: 'panneau', type: 'GUI', startX: 0, startY: 0, parallax: 0, display: false },
     selector2: { fileName: 'selector2', type: 'GUI', startX: 0, startY: 0, parallax: 0, display: true },
     selector1: { fileName: 'selector1', type: 'GUI', startX: 0, startY: 0, parallax: 0, display: true },
     palette: { fileName: 'paletteHUGE', type: 'GUI', startX: 0, startY: 0, parallax: 0, display: true },
@@ -57,7 +56,7 @@ export function initDisplay() {
             const thisImage = imageCatalog[image];
             // Draw layers
             if (thisImage.display) ctx.drawImage(thisImage.img, thisImage.x, thisImage.y);
-            if (image === 'caly0') {
+            if (image === 'plan3') {
                 // Draw Monolith
                 const monolithDisplayHeight =
                     viewPosY < Const.MARGIN_BOTTOM ? renderHeight - Const.MARGIN_BOTTOM + viewPosY : renderHeight;
@@ -82,9 +81,9 @@ function updateCatalog() {
         } else if (image === 'palette') {
             thisImage.y = Math.floor((renderHeight - imageCatalog.palette.img.height) / Const.GUI_RELATIVE_Y);
             thisImage.x = Math.floor((renderWidth - imageCatalog.palette.img.width) / Const.GUI_RELATIVE_X);
-        } else if (image === 'menu') {
-            thisImage.y = Math.floor(renderHeight + viewPosY - imageCatalog.menu.img.height - 50);
-            thisImage.x = Math.floor((Const.COLUMNS - imageCatalog.menu.img.width) / 2);
+        } else if (image === 'panneau') {
+            thisImage.y = Math.floor(renderHeight + viewPosY - imageCatalog.panneau.img.height - 50);
+            thisImage.x = Math.floor((Const.COLUMNS - imageCatalog.panneau.img.width) / 2);
         } else if (image === 'selector1') {
             const offset = 8;
             thisImage.y = imageCatalog.palette.y - 1 + Math.floor(colorNumber1 / 9) * 8;
@@ -98,7 +97,7 @@ function updateCatalog() {
             thisImage.x = Const.MONOLITH_COLUMNS + Const.MARGIN_LEFT + thisImage.startX;
         }
     }
-    imageCatalog.menu.display = isInSquare(180, 187, 14, 18, pointer.x, pointer.y) ? true : false;
+    imageCatalog.panneau.display = isInSquare(180, 187, 14, 18, pointer.x, pointer.y) ? true : false;
     imageCatalog.selector2.display = deviceType === 'mobile' ? false : true;
 }
 
