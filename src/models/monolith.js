@@ -1,10 +1,10 @@
-import Klon from './klon';
 import Const from './constants';
 import { addToCurrentEvent, closeCurrentEvent } from './undoStack';
 import { renderWidth, renderHeight, viewPosX, viewPosY } from '../main';
 import { toggleRumble, playSound, muteState } from '../assets/sounds';
 
 export let monolith;
+export let monolithIndexes;
 
 export function buildMonolith() {
     let start = performance.now();
@@ -18,19 +18,22 @@ export function buildMonolith() {
     }
     console.log('time :', performance.now() - start);
     console.log('monolith', monolith);
-
-    // monolith[Const.MONOLITH_LINES - 1][Const.MONOLITH_COLUMNS - 1].transitionCount = 1;
+    monolithIndexes = new Array(Const.MONOLITH_LINES).fill(new Array(Const.MONOLITH_COLUMNS).fill(0));
+    // console.log('monolithIndexes', monolithIndexes);
 }
 let lastPlayedSound = Date.now();
 
 export function drawPixel(x, y, zIndex, color) {
-    const currentKlon = monolith[y]?.[x];
-    if (!currentKlon) return; //If out of bounds, return
-    if (!currentKlon.isEditable(zIndex)) return; //If not editable, return
-    if (sameKlon(currentKlon, zIndex, color)) return; //If same, return
-    if (zIndex === 0 || zIndex === undefined) addToCurrentEvent(x, y, currentKlon.target, currentKlon.zIndex); //If being drawn by user, add to curent event
-    currentKlon.setTargetColor(color);
-    currentKlon.zIndex = zIndex;
+    const monolithPos = (y * Const.MONOLITH_COLUMNS + x) * 4;
+    const monolithzIndex = monolithIndexes[y]?.[x];
+    if (x < 0 || x >= Const.MONOLITH_COLUMNS || y < 0 || y >= Const.MONOLITH_LINES) return; //If out of bounds, return
+    if (!isEditable(zIndex, monolithzIndex)) return; //If not editable, return
+    if (same(x, y, monolithPos, zIndex, color)) return; //If same, return
+    // if (zIndex === 0 || zIndex === undefined) addToCurrentEvent(x, y, currentKlon.target, currentKlon.zIndex); //If being drawn by user, add to curent event
+    monolith[monolithPos] = color[0];
+    monolith[monolithPos + 1] = color[1];
+    monolith[monolithPos + 2] = color[2];
+    monolithIndexes[y][x] = zIndex;
 
     if (zIndex === 0 && lastPlayedSound + 40 < Date.now() && !muteState) {
         playSound('click5p26');
@@ -41,12 +44,18 @@ export function drawPixel(x, y, zIndex, color) {
     }
 }
 
-function sameKlon(currentKlon, zIndex, color) {
+function isEditable(newZIndex, oldZIndex) {
+    if (oldZIndex === 0 || oldZIndex === undefined) return true;
+    if (newZIndex === 0) return oldZIndex <= newZIndex;
+    return oldZIndex >= newZIndex;
+}
+
+function same(x, y, monolithPos, zIndex, color) {
     if (
-        currentKlon.target[0] === color[0] &&
-        currentKlon.target[1] === color[1] &&
-        currentKlon.target[2] === color[2] &&
-        currentKlon.zIndex === zIndex
+        monolith[monolithPos][0] === color[0] &&
+        monolith[monolithPos][1] === color[1] &&
+        monolith[monolithPos][2] === color[2] &&
+        monolithIndexes[y][x] === zIndex
     )
         return true;
     return false;

@@ -1,5 +1,4 @@
 import { UPNG } from './upmc';
-import Klon from '../models/klon';
 import Const from '../models/constants';
 import { monolith, eraseAllPixel, drawPixel } from '../models/monolith';
 import { chunkCreator } from '../utils/web3';
@@ -191,7 +190,7 @@ function gridToArray() {
     let nbPix = 0;
     for (let i = highLow.lowY; i <= highLow.highY; i++) {
         for (let j = highLow.lowX; j <= highLow.highX; j++) {
-            if (monolith[i][j].zIndex == Klon.USERPAINTED) {
+            if (monolith[i][j].zIndex === 0) {
                 pixelArray.push(...monolith[i][j].color, 255);
                 nbPix++;
             } else {
@@ -213,7 +212,7 @@ function getHighLow() {
 
     for (let i = 0; i < Const.MONOLITH_LINES; i++) {
         for (let j = 0; j < Const.MONOLITH_COLUMNS; j++) {
-            if (monolith[i][j].zIndex == Klon.USERPAINTED) {
+            if (monolith[i][j].zIndex === 0) {
                 if (j < lowX) lowX = j;
                 if (j > highX) highX = j;
                 if (i < lowY) lowY = i;

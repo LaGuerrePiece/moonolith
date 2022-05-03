@@ -1,25 +1,19 @@
 import { renderHeight, renderWidth, viewPosX, viewPosY, deviceType, pointer } from '../main';
 import Const from './constants';
-import { convertToMonolithPos, monolith } from './monolith';
+import { convertToMonolithPos, monolith, monolithIndexes } from './monolith';
 import { clickManager, colorNumber1, colorNumber2 } from './tools';
+import { tool, Tool } from './tools';
 
-let previousViewPosY;
-
-//Preparation
-let imageCatalog = {
+export let imageCatalog = {
     caly6: { fileName: 'caly6', type: 'landscape', startX: 0, startY: 420, parallax: 1, display: true },
     caly5: { fileName: 'caly5', type: 'landscape', startX: 0, startY: 343, parallax: 0.9, display: true },
     caly4: { fileName: 'caly4', type: 'landscape', startX: 0, startY: 290, parallax: 0.4, display: true },
     caly3: { fileName: 'caly3', type: 'landscape', startX: 0, startY: 225, parallax: 0.3, display: true },
     caly2: { fileName: 'caly2', type: 'landscape', startX: 0, startY: 150, parallax: 0.2, display: true },
     caly1: { fileName: 'caly1', type: 'landscape', startX: 0, startY: 85, parallax: 0.1, display: true },
-    //prettier-ignore
     calySide3: { fileName: 'calySideRepet', type: 'side', startX: 0, startY: 742, parallax: 0, display: true },
-    //prettier-ignore
     calySide2: { fileName: 'calySideRepet', type: 'side', startX: 0, startY: 526, parallax: 0, display: true },
-    //prettier-ignore
     calySide1: { fileName: 'calySideRepet', type: 'side', startX: 0, startY: 310, parallax: 0, display: true },
-    //prettier-ignore
     calySide0: { fileName: 'calySide0', type: 'side', startX: -149, startY: -17, parallax: 0, display: true },
     caly0: { fileName: 'caly0', type: 'landscape', startX: 0, startY: 85, parallax: 0.1, display: true },
     menu: { fileName: 'menu', type: 'GUI', startX: 0, startY: 0, parallax: 0, display: false },
@@ -33,14 +27,16 @@ let imageCatalog = {
     palettePAN: { fileName: 'palettePAN', type: 'GUI', startX: 0, startY: 0, parallax: 0, display: false },
 };
 
+export let canvas = document.createElement('canvas');
+
 export function initDisplay() {
-    let canvas = document.createElement('canvas');
+    canvas = document.createElement('canvas');
     let ctx = canvas.getContext('2d');
     document.body.appendChild(canvas);
     // Set canvas dimensions to the ratio of the screen size
     canvas.width = renderWidth;
     canvas.height = renderHeight;
-    // if (deviceType != 'mobile') canvas.onmousedown = clickManager;
+    if (deviceType !== 'mobile') canvas.onmousedown = clickManager;
     // Set canvas size to size of screen
     canvas.style.width = '100%';
     canvas.style.imageRendering = 'pixelated';
@@ -66,7 +62,8 @@ export function initDisplay() {
                 const monolithDisplayHeight =
                     viewPosY < Const.MARGIN_BOTTOM ? renderHeight - Const.MARGIN_BOTTOM + viewPosY : renderHeight;
                 let monolithData = ctx.createImageData(Const.MONOLITH_COLUMNS, monolithDisplayHeight);
-                const a = prepareMonolith(monolithDisplayHeight);
+                const a = cutMonolith(monolithDisplayHeight);
+                addPointer(a);
                 monolithData.data.set(a);
                 ctx.putImageData(monolithData, 50, 0);
             }
@@ -105,11 +102,11 @@ function updateCatalog() {
     imageCatalog.selector2.display = deviceType === 'mobile' ? false : true;
 }
 
-function prepareMonolith(monolithDisplayHeight) {
+function cutMonolith(monolithDisplayHeight) {
     const monolithStartY = Const.MONOLITH_LINES + Const.MARGIN_BOTTOM - renderHeight - viewPosY;
     const monolithEndY = monolithStartY + monolithDisplayHeight;
 
-    return monolith.subarray(Const.MONOLITH_COLUMNS * 4 * monolithStartY, Const.MONOLITH_COLUMNS * 4 * monolithEndY);
+    return monolith.slice(Const.MONOLITH_COLUMNS * 4 * monolithStartY, Const.MONOLITH_COLUMNS * 4 * monolithEndY);
 }
 
 function isInSquare(xmin, xmax, ymin, ymax, pointerX, pointerY) {
@@ -123,4 +120,68 @@ function absolutePosition(pointerX, pointerY) {
         x: viewPosX + pointerX,
         y: renderHeight - pointerY + viewPosY,
     };
+}
+
+function addPointer(monolithData) {
+    if (tool === Tool.SMOL) {
+        whiten(monolithData, pointer.y, pointer.x);
+    } else if (tool === Tool.BIG) {
+        for (let i = -1; i <= 1; i++) {
+            for (let j = -1; j <= 1; j++) {
+                whiten(monolithData, pointer.y + j, pointer.x + i);
+            }
+        }
+        whiten(monolithData, pointer.y, pointer.x);
+    } else if (tool === Tool.HUGE) {
+        for (let i = -3; i <= 3; i++) {
+            for (let j = -1; j <= 1; j++) {
+                whiten(monolithData, pointer.y + j, pointer.x + i);
+                whiten(monolithData, pointer.y + i, pointer.x + j);
+            }
+        }
+        for (let i = -2; i <= 2; i++) {
+            for (let j = -2; j <= 2; j++) whiten(monolithData, pointer.y + i, pointer.x + j);
+        }
+    } else if (tool === Tool.GIGA) {
+        for (let i = -20; i <= 20; i++) {
+            for (let j = -20; j <= 20; j++) {
+                whiten(monolithData, pointer.y + j, pointer.x + i);
+            }
+        }
+        for (let i = -15; i <= 15; i++) {
+            for (let j = -15; j <= 15; j++) {
+                whiten(monolithData, pointer.y + j, pointer.x + i);
+            }
+        }
+        for (let i = -8; i <= 8; i++) {
+            for (let j = -5; j <= 5; j++) {
+                whiten(monolithData, pointer.y + j, pointer.x + i);
+                whiten(monolithData, pointer.y + i, pointer.x + j);
+            }
+        }
+        for (let i = -2; i <= 2; i++) {
+            for (let j = -2; j <= 2; j++) whiten(monolithData, pointer.y + i, pointer.x + j);
+        }
+        whiten(monolithData, pointer.y, pointer.x);
+    }
+}
+
+function whiten(monolithData, y, x) {
+    if (x < 0 || x >= renderWidth || y < 0 || y >= renderHeight) return;
+
+    const monolithPos = convertToMonolithPos({ x: x, y: y });
+    // If not on the monolith
+    if (!monolithPos) return;
+    // If not editable return
+    if (monolithIndexes[(monolithPos.y * Const.MONOLITH_COLUMNS + monolithPos.x) * 4] > 0) return;
+
+    const monolithStartY = Const.MONOLITH_LINES + Const.MARGIN_BOTTOM - renderHeight - viewPosY;
+    const monolithposition = ((monolithPos.y - monolithStartY) * Const.MONOLITH_COLUMNS + monolithPos.x) * 4;
+    // If being put off the screen during the zoom return
+    // const displayPos = (y * renderWidth + x) * 4;
+    // if (displayPos > monolithData.length) return;
+
+    monolithData[monolithposition] += (255 - monolithData[monolithposition]) / 3;
+    monolithData[monolithposition + 1] += (255 - monolithData[monolithposition + 1]) / 3;
+    monolithData[monolithposition + 2] += (255 - monolithData[monolithposition + 2]) / 3;
 }

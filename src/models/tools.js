@@ -2,8 +2,8 @@
 import { windowHeight, windowWidth, renderWidth, renderHeight, changeViewPos, viewPosX, viewPosY, toggleZoom} from '../main';
 import { toggleMusic, playSound, toggleMute } from '../assets/sounds';
 import { drawPixel, getColor, eraseAllPixel, convertToMonolithPos, increaseMonolithHeight } from './monolith';
-import Klon from './klon';
 import { closeCurrentEvent, undo, redo } from './undoStack';
+import { imageCatalog, canvas } from './display';
 
 import { moveDrawing, bufferOnMonolith, saveToEthernity, APNGtoMonolith } from '../utils/imageManager';
 import Const from './constants';
@@ -242,14 +242,13 @@ function seisme() {
 
 export function clickManager(e) {
     let mousePos = mousePosInGrid(e);
+    console.log('Click', mousePos);
 
-    const GUIstartY = Math.floor((renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y);
-    const GUIstartX = Math.floor((renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X);
     if (
-        mousePos.x > GUIstartX &&
-        mousePos.x < GUIstartX + imageCatalog.palette.width &&
-        mousePos.y > GUIstartY &&
-        mousePos.y < GUIstartY + imageCatalog.palette.height
+        mousePos.x > imageCatalog.palette.x &&
+        mousePos.x < imageCatalog.palette.x + imageCatalog.palette.width &&
+        mousePos.y > imageCatalog.palette.y &&
+        mousePos.y < imageCatalog.palette.y + imageCatalog.palette.height
     ) {
         // clicked on GUI
 
@@ -285,6 +284,7 @@ export function clickManager(e) {
         if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 7, 3, 21, 4)) colorSwitch(e, 16);
     } else if (convertToMonolithPos(mousePos)) {
         // clicked on monolith
+        console.log('monolithPos', mousePos);
         startUsingTool(e, mousePos);
     }
 }
@@ -423,7 +423,7 @@ function importImage() {
                 y: 1,
                 paid: Const.FREE_DRAWING,
                 yMaxLegal: Const.FREE_DRAWING,
-                zIndex: Klon.USERPAINTED,
+                zIndex: 0,
             });
             // APNGtoMonolith(importedImage);
 
