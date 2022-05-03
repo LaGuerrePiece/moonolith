@@ -1,27 +1,17 @@
 // Imports des composants
 import { initialDecodeLandscape, lateDecodeLandscape, initialDecodeAnim, imageCatalog } from './assets/imageData';
 // Imports des fonctionnalités
-import {
-    clickManager,
-    keyManager,
-    scrollManager,
-    mousePosInGrid,
-    selectorUpdate,
-    touchManager,
-    togglePanMode,
-} from './models/tools';
+import { keyManager, scrollManager, mousePosInGrid, selectorUpdate, touchManager, togglePanMode } from './models/tools';
 import Const from './models/constants';
 import { chunkImport, getChunk } from './utils/web3';
-import { assemble } from './models/assembler';
 import { buildMonolith } from './models/monolith';
 import { base64ToBuffer, prepareBufferForApi } from './utils/imageManager';
 import { hammer } from 'hammerjs';
+import { initDisplay } from './models/display';
 
-export let canvas;
 export let viewPosY = 0;
 export let viewPosX = 0;
-let myImageData;
-let ctx;
+
 export let route;
 export let runeNumber;
 
@@ -46,6 +36,7 @@ async function initApp() {
     const OS = document.URL.split('OS=')[1];
     // Router
     route = runeNumber && OS ? 'Opensea API' : runeNumber ? 'Share specific rune' : 'normal';
+    console.log('route', route);
     await chunkImport();
     initialDecodeLandscape(InitialImports);
     buildMonolith();
@@ -54,34 +45,21 @@ async function initApp() {
     initDisplay();
     if (deviceType == 'mobile') mobileEventListener();
     lateDecodeLandscape(InitialImports);
-    console.log('route', route);
 }
 
 initApp();
 
-function initDisplay() {
-    canvas = document.createElement('canvas');
-    ctx = canvas.getContext('2d');
-    document.body.appendChild(canvas);
-
-    // Set canvas dimensions to the ratio of the screen size
-    canvas.width = renderWidth;
-    canvas.height = renderHeight;
-    if (deviceType != 'mobile') canvas.onmousedown = clickManager;
-
-    // Set canvas size to size of screen
-    canvas.style.width = '100%';
-    canvas.style.imageRendering = 'pixelated';
-    document.body.style.cssText = 'margin:0;padding:0;';
-
-    // Create image data of size nbColumns * nbRows
-    myImageData = ctx.createImageData(renderWidth, renderHeight);
-    requestAnimationFrame(update);
-
-    const providedY = parseInt(window.location.href.split('=')[1]);
-    if (providedY) changeViewPos(0, providedY);
+window.addEventListener('load', myInit, true);
+function myInit() {
+    console.log('jej2');
+    // ctx.drawImage(caly5, 0, 0);
+    // ctx.drawImage(caly4, 0, 0);
+    // ctx.drawImage(caly3, 0, 0);
+    // ctx.drawImage(caly2, 0, 0);
+    // ctx.drawImage(caly1, 0, 0);
+    // ctx.drawImage(caly0, 0, 0);
+    // requestAnimationFrame(update);
 }
-
 function mobileEventListener() {
     var hammertime = new Hammer(canvas);
 
@@ -113,12 +91,6 @@ function mobileEventListener() {
     document.addEventListener('touchstart', (e) => {
         touchManager(e);
     });
-}
-
-function update() {
-    myImageData.data.set(assemble(true));
-    ctx.putImageData(myImageData, 0, 0);
-    requestAnimationFrame(update);
 }
 
 //prettier-ignore
@@ -161,12 +133,12 @@ function zoomOut() {
     zoomState = false;
     refreshCanvas();
 }
-function refreshCanvas() {
-    selectorUpdate();
-    myImageData = ctx.createImageData(renderWidth, renderHeight);
-    canvas.width = renderWidth;
-    canvas.height = renderHeight;
-}
+// function refreshCanvas() {
+//     selectorUpdate();
+//     myImageData = ctx.createImageData(renderWidth, renderHeight);
+//     canvas.width = renderWidth;
+//     canvas.height = renderHeight;
+// }
 
 setInterval(() => {
     chunkImport();
