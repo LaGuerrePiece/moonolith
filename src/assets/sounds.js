@@ -3,7 +3,7 @@ music.loop = true;
 
 const rumble = new Audio('/src/assets/audio/rumble.mp3');
 
-export let muteState = false;
+export let muteState = true; // To toggle
 
 export function toggleMute() {
     if (muteState) {

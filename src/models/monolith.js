@@ -2,16 +2,24 @@ import Klon from './klon';
 import Const from './constants';
 import { addToCurrentEvent, closeCurrentEvent } from './undoStack';
 import { renderWidth, renderHeight, viewPosX, viewPosY } from '../main';
-import { imageCatalog } from '../assets/imageData';
 import { toggleRumble, playSound, muteState } from '../assets/sounds';
 
 export let monolith;
 
 export function buildMonolith() {
-    monolith = Array.from({ length: Const.MONOLITH_LINES }, () =>
-        Array.from({ length: Const.MONOLITH_COLUMNS }, () => new Klon(Const.DEFAULT_COLOR))
-    );
-    monolith[Const.MONOLITH_LINES - 1][Const.MONOLITH_COLUMNS - 1].transitionCount = 1;
+    let start = performance.now();
+    // monolith = Array.from({ length: Const.MONOLITH_LINES * Const.MONOLITH_COLUMNS }, () => [40, 40, 46, 255]).flat();
+    monolith = new Uint8ClampedArray(Const.MONOLITH_LINES * Const.MONOLITH_COLUMNS * 4);
+    for (let i = 0; i < Const.MONOLITH_LINES * Const.MONOLITH_COLUMNS * 4; i += 4) {
+        monolith[i] = 40;
+        monolith[i + 1] = 40;
+        monolith[i + 2] = 46;
+        monolith[i + 3] = 255;
+    }
+    console.log('time :', performance.now() - start);
+    console.log('monolith', monolith);
+
+    // monolith[Const.MONOLITH_LINES - 1][Const.MONOLITH_COLUMNS - 1].transitionCount = 1;
 }
 let lastPlayedSound = Date.now();
 

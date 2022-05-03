@@ -1,7 +1,5 @@
-// Imports des composants
-import { initialDecodeLandscape, lateDecodeLandscape, initialDecodeAnim, imageCatalog } from './assets/imageData';
 // Imports des fonctionnalités
-import { keyManager, scrollManager, mousePosInGrid, selectorUpdate, touchManager, togglePanMode } from './models/tools';
+import { keyManager, scrollManager, mousePosInGrid, touchManager, togglePanMode } from './models/tools';
 import Const from './models/constants';
 import { chunkImport, getChunk } from './utils/web3';
 import { buildMonolith } from './models/monolith';
@@ -38,28 +36,17 @@ async function initApp() {
     route = runeNumber && OS ? 'Opensea API' : runeNumber ? 'Share specific rune' : 'normal';
     console.log('route', route);
     await chunkImport();
-    initialDecodeLandscape(InitialImports);
+    // initialDecodeLandscape(InitialImports);
     buildMonolith();
-    await setInitialViewPos();
-    initialDecodeAnim(InitialImports);
+    // await setInitialViewPos();
+    // initialDecodeAnim(InitialImports);
     initDisplay();
     if (deviceType == 'mobile') mobileEventListener();
-    lateDecodeLandscape(InitialImports);
+    // lateDecodeLandscape(InitialImports);
 }
 
 initApp();
 
-window.addEventListener('load', myInit, true);
-function myInit() {
-    console.log('jej2');
-    // ctx.drawImage(caly5, 0, 0);
-    // ctx.drawImage(caly4, 0, 0);
-    // ctx.drawImage(caly3, 0, 0);
-    // ctx.drawImage(caly2, 0, 0);
-    // ctx.drawImage(caly1, 0, 0);
-    // ctx.drawImage(caly0, 0, 0);
-    // requestAnimationFrame(update);
-}
 function mobileEventListener() {
     var hammertime = new Hammer(canvas);
 
@@ -140,9 +127,9 @@ function zoomOut() {
 //     canvas.height = renderHeight;
 // }
 
-setInterval(() => {
-    chunkImport();
-}, 5000);
+// setInterval(() => {
+//     chunkImport();
+// }, 5000);
 
 export let pointer = { x: 0, y: 0 };
 document.addEventListener('mousemove', (e) => {

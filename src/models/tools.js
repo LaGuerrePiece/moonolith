@@ -1,6 +1,5 @@
 //prettier-ignore
 import { windowHeight, windowWidth, renderWidth, renderHeight, changeViewPos, viewPosX, viewPosY, toggleZoom} from '../main';
-import { imageCatalog } from '../assets/imageData';
 import { toggleMusic, playSound, toggleMute } from '../assets/sounds';
 import { drawPixel, getColor, eraseAllPixel, convertToMonolithPos, increaseMonolithHeight } from './monolith';
 import Klon from './klon';
@@ -454,19 +453,6 @@ function colorSwitch(e, color) {
         colorNumber2 = color;
         colorPicked2 = Const.GUI_PALETTE[color - 1];
     }
-    selectorUpdate();
-}
-
-export function selectorUpdate() {
-    let offset = 8;
-
-    let xPalette = Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X);
-    let yPalette = Math.floor(-(renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y);
-
-    imageCatalog.selector1.startX = xPalette - offset - colorNumber1 * 8 + Math.floor(colorNumber1 / 9) * 64;
-    imageCatalog.selector1.startY = yPalette + 1 - Math.floor(colorNumber1 / 9) * 8;
-    imageCatalog.selector2.startX = xPalette - offset - colorNumber2 * 8 + Math.floor(colorNumber2 / 9) * 64;
-    imageCatalog.selector2.startY = yPalette + 1 - Math.floor(colorNumber2 / 9) * 8;
 }
 
 function GUICircle(mousePos, GUIstartY, GUIstartX, y, x, radius) {
