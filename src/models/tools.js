@@ -1,24 +1,19 @@
 //prettier-ignore
-import { windowHeight, windowWidth, renderWidth, renderHeight, changeViewPos, viewPosX, viewPosY, toggleZoom, canvas} from '../main';
+import { windowHeight, windowWidth, renderWidth, renderHeight, changeViewPos, viewPosX, viewPosY, toggleZoom, canvas, deviceType} from '../main';
 import { imageCatalog } from '../assets/imageData';
 import { toggleMusic, playSound, toggleMute } from '../assets/sounds';
 import { drawPixel, getColor, eraseAllPixel, convertToMonolithPos, increaseMonolithHeight } from './monolith';
 import Klon from './klon';
 import { closeCurrentEvent, undo, redo } from './undoStack';
-
-import { moveDrawing, bufferOnMonolith, saveToEthernity, APNGtoMonolith } from '../utils/imageManager';
+import { moveDrawing, bufferOnMonolith, saveToEthernity } from '../utils/imageManager';
 import Const from './constants';
 
 //prettier-ignore
 export class Tool {   
-    static get DONE() { return 0 }
     static get SMOL() { return 1 }
     static get BIG() { return 3 }
     static get HUGE() { return 4 }
     static get GIGA() { return 5 }
-    static get PIPETTE() { return 2 }
-    static get DELETE() { return 6 }
-    static get MOVE() { return 7 }
 }
 
 export let tool = Tool.GIGA;
@@ -106,7 +101,7 @@ export function touchManager(e) {
         e = {
             x: Math.floor(e.center.x),
             y: Math.floor(e.center.y),
-            type: 'touch',
+            type: 'tap',
             button: 0,
         };
         clickManager(e);
@@ -114,18 +109,14 @@ export function touchManager(e) {
         touchPan(e);
         imageCatalog.palette.decodedYX = imageCatalog.palettePAN.decodedYX;
     } else if (!panMode) {
-        touchDraw(e);
-        paletteUpdate();
-    }
-
-    function touchDraw(e) {
         e = {
             x: Math.floor(e.changedTouches[0].clientX),
             y: Math.floor(e.changedTouches[0].clientY),
             type: 'touch',
             button: 0,
         };
-        startUsingTool(e);
+        clickManager(e);
+        paletteUpdate();
     }
 
     function touchPan(e) {
@@ -134,7 +125,6 @@ export function touchManager(e) {
             prevTouchX = e.touches[0].clientX;
         } else if (e.type === 'touchmove') {
             const touch = e.touches[0];
-            let deltaY = e.changedTouches[0].clientY - e.touches[0].clientY;
             const changedY = touch.clientY - prevTouchY;
             const changedX = touch.clientX - prevTouchX;
             changeViewPos(-Math.floor(changedX / 2), Math.floor(changedY / 2));
@@ -184,45 +174,45 @@ export function scrollManager(e) {
     if (viewPosY == -30 || viewPosY == Const.LINES - renderHeight) {
         clearInertia();
     }
-}
 
-function clearInertia() {
-    scrollInformation.inertiaEvents.forEach((event) => {
-        clearTimeout(event);
-    });
-}
-
-function inertia(consecutiveUp, consecutiveDown) {
-    if (
-        scrollInformation.upInertia > 6 &&
-        consecutiveUp === scrollInformation.consecutiveUp &&
-        scrollInformation.lastDirUp &&
-        scrollInformation.upInertia != scrollInformation.consecutiveUp
-    ) {
-        for (let i = parseInt(scrollInformation.consecutiveUp); i > 0; i--) {
-            setTimeout(function () {
-                if (scrollInformation.lastDirUp) {
-                    //console.log('Into intertia:', i);
-                    changeViewPos(0, 1);
-                }
-            }, i * 25);
-        }
-        scrollInformation.upInertia = 0;
+    function clearInertia() {
+        scrollInformation.inertiaEvents.forEach((event) => {
+            clearTimeout(event);
+        });
     }
-    if (
-        scrollInformation.downInertia > 7 &&
-        consecutiveDown == scrollInformation.consecutiveDown &&
-        !scrollInformation.lastDirUp
-    ) {
-        for (let i = parseInt(scrollInformation.consecutiveDown); i > 0; i--) {
-            setTimeout(function () {
-                if (!scrollInformation.lastDirUp) {
-                    //console.log('Into intertia:', i);
-                    changeViewPos(0, -1);
-                }
-            }, i * 25);
+
+    function inertia(consecutiveUp, consecutiveDown) {
+        if (
+            scrollInformation.upInertia > 6 &&
+            consecutiveUp === scrollInformation.consecutiveUp &&
+            scrollInformation.lastDirUp &&
+            scrollInformation.upInertia != scrollInformation.consecutiveUp
+        ) {
+            for (let i = parseInt(scrollInformation.consecutiveUp); i > 0; i--) {
+                setTimeout(function () {
+                    if (scrollInformation.lastDirUp) {
+                        //console.log('Into intertia:', i);
+                        changeViewPos(0, 1);
+                    }
+                }, i * 25);
+            }
+            scrollInformation.upInertia = 0;
         }
-        scrollInformation.downInertia = 0;
+        if (
+            scrollInformation.downInertia > 7 &&
+            consecutiveDown == scrollInformation.consecutiveDown &&
+            !scrollInformation.lastDirUp
+        ) {
+            for (let i = parseInt(scrollInformation.consecutiveDown); i > 0; i--) {
+                setTimeout(function () {
+                    if (!scrollInformation.lastDirUp) {
+                        //console.log('Into intertia:', i);
+                        changeViewPos(0, -1);
+                    }
+                }, i * 25);
+            }
+            scrollInformation.downInertia = 0;
+        }
     }
 }
 
@@ -245,45 +235,54 @@ export function clickManager(e) {
 
     const GUIstartY = Math.floor((renderHeight - imageCatalog.palette.height) / Const.GUI_RELATIVE_Y);
     const GUIstartX = Math.floor((renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X);
+    // clicked on GUI
     if (
         mousePos.x > GUIstartX &&
         mousePos.x < GUIstartX + imageCatalog.palette.width &&
         mousePos.y > GUIstartY &&
         mousePos.y < GUIstartY + imageCatalog.palette.height
     ) {
-        // clicked on GUI
-
         //BIG
         if (GUICircle(mousePos, GUIstartY, GUIstartX, 7, 7, 8)) {
             saveToEthernity();
             return;
-        } // !!! BUTTON
+        }
         if (GUICircle(mousePos, GUIstartY, GUIstartX, 7, 91, 8)) {
             brushSwitch();
             return;
-        } // ??? BUTTON
+        }
 
         playSound('click6');
         //SMALL
         //FIRST CIRCLE POSITION : 3, 21
         if (GUICircle(mousePos, GUIstartY, GUIstartX, 3, 21, 4)) colorSwitch(e, 1);
-        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 1, 3, 21, 4)) colorSwitch(e, 2);
-        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 2, 3, 21, 4)) colorSwitch(e, 3);
-        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 3, 3, 21, 4)) colorSwitch(e, 4);
-        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 4, 3, 21, 4)) colorSwitch(e, 5);
-        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 5, 3, 21, 4)) colorSwitch(e, 6);
-        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 6, 3, 21, 4)) colorSwitch(e, 7);
-        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 7, 3, 21, 4)) colorSwitch(e, 8);
+        else if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 1, 3, 21, 4)) colorSwitch(e, 2);
+        else if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 2, 3, 21, 4)) colorSwitch(e, 3);
+        else if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 3, 3, 21, 4)) colorSwitch(e, 4);
+        else if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 4, 3, 21, 4)) colorSwitch(e, 5);
+        else if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 5, 3, 21, 4)) colorSwitch(e, 6);
+        else if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 6, 3, 21, 4)) colorSwitch(e, 7);
+        else if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 7, 3, 21, 4)) colorSwitch(e, 8);
         //ROW 2
-        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX, 3, 21, 4)) colorSwitch(e, 9);
-        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 1, 3, 21, 4)) colorSwitch(e, 10);
-        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 2, 3, 21, 4)) colorSwitch(e, 11);
-        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 3, 3, 21, 4)) colorSwitch(e, 12);
-        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 4, 3, 21, 4)) colorSwitch(e, 13);
-        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 5, 3, 21, 4)) colorSwitch(e, 14);
-        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 6, 3, 21, 4)) colorSwitch(e, 15);
-        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 7, 3, 21, 4)) colorSwitch(e, 16);
+        else if (GUICircle(mousePos, GUIstartY + 8, GUIstartX, 3, 21, 4)) colorSwitch(e, 9);
+        else if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 1, 3, 21, 4)) colorSwitch(e, 10);
+        else if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 2, 3, 21, 4)) colorSwitch(e, 11);
+        else if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 3, 3, 21, 4)) colorSwitch(e, 12);
+        else if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 4, 3, 21, 4)) colorSwitch(e, 13);
+        else if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 5, 3, 21, 4)) colorSwitch(e, 14);
+        else if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 6, 3, 21, 4)) colorSwitch(e, 15);
+        else if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 7, 3, 21, 4)) colorSwitch(e, 16);
+    } else if (
+        // 2 icones supplémentaires sur mobile
+        e.type == 'tap' &&
+        (GUICircle(mousePos, GUIstartY, GUIstartX, 7 - 18, 7, 8) ||
+            GUICircle(mousePos, GUIstartY, GUIstartX, -11, 91, 8))
+    ) {
+        console.log('tap 1');
+        if (GUICircle(mousePos, GUIstartY, GUIstartX, -11, 7, 8)) toggleZoom();
+        else if (GUICircle(mousePos, GUIstartY, GUIstartX, -11, 91, 8)) togglePanMode();
     } else if (convertToMonolithPos(mousePos)) {
+        console.log('tap 2');
         // clicked on monolith
         startUsingTool(e, mousePos);
     }

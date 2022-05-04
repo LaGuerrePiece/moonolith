@@ -53,7 +53,22 @@ export function assemble() {
         startX: imageCatalog.selector1.startX,
     });
 
-    if (deviceType !== 'mobile') {
+    if (deviceType == 'mobile') {
+        layersToDisplay.push(
+            {
+                name: 'mobileZoom',
+                colorsArray: imageCatalog.mobileZoom.decodedYX,
+                startY: Math.floor(-(renderHeight - imageCatalog.mobileZoom.height) / Const.GUI_RELATIVE_Y + 17),
+                startX: Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X),
+            },
+            {
+                name: 'mobileMove',
+                colorsArray: imageCatalog.mobileMove.decodedYX,
+                startY: Math.floor(-(renderHeight - imageCatalog.mobileMove.height) / Const.GUI_RELATIVE_Y + 17),
+                startX: Math.floor(-(renderWidth - imageCatalog.palette.width) / Const.GUI_RELATIVE_X - 82),
+            }
+        );
+    } else {
         layersToDisplay.push({
             name: 'selector2',
             colorsArray: imageCatalog.selector2.decodedYX,
@@ -131,7 +146,7 @@ export function assemble() {
     // previousLandscape = displayArray;
 
     // Add the pointer
-    addPointer(displayArray, layersToDisplay);
+    if(deviceType !== 'mobile') addPointer(displayArray, layersToDisplay);
 
     activateOnce++;
     return displayArray;

@@ -1,5 +1,5 @@
 //prettier-ignore
-import { selectColorRed, selectColorBlue, caly0, caly1, caly2, caly3, caly4, caly5, caly6, calySide0, calySide1, slug, GUISweetie15, menu, paletteSMOL, paletteBIG, paletteHUGE, paletteGIGA, palettePAN } from './base64';
+import { selectColorRed, selectColorBlue, caly0, caly1, caly2, caly3, caly4, caly5, caly6, calySide0, calySide1, slug, GUISweetie15, menu, paletteSMOL, paletteBIG, paletteHUGE, paletteGIGA, palettePAN, mobileZoom, mobileMove } from './base64';
 import { base64ToBuffer, pngToBufferToRGBA8, ApngToBuffer } from '../utils/imageManager';
 import Const from '../models/constants';
 import { selectorUpdate } from '../models/tools';
@@ -13,6 +13,8 @@ export var imageCatalog = {
     paletteHUGE: { name: 'paletteHUGE', type: 'GUI', startX: 0, startY: 0, parallax: 0, base64: paletteHUGE },
     paletteGIGA: { name: 'paletteGIGA', type: 'GUI', startX: 0, startY: 0, parallax: 0, base64: paletteGIGA },
     palettePAN: { name: 'palettePAN', type: 'GUI', startX: 0, startY: 0, parallax: 0, base64: palettePAN },
+    mobileZoom: { name: 'mobileZoom', type: 'GUI', startX: 0, startY: 0, parallax: 0, base64: mobileZoom },
+    mobileMove: { name: 'mobileMove', type: 'GUI', startX: 0, startY: 0, parallax: 0, base64: mobileMove },
     menu: { name: 'menu', type: 'GUI', startX: 0, startY: 0, parallax: 0, base64: menu },
     caly0: { name: 'caly0', type: 'landscape', startX: 0, startY: 45, parallax: 0, base64: caly0 },
     calySide0: { name: 'calySide0', type: 'side', startX: 47, startY: 17, parallax: 0, base64: calySide0 },
