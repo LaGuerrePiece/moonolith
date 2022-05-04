@@ -112,10 +112,8 @@ export function increaseMonolithHeight(newRows) {
         }
     }, 200);
 
-    // Increase monolith height
+    // Increase monolith and monolithIndexes height
     let newMonolith = new Uint8ClampedArray((Const.MONOLITH_LINES + newRows) * Const.MONOLITH_COLUMNS * 4);
-    console.log('newMonolith', newMonolith);
-    console.log('monolith.length', monolith.length);
     newMonolith.set(monolith);
     for (let i = 0; i < newRows * Const.MONOLITH_COLUMNS * 4; i += 4) {
         const idx = Const.MONOLITH_LINES * Const.MONOLITH_COLUMNS * 4 + i;
@@ -124,12 +122,11 @@ export function increaseMonolithHeight(newRows) {
         newMonolith[idx + 2] = 60;
         newMonolith[idx + 3] = 255;
     }
-
     monolith = newMonolith;
-    // Increase monolithIndexes height
     monolithIndexes.push(
         ...Array.from({ length: newRows }, () => Array.from({ length: Const.MONOLITH_COLUMNS }, () => undefined))
     );
+
     // grows monolith
     setTimeout(() => {
         for (let rowAdded = 0; rowAdded < newRows; rowAdded++) {

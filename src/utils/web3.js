@@ -90,14 +90,10 @@ async function chunkImport() {
             });
         }
     }
-    importedChunks = meta.nbChunks;
-
     const monolithHeight = Math.floor(192 + (meta.nbKlon * meta.threshold) / (1000000 * Const.COLUMNS));
-    if (monolithHeight - Const.MONOLITH_LINES) {
-        increaseMonolithHeight(monolithHeight - Const.MONOLITH_LINES);
-    } else if (!Const.MONOLITH_LINES) {
-        Const.setMonolithHeight(monolithHeight);
-    }
+    if (!Const.MONOLITH_LINES) Const.setMonolithHeight(monolithHeight);
+    else if (importedChunks - meta.nbChunks !== 0) increaseMonolithHeight(monolithHeight - Const.MONOLITH_LINES);
+    importedChunks = meta.nbChunks;
 }
 
 export { chunkCreator, getChunk, getChunksFromPosition, chunkImport };
