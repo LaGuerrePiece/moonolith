@@ -55,6 +55,7 @@ export function keyManager(e){
     if (e.key === 'p') {increaseMonolithHeight(1000); seisme();}
     if (e.key === 't') { changeViewPos(0, 999999); }
     if (e.key === 'u') {seisme();}
+    if (e.key === 's') {saveToEthernity()}
 
     switch (e.code || e.key || e.keyCode) {
         case 'KeyW':
@@ -246,18 +247,19 @@ export function clickManager(e) {
 
     if (
         mousePos.x > imageCatalog.palette.x &&
-        mousePos.x < imageCatalog.palette.x + imageCatalog.palette.width &&
+        mousePos.x < imageCatalog.palette.x + imageCatalog.palette.img.width &&
         mousePos.y > imageCatalog.palette.y &&
-        mousePos.y < imageCatalog.palette.y + imageCatalog.palette.height
+        mousePos.y < imageCatalog.palette.y + imageCatalog.palette.img.height
     ) {
         // clicked on GUI
+        console.log('Clicked on the GUI');
 
         //BIG
-        if (GUICircle(mousePos, GUIstartY, GUIstartX, 7, 7, 8)) {
+        if (GUICircle(mousePos, 7, 7, 8)) {
             saveToEthernity();
             return;
         } // !!! BUTTON
-        if (GUICircle(mousePos, GUIstartY, GUIstartX, 7, 91, 8)) {
+        if (GUICircle(mousePos, 7, 91, 8)) {
             brushSwitch();
             return;
         } // ??? BUTTON
@@ -265,23 +267,23 @@ export function clickManager(e) {
         playSound('click6');
         //SMALL
         //FIRST CIRCLE POSITION : 3, 21
-        if (GUICircle(mousePos, GUIstartY, GUIstartX, 3, 21, 4)) colorSwitch(e, 1);
-        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 1, 3, 21, 4)) colorSwitch(e, 2);
-        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 2, 3, 21, 4)) colorSwitch(e, 3);
-        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 3, 3, 21, 4)) colorSwitch(e, 4);
-        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 4, 3, 21, 4)) colorSwitch(e, 5);
-        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 5, 3, 21, 4)) colorSwitch(e, 6);
-        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 6, 3, 21, 4)) colorSwitch(e, 7);
-        if (GUICircle(mousePos, GUIstartY, GUIstartX + 8 * 7, 3, 21, 4)) colorSwitch(e, 8);
+        if (GUICircle(mousePos, 3, 21, 4)) colorSwitch(e, 1);
+        if (GUICircle(mousePos, 3, 21 + 8 * 1, 4)) colorSwitch(e, 2);
+        if (GUICircle(mousePos, 3, 21 + 8 * 2, 4)) colorSwitch(e, 3);
+        if (GUICircle(mousePos, 3, 21 + 8 * 3, 4)) colorSwitch(e, 4);
+        if (GUICircle(mousePos, 3, 21 + 8 * 4, 4)) colorSwitch(e, 5);
+        if (GUICircle(mousePos, 3, 21 + 8 * 5, 4)) colorSwitch(e, 6);
+        if (GUICircle(mousePos, 3, 21 + 8 * 6, 4)) colorSwitch(e, 7);
+        if (GUICircle(mousePos, 3, 21 + 8 * 7, 4)) colorSwitch(e, 8);
         //ROW 2
-        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX, 3, 21, 4)) colorSwitch(e, 9);
-        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 1, 3, 21, 4)) colorSwitch(e, 10);
-        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 2, 3, 21, 4)) colorSwitch(e, 11);
-        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 3, 3, 21, 4)) colorSwitch(e, 12);
-        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 4, 3, 21, 4)) colorSwitch(e, 13);
-        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 5, 3, 21, 4)) colorSwitch(e, 14);
-        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 6, 3, 21, 4)) colorSwitch(e, 15);
-        if (GUICircle(mousePos, GUIstartY + 8, GUIstartX + 8 * 7, 3, 21, 4)) colorSwitch(e, 16);
+        if (GUICircle(mousePos, 11, 21, 4)) colorSwitch(e, 9);
+        if (GUICircle(mousePos, 11, 21 + 8 * 1, 4)) colorSwitch(e, 10);
+        if (GUICircle(mousePos, 11, 21 + 8 * 2, 4)) colorSwitch(e, 11);
+        if (GUICircle(mousePos, 11, 21 + 8 * 3, 4)) colorSwitch(e, 12);
+        if (GUICircle(mousePos, 11, 21 + 8 * 4, 4)) colorSwitch(e, 13);
+        if (GUICircle(mousePos, 11, 21 + 8 * 5, 4)) colorSwitch(e, 14);
+        if (GUICircle(mousePos, 11, 21 + 8 * 6, 4)) colorSwitch(e, 15);
+        if (GUICircle(mousePos, 11, 21 + 8 * 7, 4)) colorSwitch(e, 16);
     } else if (convertToMonolithPos(mousePos)) {
         // clicked on monolith
         console.log('monolithPos', mousePos);
@@ -455,9 +457,9 @@ function colorSwitch(e, color) {
     }
 }
 
-function GUICircle(mousePos, GUIstartY, GUIstartX, y, x, radius) {
+function GUICircle(mousePos, y, x, radius) {
     // Coordinates of the center are input in the GUI
-    y += GUIstartY;
-    x += GUIstartX;
+    y += imageCatalog.palette.y;
+    x += imageCatalog.palette.x;
     return Math.floor(mousePos.x - x) ** 2 + Math.floor(mousePos.y - y) ** 2 <= radius ** 2;
 }

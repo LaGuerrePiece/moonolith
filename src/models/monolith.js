@@ -18,13 +18,14 @@ export function buildMonolith() {
     }
     console.log('time :', performance.now() - start);
     console.log('monolith', monolith);
-    monolithIndexes = new Array(Const.MONOLITH_LINES).fill(new Array(Const.MONOLITH_COLUMNS).fill(0));
-    // console.log('monolithIndexes', monolithIndexes);
+    monolithIndexes = Array.from({ length: Const.MONOLITH_LINES }, () =>
+        Array.from({ length: Const.MONOLITH_COLUMNS }, () => undefined)
+    );
+    console.log('monolithIndexes', monolithIndexes);
 }
 let lastPlayedSound = Date.now();
 
 export function drawPixel(x, y, zIndex, color) {
-    // console.log('drawPixel', x, y, zIndex, color);
     const monolithPos = (y * Const.MONOLITH_COLUMNS + x) * 4;
     const monolithzIndex = monolithIndexes[y]?.[x];
     if (x < 0 || x >= Const.MONOLITH_COLUMNS || y < 0 || y >= Const.MONOLITH_LINES) return; //If out of bounds, return

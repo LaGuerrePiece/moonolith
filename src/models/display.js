@@ -65,8 +65,8 @@ export function initDisplay() {
                     Math.max(Const.MARGIN_BOTTOM - viewPosY, 0) -
                     Math.max(Const.MARGIN_TOP - (Const.LINES - viewPosY - renderHeight), 0);
                 let monolithData = ctx.createImageData(Const.MONOLITH_COLUMNS, monolithDisplayHeight);
-                const a = cutMonolith(monolithDisplayHeight);
-                monolithData.data.set(addPointer(a));
+                const a = addPointer(monolith.slice());
+                monolithData.data.set(cutMonolith(a, monolithDisplayHeight));
                 ctx.putImageData(
                     monolithData,
                     Const.MARGIN_LEFT,
@@ -78,13 +78,13 @@ export function initDisplay() {
     }
 }
 
-function cutMonolith(monolithDisplayHeight) {
+function cutMonolith(mono, monolithDisplayHeight) {
     // console.log('Const.MONOLITH_COLUMNS', Const.MONOLITH_COLUMNS, 'monolithDisplayHeight', monolithDisplayHeight);
     const startYCoordinate = Math.max(Const.MONOLITH_LINES + Const.MARGIN_BOTTOM - renderHeight - viewPosY, 0);
     const endYCoordinate = Math.min(startYCoordinate + monolithDisplayHeight, Const.MONOLITH_LINES);
     // console.log('startYCoordinate', startYCoordinate, 'endYCoordinate', endYCoordinate);
 
-    return monolith.slice(Const.MONOLITH_COLUMNS * 4 * startYCoordinate, Const.MONOLITH_COLUMNS * 4 * endYCoordinate);
+    return mono.subarray(Const.MONOLITH_COLUMNS * 4 * startYCoordinate, Const.MONOLITH_COLUMNS * 4 * endYCoordinate);
 }
 
 function updateCatalog() {

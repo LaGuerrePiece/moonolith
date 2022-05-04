@@ -27,8 +27,6 @@ export const deviceType = /(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.tes
     ? 'mobile'
     : 'desktop';
 
-let InitialImports = 18;
-
 async function initApp() {
     runeNumber = parseInt(document.URL.split('rune=')[1]);
     const OS = document.URL.split('OS=')[1];
@@ -124,9 +122,9 @@ function zoomOut() {
 //     canvas.height = renderHeight;
 // }
 
-// setInterval(() => {
-//     chunkImport();
-// }, 5000);
+setInterval(() => {
+    chunkImport();
+}, 5000);
 
 export let pointer = { x: 0, y: 0 };
 document.addEventListener('mousemove', (e) => {

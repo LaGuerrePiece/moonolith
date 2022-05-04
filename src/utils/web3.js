@@ -7,7 +7,7 @@ import { increaseMonolithHeight } from '../models/monolith';
 
 const provider = new ethers.providers.InfuraProvider('rinkeby');
 const iface = new Interface(contractABI);
-const contractAddress = '0x1593f13eC77e01Ec93B8c51846613Fe567b2258a';
+const contractAddress = '0x81562Eb4Cca96b4bC83C5F54cDe2d7406BfEc593';
 const contract = new ethers.Contract(contractAddress, contractABI, provider);
 let metamaskProvider;
 var metamaskContract;
@@ -73,33 +73,31 @@ async function getMetaData() {
 
 async function chunkImport() {
     let meta = await getMetaData();
-    console.log(meta);
+    // console.log(meta);
     // console.log('importedChunks', importedChunks, 'meta.nbChunks', meta.nbChunks);
-    // if (importedChunks !== meta.nbChunks || importedChunks == 1) {
-    //     for (let i = importedChunks; i <= meta.nbChunks; i++) {
-    //         getChunk(i).then((res) => {
-    //             console.log(res);
-    //             bufferOnMonolith({
-    //                 buffer: res[4],
-    //                 x: res[0].toNumber() % Const.MONOLITH_COLUMNS,
-    //                 y: Math.floor(res[0].toNumber() / Const.MONOLITH_COLUMNS),
-    //                 paid: res[3].toNumber(),
-    //                 yMaxLegal: res[2].toNumber() / 1000000,
-    //                 zIndex: i,
-    //             });
-    //         });
-    //     }
-    // }
-    // importedChunks = meta.nbChunks;
+    if (importedChunks !== meta.nbChunks || importedChunks == 1) {
+        for (let i = importedChunks; i <= meta.nbChunks; i++) {
+            getChunk(i).then((res) => {
+                // console.log(res);
+                bufferOnMonolith({
+                    buffer: res[4],
+                    x: res[0].toNumber() % Const.MONOLITH_COLUMNS,
+                    y: Math.floor(res[0].toNumber() / Const.MONOLITH_COLUMNS),
+                    paid: res[3].toNumber(),
+                    yMaxLegal: res[2].toNumber() / 1000000,
+                    zIndex: i,
+                });
+            });
+        }
+    }
+    importedChunks = meta.nbChunks;
 
-    const monolithHeightFormula = Const.COLUMNS * 64 + (meta.nbKlon * meta.threshold) / 1000000;
-    console.log('meta.nbKlon', meta.nbKlon);
-    const monolithHeight = Math.floor(monolithHeightFormula / Const.COLUMNS);
-    // if (monolithHeight - Const.MONOLITH_LINES) {
-    //     increaseMonolithHeight(monolithHeight - Const.MONOLITH_LINES);
-    // } else {
-    Const.setMonolithHeight(monolithHeight);
-    // }
+    const monolithHeight = Math.floor(192 + (meta.nbKlon * meta.threshold) / (1000000 * Const.COLUMNS));
+    if (monolithHeight - Const.MONOLITH_LINES) {
+        increaseMonolithHeight(monolithHeight - Const.MONOLITH_LINES);
+    } else if (!Const.MONOLITH_LINES) {
+        Const.setMonolithHeight(monolithHeight);
+    }
 }
 
 export { chunkCreator, getChunk, getChunksFromPosition, chunkImport };

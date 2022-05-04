@@ -1,6 +1,6 @@
 import { UPNG } from './upmc';
 import Const from '../models/constants';
-import { monolith, eraseAllPixel, drawPixel } from '../models/monolith';
+import { monolith, eraseAllPixel, drawPixel, monolithIndexes } from '../models/monolith';
 import { chunkCreator } from '../utils/web3';
 import LZString from 'lz-String';
 
@@ -124,15 +124,15 @@ async function bufferOnMonolith(data) {
     }
     let pixelDrawn = 0;
     let p = 0;
-    console.log('pixArray', pixArray);
     for (let y = data.y; y < data.yMaxLegal; y++) {
         for (let x = data.x; x < width + data.x; x++) {
             if (y >= data.yMaxLegal) return;
             if (pixelDrawn >= data.paid) return;
-            if (!monolith[y]?.[x]) continue;
-            if (pixArray[p] <= 0) return;
-            drawPixel(x, y, data.zIndex, Const.PALETTE[pixArray[p]]);
-            pixelDrawn++;
+            if (x < 0 || x >= Const.MONOLITH_COLUMNS || y < 0 || y >= Const.MONOLITH_LINES) continue;
+            if (pixArray[p] > 0) {
+                drawPixel(x, y, data.zIndex, Const.PALETTE[pixArray[p]]);
+                pixelDrawn++;
+            }
             p++;
         }
     }
@@ -188,10 +188,11 @@ function gridToArray() {
     let highLow = getHighLow();
     let pixelArray = [];
     let nbPix = 0;
-    for (let i = highLow.lowY; i <= highLow.highY; i++) {
-        for (let j = highLow.lowX; j <= highLow.highX; j++) {
-            if (monolith[i][j].zIndex === 0) {
-                pixelArray.push(...monolith[i][j].color, 255);
+    for (let y = highLow.lowY; y <= highLow.highY; y++) {
+        for (let x = highLow.lowX; x <= highLow.highX; x++) {
+            if (monolithIndexes[y][x] === 0) {
+                const monolithPos = (y * Const.MONOLITH_COLUMNS + x) * 4;
+                pixelArray.push(monolith[monolithPos], monolith[monolithPos + 1], monolith[monolithPos + 2], 255);
                 nbPix++;
             } else {
                 pixelArray.push(...[0, 0, 0, 0]);
@@ -210,19 +211,18 @@ function getHighLow() {
         highX = 0,
         highY = 0;
 
-    for (let i = 0; i < Const.MONOLITH_LINES; i++) {
-        for (let j = 0; j < Const.MONOLITH_COLUMNS; j++) {
-            if (monolith[i][j].zIndex === 0) {
-                if (j < lowX) lowX = j;
-                if (j > highX) highX = j;
-                if (i < lowY) lowY = i;
-                if (i > highY) highY = i;
+    for (let y = 0; y < Const.MONOLITH_LINES; y++) {
+        for (let x = 0; x < Const.MONOLITH_COLUMNS; x++) {
+            if (monolithIndexes[y][x] === 0) {
+                if (x < lowX) lowX = x;
+                if (x > highX) highX = x;
+                if (y < lowY) lowY = y;
+                if (y > highY) highY = y;
             }
         }
     }
     let longueur = highX - lowX + 1;
     let largeur = highY - lowY + 1;
-
     return { lowX, lowY, highX, highY, longueur, largeur };
 }
 function rgbaToColorArray(array) {
