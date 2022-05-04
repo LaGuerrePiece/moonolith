@@ -56,33 +56,31 @@ export function initDisplay() {
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         for (let image in imageCatalog) {
             const thisImage = imageCatalog[image];
-            // Draw layers
             if (thisImage.display) ctx.drawImage(thisImage.img, thisImage.x, thisImage.y);
-            if (image === 'plan2') {
-                // Draw Monolith
-                const monolithDisplayHeight =
-                    renderHeight -
-                    Math.max(Const.MARGIN_BOTTOM - viewPosY, 0) -
-                    Math.max(Const.MARGIN_TOP - (Const.LINES - viewPosY - renderHeight), 0);
-                let monolithData = ctx.createImageData(Const.MONOLITH_COLUMNS, monolithDisplayHeight);
-                const a = addPointer(monolith.slice());
-                monolithData.data.set(cutMonolith(a, monolithDisplayHeight));
-                ctx.putImageData(
-                    monolithData,
-                    Const.MARGIN_LEFT,
-                    Math.max(Const.MARGIN_TOP - (Const.LINES - viewPosY - renderHeight), 0)
-                );
-            }
+            if (image === 'plan2') drawMonolith(ctx);
         }
         requestAnimationFrame(update);
     }
 }
 
+function drawMonolith(ctx) {
+    const monolithDisplayHeight =
+        renderHeight -
+        Math.max(Const.MARGIN_BOTTOM - viewPosY, 0) -
+        Math.max(Const.MARGIN_TOP - (Const.LINES - viewPosY - renderHeight), 0);
+    let monolithData = ctx.createImageData(Const.MONOLITH_COLUMNS, monolithDisplayHeight);
+    const a = addPointer(monolith.slice());
+    monolithData.data.set(cutMonolith(a, monolithDisplayHeight));
+    ctx.putImageData(
+        monolithData,
+        Const.MARGIN_LEFT,
+        Math.max(Const.MARGIN_TOP - (Const.LINES - viewPosY - renderHeight), 0)
+    );
+}
+
 function cutMonolith(mono, monolithDisplayHeight) {
-    // console.log('Const.MONOLITH_COLUMNS', Const.MONOLITH_COLUMNS, 'monolithDisplayHeight', monolithDisplayHeight);
     const startYCoordinate = Math.max(Const.MONOLITH_LINES + Const.MARGIN_BOTTOM - renderHeight - viewPosY, 0);
     const endYCoordinate = Math.min(startYCoordinate + monolithDisplayHeight, Const.MONOLITH_LINES);
-    // console.log('startYCoordinate', startYCoordinate, 'endYCoordinate', endYCoordinate);
 
     return mono.subarray(Const.MONOLITH_COLUMNS * 4 * startYCoordinate, Const.MONOLITH_COLUMNS * 4 * endYCoordinate);
 }

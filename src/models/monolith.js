@@ -28,16 +28,16 @@ export function buildMonolith() {
 let lastPlayedSound = Date.now();
 
 export function drawPixel(x, y, zIndex, color) {
-    const monolithPos = (y * Const.MONOLITH_COLUMNS + x) * 4;
+    const pos = (y * Const.MONOLITH_COLUMNS + x) * 4;
     const monolithzIndex = monolithIndexes[y]?.[x];
     if (x < 0 || x >= Const.MONOLITH_COLUMNS || y < 0 || y >= Const.MONOLITH_LINES) return; //If out of bounds, return
     if (!isEditable(zIndex, monolithzIndex)) return; //If not editable, return
-    if (same(x, y, monolithPos, zIndex, color)) return; //If same, return
-    // if (zIndex === 0 || zIndex === undefined) addToCurrentEvent(x, y, currentKlon.target, currentKlon.zIndex); //If being drawn by user, add to curent event
-    monolith[monolithPos] = color[0];
-    monolith[monolithPos + 1] = color[1];
-    monolith[monolithPos + 2] = color[2];
-    // monolith[monolithPos + 3] = 255;
+    if (same(x, y, pos, zIndex, color)) return; //If same, return
+    if (zIndex === 0 || zIndex === undefined)
+        addToCurrentEvent(x, y, [monolith[pos], monolith[pos + 1], monolith[pos + 2]], monolithzIndex); //If being drawn by user, add to curent event
+    monolith[pos] = color[0];
+    monolith[pos + 1] = color[1];
+    monolith[pos + 2] = color[2];
     monolithIndexes[y][x] = zIndex;
 
     if (zIndex === 0 && lastPlayedSound + 40 < Date.now() && !muteState) {
