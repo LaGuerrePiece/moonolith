@@ -32,18 +32,74 @@ export let imageCatalog = {
     palettePAN: { fileName: 'palettePAN', type: 'GUI', display: false },
 };
 
+//prettier-ignore
 export let animCatalog = {
-    courgette: { fileName: 'courgette', type: 'legume', display: true, loop: true, base64: courgette64 },
+    courgette0: { fileName: 'courgette', type: 'legume', x: 31 * 0, y: 0, display: true, loop: true, base64: courgette64 },
+    // courgette1: { fileName: 'courgette', type: 'legume', x: 31 * 1, y: 0, display: true, loop: true, base64: courgette64 },
+    // courgette2: { fileName: 'courgette', type: 'legume', x: 31 * 2, y: 0, display: true, loop: true, base64: courgette64 },
+    // courgette3: { fileName: 'courgette', type: 'legume', x: 31 * 3, y: 0, display: true, loop: true, base64: courgette64 },
+    // courgette4: { fileName: 'courgette', type: 'legume', x: 31 * 4, y: 0, display: true, loop: true, base64: courgette64 },
+    // courgette5: { fileName: 'courgette', type: 'legume', x: 31 * 5, y: 0, display: true, loop: true, base64: courgette64 },
+    // courgette6: { fileName: 'courgette', type: 'legume', x: 31 * 6, y: 0, display: true, loop: true, base64: courgette64 },
+    // courgette7: { fileName: 'courgette', type: 'legume', x: 31 * 7, y: 0, display: true, loop: true, base64: courgette64 },
+    // courgette8: { fileName: 'courgette', type: 'legume', x: 31 * 8, y: 0, display: true, loop: true, base64: courgette64 },
+    // courgette9: { fileName: 'courgette', type: 'legume', x: 31 * 9, y: 0, display: true, loop: true, base64: courgette64 },
+    // courgetteA: { fileName: 'courgette', type: 'legume', x: 31 * 10, y: 0, display: true, loop: true, base64: courgette64 },
+    // courgetteB: { fileName: 'courgette', type: 'legume', x: 31 * 11, y: 0, display: true, loop: true, base64: courgette64 },
+    // courgetteC: { fileName: 'courgette', type: 'legume', x: 31 * 12, y: 0, display: true, loop: true, base64: courgette64 },
+    
+    // courgette10: { fileName: 'courgette', type: 'legume', x: 31 * 0, y: 35, display: true, loop: true, base64: courgette64 },
+    // courgette11: { fileName: 'courgette', type: 'legume', x: 31 * 1, y: 35, display: true, loop: true, base64: courgette64 },
+    // courgette12: { fileName: 'courgette', type: 'legume', x: 31 * 2, y: 35, display: true, loop: true, base64: courgette64 },
+    // courgette13: { fileName: 'courgette', type: 'legume', x: 31 * 3, y: 35, display: true, loop: true, base64: courgette64 },
+    // courgette14: { fileName: 'courgette', type: 'legume', x: 31 * 4, y: 35, display: true, loop: true, base64: courgette64 },
+    // courgette15: { fileName: 'courgette', type: 'legume', x: 31 * 5, y: 35, display: true, loop: true, base64: courgette64 },
+    // courgette16: { fileName: 'courgette', type: 'legume', x: 31 * 6, y: 35, display: true, loop: true, base64: courgette64 },
+    // courgette17: { fileName: 'courgette', type: 'legume', x: 31 * 7, y: 35, display: true, loop: true, base64: courgette64 },
+    // courgette18: { fileName: 'courgette', type: 'legume', x: 31 * 8, y: 35, display: true, loop: true, base64: courgette64 },
+    // courgette19: { fileName: 'courgette', type: 'legume', x: 31 * 9, y: 35, display: true, loop: true, base64: courgette64 },
+    // courgette1A: { fileName: 'courgette', type: 'legume', x: 31 * 10, y:35, display: true, loop: true, base64: courgette64 },
+    // courgette1B: { fileName: 'courgette', type: 'legume', x: 31 * 11, y:35, display: true, loop: true, base64: courgette64 },
+    // courgette1C: { fileName: 'courgette', type: 'legume', x: 31 * 12, y:35, display: true, loop: true, base64: courgette64 },
+
+    // courgette20: { fileName: 'courgette', type: 'legume', x: 31 * 0, y: 70, display: true, loop: true, base64: courgette64 },
+    // courgette21: { fileName: 'courgette', type: 'legume', x: 31 * 1, y: 70, display: true, loop: true, base64: courgette64 },
+    // courgette22: { fileName: 'courgette', type: 'legume', x: 31 * 2, y: 70, display: true, loop: true, base64: courgette64 },
+    // courgette23: { fileName: 'courgette', type: 'legume', x: 31 * 3, y: 70, display: true, loop: true, base64: courgette64 },
+    // courgette24: { fileName: 'courgette', type: 'legume', x: 31 * 4, y: 70, display: true, loop: true, base64: courgette64 },
+    // courgette25: { fileName: 'courgette', type: 'legume', x: 31 * 5, y: 70, display: true, loop: true, base64: courgette64 },
+    // courgette26: { fileName: 'courgette', type: 'legume', x: 31 * 6, y: 70, display: true, loop: true, base64: courgette64 },
+    // courgette27: { fileName: 'courgette', type: 'legume', x: 31 * 7, y: 70, display: true, loop: true, base64: courgette64 },
+    // courgette28: { fileName: 'courgette', type: 'legume', x: 31 * 8, y: 70, display: true, loop: true, base64: courgette64 },
+    // courgette29: { fileName: 'courgette', type: 'legume', x: 31 * 9, y: 70, display: true, loop: true, base64: courgette64 },
+    // courgette2A: { fileName: 'courgette', type: 'legume', x: 31 * 10, y:70, display: true, loop: true, base64: courgette64 },
+    // courgette2B: { fileName: 'courgette', type: 'legume', x: 31 * 11, y:70, display: true, loop: true, base64: courgette64 },
+    // courgette2C: { fileName: 'courgette', type: 'legume', x: 31 * 12, y:70, display: true, loop: true, base64: courgette64 },
+
+    // courgette30: { fileName: 'courgette', type: 'legume', x: 31 * 0, y: 105, display: true, loop: true, base64: courgette64 },
+    // courgette31: { fileName: 'courgette', type: 'legume', x: 31 * 1, y: 105, display: true, loop: true, base64: courgette64 },
+    // courgette32: { fileName: 'courgette', type: 'legume', x: 31 * 2, y: 105, display: true, loop: true, base64: courgette64 },
+    // courgette33: { fileName: 'courgette', type: 'legume', x: 31 * 3, y: 105, display: true, loop: true, base64: courgette64 },
+    // courgette34: { fileName: 'courgette', type: 'legume', x: 31 * 4, y: 105, display: true, loop: true, base64: courgette64 },
+    // courgette35: { fileName: 'courgette', type: 'legume', x: 31 * 5, y: 105, display: true, loop: true, base64: courgette64 },
+    // courgette36: { fileName: 'courgette', type: 'legume', x: 31 * 6, y: 105, display: true, loop: true, base64: courgette64 },
+    // courgette37: { fileName: 'courgette', type: 'legume', x: 31 * 7, y: 105, display: true, loop: true, base64: courgette64 },
+    // courgette38: { fileName: 'courgette', type: 'legume', x: 31 * 8, y: 105, display: true, loop: true, base64: courgette64 },
+    // courgette39: { fileName: 'courgette', type: 'legume', x: 31 * 9, y: 105, display: true, loop: true, base64: courgette64 },
+    // courgette3A: { fileName: 'courgette', type: 'legume', x: 31 * 10, y:105, display: true, loop: true, base64: courgette64 },
+    // courgette3B: { fileName: 'courgette', type: 'legume', x: 31 * 11, y:105, display: true, loop: true, base64: courgette64 },
+    // courgette3C: { fileName: 'courgette', type: 'legume', x: 31 * 12, y:105, display: true, loop: true, base64: courgette64 },
 };
 
 function frameInClock(anim) {
+    // console.log('anim', anim);
     let frame = 0;
     let delaySum = 0;
     while (delaySum < clock % anim.totalDelay) {
-        delaySum += anim.frames[frame].delay;
+        delaySum += anim.delay[frame];
         frame++;
     }
-    if (frame >= Object.keys(anim.frames).length) frame = 0;
+    if (frame >= anim.frames.length) frame = 0;
     return frame;
 }
 
@@ -66,6 +122,9 @@ export function initDisplay() {
         imageCatalog[image].img = new Image();
         imageCatalog[image].img.src = `/src/assets/images/${imageCatalog[image].fileName}.png`;
     }
+    for (let anim in animCatalog) {
+        animCatalog[anim].canvas = new OffscreenCanvas(animCatalog[anim].width, animCatalog[anim].height);
+    }
     requestAnimationFrame(update);
 
     function update() {
@@ -80,19 +139,33 @@ export function initDisplay() {
             if (thisImage.display) ctx.drawImage(thisImage.img, thisImage.x, thisImage.y);
             if (image === 'plan2') drawMonolith(ctx);
         }
-        for (let anim in animationCatalog) {
-            const thisAnim = animationCatalog[anim];
-            if (thisAnim.display) drawAnim(anim.frames[frameInClock(thisAnim)], anim, ctx);
+        for (let anim in animCatalog) {
+            const thisAnim = animCatalog[anim];
+            if (thisAnim.display) drawAnim(thisAnim.frames[frameInClock(thisAnim)], anim, ctx);
+            // console.log('frameInClock(thisAnim)', frameInClock(thisAnim));
         }
+        // let o = new OffscreenCanvas(3, 3);
+        // let ctxo = o.getContext('2d');
+        // let jejData = ctx.createImageData(3, 3);
+        // jejData.data.set([
+        //     0, 0, 0, 0, 0, 0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 255, 0,
+        //     0, 0, 0,
+        // ]);
+        // ctxo.putImageData(jejData, 0, 0);
+        // ctx.drawImage(o, 100, 100);
         requestAnimationFrame(update);
     }
 }
 
 function drawAnim(frame, name, ctx) {
-    let frameData = ctx.createImageData(animationCatalog[name].width, animationCatalog[name].height);
+    let ctxo = animCatalog[name].canvas.getContext('2d');
+    let frameData = ctxo.createImageData(animCatalog[name].width, animCatalog[name].height);
     frameData.data.set(frame);
-    ctx.putImageData(frameData, animationCatalog[name].x, animationCatalog[name].y);
+    ctxo.putImageData(frameData, 0, 0);
+    // console.log('o', o);
+    ctx.drawImage(animCatalog[name].canvas, animCatalog[name].x, animCatalog[name].y);
 }
+
 function drawMonolith(ctx) {
     const monolithDisplayHeight =
         renderHeight -
