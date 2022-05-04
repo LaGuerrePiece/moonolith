@@ -10,7 +10,7 @@ export let monolithIndexes;
 export function buildMonolith() {
     let start = performance.now();
     // monolith = Array.from({ length: Const.MONOLITH_LINES * Const.MONOLITH_COLUMNS }, () => [40, 40, 46, 255]).flat();
-    monolith = new Uint8Array(Const.MONOLITH_LINES * Const.MONOLITH_COLUMNS * 4);
+    monolith = new Uint8ClampedArray(Const.MONOLITH_LINES * Const.MONOLITH_COLUMNS * 4);
     for (let i = 0; i < Const.MONOLITH_LINES * Const.MONOLITH_COLUMNS * 4; i += 4) {
         monolith[i] = 50;
         monolith[i + 1] = 44;
@@ -117,10 +117,17 @@ export function increaseMonolithHeight(newRows) {
         for (let rowAdded = 0; rowAdded < newRows; rowAdded++) {
             let scalingValue = 1000 * Math.log(rowAdded);
             setTimeout(() => {
-                // monolith[Const.MONOLITH_COLUMNS * Const.MONOLITH_LINES * 4 + 1] = 50;
-                monolith.push(...[Array.from({ length: Const.MONOLITH_COLUMNS }, () => new Klon(Const.DEFAULT_COLOR))]);
+                // Increase monolith height
+                let newMonolith = new Uint8ClampedArray((Const.MONOLITH_LINES + 1) * Const.MONOLITH_COLUMNS * 4);
+                newMonolith.set(monolith);
+                newMonolith.set(
+                    Array.from({ length: Const.MONOLITH_COLUMNS }, () => [50, 44, 60, 255]).flat(),
+                    Const.MONOLITH_LINES * Const.MONOLITH_COLUMNS * 4
+                );
+                monolith = newMonolith;
+                // Increase monolithIndexes height
+                monolithIndexes.push(Array.from({ length: Const.MONOLITH_COLUMNS }, () => undefined));
                 Const.setMonolithHeight(Const.MONOLITH_LINES + 1);
-                console.log('monolith', monolith);
             }, scalingValue);
         }
     }, 2000);
