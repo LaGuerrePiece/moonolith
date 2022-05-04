@@ -3,7 +3,7 @@ import { keyManager, scrollManager, mousePosInGrid, touchManager, togglePanMode 
 import Const from './models/constants';
 import { chunkImport, getChunk } from './utils/web3';
 import { buildMonolith } from './models/monolith';
-import { base64ToBuffer, prepareBufferForApi } from './utils/imageManager';
+import { base64ToBuffer, parseAPNG, prepareBufferForApi } from './utils/imageManager';
 import { hammer } from 'hammerjs';
 import { initDisplay } from './models/display';
 
@@ -33,6 +33,7 @@ async function initApp() {
     // Router
     route = runeNumber && OS ? 'Opensea API' : runeNumber ? 'Share specific rune' : 'normal';
     console.log('route', route);
+    parseAPNG()
     await chunkImport();
     buildMonolith();
     // await setInitialViewPos();

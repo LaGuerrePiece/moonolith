@@ -5,7 +5,7 @@ import { drawPixel, getColor, eraseAllPixel, convertToMonolithPos, increaseMonol
 import { closeCurrentEvent, undo, redo } from './undoStack';
 import { imageCatalog, canvas } from './display';
 
-import { moveDrawing, bufferOnMonolith, saveToEthernity, APNGtoMonolith } from '../utils/imageManager';
+import { moveDrawing, bufferOnMonolith, saveToEthernity } from '../utils/imageManager';
 import Const from './constants';
 
 //prettier-ignore
@@ -427,7 +427,6 @@ function importImage() {
                 yMaxLegal: Const.FREE_DRAWING,
                 zIndex: 0,
             });
-            // APNGtoMonolith(importedImage);
 
             //! NE PAS SUPPRIMER LES LIGNES CI-DESSOUS !//
             let base64 = btoa(

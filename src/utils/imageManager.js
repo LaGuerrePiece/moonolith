@@ -3,6 +3,7 @@ import Const from '../models/constants';
 import { monolith, eraseAllPixel, drawPixel, monolithIndexes } from '../models/monolith';
 import { chunkCreator } from '../utils/web3';
 import LZString from 'lz-String';
+import { animCatalog } from '../models/display';
 
 function saveToEthernity() {
     monolithToBase64().then((data) => {
@@ -10,48 +11,27 @@ function saveToEthernity() {
     });
 }
 
-async function APNGtoMonolith(buffer) {
-    new Promise((resolve) => {
-        buffer = UPNG.decode(buffer);
-        resolve(buffer);
-    }).then((buffer) => {
-        for (let frame = 0; frame < 51; frame++) {
-            let decodedFrame = UPNG.toRGBA8(buffer)[frame];
-            setTimeout(() => {
-                animBufferOnMonolith({
-                    buffer: new Uint8Array(decodedFrame),
-                    width: buffer.width,
-                    height: buffer.height,
-                    x: 5,
-                    y: 45,
-                    zIndex: 0,
-                    paid: 99999,
-                });
-                eraseAllPixel();
-            }, 100 * frame);
-        }
-    });
+export async function parseAPNG() {
+    //Imports a few layers of animation
+    let importedAnimations = 0;
+    let animations = Object.keys(animCatalog);
 
-    async function animBufferOnMonolith(data) {
-        let pixelDrawn = 0;
-        let decalage = 0;
-        for (let y = data.y; y < 350; y++) {
-            for (let x = data.x; x < data.width + data.x; x++) {
-                if (pixelDrawn >= data.paid) return;
-                if (!monolith[y]?.[x]) continue;
-                if (data.buffer[decalage + 3] > 0) {
-                    monolith[y][x].color = [
-                        data.buffer[decalage] / 255,
-                        data.buffer[decalage + 1] / 255,
-                        data.buffer[decalage + 2] / 255,
-                    ];
-                    monolith[y][x].zIndex = data.zIndex;
-                    pixelDrawn++;
-                }
-                decalage += 4;
-            }
-        }
+    for (let i = animations.length - 1; i >= 0; i--) {
+        decodeAndFormatAnimation(animations[i]);
+        importedAnimations++;
     }
+}
+
+async function decodeAndFormatAnimation(index) {
+    let thisAnim = animCatalog[index];
+    let decoded = await ApngToBuffer(base64ToBuffer(thisAnim.base64)).catch(console.error);
+    thisAnim.frames = decoded.frames
+    thisAnim.delay = decoded.delay
+    thisAnim.totalDelay = decoded.delay.reduce((a, b)=> a + b,0);
+    thisAnim.width = decoded.width;
+    thisAnim.height = decoded.height;
+    delete thisAnim.base64
+    console.log(thisAnim)
 }
 
 export async function ApngToBuffer(buffer) {
@@ -297,5 +277,4 @@ export {
     pngToBufferToRGB,
     prepareBufferForApi,
     bufferOnMonolith,
-    APNGtoMonolith,
 };

@@ -1,3 +1,4 @@
+import { courgette64 } from '../assets/base64';
 import { renderHeight, renderWidth, viewPosX, viewPosY, deviceType, pointer } from '../main';
 import Const from './constants';
 import { convertToMonolithPos, monolith, monolithIndexes } from './monolith';
@@ -25,6 +26,10 @@ export let imageCatalog = {
     paletteGIGA: { fileName: 'paletteGIGA', type: 'GUI', display: false },
     palettePAN: { fileName: 'palettePAN', type: 'GUI', display: false },
 };
+
+export let animCatalog = {
+    courgette: { fileName: 'courgette', type: 'legume', display: true, loop: true, base64: courgette64 },
+}
 
 export let canvas = document.createElement('canvas');
 
