@@ -1,6 +1,6 @@
 import Const from './constants';
 import { addToCurrentEvent, closeCurrentEvent } from './undoStack';
-import { renderWidth, renderHeight, viewPosX, viewPosY } from '../main';
+import { renderWidth, renderHeight, viewPosX, viewPosY, changeViewPos } from '../main';
 import { toggleRumble, playSound, muteState } from '../assets/sounds';
 import { imageCatalog } from './display';
 
@@ -101,7 +101,7 @@ export function increaseMonolithHeight(newRows) {
                 let direction = Math.floor(Math.random() * 2) * 2 - 1; //-1 or 1
                 switch (offset) {
                     case 0:
-                        thisLayer.startX = 1 * direction;
+                        thisLayer.startX = -2 + direction;
                         break;
                     case 1:
                     case 2:
@@ -110,7 +110,11 @@ export function increaseMonolithHeight(newRows) {
                 }
             }
         }
-    }, 200);
+    }, 60);
+
+    const shakeViewPos = setInterval(() => {
+        changeViewPos(Math.floor(Math.random() * 3) - 1, Math.floor(Math.random() * 3) - 1);
+    }, 20);
 
     // Increase monolith and monolithIndexes height
     let newMonolith = new Uint8ClampedArray((Const.MONOLITH_LINES + newRows) * Const.MONOLITH_COLUMNS * 4);
@@ -140,6 +144,7 @@ export function increaseMonolithHeight(newRows) {
     //clear landscape shake
     setTimeout(() => {
         clearInterval(shakeLandscape);
+        clearInterval(shakeViewPos);
         for (let layer in imageCatalog) {
             const thisLayer = imageCatalog[layer];
             if (thisLayer.type === 'landscape') {
