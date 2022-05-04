@@ -112,21 +112,29 @@ export function increaseMonolithHeight(newRows) {
         }
     }, 200);
 
+    // Increase monolith height
+    let newMonolith = new Uint8ClampedArray((Const.MONOLITH_LINES + newRows) * Const.MONOLITH_COLUMNS * 4);
+    console.log('newMonolith', newMonolith);
+    console.log('monolith.length', monolith.length);
+    newMonolith.set(monolith);
+    for (let i = 0; i < newRows * Const.MONOLITH_COLUMNS * 4; i += 4) {
+        const idx = Const.MONOLITH_LINES * Const.MONOLITH_COLUMNS * 4 + i;
+        newMonolith[idx] = 50;
+        newMonolith[idx + 1] = 44;
+        newMonolith[idx + 2] = 60;
+        newMonolith[idx + 3] = 255;
+    }
+
+    monolith = newMonolith;
+    // Increase monolithIndexes height
+    monolithIndexes.push(
+        ...Array.from({ length: newRows }, () => Array.from({ length: Const.MONOLITH_COLUMNS }, () => undefined))
+    );
     // grows monolith
     setTimeout(() => {
         for (let rowAdded = 0; rowAdded < newRows; rowAdded++) {
             let scalingValue = 1000 * Math.log(rowAdded);
             setTimeout(() => {
-                // Increase monolith height
-                let newMonolith = new Uint8ClampedArray((Const.MONOLITH_LINES + 1) * Const.MONOLITH_COLUMNS * 4);
-                newMonolith.set(monolith);
-                newMonolith.set(
-                    Array.from({ length: Const.MONOLITH_COLUMNS }, () => [50, 44, 60, 255]).flat(),
-                    Const.MONOLITH_LINES * Const.MONOLITH_COLUMNS * 4
-                );
-                monolith = newMonolith;
-                // Increase monolithIndexes height
-                monolithIndexes.push(Array.from({ length: Const.MONOLITH_COLUMNS }, () => undefined));
                 Const.setMonolithHeight(Const.MONOLITH_LINES + 1);
             }, scalingValue);
         }

@@ -144,15 +144,6 @@ export function initDisplay() {
             if (thisAnim.display) drawAnim(thisAnim.frames[frameInClock(thisAnim)], anim, ctx);
             // console.log('frameInClock(thisAnim)', frameInClock(thisAnim));
         }
-        // let o = new OffscreenCanvas(3, 3);
-        // let ctxo = o.getContext('2d');
-        // let jejData = ctx.createImageData(3, 3);
-        // jejData.data.set([
-        //     0, 0, 0, 0, 0, 0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 255, 0,
-        //     0, 0, 0,
-        // ]);
-        // ctxo.putImageData(jejData, 0, 0);
-        // ctx.drawImage(o, 100, 100);
         requestAnimationFrame(update);
     }
 }
