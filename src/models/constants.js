@@ -20,7 +20,6 @@ export default class Const {
   
   static setMonolithHeight(height) {
     monolithHeight = height
-    console.log('monolith height set to ' + height)
   }
 
     // COLORS

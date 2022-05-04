@@ -52,7 +52,7 @@ export function keyManager(e){
     if (e.key === 'r') {tool = Tool.GIGA; playSound('kick'); paletteUpdate();}
     if (e.key === 'k') toggleMusic();
     if (e.key === 'l') toggleMute();
-    if (e.key === 'p') {increaseMonolithHeight(1000); seisme();}
+    if (e.key === 'p') {increaseMonolithHeight(100); seisme();}
     if (e.key === 't') { changeViewPos(0, 999999); }
     if (e.key === 'u') {seisme();}
     if (e.key === 's') {saveToEthernity()}

@@ -2,6 +2,7 @@ import Const from './constants';
 import { addToCurrentEvent, closeCurrentEvent } from './undoStack';
 import { renderWidth, renderHeight, viewPosX, viewPosY } from '../main';
 import { toggleRumble, playSound, muteState } from '../assets/sounds';
+import { imageCatalog } from './display';
 
 export let monolith;
 export let monolithIndexes;
@@ -9,7 +10,7 @@ export let monolithIndexes;
 export function buildMonolith() {
     let start = performance.now();
     // monolith = Array.from({ length: Const.MONOLITH_LINES * Const.MONOLITH_COLUMNS }, () => [40, 40, 46, 255]).flat();
-    monolith = new Uint8ClampedArray(Const.MONOLITH_LINES * Const.MONOLITH_COLUMNS * 4);
+    monolith = new Uint8Array(Const.MONOLITH_LINES * Const.MONOLITH_COLUMNS * 4);
     for (let i = 0; i < Const.MONOLITH_LINES * Const.MONOLITH_COLUMNS * 4; i += 4) {
         monolith[i] = 50;
         monolith[i + 1] = 44;
@@ -18,6 +19,7 @@ export function buildMonolith() {
     }
     console.log('time :', performance.now() - start);
     console.log('monolith', monolith);
+
     monolithIndexes = Array.from({ length: Const.MONOLITH_LINES }, () =>
         Array.from({ length: Const.MONOLITH_COLUMNS }, () => undefined)
     );
@@ -55,9 +57,9 @@ function isEditable(newZIndex, oldZIndex) {
 
 function same(x, y, monolithPos, zIndex, color) {
     if (
-        monolith[monolithPos][0] === color[0] &&
-        monolith[monolithPos][1] === color[1] &&
-        monolith[monolithPos][2] === color[2] &&
+        monolith[monolithPos] === color[0] &&
+        monolith[monolithPos + 1] === color[1] &&
+        monolith[monolithPos + 2] === color[2] &&
         monolithIndexes[y][x] === zIndex
     )
         return true;
@@ -94,7 +96,7 @@ export function increaseMonolithHeight(newRows) {
     const shakeLandscape = setInterval(() => {
         for (let layer in imageCatalog) {
             const thisLayer = imageCatalog[layer];
-            if (thisLayer.type === 'landscape' && thisLayer.name !== 'caly0') {
+            if (thisLayer.type === 'landscape' && layer !== 'caly0') {
                 let offset = Math.floor(Math.random() * 3);
                 let direction = Math.floor(Math.random() * 2) * 2 - 1; //-1 or 1
                 switch (offset) {
@@ -103,25 +105,22 @@ export function increaseMonolithHeight(newRows) {
                         break;
                     case 1:
                     case 2:
-                        thisLayer.startX = 0;
+                        thisLayer.startX = -2;
                         break;
                 }
             }
         }
     }, 200);
 
-    //grows monolith
+    // grows monolith
     setTimeout(() => {
         for (let rowAdded = 0; rowAdded < newRows; rowAdded++) {
             let scalingValue = 1000 * Math.log(rowAdded);
             setTimeout(() => {
-                Const.setMonolithHeight(Const.MONOLITH_LINES + 1);
+                // monolith[Const.MONOLITH_COLUMNS * Const.MONOLITH_LINES * 4 + 1] = 50;
                 monolith.push(...[Array.from({ length: Const.MONOLITH_COLUMNS }, () => new Klon(Const.DEFAULT_COLOR))]);
-                //MET A JOUR LES STARTY :
-                for (let layer in imageCatalog) {
-                    const thisLayer = imageCatalog[layer];
-                    if (thisLayer.type === 'side') thisLayer.startY++;
-                }
+                Const.setMonolithHeight(Const.MONOLITH_LINES + 1);
+                console.log('monolith', monolith);
             }, scalingValue);
         }
     }, 2000);
@@ -132,7 +131,7 @@ export function increaseMonolithHeight(newRows) {
         for (let layer in imageCatalog) {
             const thisLayer = imageCatalog[layer];
             if (thisLayer.type === 'landscape') {
-                thisLayer.startX = 0;
+                thisLayer.startX = -2;
             }
         }
         toggleRumble();

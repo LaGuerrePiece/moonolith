@@ -5,25 +5,25 @@ import { clickManager, colorNumber1, colorNumber2 } from './tools';
 import { tool, Tool } from './tools';
 
 export let imageCatalog = {
-    plan5: { fileName: 'plan5', type: 'landscape', startX: 0, startY: 250, parallax: 0.9, display: true },
-    plan4: { fileName: 'plan4', type: 'landscape', startX: 0, startY: 200, parallax: 0.4, display: true },
-    plan3: { fileName: 'plan3', type: 'landscape', startX: 0, startY: 150, parallax: 0.3, display: true },
-    plan2: { fileName: 'plan2', type: 'landscape', startX: 0, startY: 100, parallax: 0.2, display: true },
+    plan5: { fileName: 'plan5', type: 'landscape', startX: -2, startY: 250, parallax: 0.9, display: true },
+    plan4: { fileName: 'plan4', type: 'landscape', startX: -2, startY: 200, parallax: 0.4, display: true },
+    plan3: { fileName: 'plan3', type: 'landscape', startX: -2, startY: 150, parallax: 0.3, display: true },
+    plan2: { fileName: 'plan2', type: 'landscape', startX: -2, startY: 100, parallax: 0.2, display: true },
     // calySide3: { fileName: 'calySideRepet', type: 'side', startX: 0, startY: 742, parallax: 0, display: true },
     // calySide2: { fileName: 'calySideRepet', type: 'side', startX: 0, startY: 526, parallax: 0, display: true },
     // calySide1: { fileName: 'calySideRepet', type: 'side', startX: 0, startY: 310, parallax: 0, display: true },
-    moonolithSide: { fileName: 'moonolithSide', type: 'side', startX: 0, startY: 0, parallax: 0, display: true },
-    plan1: { fileName: 'plan1', type: 'landscape', startX: 0, startY: 50, parallax: 0.1, display: true },
-    plan0: { fileName: 'plan0', type: 'landscape', startX: 0, startY: 0, parallax: 0.1, display: true },
-    panneau: { fileName: 'panneau', type: 'GUI', startX: 0, startY: 0, parallax: 0, display: false },
-    selector2: { fileName: 'selector2', type: 'GUI', startX: 0, startY: 0, parallax: 0, display: true },
-    selector1: { fileName: 'selector1', type: 'GUI', startX: 0, startY: 0, parallax: 0, display: true },
-    palette: { fileName: 'paletteHUGE', type: 'GUI', startX: 0, startY: 0, parallax: 0, display: true },
-    paletteSMOL: { fileName: 'paletteSMOL', type: 'GUI', startX: 0, startY: 0, parallax: 0, display: false },
-    paletteBIG: { fileName: 'paletteBIG', type: 'GUI', startX: 0, startY: 0, parallax: 0, display: false },
-    paletteHUGE: { fileName: 'paletteHUGE', type: 'GUI', startX: 0, startY: 0, parallax: 0, display: false },
-    paletteGIGA: { fileName: 'paletteGIGA', type: 'GUI', startX: 0, startY: 0, parallax: 0, display: false },
-    palettePAN: { fileName: 'palettePAN', type: 'GUI', startX: 0, startY: 0, parallax: 0, display: false },
+    moonolithSide: { fileName: 'moonolithSide', type: 'side', display: true },
+    plan1: { fileName: 'plan1', type: 'landscape', startX: -2, startY: 50, parallax: 0.1, display: true },
+    plan0: { fileName: 'plan0', type: 'landscape', startX: -2, startY: 0, parallax: 0.1, display: true },
+    panneau: { fileName: 'panneau', type: 'GUI', display: false },
+    selector2: { fileName: 'selector2', type: 'GUI', display: true },
+    selector1: { fileName: 'selector1', type: 'GUI', display: true },
+    palette: { fileName: 'paletteHUGE', type: 'GUI', display: true },
+    paletteSMOL: { fileName: 'paletteSMOL', type: 'GUI', display: false },
+    paletteBIG: { fileName: 'paletteBIG', type: 'GUI', display: false },
+    paletteHUGE: { fileName: 'paletteHUGE', type: 'GUI', display: false },
+    paletteGIGA: { fileName: 'paletteGIGA', type: 'GUI', display: false },
+    palettePAN: { fileName: 'palettePAN', type: 'GUI', display: false },
 };
 
 export let canvas = document.createElement('canvas');
@@ -51,7 +51,7 @@ export function initDisplay() {
         updateCatalog();
         // console.log(imageCatalog);
 
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = 'rgb(196, 130, 127)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         for (let image in imageCatalog) {
