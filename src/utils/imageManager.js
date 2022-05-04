@@ -124,15 +124,15 @@ async function bufferOnMonolith(data) {
     }
     let pixelDrawn = 0;
     let p = 0;
+    console.log('pixArray', pixArray);
     for (let y = data.y; y < data.yMaxLegal; y++) {
         for (let x = data.x; x < width + data.x; x++) {
             if (y >= data.yMaxLegal) return;
             if (pixelDrawn >= data.paid) return;
             if (!monolith[y]?.[x]) continue;
-            if (pixArray[p] > 0) {
-                drawPixel(x, y, data.zIndex, Const.PALETTE[pixArray[p]]);
-                pixelDrawn++;
-            }
+            if (pixArray[p] <= 0) return;
+            drawPixel(x, y, data.zIndex, Const.PALETTE[pixArray[p]]);
+            pixelDrawn++;
             p++;
         }
     }

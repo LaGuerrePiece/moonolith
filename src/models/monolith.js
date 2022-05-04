@@ -24,6 +24,7 @@ export function buildMonolith() {
 let lastPlayedSound = Date.now();
 
 export function drawPixel(x, y, zIndex, color) {
+    // console.log('drawPixel', x, y, zIndex, color);
     const monolithPos = (y * Const.MONOLITH_COLUMNS + x) * 4;
     const monolithzIndex = monolithIndexes[y]?.[x];
     if (x < 0 || x >= Const.MONOLITH_COLUMNS || y < 0 || y >= Const.MONOLITH_LINES) return; //If out of bounds, return
@@ -33,6 +34,7 @@ export function drawPixel(x, y, zIndex, color) {
     monolith[monolithPos] = color[0];
     monolith[monolithPos + 1] = color[1];
     monolith[monolithPos + 2] = color[2];
+    // monolith[monolithPos + 3] = 255;
     monolithIndexes[y][x] = zIndex;
 
     if (zIndex === 0 && lastPlayedSound + 40 < Date.now() && !muteState) {

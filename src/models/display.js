@@ -5,16 +5,16 @@ import { clickManager, colorNumber1, colorNumber2 } from './tools';
 import { tool, Tool } from './tools';
 
 export let imageCatalog = {
-    plan5: { fileName: 'plan5', type: 'landscape', startX: 0, startY: 343, parallax: 0.9, display: true },
-    plan4: { fileName: 'plan4', type: 'landscape', startX: 0, startY: 290, parallax: 0.4, display: true },
-    plan3: { fileName: 'plan3', type: 'landscape', startX: 0, startY: 225, parallax: 0.3, display: true },
-    plan2: { fileName: 'plan2', type: 'landscape', startX: 0, startY: 150, parallax: 0.2, display: true },
-    plan1: { fileName: 'plan1', type: 'landscape', startX: 0, startY: 85, parallax: 0.1, display: true },
+    plan5: { fileName: 'plan5', type: 'landscape', startX: 0, startY: 250, parallax: 0.9, display: true },
+    plan4: { fileName: 'plan4', type: 'landscape', startX: 0, startY: 200, parallax: 0.4, display: true },
+    plan3: { fileName: 'plan3', type: 'landscape', startX: 0, startY: 150, parallax: 0.3, display: true },
+    plan2: { fileName: 'plan2', type: 'landscape', startX: 0, startY: 100, parallax: 0.2, display: true },
     // calySide3: { fileName: 'calySideRepet', type: 'side', startX: 0, startY: 742, parallax: 0, display: true },
     // calySide2: { fileName: 'calySideRepet', type: 'side', startX: 0, startY: 526, parallax: 0, display: true },
     // calySide1: { fileName: 'calySideRepet', type: 'side', startX: 0, startY: 310, parallax: 0, display: true },
-    moonolithSide: { fileName: 'moonolithSide', type: 'side', startX: -149, startY: -17, parallax: 0, display: true },
-    plan0: { fileName: 'plan0', type: 'landscape', startX: 0, startY: 85, parallax: 0.1, display: true },
+    moonolithSide: { fileName: 'moonolithSide', type: 'side', startX: 0, startY: 0, parallax: 0, display: true },
+    plan1: { fileName: 'plan1', type: 'landscape', startX: 0, startY: 50, parallax: 0.1, display: true },
+    plan0: { fileName: 'plan0', type: 'landscape', startX: 0, startY: 0, parallax: 0.1, display: true },
     panneau: { fileName: 'panneau', type: 'GUI', startX: 0, startY: 0, parallax: 0, display: false },
     selector2: { fileName: 'selector2', type: 'GUI', startX: 0, startY: 0, parallax: 0, display: true },
     selector1: { fileName: 'selector1', type: 'GUI', startX: 0, startY: 0, parallax: 0, display: true },
@@ -52,23 +52,39 @@ export function initDisplay() {
         // console.log(imageCatalog);
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = 'rgb(196, 130, 127)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
         for (let image in imageCatalog) {
             const thisImage = imageCatalog[image];
             // Draw layers
             if (thisImage.display) ctx.drawImage(thisImage.img, thisImage.x, thisImage.y);
-            if (image === 'plan3') {
+            if (image === 'plan2') {
                 // Draw Monolith
                 const monolithDisplayHeight =
-                    viewPosY < Const.MARGIN_BOTTOM ? renderHeight - Const.MARGIN_BOTTOM + viewPosY : renderHeight;
+                    renderHeight -
+                    Math.max(Const.MARGIN_BOTTOM - viewPosY, 0) -
+                    Math.max(Const.MARGIN_TOP - (Const.LINES - viewPosY - renderHeight), 0);
                 let monolithData = ctx.createImageData(Const.MONOLITH_COLUMNS, monolithDisplayHeight);
                 const a = cutMonolith(monolithDisplayHeight);
-                addPointer(a);
-                monolithData.data.set(a);
-                ctx.putImageData(monolithData, 50, 0);
+                monolithData.data.set(addPointer(a));
+                ctx.putImageData(
+                    monolithData,
+                    Const.MARGIN_LEFT,
+                    Math.max(Const.MARGIN_TOP - (Const.LINES - viewPosY - renderHeight), 0)
+                );
             }
         }
         requestAnimationFrame(update);
     }
+}
+
+function cutMonolith(monolithDisplayHeight) {
+    // console.log('Const.MONOLITH_COLUMNS', Const.MONOLITH_COLUMNS, 'monolithDisplayHeight', monolithDisplayHeight);
+    const startYCoordinate = Math.max(Const.MONOLITH_LINES + Const.MARGIN_BOTTOM - renderHeight - viewPosY, 0);
+    const endYCoordinate = Math.min(startYCoordinate + monolithDisplayHeight, Const.MONOLITH_LINES);
+    // console.log('startYCoordinate', startYCoordinate, 'endYCoordinate', endYCoordinate);
+
+    return monolith.slice(Const.MONOLITH_COLUMNS * 4 * startYCoordinate, Const.MONOLITH_COLUMNS * 4 * endYCoordinate);
 }
 
 function updateCatalog() {
@@ -76,7 +92,7 @@ function updateCatalog() {
         const thisImage = imageCatalog[image];
         if (thisImage.type === 'landscape') {
             const parallaxOffset = Math.floor(thisImage.parallax * viewPosY);
-            thisImage.y = renderHeight + parallaxOffset + viewPosY - thisImage.startY; //- thisImage.img.height,
+            thisImage.y = renderHeight + parallaxOffset + viewPosY - thisImage.img.height - thisImage.startY;
             thisImage.x = thisImage.startX - viewPosX;
         } else if (image === 'palette') {
             thisImage.y = Math.floor((renderHeight - imageCatalog.palette.img.height) / Const.GUI_RELATIVE_Y);
@@ -93,19 +109,12 @@ function updateCatalog() {
             thisImage.y = imageCatalog.palette.y - 1 + Math.floor(colorNumber2 / 9) * 8;
             thisImage.x = imageCatalog.palette.x + offset + colorNumber2 * 8 - Math.floor(colorNumber2 / 9) * 64;
         } else if (thisImage.type === 'side') {
-            thisImage.y = 0; //A fix
-            thisImage.x = Const.MONOLITH_COLUMNS + Const.MARGIN_LEFT + thisImage.startX;
+            thisImage.y = renderHeight + viewPosY - Const.MONOLITH_LINES - Const.MARGIN_BOTTOM - 7;
+            thisImage.x = Const.MARGIN_LEFT;
         }
     }
     imageCatalog.panneau.display = isInSquare(180, 187, 14, 18, pointer.x, pointer.y) ? true : false;
     imageCatalog.selector2.display = deviceType === 'mobile' ? false : true;
-}
-
-function cutMonolith(monolithDisplayHeight) {
-    const monolithStartY = Const.MONOLITH_LINES + Const.MARGIN_BOTTOM - renderHeight - viewPosY;
-    const monolithEndY = monolithStartY + monolithDisplayHeight;
-
-    return monolith.slice(Const.MONOLITH_COLUMNS * 4 * monolithStartY, Const.MONOLITH_COLUMNS * 4 * monolithEndY);
 }
 
 function isInSquare(xmin, xmax, ymin, ymax, pointerX, pointerY) {
@@ -163,6 +172,7 @@ function addPointer(monolithData) {
         }
         whiten(monolithData, pointer.y, pointer.x);
     }
+    return monolithData;
 }
 
 function whiten(monolithData, y, x) {
@@ -172,15 +182,16 @@ function whiten(monolithData, y, x) {
     // If not on the monolith
     if (!monolithPos) return;
     // If not editable return
-    if (monolithIndexes[(monolithPos.y * Const.MONOLITH_COLUMNS + monolithPos.x) * 4] > 0) return;
+    const posOnMonolith = (monolithPos.y * Const.MONOLITH_COLUMNS + monolithPos.x) * 4;
+    if (monolithIndexes[posOnMonolith] > 0) return;
 
-    const monolithStartY = Const.MONOLITH_LINES + Const.MARGIN_BOTTOM - renderHeight - viewPosY;
-    const monolithposition = ((monolithPos.y - monolithStartY) * Const.MONOLITH_COLUMNS + monolithPos.x) * 4;
+    // const monolithStartY = Const.MONOLITH_LINES + Const.MARGIN_BOTTOM - renderHeight - viewPosY;
+    // const monolithposition = ((monolithPos.y - monolithStartY) * Const.MONOLITH_COLUMNS + monolithPos.x) * 4;
     // If being put off the screen during the zoom return
     // const displayPos = (y * renderWidth + x) * 4;
     // if (displayPos > monolithData.length) return;
 
-    monolithData[monolithposition] += (255 - monolithData[monolithposition]) / 3;
-    monolithData[monolithposition + 1] += (255 - monolithData[monolithposition + 1]) / 3;
-    monolithData[monolithposition + 2] += (255 - monolithData[monolithposition + 2]) / 3;
+    monolithData[posOnMonolith] += (255 - monolithData[posOnMonolith]) / 3;
+    monolithData[posOnMonolith + 1] += (255 - monolithData[posOnMonolith + 1]) / 3;
+    monolithData[posOnMonolith + 2] += (255 - monolithData[posOnMonolith + 2]) / 3;
 }

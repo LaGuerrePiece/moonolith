@@ -7,7 +7,7 @@ import { increaseMonolithHeight } from '../models/monolith';
 
 const provider = new ethers.providers.InfuraProvider('rinkeby');
 const iface = new Interface(contractABI);
-const contractAddress = '0xF119ee077eA217716F38Eb263781C3DC95740C4d';
+const contractAddress = '0x1593f13eC77e01Ec93B8c51846613Fe567b2258a';
 const contract = new ethers.Contract(contractAddress, contractABI, provider);
 let metamaskProvider;
 var metamaskContract;
@@ -73,12 +73,12 @@ async function getMetaData() {
 
 async function chunkImport() {
     let meta = await getMetaData();
-    //console.log(meta);
+    console.log(meta);
     // console.log('importedChunks', importedChunks, 'meta.nbChunks', meta.nbChunks);
     // if (importedChunks !== meta.nbChunks || importedChunks == 1) {
     //     for (let i = importedChunks; i <= meta.nbChunks; i++) {
     //         getChunk(i).then((res) => {
-    //             //console.log(res);
+    //             console.log(res);
     //             bufferOnMonolith({
     //                 buffer: res[4],
     //                 x: res[0].toNumber() % Const.MONOLITH_COLUMNS,
@@ -90,7 +90,7 @@ async function chunkImport() {
     //         });
     //     }
     // }
-    importedChunks = meta.nbChunks;
+    // importedChunks = meta.nbChunks;
 
     const monolithHeightFormula = Const.COLUMNS * 64 + (meta.nbKlon * meta.threshold) / 1000000;
     console.log('meta.nbKlon', meta.nbKlon);

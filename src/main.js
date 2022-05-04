@@ -36,13 +36,10 @@ async function initApp() {
     route = runeNumber && OS ? 'Opensea API' : runeNumber ? 'Share specific rune' : 'normal';
     console.log('route', route);
     await chunkImport();
-    // initialDecodeLandscape(InitialImports);
     buildMonolith();
     // await setInitialViewPos();
-    // initialDecodeAnim(InitialImports);
     initDisplay();
     if (deviceType == 'mobile') mobileEventListener();
-    // lateDecodeLandscape(InitialImports);
 }
 
 initApp();
@@ -91,7 +88,7 @@ export function changeViewPos(inputX, inputY) {
     viewPosX += inputX;
     viewPosY += inputY;
     if (viewPosY + renderHeight > Const.LINES) viewPosY = Const.LINES - renderHeight;
-    if (viewPosY < -30) viewPosY = -30;
+    if (viewPosY < 0) viewPosY = 0;
     if (viewPosX < 0) viewPosX = 0;
     if (viewPosX + renderWidth > Const.COLUMNS) viewPosX = Const.COLUMNS - renderWidth;
 }
