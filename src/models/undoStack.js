@@ -1,4 +1,5 @@
-import { monolith } from './monolith';
+import { monolith, monolithIndexes } from './monolith';
+import Const from './constants';
 
 // Arrays of events
 let eventStack = [];
@@ -22,21 +23,24 @@ const addToCurrentEvent = (x, y, oldColor, oldZIndex) => {
 };
 
 const undo = () => {
+    console.log('undo');
     if (eventStack.length === 0) return;
     if (currentEvent.length > 0) return;
 
     const eventToUndo = eventStack.pop();
 
     for (let change of eventToUndo) {
+        const pos = (change.y * Const.MONOLITH_COLUMNS + change.x) * 4;
         inverseCurrentEvent.push({
             x: change.x,
             y: change.y,
-            oldColor: monolith[change.y][change.x].target,
-            oldZIndex: monolith[change.y][change.x].zIndex,
+            oldColor: [monolith[pos], monolith[pos + 1], monolith[pos + 2]],
+            oldZIndex: monolithIndexes[change.y][change.x],
         });
-
-        monolith[change.y][change.x].setTargetColor(change.oldColor);
-        monolith[change.y][change.x].zIndex = change.oldZIndex;
+        monolith[pos] = change.oldColor[0];
+        monolith[pos + 1] = change.oldColor[1];
+        monolith[pos + 2] = change.oldColor[2];
+        monolithIndexes[change.y][change.x] = change.oldZIndex;
     }
 
     inverseEventStack.push(inverseCurrentEvent);
@@ -45,20 +49,24 @@ const undo = () => {
 };
 
 const redo = () => {
+    console.log('redo');
     if (inverseEventStack.length === 0) return;
     if (currentEvent.length > 0) return;
 
     const eventToRedo = inverseEventStack.pop();
 
     for (let change of eventToRedo) {
+        const pos = (change.y * Const.MONOLITH_COLUMNS + change.x) * 4;
         currentEvent.push({
             x: change.x,
             y: change.y,
-            oldColor: monolith[change.y][change.x].target,
-            oldZIndex: monolith[change.y][change.x].zIndex,
+            oldColor: [monolith[pos], monolith[pos + 1], monolith[pos + 2]],
+            oldZIndex: monolithIndexes[change.y][change.x],
         });
-        monolith[change.y][change.x].setTargetColor(change.oldColor);
-        monolith[change.y][change.x].zIndex = change.oldZIndex;
+        monolith[pos] = change.oldColor[0];
+        monolith[pos + 1] = change.oldColor[1];
+        monolith[pos + 2] = change.oldColor[2];
+        monolithIndexes[change.y][change.x] = change.oldZIndex;
     }
 
     eventStack.push(currentEvent);
