@@ -5,6 +5,11 @@ import { convertToMonolithPos, monolith, monolithIndexes } from './monolith';
 import { clickManager, colorNumber1, colorNumber2 } from './tools';
 import { tool, Tool } from './tools';
 
+var clock = 0;
+setInterval(() => {
+    clock += 100;
+}, 100);
+
 export let imageCatalog = {
     plan5: { fileName: 'plan5', type: 'landscape', startX: -2, startY: 250, parallax: 0.9, display: true },
     plan4: { fileName: 'plan4', type: 'landscape', startX: -2, startY: 200, parallax: 0.4, display: true },
@@ -29,6 +34,17 @@ export let imageCatalog = {
 
 export let animCatalog = {
     courgette: { fileName: 'courgette', type: 'legume', display: true, loop: true, base64: courgette64 },
+};
+
+function frameInClock(anim) {
+    let frame = 0;
+    let delaySum = 0;
+    while (delaySum < clock % anim.totalDelay) {
+        delaySum += anim.frames[frame].delay;
+        frame++;
+    }
+    if (frame >= Object.keys(anim.frames).length) frame = 0;
+    return frame;
 }
 
 export let canvas = document.createElement('canvas');
@@ -64,10 +80,19 @@ export function initDisplay() {
             if (thisImage.display) ctx.drawImage(thisImage.img, thisImage.x, thisImage.y);
             if (image === 'plan2') drawMonolith(ctx);
         }
+        for (let anim in animationCatalog) {
+            const thisAnim = animationCatalog[anim];
+            if (thisAnim.display) drawAnim(anim.frames[frameInClock(thisAnim)], anim, ctx);
+        }
         requestAnimationFrame(update);
     }
 }
 
+function drawAnim(frame, name, ctx) {
+    let frameData = ctx.createImageData(animationCatalog[name].width, animationCatalog[name].height);
+    frameData.data.set(frame);
+    ctx.putImageData(frameData, animationCatalog[name].x, animationCatalog[name].y);
+}
 function drawMonolith(ctx) {
     const monolithDisplayHeight =
         renderHeight -
