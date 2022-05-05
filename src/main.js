@@ -5,7 +5,7 @@ import { chunkImport, getChunk } from './utils/web3';
 import { buildMonolith } from './models/monolith';
 import { base64ToBuffer, parseAPNG, prepareBufferForApi } from './utils/imageManager';
 import { hammer } from 'hammerjs';
-import { initDisplay } from './models/display';
+import { canvas, initDisplay } from './models/display';
 
 export let viewPosY = 0;
 export let viewPosX = 0;
@@ -95,11 +95,17 @@ export function changeViewPos(inputX, inputY) {
 let zoomState = false;
 let zoomFactor = 2.5;
 export function toggleZoom() {
-    if (renderWidth === Const.COLUMNS) {
-        zoomIn();
-    } else if (renderWidth !== Const.COLUMNS) {
-        zoomOut();
+    if (canvas.style.transform === 'scale(2)') {
+        canvas.style.transform = 'scale(1)';
+    } else {
+        canvas.style.transform = 'scale(2)';
     }
+
+    // if (renderWidth === Const.COLUMNS) {
+    //     zoomIn();
+    // } else if (renderWidth !== Const.COLUMNS) {
+    //     zoomOut();
+    // }
 }
 function zoomIn() {
     renderWidth = Math.floor(renderWidth / zoomFactor);

@@ -416,8 +416,11 @@ function paletteUpdate() {
 paletteUpdate();
 
 export function mousePosInGrid(e) {
-    let x = Math.floor((e.x / windowWidth) * renderWidth);
-    let y = Math.floor((e.y / windowHeight) * renderHeight);
+    const boundingClientRect = canvas.getBoundingClientRect();
+    let y = Math.floor(((e.y - boundingClientRect.y) * renderHeight) / boundingClientRect.height);
+    let x = Math.floor(((e.x - boundingClientRect.x) * renderWidth) / boundingClientRect.width);
+    // console.log('mousePosInGrid', x, y);
+
     return { x: x, y: y };
 }
 

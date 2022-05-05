@@ -1,5 +1,5 @@
 import { courgette64 } from '../assets/base64';
-import { renderHeight, renderWidth, viewPosX, viewPosY, deviceType, pointer } from '../main';
+import { renderHeight, renderWidth, viewPosX, viewPosY, deviceType, pointer, windowHeight } from '../main';
 import Const from './constants';
 import { convertToMonolithPos, monolith, monolithIndexes } from './monolith';
 import { clickManager, colorNumber1, colorNumber2 } from './tools';
@@ -169,7 +169,7 @@ function drawMonolith(ctx) {
     monolithData.data.set(cutMonolith(a, monolithDisplayHeight));
     ctx.putImageData(
         monolithData,
-        Const.MARGIN_LEFT,
+        Const.MARGIN_LEFT - viewPosX,
         Math.max(Const.MARGIN_TOP - (Const.LINES - viewPosY - renderHeight), 0)
     );
 }
@@ -189,7 +189,17 @@ function updateCatalog() {
             thisImage.y = renderHeight + parallaxOffset + viewPosY - thisImage.img.height - thisImage.startY;
             thisImage.x = thisImage.startX - viewPosX;
         } else if (thisImage.type === 'palette') {
-            thisImage.y = Math.floor((renderHeight - imageCatalog.paletteSMOL.img.height) / Const.GUI_RELATIVE_Y);
+            const boundingClientRect = canvas.getBoundingClientRect();
+            thisImage.y = Math.floor(
+                ((windowHeight - boundingClientRect.y) * (renderHeight / boundingClientRect.height) -
+                    imageCatalog.paletteSMOL.img.height) /
+                    Const.GUI_RELATIVE_Y
+            );
+            // thisImage.x = Math.floor(
+            //     ((windowWidth - boundingClientRect.x) * (renderWidth / boundingClientRect.width) -
+            //         imageCatalog.paletteSMOL.img.width) /
+            //         Const.GUI_RELATIVE_X
+            // );
             thisImage.x = Math.floor((renderWidth - imageCatalog.paletteSMOL.img.width) / Const.GUI_RELATIVE_X);
         } else if (thisImage.type === 'popup') {
             thisImage.y = Math.floor((renderHeight - imageCatalog.panneau.img.height) / 2 - 6);
@@ -204,7 +214,7 @@ function updateCatalog() {
             thisImage.x = imageCatalog.paletteSMOL.x + offset + colorNumber2 * 8 - Math.floor(colorNumber2 / 9) * 64;
         } else if (thisImage.type === 'side') {
             thisImage.y = thisImage.startY + renderHeight + viewPosY - Const.MONOLITH_LINES - Const.MARGIN_BOTTOM - 7;
-            thisImage.x = thisImage.startX + Const.MARGIN_LEFT;
+            thisImage.x = thisImage.startX + Const.MARGIN_LEFT - viewPosX;
         }
     }
     imageCatalog.panneau.display = isInSquare(227, 239, 188, 196, pointer.x, pointer.y) ? true : false;
