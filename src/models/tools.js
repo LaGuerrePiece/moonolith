@@ -270,6 +270,19 @@ export function clickManager(e) {
         if (GUICircle(mousePos, 11, 21 + 8 * 5, 4)) colorSwitch(e, 14);
         if (GUICircle(mousePos, 11, 21 + 8 * 6, 4)) colorSwitch(e, 15);
         if (GUICircle(mousePos, 11, 21 + 8 * 7, 4)) colorSwitch(e, 16);
+    } else if (imageCatalog.share.display) {
+        if (
+            !(
+                mousePos.x > imageCatalog.share.x &&
+                mousePos.x < imageCatalog.share.x + imageCatalog.share.img.width &&
+                mousePos.y > imageCatalog.share.y &&
+                mousePos.y < imageCatalog.share.y + imageCatalog.share.img.height
+            )
+        ) {
+            imageCatalog.share.display = false;
+        } else {
+            console.log('Clicked on the share mode');
+        }
     } else if (convertToMonolithPos(mousePos)) {
         // clicked on monolith
         console.log('monolithPos', mousePos);

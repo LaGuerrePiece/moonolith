@@ -21,7 +21,8 @@ export let imageCatalog = {
     moonolithSide3: { fileName: 'moonolithSide', type: 'side', startY: 1226, startX: 255, display: true },
     plan1: { fileName: 'plan1', type: 'landscape', startX: -2, startY: 80, parallax: 0, display: true },
     plan0: { fileName: 'plan0', type: 'landscape', startX: -2, startY: 0, parallax: -0.15, display: true },
-    panneau: { fileName: 'panneau', type: 'GUI', display: false },
+    panneau: { fileName: 'panneau', type: 'popup', display: false },
+    share: { fileName: 'share', type: 'popup', display: false },
     selector2: { fileName: 'selector2', type: 'GUI', display: true },
     selector1: { fileName: 'selector1', type: 'GUI', display: true },
     paletteSMOL: { fileName: 'paletteSMOL', type: 'palette', display: false },
@@ -142,6 +143,7 @@ export function initDisplay() {
             const thisAnim = animCatalog[anim];
             if (thisAnim.display) drawAnim(thisAnim.frames[frameInClock(thisAnim)], anim, ctx);
         }
+
         requestAnimationFrame(update);
     }
 }
@@ -187,7 +189,7 @@ function updateCatalog() {
         } else if (thisImage.type === 'palette') {
             thisImage.y = Math.floor((renderHeight - imageCatalog.paletteSMOL.img.height) / Const.GUI_RELATIVE_Y);
             thisImage.x = Math.floor((renderWidth - imageCatalog.paletteSMOL.img.width) / Const.GUI_RELATIVE_X);
-        } else if (image === 'panneau') {
+        } else if (thisImage.type === 'popup') {
             thisImage.y = Math.floor((renderHeight - imageCatalog.panneau.img.height) / 2 - 6);
             thisImage.x = Math.floor((Const.COLUMNS - imageCatalog.panneau.img.width) / 2);
         } else if (image === 'selector1') {
