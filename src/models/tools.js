@@ -281,7 +281,22 @@ export function clickManager(e) {
         ) {
             imageCatalog.share.display = false;
         } else {
-            console.log('Clicked on the share mode');
+            console.log('img', imageCatalog.share.x, imageCatalog.share.y);
+            if (
+                mousePos.x > imageCatalog.share.x + 15 &&
+                mousePos.x < imageCatalog.share.x + 115 &&
+                mousePos.y > imageCatalog.share.y + 30 &&
+                mousePos.y < imageCatalog.share.y + imageCatalog.share.img.height - 25
+            ) {
+                console.log('Clicked on OpenSea');
+            } else if (
+                mousePos.x > imageCatalog.share.x + 122 &&
+                mousePos.x < imageCatalog.share.x + 215 &&
+                mousePos.y > imageCatalog.share.y + 30 &&
+                mousePos.y < imageCatalog.share.y + imageCatalog.share.img.height - 27
+            ) {
+                console.log('Clicked on Share');
+            }
         }
     } else if (convertToMonolithPos(mousePos)) {
         // clicked on monolith
