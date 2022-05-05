@@ -3,6 +3,7 @@ import { addToCurrentEvent, closeCurrentEvent } from './undoStack';
 import { renderWidth, renderHeight, viewPosX, viewPosY, changeViewPos } from '../main';
 import { toggleRumble, playSound, muteState } from '../assets/sounds';
 import { imageCatalog } from './display';
+import { animatedPixels } from '../utils/runeAnims';
 
 export let monolith;
 export let monolithIndexes;
@@ -35,10 +36,16 @@ export function drawPixel(x, y, zIndex, color) {
     if (same(x, y, pos, zIndex, color)) return; //If same, return
     if (zIndex === 0 || zIndex === undefined)
         addToCurrentEvent(x, y, [monolith[pos], monolith[pos + 1], monolith[pos + 2]], monolithzIndex); //If being drawn by user, add to curent event
-    monolith[pos] = color[0];
-    monolith[pos + 1] = color[1];
-    monolith[pos + 2] = color[2];
+
     monolithIndexes[y][x] = zIndex;
+    const transitionType = zIndex === 0 ? 'draw' : zIndex === undefined ? 'erase' : undefined;
+    if (transitionType) {
+        animatedPixels[pos] = [pos, transitionType, color, 1];
+    } else {
+        monolith[pos] = color[0];
+        monolith[pos + 1] = color[1];
+        monolith[pos + 2] = color[2];
+    }
 
     if (zIndex === 0 && lastPlayedSound + 40 < Date.now() && !muteState) {
         playSound('click5p26');

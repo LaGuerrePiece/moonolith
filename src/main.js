@@ -33,10 +33,10 @@ async function initApp() {
     // Router
     route = runeNumber && OS ? 'Opensea API' : runeNumber ? 'Share specific rune' : 'normal';
     console.log('route', route);
-    parseAPNG()
+    parseAPNG();
     await chunkImport();
     buildMonolith();
-    // await setInitialViewPos();
+    await setInitialViewPos();
     initDisplay();
     if (deviceType == 'mobile') mobileEventListener();
 }

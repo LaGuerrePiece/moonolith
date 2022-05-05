@@ -18,7 +18,7 @@ if (window.ethereum) {
     metamaskContract = new ethers.Contract(contractAddress, contractABI, signer);
 }
 
-let importedChunks = 1;
+export let importedChunks = 1;
 
 const chunkCreator = async (res) => {
     // if (window.ethereum.chainId == '0x4') {

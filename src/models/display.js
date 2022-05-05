@@ -4,6 +4,8 @@ import Const from './constants';
 import { convertToMonolithPos, monolith, monolithIndexes } from './monolith';
 import { clickManager, colorNumber1, colorNumber2 } from './tools';
 import { tool, Tool } from './tools';
+import { transition, animateRune } from '../utils/runeAnims';
+import { chunksToAnimateInfo } from '../utils/imageManager';
 
 var clock = 0;
 setInterval(() => {
@@ -207,6 +209,13 @@ function updateCatalog() {
     }
     imageCatalog.panneau.display = isInSquare(227, 239, 188, 196, pointer.x, pointer.y) ? true : false;
     imageCatalog.selector2.display = deviceType === 'mobile' ? false : true;
+
+    transition();
+
+    chunksToAnimateInfo.forEach(([id, y]) => {
+        const startY = Const.MONOLITH_LINES + Const.MARGIN_BOTTOM - viewPosY - renderHeight;
+        if (y > startY && y < startY + renderHeight) animateRune(id);
+    });
 }
 
 function isInSquare(xmin, xmax, ymin, ymax, pointerX, pointerY) {

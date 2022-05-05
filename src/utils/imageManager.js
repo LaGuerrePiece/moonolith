@@ -1,9 +1,13 @@
 import { UPNG } from './upmc';
 import Const from '../models/constants';
 import { monolith, eraseAllPixel, drawPixel, monolithIndexes } from '../models/monolith';
-import { chunkCreator } from '../utils/web3';
+import { chunkCreator, importedChunks } from '../utils/web3';
 import LZString from 'lz-String';
 import { animCatalog } from '../models/display';
+import { runeNumber } from '../main';
+
+export let chunkStock = [];
+export let chunksToAnimateInfo = [];
 
 function saveToEthernity() {
     monolithToBase64().then((data) => {
@@ -25,13 +29,13 @@ export async function parseAPNG() {
 async function decodeAndFormatAnimation(index) {
     let thisAnim = animCatalog[index];
     let decoded = await ApngToBuffer(base64ToBuffer(thisAnim.base64)).catch(console.error);
-    thisAnim.frames = decoded.frames
-    thisAnim.delay = decoded.delay
-    thisAnim.totalDelay = decoded.delay.reduce((a, b)=> a + b,0);
+    thisAnim.frames = decoded.frames;
+    thisAnim.delay = decoded.delay;
+    thisAnim.totalDelay = decoded.delay.reduce((a, b) => a + b, 0);
     thisAnim.width = decoded.width;
     thisAnim.height = decoded.height;
-    delete thisAnim.base64
-    console.log(thisAnim)
+    delete thisAnim.base64;
+    console.log(thisAnim);
 }
 
 export async function ApngToBuffer(buffer) {
@@ -95,13 +99,29 @@ async function bufferOnMonolith(data) {
     //console.log(LZString.decompressFromUTF16(data.buffer));
     let pixArray = new Uint8Array(base64ToBuffer(LZString.decompressFromUTF16(data.buffer)));
     pixArray = Array.from(pixArray);
-    let width = pixArray.shift();
-    let height = pixArray.shift();
+    const width = pixArray.shift();
+    const height = pixArray.shift();
     pixArray = decode4bitsArray(pixArray);
     while (pixArray[pixArray.length - 1] === 0) {
         // virer les 0 de la fin
         pixArray.pop();
     }
+
+    // Stocke les données du chunk pour qu'elles puissent être utilisées par les animations
+    chunkStock[data.zIndex] = {
+        x: data.x,
+        y: data.y,
+        paid: data.paid,
+        width: width,
+        height: height,
+        alreadyRuned: false,
+    };
+
+    // Si le chunk est digne d'être animé, l'envoie dans chunkToAnimateInfo
+    if ((data.zIndex <= importedChunks && !runeNumber) || data.zIndex === runeNumber) {
+        chunksToAnimateInfo.push([data.zIndex, data.y + height / 2]);
+    }
+
     let pixelDrawn = 0;
     let p = 0;
     for (let y = data.y; y < data.yMaxLegal; y++) {
@@ -270,11 +290,4 @@ export function moveDrawing(x, y) {
     );
 }
 
-export {
-    saveToEthernity,
-    base64ToBuffer,
-    pngToBufferToRGBA8,
-    pngToBufferToRGB,
-    prepareBufferForApi,
-    bufferOnMonolith,
-};
+export { saveToEthernity, base64ToBuffer, pngToBufferToRGBA8, pngToBufferToRGB, prepareBufferForApi, bufferOnMonolith };
