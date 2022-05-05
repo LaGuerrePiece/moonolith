@@ -24,12 +24,11 @@ export let imageCatalog = {
     panneau: { fileName: 'panneau', type: 'GUI', display: false },
     selector2: { fileName: 'selector2', type: 'GUI', display: true },
     selector1: { fileName: 'selector1', type: 'GUI', display: true },
-    palette: { fileName: 'paletteHUGE', type: 'GUI', display: true },
-    paletteSMOL: { fileName: 'paletteSMOL', type: 'GUI', display: false },
-    paletteBIG: { fileName: 'paletteBIG', type: 'GUI', display: false },
-    paletteHUGE: { fileName: 'paletteHUGE', type: 'GUI', display: false },
-    paletteGIGA: { fileName: 'paletteGIGA', type: 'GUI', display: false },
-    palettePAN: { fileName: 'palettePAN', type: 'GUI', display: false },
+    paletteSMOL: { fileName: 'paletteSMOL', type: 'palette', display: false },
+    paletteBIG: { fileName: 'paletteBIG', type: 'palette', display: false },
+    paletteHUGE: { fileName: 'paletteHUGE', type: 'palette', display: false },
+    paletteGIGA: { fileName: 'paletteGIGA', type: 'palette', display: false },
+    palettePAN: { fileName: 'palettePAN', type: 'palette', display: false },
 };
 
 //prettier-ignore
@@ -185,20 +184,20 @@ function updateCatalog() {
             const parallaxOffset = Math.floor(thisImage.parallax * viewPosY);
             thisImage.y = renderHeight + parallaxOffset + viewPosY - thisImage.img.height - thisImage.startY;
             thisImage.x = thisImage.startX - viewPosX;
-        } else if (image === 'palette') {
-            thisImage.y = Math.floor((renderHeight - imageCatalog.palette.img.height) / Const.GUI_RELATIVE_Y);
-            thisImage.x = Math.floor((renderWidth - imageCatalog.palette.img.width) / Const.GUI_RELATIVE_X);
+        } else if (thisImage.type === 'palette') {
+            thisImage.y = Math.floor((renderHeight - imageCatalog.paletteSMOL.img.height) / Const.GUI_RELATIVE_Y);
+            thisImage.x = Math.floor((renderWidth - imageCatalog.paletteSMOL.img.width) / Const.GUI_RELATIVE_X);
         } else if (image === 'panneau') {
             thisImage.y = Math.floor(renderHeight + viewPosY - imageCatalog.panneau.img.height - 50);
             thisImage.x = Math.floor((Const.COLUMNS - imageCatalog.panneau.img.width) / 2);
         } else if (image === 'selector1') {
             const offset = 8;
-            thisImage.y = imageCatalog.palette.y - 1 + Math.floor(colorNumber1 / 9) * 8;
-            thisImage.x = imageCatalog.palette.x + offset + colorNumber1 * 8 - Math.floor(colorNumber1 / 9) * 64;
+            thisImage.y = imageCatalog.paletteSMOL.y - 1 + Math.floor(colorNumber1 / 9) * 8;
+            thisImage.x = imageCatalog.paletteSMOL.x + offset + colorNumber1 * 8 - Math.floor(colorNumber1 / 9) * 64;
         } else if (image === 'selector2') {
             const offset = 8;
-            thisImage.y = imageCatalog.palette.y - 1 + Math.floor(colorNumber2 / 9) * 8;
-            thisImage.x = imageCatalog.palette.x + offset + colorNumber2 * 8 - Math.floor(colorNumber2 / 9) * 64;
+            thisImage.y = imageCatalog.paletteSMOL.y - 1 + Math.floor(colorNumber2 / 9) * 8;
+            thisImage.x = imageCatalog.paletteSMOL.x + offset + colorNumber2 * 8 - Math.floor(colorNumber2 / 9) * 64;
         } else if (thisImage.type === 'side') {
             thisImage.y = thisImage.startY + renderHeight + viewPosY - Const.MONOLITH_LINES - Const.MARGIN_BOTTOM - 7;
             thisImage.x = thisImage.startX + Const.MARGIN_LEFT;

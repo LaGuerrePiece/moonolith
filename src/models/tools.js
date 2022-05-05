@@ -232,10 +232,10 @@ export function clickManager(e) {
     console.log('Click', mousePos);
 
     if (
-        mousePos.x > imageCatalog.palette.x &&
-        mousePos.x < imageCatalog.palette.x + imageCatalog.palette.img.width &&
-        mousePos.y > imageCatalog.palette.y &&
-        mousePos.y < imageCatalog.palette.y + imageCatalog.palette.img.height
+        mousePos.x > imageCatalog.paletteSMOL.x &&
+        mousePos.x < imageCatalog.paletteSMOL.x + imageCatalog.paletteSMOL.img.width &&
+        mousePos.y > imageCatalog.paletteSMOL.y &&
+        mousePos.y < imageCatalog.paletteSMOL.y + imageCatalog.paletteSMOL.img.height
     ) {
         // clicked on GUI
         console.log('Clicked on the GUI');
@@ -360,19 +360,32 @@ function brushSwitch() {
 function paletteUpdate() {
     switch (tool) {
         case Tool.SMOL:
-            imageCatalog.palette.decodedYX = imageCatalog.paletteSMOL.decodedYX;
+            imageCatalog.paletteSMOL.display = true;
+            imageCatalog.paletteBIG.display = false;
+            imageCatalog.paletteHUGE.display = false;
+            imageCatalog.paletteGIGA.display = false;
             break;
         case Tool.BIG:
-            imageCatalog.palette.decodedYX = imageCatalog.paletteBIG.decodedYX;
+            imageCatalog.paletteSMOL.display = false;
+            imageCatalog.paletteBIG.display = true;
+            imageCatalog.paletteHUGE.display = false;
+            imageCatalog.paletteGIGA.display = false;
             break;
         case Tool.HUGE:
-            imageCatalog.palette.decodedYX = imageCatalog.paletteHUGE.decodedYX;
+            imageCatalog.paletteSMOL.display = false;
+            imageCatalog.paletteBIG.display = false;
+            imageCatalog.paletteHUGE.display = true;
+            imageCatalog.paletteGIGA.display = false;
             break;
         case Tool.GIGA:
-            imageCatalog.palette.decodedYX = imageCatalog.paletteGIGA.decodedYX;
+            imageCatalog.paletteSMOL.display = false;
+            imageCatalog.paletteBIG.display = false;
+            imageCatalog.paletteHUGE.display = false;
+            imageCatalog.paletteGIGA.display = true;
             break;
     }
 }
+paletteUpdate();
 
 export function mousePosInGrid(e) {
     let x = Math.floor((e.x / windowWidth) * renderWidth);
@@ -444,7 +457,7 @@ function colorSwitch(e, color) {
 
 function GUICircle(mousePos, y, x, radius) {
     // Coordinates of the center are input in the GUI
-    y += imageCatalog.palette.y;
-    x += imageCatalog.palette.x;
+    y += imageCatalog.paletteSMOL.y;
+    x += imageCatalog.paletteSMOL.x;
     return Math.floor(mousePos.x - x) ** 2 + Math.floor(mousePos.y - y) ** 2 <= radius ** 2;
 }
