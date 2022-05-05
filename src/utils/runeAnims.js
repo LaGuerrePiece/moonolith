@@ -61,6 +61,13 @@ export function transition() {
             else draw(pos, avg(color, pos, 10));
 
             if (counter === 50) {endTransition(pos, color);continue;}
+        } else if (transitionType === 'runeCorner') {
+            //runeContour
+            if (counter === 1) draw(pos, [10, 10, 10]);
+            else if (counter < 10) draw(pos, [10, 10, 10]);
+            else draw(pos, avg(color, pos, 10));
+
+            if (counter === 50) {endTransition(pos, color);continue;}
         }
         animatedPixels[i][3] = counter + 1;
     }
@@ -115,35 +122,24 @@ export function animateRune(id) {
         // console.log('animatedPixels', animatedPixels);
     }, 1600);
 
-    // runeBlueAnim
-    // if (rune.width <= 120 && rune.height <= 120) {
-    //     const runeBlueAnim =
-    //         rune.width <= 30 && rune.height <= 30
-    //             ? imageCatalog.runeBlueAnimSmoll
-    //             : rune.width <= 60 && rune.height <= 60
-    //             ? imageCatalog.runeBlueAnimMid
-    //             : imageCatalog.runeBlueAnimHuge;
-    //     const animStartX = Math.floor(rune.x + rune.width / 2 - runeBlueAnim.width / 2);
-    //     const animStartY = Math.floor(rune.y + rune.height / 2 - runeBlueAnim.height / 2);
-    //     // console.log('animStartX', animStartX, 'animStartY', animStartY);
-    //     for (let j = 0; j < runeBlueAnim.height; j++) {
-    //         for (let i = 0; i < runeBlueAnim.width; i++) {
-    //             if (runeBlueAnim.decodedYX[j][i]) {
-    //                 const klon = monolith[animStartY + j]?.[animStartX + i];
-    //                 if (!klon) continue;
-    //                 if (klon.zIndex) continue;
-    //                 animatedPixels[(animStartY + j) * Const.MONOLITH_COLUMNS + animStartX + i] = [
-    //                     animStartX + i,
-    //                     animStartY + j,
-    //                     'runeBlueAnim',
-    //                     1,
-    //                 ];
-    //             }
+    // runeCorners
+    // prettier-ignore
+    // const order = [[-1, -1], [1, -1], [1, 1], [-1, 1]];
+    // for (let a = 0; a < 4; a++) {
+    //     const direction = order[a];
+    //     const startY = direction[0] === -1 ? rune.y : rune.y + rune.height;
+    //     const startX = direction[1] === -1 ? rune.x : rune.x + rune.width;
+    //     for (let j = 0; j < imageCatalog.runeCorner.height; j++) {
+    //         for (let i = 0; i < imageCatalog.runeCorner.width; i++) {
+    //             if (!runeBlueAnim.decodedYX[j][i]) continue;
+    //             const y = startY + j * direction[0];
+    //             const x = startX + i * direction[1];
+    //             animThisPixel(y, x, 'runeCorner');
     //         }
     //     }
     // }
 
-    // RuneContour
+    // runeContour
     console.log('rune.width', rune.width, 'rune.height', rune.height, 'rune.y', rune.y, 'rune.x', rune.x);
     for (let j = rune.y; j < rune.height + rune.y; j++) {
         for (let i = rune.x; i < rune.width + rune.x; i++) {
@@ -155,15 +151,20 @@ export function animateRune(id) {
                     if (a === 0 && b === 0) continue;
                     const y = b + j;
                     const x = a + i;
-                    if (x < 0 || x >= Const.MONOLITH_COLUMNS || y < 0 || y >= Const.MONOLITH_LINES) continue;
-                    if (monolithIndexes[y]?.[x]) continue;
-                    const pos = (y * Const.MONOLITH_COLUMNS + x) * 4;
-                    if (animatedPixels[pos]) continue;
-                    const color = [monolith[pos], monolith[pos + 1], monolith[pos + 2]];
-                    animatedPixels[pos] = [pos, 'runeContour', color, 1];
+                    animThisPixel(y, x, 'runeContour');
                 }
             }
         }
+    }
+
+    function animThisPixel(y, x, animName) {
+        if (x < 0 || x >= Const.MONOLITH_COLUMNS || y < 0 || y >= Const.MONOLITH_LINES) return;
+        if (monolithIndexes[y]?.[x]) return;
+        const pos = (y * Const.MONOLITH_COLUMNS + x) * 4;
+        // Does nothing if an animation is already running on this pixel
+        if (animatedPixels[pos]) return;
+        const color = [monolith[pos], monolith[pos + 1], monolith[pos + 2]];
+        animatedPixels[pos] = [pos, animName, color, 1];
     }
 
     chunkStock[id].alreadyRuned = true;
