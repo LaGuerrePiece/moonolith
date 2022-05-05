@@ -188,7 +188,7 @@ function updateCatalog() {
             thisImage.y = Math.floor((renderHeight - imageCatalog.paletteSMOL.img.height) / Const.GUI_RELATIVE_Y);
             thisImage.x = Math.floor((renderWidth - imageCatalog.paletteSMOL.img.width) / Const.GUI_RELATIVE_X);
         } else if (image === 'panneau') {
-            thisImage.y = Math.floor(renderHeight + viewPosY - imageCatalog.panneau.img.height - 50);
+            thisImage.y = Math.floor((renderHeight - imageCatalog.panneau.img.height) / 2 - 6);
             thisImage.x = Math.floor((Const.COLUMNS - imageCatalog.panneau.img.width) / 2);
         } else if (image === 'selector1') {
             const offset = 8;
@@ -203,7 +203,7 @@ function updateCatalog() {
             thisImage.x = thisImage.startX + Const.MARGIN_LEFT;
         }
     }
-    imageCatalog.panneau.display = isInSquare(180, 187, 14, 18, pointer.x, pointer.y) ? true : false;
+    imageCatalog.panneau.display = isInSquare(227, 239, 188, 196, pointer.x, pointer.y) ? true : false;
     imageCatalog.selector2.display = deviceType === 'mobile' ? false : true;
 }
 
