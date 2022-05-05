@@ -11,13 +11,16 @@ setInterval(() => {
 }, 100);
 
 export let imageCatalog = {
-    plan5: { fileName: 'plan5', type: 'landscape', startX: -2, startY: 250, parallax: 0.4, display: true },
-    plan4: { fileName: 'plan4', type: 'landscape', startX: -2, startY: 200, parallax: 0.3, display: true },
-    plan3: { fileName: 'plan3', type: 'landscape', startX: -2, startY: 150, parallax: 0.2, display: true },
-    plan2: { fileName: 'plan2', type: 'landscape', startX: -2, startY: 100, parallax: 0.1, display: true },
-    moonolithSide: { fileName: 'moonolithSide', type: 'side', display: true },
-    plan1: { fileName: 'plan1', type: 'landscape', startX: -2, startY: 50, parallax: 0.05, display: true },
-    plan0: { fileName: 'plan0', type: 'landscape', startX: -2, startY: 0, parallax: 0, display: true },
+    plan5: { fileName: 'plan5', type: 'landscape', startX: -2, startY: 330, parallax: 0.3, display: true },
+    plan4: { fileName: 'plan4', type: 'landscape', startX: -2, startY: 300, parallax: 0.25, display: true },
+    plan3: { fileName: 'plan3', type: 'landscape', startX: -2, startY: 250, parallax: 0.2, display: true },
+    plan2: { fileName: 'plan2', type: 'landscape', startX: -2, startY: 190, parallax: 0.15, display: true },
+    moonolithTop: { fileName: 'moonolithTop', type: 'side', startY: 0, startX: 0, display: true },
+    moonolithSide: { fileName: 'moonolithSide', type: 'side', startY: 290, startX: 255, display: true },
+    moonolithSide2: { fileName: 'moonolithSide', type: 'side', startY: 758, startX: 255, display: true },
+    moonolithSide3: { fileName: 'moonolithSide', type: 'side', startY: 1226, startX: 255, display: true },
+    plan1: { fileName: 'plan1', type: 'landscape', startX: -2, startY: 80, parallax: 0, display: true },
+    plan0: { fileName: 'plan0', type: 'landscape', startX: -2, startY: 0, parallax: -0.15, display: true },
     panneau: { fileName: 'panneau', type: 'GUI', display: false },
     selector2: { fileName: 'selector2', type: 'GUI', display: true },
     selector1: { fileName: 'selector1', type: 'GUI', display: true },
@@ -198,8 +201,8 @@ function updateCatalog() {
             thisImage.y = imageCatalog.palette.y - 1 + Math.floor(colorNumber2 / 9) * 8;
             thisImage.x = imageCatalog.palette.x + offset + colorNumber2 * 8 - Math.floor(colorNumber2 / 9) * 64;
         } else if (thisImage.type === 'side') {
-            thisImage.y = renderHeight + viewPosY - Const.MONOLITH_LINES - Const.MARGIN_BOTTOM - 7;
-            thisImage.x = Const.MARGIN_LEFT;
+            thisImage.y = thisImage.startY + renderHeight + viewPosY - Const.MONOLITH_LINES - Const.MARGIN_BOTTOM - 7;
+            thisImage.x = thisImage.startX + Const.MARGIN_LEFT;
         }
     }
     imageCatalog.panneau.display = isInSquare(180, 187, 14, 18, pointer.x, pointer.y) ? true : false;
