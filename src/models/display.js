@@ -139,7 +139,6 @@ export function initDisplay() {
         for (let anim in animCatalog) {
             const thisAnim = animCatalog[anim];
             if (thisAnim.display) drawAnim(thisAnim.frames[frameInClock(thisAnim)], anim, ctx);
-            // console.log('frameInClock(thisAnim)', frameInClock(thisAnim));
         }
         requestAnimationFrame(update);
     }
