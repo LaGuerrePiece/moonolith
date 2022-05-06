@@ -82,14 +82,16 @@ document.addEventListener('contextmenu', (e) => { e.preventDefault(); }, false);
 //prettier-ignore
 document.addEventListener('keydown', (e) => { keyManager(e) });
 //prettier-ignore
-window.onwheel = function (e) { scrollManager(e) };
+document.addEventListener('wheel', (e) => { 
+    scrollManager(e);
+}, {passive : false});
 
 console.log('renderHeight', renderHeight);
 export function changeViewPos(inputX, inputY) {
     viewPosX += inputX;
     viewPosY += inputY;
     // Limits :
-    const lowY = -renderHeight / 2 + renderHeight / (scaleFactor * 2);
+    const lowY = Math.floor(-renderHeight / 2 + renderHeight / (scaleFactor * 2));
     const lowX = Math.floor(-renderWidth / 2 + renderWidth / (scaleFactor * 2));
     if (viewPosY + renderHeight + lowY > Const.LINES) viewPosY = Const.LINES - renderHeight - lowY;
     if (viewPosY < lowY) viewPosY = lowY;
