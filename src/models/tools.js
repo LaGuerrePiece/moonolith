@@ -6,8 +6,7 @@ import { closeCurrentEvent, undo, redo } from './undoStack';
 import { imageCatalog, canvas } from './display';
 import { moveDrawing, bufferOnMonolith, saveToEthernity } from '../utils/imageManager';
 import Const from './constants';
-import { openLink } from '../utils/web3';
-
+import { openLink } from './display';
 
 export let tool = 'giga';
 let colorPicked1 = Const.RGB16;

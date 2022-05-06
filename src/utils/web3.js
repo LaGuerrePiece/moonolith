@@ -4,7 +4,7 @@ import contractABI from '../utils/abi.json';
 import { base64ToBuffer, bufferOnMonolith } from './imageManager';
 import Const from '../models/constants';
 import { increaseMonolithHeight } from '../models/monolith';
-import { imageCatalog } from '../models/display';
+import { displayShareScreen } from '../models/display';
 
 const provider = new ethers.providers.InfuraProvider('rinkeby');
 const iface = new Interface(contractABI);
@@ -31,9 +31,9 @@ const chunkCreator = async (res) => {
     // console.log('Minting: ', res.position, res.ymax, res.nbPix, res.imgURI);
     let tx = metamaskContract.mint_One_4d(res.position, res.ymax, res.nbPix, res.imgURI, overrides);
     tx.then((tx) => {
-        tx.wait().then((tx) => {
-            imageCatalog.share.display = true;     
-        });    
+        tx.wait().then(() => {
+            displayShareScreen(importedChunks + 1);
+        });
     });
     //  } else {
     //    alert("Mets le testnet l'ami");
@@ -102,15 +102,8 @@ async function chunkImport() {
     importedChunks = meta.nbChunks;
 }
 
-export function openLink(type) {
-    if (type === 'opensea') {
-        window.open('https://testnets.opensea.io/assets/' + contractAddress + '/' + importedChunks, '_blank');
-    } else if (type === 'twitter') {
-        window.open(
-            'https://twitter.com/intent/tweet?text=My%20rune%20%3A&url=moonolith.io/rune=' + importedChunks,
-            '_blank'
-        );
-    }
+export function getContractAddress() {
+    return contractAddress;
 }
 
 export { chunkCreator, getChunk, getChunksFromPosition, chunkImport };
