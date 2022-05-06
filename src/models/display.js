@@ -35,8 +35,8 @@ export let imageCatalog = {
     plan0: { fileName: 'plan0', type: 'landscape', startX: -2, startY: 0, parallax: -0.15, display: true },
     panneau: { fileName: 'panneau', type: 'popup', display: false },
     share: { fileName: 'share', type: 'popup', display: false },
-    selector2: { fileName: 'selector2', type: 'GUI', display: true },
-    selector1: { fileName: 'selector1', type: 'GUI', display: true },
+    selector2: { fileName: 'selector1', type: 'GUI', display: true },
+    selector1: { fileName: 'selector2', type: 'GUI', display: true },
     paletteSMOL: { fileName: 'paletteSMOL', type: 'palette', display: false },
     paletteBIG: { fileName: 'paletteBIG', type: 'palette', display: false },
     paletteHUGE: { fileName: 'paletteHUGE', type: 'palette', display: false },
@@ -253,16 +253,16 @@ function absolutePosition(pointerX, pointerY) {
 }
 
 function addPointer(monolithData) {
-    if (tool === Tool.SMOL) {
+    if (tool === 'smol') {
         whiten(monolithData, pointer.y, pointer.x);
-    } else if (tool === Tool.BIG) {
+    } else if (tool === 'medium') {
         for (let i = -1; i <= 1; i++) {
             for (let j = -1; j <= 1; j++) {
                 whiten(monolithData, pointer.y + j, pointer.x + i);
             }
         }
         whiten(monolithData, pointer.y, pointer.x);
-    } else if (tool === Tool.HUGE) {
+    } else if (tool === 'large') {
         for (let i = -3; i <= 3; i++) {
             for (let j = -1; j <= 1; j++) {
                 whiten(monolithData, pointer.y + j, pointer.x + i);
@@ -272,7 +272,7 @@ function addPointer(monolithData) {
         for (let i = -2; i <= 2; i++) {
             for (let j = -2; j <= 2; j++) whiten(monolithData, pointer.y + i, pointer.x + j);
         }
-    } else if (tool === Tool.GIGA) {
+    } else if (tool === 'giga') {
         for (let i = -20; i <= 20; i++) {
             for (let j = -20; j <= 20; j++) {
                 whiten(monolithData, pointer.y + j, pointer.x + i);

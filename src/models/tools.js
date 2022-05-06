@@ -1,30 +1,18 @@
 //prettier-ignore
-import { windowHeight, windowWidth, renderWidth, renderHeight, changeViewPos, viewPosX, viewPosY, toggleZoom, pixelSize, scaleFactor} from '../main';
+import { renderWidth, renderHeight, changeViewPos, viewPosX, viewPosY, toggleZoom, pixelSize, scaleFactor} from '../main';
 import { toggleMusic, playSound, toggleMute } from '../assets/sounds';
 import { drawPixel, getColor, eraseAllPixel, convertToMonolithPos, increaseMonolithHeight } from './monolith';
 import { closeCurrentEvent, undo, redo } from './undoStack';
 import { imageCatalog, canvas } from './display';
-
 import { moveDrawing, bufferOnMonolith, saveToEthernity } from '../utils/imageManager';
 import Const from './constants';
 import { openLink } from '../utils/web3';
 
-//prettier-ignore
-export class Tool {   
-    static get DONE() { return 0 }
-    static get SMOL() { return 1 }
-    static get BIG() { return 3 }
-    static get HUGE() { return 4 }
-    static get GIGA() { return 5 }
-    static get PIPETTE() { return 2 }
-    static get DELETE() { return 6 }
-    static get MOVE() { return 7 }
-}
 
-export let tool = Tool.GIGA;
-let colorPicked1 = Const.RGB2;
+export let tool = 'giga';
+let colorPicked1 = Const.RGB16;
 let colorPicked2 = Const.DEFAULT_COLOR;
-export let colorNumber1 = 2;
+export let colorNumber1 = 1;
 export let colorNumber2 = 16;
 
 let button;
@@ -50,7 +38,7 @@ export function keyManager(e){
     if (e.key === 'm') { moveDrawing(50, 400) }
     if (e.key === 'e') brushSwitch();
     if (e.key === 'i') importImage();
-    if (e.key === 'r') {tool = Tool.GIGA; playSound('kick'); paletteUpdate();}
+    if (e.key === 'r') {tool = 'giga'; playSound('kick'); paletteUpdate();}
     if (e.key === 'k') toggleMusic();
     if (e.key === 'l') toggleMute();
     if (e.key === 'p') {increaseMonolithHeight(1100);}
@@ -237,48 +225,95 @@ export function clickManager(e) {
     console.log('Click', mousePos);
 
     if (
+        scaleFactor == 1 &&
         mousePos.x > imageCatalog.paletteSMOL.x &&
         mousePos.x < imageCatalog.paletteSMOL.x + imageCatalog.paletteSMOL.img.width &&
         mousePos.y > imageCatalog.paletteSMOL.y &&
         mousePos.y < imageCatalog.paletteSMOL.y + imageCatalog.paletteSMOL.img.height
     ) {
-        // clicked on GUI
         console.log('Clicked on the GUI');
-
-        //BIG
-        if (GUICircle(mousePos, 14, 8, 11)) {
-            saveToEthernity();
-            console.log('Saved to ethernity');
-            return;
-        } // !!! BUTTON
-        if (GUICircle(mousePos, 14, 153, 11)) {
-            brushSwitch();
-            console.log('Switched brush');
-            return;
-        } // ??? BUTTON
-
-        playSound('click6');
-        //SMALL
-        //FIRST CIRCLE POSITION : 3, 21
         let offsetX = 13;
         let spaceX = 15;
-        if (GUICircle(mousePos, 5, offsetX + spaceX, 6)) colorSwitch(e, 1);
-        if (GUICircle(mousePos, 5, offsetX + spaceX * 2, 6)) colorSwitch(e, 2);
-        if (GUICircle(mousePos, 5, offsetX + spaceX * 3, 6)) colorSwitch(e, 3);
-        if (GUICircle(mousePos, 5, offsetX + spaceX * 4, 6)) colorSwitch(e, 4);
-        if (GUICircle(mousePos, 5, offsetX + spaceX * 5, 6)) colorSwitch(e, 5);
-        if (GUICircle(mousePos, 5, offsetX + spaceX * 6, 6)) colorSwitch(e, 6);
-        if (GUICircle(mousePos, 5, offsetX + spaceX * 7, 6)) colorSwitch(e, 7);
-        if (GUICircle(mousePos, 5, offsetX + spaceX * 8, 6)) colorSwitch(e, 8);
-        //ROW 2
-        if (GUICircle(mousePos, 19, offsetX + spaceX, 6)) colorSwitch(e, 9);
-        if (GUICircle(mousePos, 19, offsetX + spaceX * 2, 6)) colorSwitch(e, 10);
-        if (GUICircle(mousePos, 19, offsetX + spaceX * 3, 6)) colorSwitch(e, 11);
-        if (GUICircle(mousePos, 19, offsetX + spaceX * 4, 6)) colorSwitch(e, 12);
-        if (GUICircle(mousePos, 19, offsetX + spaceX * 5, 6)) colorSwitch(e, 13);
-        if (GUICircle(mousePos, 19, offsetX + spaceX * 6, 6)) colorSwitch(e, 14);
-        if (GUICircle(mousePos, 19, offsetX + spaceX * 7, 6)) colorSwitch(e, 15);
-        if (GUICircle(mousePos, 19, offsetX + spaceX * 8, 6)) colorSwitch(e, 16);
+        let smolRadius = 6;
+
+        if (GUICircle(mousePos, 14, 8, 11)) saveToEthernity();
+        else if (GUICircle(mousePos, 14, 153, 11)) brushSwitch();
+        else if (GUICircle(mousePos, 5, offsetX + spaceX, smolRadius)) colorSwitch(e, 1);
+        else if (GUICircle(mousePos, 5, offsetX + spaceX * 2, smolRadius)) colorSwitch(e, 2);
+        else if (GUICircle(mousePos, 5, offsetX + spaceX * 3, smolRadius)) colorSwitch(e, 3);
+        else if (GUICircle(mousePos, 5, offsetX + spaceX * 4, smolRadius)) colorSwitch(e, 4);
+        else if (GUICircle(mousePos, 5, offsetX + spaceX * 5, smolRadius)) colorSwitch(e, 5);
+        else if (GUICircle(mousePos, 5, offsetX + spaceX * 6, smolRadius)) colorSwitch(e, 6);
+        else if (GUICircle(mousePos, 5, offsetX + spaceX * 7, smolRadius)) colorSwitch(e, 7);
+        else if (GUICircle(mousePos, 5, offsetX + spaceX * 8, smolRadius)) colorSwitch(e, 8);
+        else if (GUICircle(mousePos, 19, offsetX + spaceX, smolRadius)) colorSwitch(e, 9);
+        else if (GUICircle(mousePos, 19, offsetX + spaceX * 2, smolRadius)) colorSwitch(e, 10);
+        else if (GUICircle(mousePos, 19, offsetX + spaceX * 3, smolRadius)) colorSwitch(e, 11);
+        else if (GUICircle(mousePos, 19, offsetX + spaceX * 4, smolRadius)) colorSwitch(e, 12);
+        else if (GUICircle(mousePos, 19, offsetX + spaceX * 5, smolRadius)) colorSwitch(e, 13);
+        else if (GUICircle(mousePos, 19, offsetX + spaceX * 6, smolRadius)) colorSwitch(e, 14);
+        else if (GUICircle(mousePos, 19, offsetX + spaceX * 7, smolRadius)) colorSwitch(e, 15);
+        else if (GUICircle(mousePos, 19, offsetX + spaceX * 8, smolRadius)) colorSwitch(e, 16);
+    } else if (
+        scaleFactor == 3 &&
+        mousePos.x > imageCatalog.paletteSMOL.x &&
+        mousePos.x < imageCatalog.paletteSMOL.x + imageCatalog.paletteSMOL.img.width &&
+        mousePos.y > imageCatalog.paletteSMOL.y &&
+        mousePos.y < imageCatalog.paletteSMOL.y + imageCatalog.paletteSMOL.img.height
+    ) {
+        console.log('Clicked on the GUI x3');
+        let offsetX = 13;
+        let spaceX = 15;
+        let smolRadius = 6;
+
+        if (GUICircle(mousePos, 14, 8, 11)) saveToEthernity();
+        else if (GUICircle(mousePos, 14, 153, 11)) brushSwitch();
+        else if (GUICircle(mousePos, 5, offsetX + spaceX, smolRadius)) colorSwitch(e, 1);
+        else if (GUICircle(mousePos, 5, offsetX + spaceX * 2, smolRadius)) colorSwitch(e, 2);
+        else if (GUICircle(mousePos, 5, offsetX + spaceX * 3, smolRadius)) colorSwitch(e, 3);
+        else if (GUICircle(mousePos, 5, offsetX + spaceX * 4, smolRadius)) colorSwitch(e, 4);
+        else if (GUICircle(mousePos, 5, offsetX + spaceX * 5, smolRadius)) colorSwitch(e, 5);
+        else if (GUICircle(mousePos, 5, offsetX + spaceX * 6, smolRadius)) colorSwitch(e, 6);
+        else if (GUICircle(mousePos, 5, offsetX + spaceX * 7, smolRadius)) colorSwitch(e, 7);
+        else if (GUICircle(mousePos, 5, offsetX + spaceX * 8, smolRadius)) colorSwitch(e, 8);
+        else if (GUICircle(mousePos, 19, offsetX + spaceX, smolRadius)) colorSwitch(e, 9);
+        else if (GUICircle(mousePos, 19, offsetX + spaceX * 2, smolRadius)) colorSwitch(e, 10);
+        else if (GUICircle(mousePos, 19, offsetX + spaceX * 3, smolRadius)) colorSwitch(e, 11);
+        else if (GUICircle(mousePos, 19, offsetX + spaceX * 4, smolRadius)) colorSwitch(e, 12);
+        else if (GUICircle(mousePos, 19, offsetX + spaceX * 5, smolRadius)) colorSwitch(e, 13);
+        else if (GUICircle(mousePos, 19, offsetX + spaceX * 6, smolRadius)) colorSwitch(e, 14);
+        else if (GUICircle(mousePos, 19, offsetX + spaceX * 7, smolRadius)) colorSwitch(e, 15);
+        else if (GUICircle(mousePos, 19, offsetX + spaceX * 8, smolRadius)) colorSwitch(e, 16);
+    } else if (
+        scaleFactor == 6 &&
+        mousePos.x > imageCatalog.paletteSMOL.x &&
+        mousePos.x < imageCatalog.paletteSMOL.x + imageCatalog.paletteSMOL.img.width &&
+        mousePos.y > imageCatalog.paletteSMOL.y &&
+        mousePos.y < imageCatalog.paletteSMOL.y + imageCatalog.paletteSMOL.img.height
+    ) {
+        console.log('Clicked on the GUI x6');
+        let offsetX = 13;
+        let spaceX = 15;
+        let smolRadius = 6;
+
+        if (GUICircle(mousePos, 14, 8, 11)) saveToEthernity();
+        else if (GUICircle(mousePos, 14, 153, 11)) brushSwitch();
+        else if (GUICircle(mousePos, 5, offsetX + spaceX, smolRadius)) colorSwitch(e, 1);
+        else if (GUICircle(mousePos, 5, offsetX + spaceX * 2, smolRadius)) colorSwitch(e, 2);
+        else if (GUICircle(mousePos, 5, offsetX + spaceX * 3, smolRadius)) colorSwitch(e, 3);
+        else if (GUICircle(mousePos, 5, offsetX + spaceX * 4, smolRadius)) colorSwitch(e, 4);
+        else if (GUICircle(mousePos, 5, offsetX + spaceX * 5, smolRadius)) colorSwitch(e, 5);
+        else if (GUICircle(mousePos, 5, offsetX + spaceX * 6, smolRadius)) colorSwitch(e, 6);
+        else if (GUICircle(mousePos, 5, offsetX + spaceX * 7, smolRadius)) colorSwitch(e, 7);
+        else if (GUICircle(mousePos, 5, offsetX + spaceX * 8, smolRadius)) colorSwitch(e, 8);
+        else if (GUICircle(mousePos, 19, offsetX + spaceX, smolRadius)) colorSwitch(e, 9);
+        else if (GUICircle(mousePos, 19, offsetX + spaceX * 2, smolRadius)) colorSwitch(e, 10);
+        else if (GUICircle(mousePos, 19, offsetX + spaceX * 3, smolRadius)) colorSwitch(e, 11);
+        else if (GUICircle(mousePos, 19, offsetX + spaceX * 4, smolRadius)) colorSwitch(e, 12);
+        else if (GUICircle(mousePos, 19, offsetX + spaceX * 5, smolRadius)) colorSwitch(e, 13);
+        else if (GUICircle(mousePos, 19, offsetX + spaceX * 6, smolRadius)) colorSwitch(e, 14);
+        else if (GUICircle(mousePos, 19, offsetX + spaceX * 7, smolRadius)) colorSwitch(e, 15);
+        else if (GUICircle(mousePos, 19, offsetX + spaceX * 8, smolRadius)) colorSwitch(e, 16);
     } else if (imageCatalog.share.display) {
         if (
             !(
@@ -342,17 +377,17 @@ function useTool(e) {
     if (!mousePos) return;
 
     switch (tool) {
-        case Tool.SMOL:
+        case 'smol':
             drawPixel(mousePos.x, mousePos.y, zIndex, color);
             break;
-        case Tool.BIG:
+        case 'medium':
             for (let i = -1; i <= 1; i++) {
                 for (let j = -1; j <= 1; j++) {
                     drawPixel(mousePos.x + i, mousePos.y + j, zIndex, color);
                 }
             }
             break;
-        case Tool.HUGE:
+        case 'large':
             for (let i = -2; i <= 2; i++) {
                 for (let j = -2; j <= 2; j++) {
                     drawPixel(mousePos.x + i, mousePos.y + j, zIndex, color);
@@ -365,7 +400,7 @@ function useTool(e) {
                 drawPixel(mousePos.x - 3, mousePos.y + i, zIndex, color);
             }
             break;
-        case Tool.GIGA:
+        case 'giga':
             for (let i = -20; i <= 20; i++) {
                 for (let j = -20; j <= 20; j++) {
                     drawPixel(mousePos.x + i, mousePos.y + j, zIndex, color);
@@ -377,20 +412,20 @@ function useTool(e) {
 
 function brushSwitch() {
     switch (tool) {
-        case Tool.SMOL:
+        case 'smol':
             playSound('clickB2B');
-            tool = Tool.BIG;
+            tool = 'medium';
             break;
-        case Tool.BIG:
+        case 'medium':
             playSound('clickB2C');
-            tool = Tool.HUGE;
+            tool = 'large';
             break;
-        case Tool.HUGE:
+        case 'large':
             playSound('clickB2');
-            tool = Tool.SMOL;
+            tool = 'smol';
             break;
-        case Tool.GIGA:
-            tool = Tool.SMOL;
+        case 'giga':
+            tool = 'smol';
             break;
     }
     paletteUpdate();
@@ -398,25 +433,25 @@ function brushSwitch() {
 
 function paletteUpdate() {
     switch (tool) {
-        case Tool.SMOL:
+        case 'smol':
             imageCatalog.paletteSMOL.display = true;
             imageCatalog.paletteBIG.display = false;
             imageCatalog.paletteHUGE.display = false;
             imageCatalog.paletteGIGA.display = false;
             break;
-        case Tool.BIG:
+        case 'medium':
             imageCatalog.paletteSMOL.display = false;
             imageCatalog.paletteBIG.display = true;
             imageCatalog.paletteHUGE.display = false;
             imageCatalog.paletteGIGA.display = false;
             break;
-        case Tool.HUGE:
+        case 'large':
             imageCatalog.paletteSMOL.display = false;
             imageCatalog.paletteBIG.display = false;
             imageCatalog.paletteHUGE.display = true;
             imageCatalog.paletteGIGA.display = false;
             break;
-        case Tool.GIGA:
+        case 'giga':
             imageCatalog.paletteSMOL.display = false;
             imageCatalog.paletteBIG.display = false;
             imageCatalog.paletteHUGE.display = false;
@@ -494,6 +529,7 @@ function colorSwitch(e, color) {
         colorNumber2 = color;
         colorPicked2 = Const.GUI_PALETTE[color - 1];
     }
+    playSound('click6');
 }
 
 function GUICircle(mousePos, y, x, radius) {
