@@ -226,25 +226,36 @@ function updateCatalog() {
             const boundingClientRect = canvas.getBoundingClientRect();
             thisImage.y = Math.floor(
                 ((windowHeight - boundingClientRect.y) / (pixelSize * scaleFactor) - imageCatalog.palette.img.height) /
-                    Const.GUI_RELATIVE_Y
+                    Const.GUI_RELATIVE_Y +
+                    scaleFactor
             );
-            // thisImage.x = Math.floor(
-            //     ((windowWidth - boundingClientRect.x) * (renderWidth / boundingClientRect.width) -
-            //         imageCatalog.palette1smol.img.width) /
-            //         Const.GUI_RELATIVE_X
-            // );
             thisImage.x = Math.floor((renderWidth - imageCatalog.palette.img.width) / Const.GUI_RELATIVE_X);
         } else if (thisImage.type === 'popup') {
             thisImage.y = Math.floor((renderHeight - imageCatalog.panneau.img.height) / 2 - 6);
             thisImage.x = Math.floor((Const.COLUMNS - imageCatalog.panneau.img.width) / 2);
         } else if (image === 'selectorA') {
-            const offset = 6;
-            thisImage.y = imageCatalog.palette.y - 1 + Math.floor(colorNumber1 / 9) * 15;
-            thisImage.x = imageCatalog.palette.x + offset + colorNumber1 * 15 - Math.floor(colorNumber1 / 9) * 120;
-        } else if (image === 'selectorB') {
-            const offset = 6;
-            thisImage.y = imageCatalog.palette.y - 1 + Math.floor(colorNumber2 / 9) * 15;
-            thisImage.x = imageCatalog.palette.x + offset + colorNumber2 * 15 - Math.floor(colorNumber2 / 9) * 120;
+            let offsetX, secondLine, spaceX;
+            if (thisImage.img.width === 15) {
+                offsetX = 6;
+                spaceX = 15;
+                secondLine = 120;
+            }
+            if (thisImage.img.width === 9) {
+                offsetX = 4;
+                spaceX = 8;
+                secondLine = 64;
+            }
+            if (thisImage.img.width === 6) {
+                offsetX = 2;
+                spaceX = 5;
+                secondLine = 40;
+            }
+            thisImage.y = imageCatalog.palette.y - 1 + Math.floor(colorNumber1 / 9) * spaceX;
+            thisImage.x =
+                imageCatalog.palette.x + offsetX + colorNumber1 * spaceX - Math.floor(colorNumber1 / 9) * secondLine;
+            imageCatalog.selectorB.y = imageCatalog.palette.y - 1 + Math.floor(colorNumber2 / 9) * spaceX;
+            imageCatalog.selectorB.x =
+                imageCatalog.palette.x + offsetX + colorNumber2 * spaceX - Math.floor(colorNumber2 / 9) * secondLine;
         } else if (thisImage.type === 'side') {
             thisImage.y = thisImage.startY + renderHeight + viewPosY - Const.MONOLITH_LINES - Const.MARGIN_BOTTOM - 7;
             thisImage.x = thisImage.startX + Const.MARGIN_LEFT - viewPosX;

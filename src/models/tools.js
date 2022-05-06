@@ -223,95 +223,65 @@ export function clickManager(e) {
     console.log('Click', mousePos);
 
     if (
-        scaleFactor == 1 &&
-        mousePos.x > imageCatalog.palette.x &&
+        mousePos.x >= imageCatalog.palette.x &&
         mousePos.x < imageCatalog.palette.x + imageCatalog.palette.img.width &&
-        mousePos.y > imageCatalog.palette.y &&
+        mousePos.y >= imageCatalog.palette.y &&
         mousePos.y < imageCatalog.palette.y + imageCatalog.palette.img.height
     ) {
         console.log('Clicked on the GUI');
-        let offsetX = 13;
-        let spaceX = 15;
-        let smolRadius = 6;
 
-        if (GUICircle(mousePos, 14, 8, 11)) saveToEthernity();
-        else if (GUICircle(mousePos, 14, 153, 11)) brushSwitch();
-        else if (GUICircle(mousePos, 5, offsetX + spaceX, smolRadius)) colorSwitch(e, 1);
-        else if (GUICircle(mousePos, 5, offsetX + spaceX * 2, smolRadius)) colorSwitch(e, 2);
-        else if (GUICircle(mousePos, 5, offsetX + spaceX * 3, smolRadius)) colorSwitch(e, 3);
-        else if (GUICircle(mousePos, 5, offsetX + spaceX * 4, smolRadius)) colorSwitch(e, 4);
-        else if (GUICircle(mousePos, 5, offsetX + spaceX * 5, smolRadius)) colorSwitch(e, 5);
-        else if (GUICircle(mousePos, 5, offsetX + spaceX * 6, smolRadius)) colorSwitch(e, 6);
-        else if (GUICircle(mousePos, 5, offsetX + spaceX * 7, smolRadius)) colorSwitch(e, 7);
-        else if (GUICircle(mousePos, 5, offsetX + spaceX * 8, smolRadius)) colorSwitch(e, 8);
-        else if (GUICircle(mousePos, 19, offsetX + spaceX, smolRadius)) colorSwitch(e, 9);
-        else if (GUICircle(mousePos, 19, offsetX + spaceX * 2, smolRadius)) colorSwitch(e, 10);
-        else if (GUICircle(mousePos, 19, offsetX + spaceX * 3, smolRadius)) colorSwitch(e, 11);
-        else if (GUICircle(mousePos, 19, offsetX + spaceX * 4, smolRadius)) colorSwitch(e, 12);
-        else if (GUICircle(mousePos, 19, offsetX + spaceX * 5, smolRadius)) colorSwitch(e, 13);
-        else if (GUICircle(mousePos, 19, offsetX + spaceX * 6, smolRadius)) colorSwitch(e, 14);
-        else if (GUICircle(mousePos, 19, offsetX + spaceX * 7, smolRadius)) colorSwitch(e, 15);
-        else if (GUICircle(mousePos, 19, offsetX + spaceX * 8, smolRadius)) colorSwitch(e, 16);
-    } else if (
-        scaleFactor == 3 &&
-        mousePos.x > imageCatalog.palette.x &&
-        mousePos.x < imageCatalog.palette.x + imageCatalog.palette.img.width &&
-        mousePos.y > imageCatalog.palette.y &&
-        mousePos.y < imageCatalog.palette.y + imageCatalog.palette.img.height
-    ) {
-        console.log('Clicked on the GUI x3');
-        let offsetX = 13;
-        let spaceX = 15;
-        let smolRadius = 6;
+        let offsetX, spaceX, row1Y, row2Y, bigY, bigX1, bigX2, smolRadius, bigRadius;
 
-        if (GUICircle(mousePos, 14, 8, 11)) saveToEthernity();
-        else if (GUICircle(mousePos, 14, 153, 11)) brushSwitch();
-        else if (GUICircle(mousePos, 5, offsetX + spaceX, smolRadius)) colorSwitch(e, 1);
-        else if (GUICircle(mousePos, 5, offsetX + spaceX * 2, smolRadius)) colorSwitch(e, 2);
-        else if (GUICircle(mousePos, 5, offsetX + spaceX * 3, smolRadius)) colorSwitch(e, 3);
-        else if (GUICircle(mousePos, 5, offsetX + spaceX * 4, smolRadius)) colorSwitch(e, 4);
-        else if (GUICircle(mousePos, 5, offsetX + spaceX * 5, smolRadius)) colorSwitch(e, 5);
-        else if (GUICircle(mousePos, 5, offsetX + spaceX * 6, smolRadius)) colorSwitch(e, 6);
-        else if (GUICircle(mousePos, 5, offsetX + spaceX * 7, smolRadius)) colorSwitch(e, 7);
-        else if (GUICircle(mousePos, 5, offsetX + spaceX * 8, smolRadius)) colorSwitch(e, 8);
-        else if (GUICircle(mousePos, 19, offsetX + spaceX, smolRadius)) colorSwitch(e, 9);
-        else if (GUICircle(mousePos, 19, offsetX + spaceX * 2, smolRadius)) colorSwitch(e, 10);
-        else if (GUICircle(mousePos, 19, offsetX + spaceX * 3, smolRadius)) colorSwitch(e, 11);
-        else if (GUICircle(mousePos, 19, offsetX + spaceX * 4, smolRadius)) colorSwitch(e, 12);
-        else if (GUICircle(mousePos, 19, offsetX + spaceX * 5, smolRadius)) colorSwitch(e, 13);
-        else if (GUICircle(mousePos, 19, offsetX + spaceX * 6, smolRadius)) colorSwitch(e, 14);
-        else if (GUICircle(mousePos, 19, offsetX + spaceX * 7, smolRadius)) colorSwitch(e, 15);
-        else if (GUICircle(mousePos, 19, offsetX + spaceX * 8, smolRadius)) colorSwitch(e, 16);
-    } else if (
-        scaleFactor == 6 &&
-        mousePos.x > imageCatalog.palette.x &&
-        mousePos.x < imageCatalog.palette.x + imageCatalog.palette.img.width &&
-        mousePos.y > imageCatalog.palette.y &&
-        mousePos.y < imageCatalog.palette.y + imageCatalog.palette.img.height
-    ) {
-        console.log('Clicked on the GUI x6');
-        let offsetX = 13;
-        let spaceX = 15;
-        let smolRadius = 6;
+        if (scaleFactor == 1) {
+            offsetX = 13;
+            spaceX = 15;
+            row1Y = 5;
+            row2Y = 19;
+            bigY = 14;
+            bigX1 = 8;
+            bigX2 = 153;
+            smolRadius = 6;
+            bigRadius = 11;
+        } else if (scaleFactor == 3) {
+            offsetX = 8;
+            spaceX = 8;
+            row1Y = 4;
+            row2Y = 9;
+            bigY = 7;
+            bigX1 = 4;
+            bigX2 = 84;
+            smolRadius = 4;
+            bigRadius = 6;
+        } else if (scaleFactor == 6) {
+            offsetX = 5;
+            spaceX = 5;
+            row1Y = 2;
+            row2Y = 5;
+            bigY = 4;
+            bigX1 = 2;
+            bigX2 = 51;
+            smolRadius = 2;
+            bigRadius = 4;
+        }
 
-        if (GUICircle(mousePos, 14, 8, 11)) saveToEthernity();
-        else if (GUICircle(mousePos, 14, 153, 11)) brushSwitch();
-        else if (GUICircle(mousePos, 5, offsetX + spaceX, smolRadius)) colorSwitch(e, 1);
-        else if (GUICircle(mousePos, 5, offsetX + spaceX * 2, smolRadius)) colorSwitch(e, 2);
-        else if (GUICircle(mousePos, 5, offsetX + spaceX * 3, smolRadius)) colorSwitch(e, 3);
-        else if (GUICircle(mousePos, 5, offsetX + spaceX * 4, smolRadius)) colorSwitch(e, 4);
-        else if (GUICircle(mousePos, 5, offsetX + spaceX * 5, smolRadius)) colorSwitch(e, 5);
-        else if (GUICircle(mousePos, 5, offsetX + spaceX * 6, smolRadius)) colorSwitch(e, 6);
-        else if (GUICircle(mousePos, 5, offsetX + spaceX * 7, smolRadius)) colorSwitch(e, 7);
-        else if (GUICircle(mousePos, 5, offsetX + spaceX * 8, smolRadius)) colorSwitch(e, 8);
-        else if (GUICircle(mousePos, 19, offsetX + spaceX, smolRadius)) colorSwitch(e, 9);
-        else if (GUICircle(mousePos, 19, offsetX + spaceX * 2, smolRadius)) colorSwitch(e, 10);
-        else if (GUICircle(mousePos, 19, offsetX + spaceX * 3, smolRadius)) colorSwitch(e, 11);
-        else if (GUICircle(mousePos, 19, offsetX + spaceX * 4, smolRadius)) colorSwitch(e, 12);
-        else if (GUICircle(mousePos, 19, offsetX + spaceX * 5, smolRadius)) colorSwitch(e, 13);
-        else if (GUICircle(mousePos, 19, offsetX + spaceX * 6, smolRadius)) colorSwitch(e, 14);
-        else if (GUICircle(mousePos, 19, offsetX + spaceX * 7, smolRadius)) colorSwitch(e, 15);
-        else if (GUICircle(mousePos, 19, offsetX + spaceX * 8, smolRadius)) colorSwitch(e, 16);
+        if (GUICircle(mousePos, bigY, bigX1, bigRadius)) saveToEthernity();
+        else if (GUICircle(mousePos, bigY, bigX2, bigRadius)) brushSwitch();
+        else if (GUICircle(mousePos, row1Y, offsetX + spaceX, smolRadius)) colorSwitch(e, 1);
+        else if (GUICircle(mousePos, row1Y, offsetX + spaceX * 2, smolRadius)) colorSwitch(e, 2);
+        else if (GUICircle(mousePos, row1Y, offsetX + spaceX * 3, smolRadius)) colorSwitch(e, 3);
+        else if (GUICircle(mousePos, row1Y, offsetX + spaceX * 4, smolRadius)) colorSwitch(e, 4);
+        else if (GUICircle(mousePos, row1Y, offsetX + spaceX * 5, smolRadius)) colorSwitch(e, 5);
+        else if (GUICircle(mousePos, row1Y, offsetX + spaceX * 6, smolRadius)) colorSwitch(e, 6);
+        else if (GUICircle(mousePos, row1Y, offsetX + spaceX * 7, smolRadius)) colorSwitch(e, 7);
+        else if (GUICircle(mousePos, row1Y, offsetX + spaceX * 8, smolRadius)) colorSwitch(e, 8);
+        else if (GUICircle(mousePos, row2Y, offsetX + spaceX, smolRadius)) colorSwitch(e, 9);
+        else if (GUICircle(mousePos, row2Y, offsetX + spaceX * 2, smolRadius)) colorSwitch(e, 10);
+        else if (GUICircle(mousePos, row2Y, offsetX + spaceX * 3, smolRadius)) colorSwitch(e, 11);
+        else if (GUICircle(mousePos, row2Y, offsetX + spaceX * 4, smolRadius)) colorSwitch(e, 12);
+        else if (GUICircle(mousePos, row2Y, offsetX + spaceX * 5, smolRadius)) colorSwitch(e, 13);
+        else if (GUICircle(mousePos, row2Y, offsetX + spaceX * 6, smolRadius)) colorSwitch(e, 14);
+        else if (GUICircle(mousePos, row2Y, offsetX + spaceX * 7, smolRadius)) colorSwitch(e, 15);
+        else if (GUICircle(mousePos, row2Y, offsetX + spaceX * 8, smolRadius)) colorSwitch(e, 16);
     } else if (imageCatalog.share.display) {
         if (
             !(
@@ -347,6 +317,13 @@ export function clickManager(e) {
         console.log('monolithPos', mousePos);
         startUsingTool(e, mousePos);
     }
+}
+
+function GUICircle(mousePos, y, x, radius) {
+    // Coordinates of the center are input in the GUI
+    y += imageCatalog.palette.y;
+    x += imageCatalog.palette.x;
+    return Math.ceil(mousePos.x - x) ** 2 + Math.ceil(mousePos.y - y) ** 2 <= radius ** 2;
 }
 
 function startUsingTool(e, mousePos) {
@@ -505,11 +482,4 @@ function colorSwitch(e, color) {
         colorPicked2 = Const.GUI_PALETTE[color - 1];
     }
     playSound('click6');
-}
-
-function GUICircle(mousePos, y, x, radius) {
-    // Coordinates of the center are input in the GUI
-    y += imageCatalog.palette.y;
-    x += imageCatalog.palette.x;
-    return Math.floor(mousePos.x - x) ** 2 + Math.floor(mousePos.y - y) ** 2 <= radius ** 2;
 }
