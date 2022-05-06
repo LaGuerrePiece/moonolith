@@ -13,7 +13,7 @@ import {
 import Const from './constants';
 import { convertToMonolithPos, monolith, monolithIndexes } from './monolith';
 import { clickManager, colorNumber1, colorNumber2 } from './tools';
-import { tool, Tool } from './tools';
+import { tool } from './tools';
 import { transition, animateRune } from '../utils/runeAnims';
 import { chunksToAnimateInfo } from '../utils/imageManager';
 
@@ -35,13 +35,31 @@ export let imageCatalog = {
     plan0: { fileName: 'plan0', type: 'landscape', startX: -2, startY: 0, parallax: -0.15, display: true },
     panneau: { fileName: 'panneau', type: 'popup', display: false },
     share: { fileName: 'share', type: 'popup', display: false },
-    selector2: { fileName: 'selector1', type: 'GUI', display: true },
-    selector1: { fileName: 'selector2', type: 'GUI', display: true },
-    paletteSMOL: { fileName: 'paletteSMOL', type: 'palette', display: false },
-    paletteBIG: { fileName: 'paletteBIG', type: 'palette', display: false },
-    paletteHUGE: { fileName: 'paletteHUGE', type: 'palette', display: false },
-    paletteGIGA: { fileName: 'paletteGIGA', type: 'palette', display: false },
-    palettePAN: { fileName: 'palettePAN', type: 'palette', display: false },
+    selectorA: { fileName: '/palette/selector1A', type: 'GUI', display: true },
+    selectorB: { fileName: '/palette/selector1B', type: 'GUI', display: true },
+    palette: { fileName: '/palette/palette1giga', type: 'palette', display: true },
+};
+
+export let paletteCatalog = {
+    palette1smol: { fileName: 'palette1smol' },
+    palette1medium: { fileName: 'palette1medium' },
+    palette1large: { fileName: 'palette1large' },
+    palette1giga: { fileName: 'palette1giga' },
+    palette3smol: { fileName: 'palette3smol' },
+    palette3medium: { fileName: 'palette3medium' },
+    palette3large: { fileName: 'palette3large' },
+    palette3giga: { fileName: 'palette3giga' },
+    palette6smol: { fileName: 'palette6smol' },
+    palette6medium: { fileName: 'palette6medium' },
+    palette6large: { fileName: 'palette6large' },
+    palette6giga: { fileName: 'palette6giga' },
+    selector1A: { fileName: 'selector1A' },
+    selector1B: { fileName: 'selector1B' },
+    selector3A: { fileName: 'selector3A' },
+    selector3B: { fileName: 'selector3B' },
+    selector6A: { fileName: 'selector6A' },
+    selector6B: { fileName: 'selector6B' },
+    palettePAN: { fileName: 'palettePAN' },
 };
 
 //prettier-ignore
@@ -134,6 +152,10 @@ export function initDisplay() {
         imageCatalog[image].img = new Image();
         imageCatalog[image].img.src = `/src/assets/images/${imageCatalog[image].fileName}.png`;
     }
+    for (let image in paletteCatalog) {
+        paletteCatalog[image].img = new Image();
+        paletteCatalog[image].img.src = `/src/assets/images/palette/${paletteCatalog[image].fileName}.png`;
+    }
     for (let anim in animCatalog) {
         animCatalog[anim].canvas = document.createElement('canvas');
     }
@@ -202,34 +224,33 @@ function updateCatalog() {
         } else if (thisImage.type === 'palette') {
             const boundingClientRect = canvas.getBoundingClientRect();
             thisImage.y = Math.floor(
-                ((windowHeight - boundingClientRect.y) / (pixelSize * scaleFactor) -
-                    imageCatalog.paletteSMOL.img.height) /
+                ((windowHeight - boundingClientRect.y) / (pixelSize * scaleFactor) - imageCatalog.palette.img.height) /
                     Const.GUI_RELATIVE_Y
             );
             // thisImage.x = Math.floor(
             //     ((windowWidth - boundingClientRect.x) * (renderWidth / boundingClientRect.width) -
-            //         imageCatalog.paletteSMOL.img.width) /
+            //         imageCatalog.palette1smol.img.width) /
             //         Const.GUI_RELATIVE_X
             // );
-            thisImage.x = Math.floor((renderWidth - imageCatalog.paletteSMOL.img.width) / Const.GUI_RELATIVE_X);
+            thisImage.x = Math.floor((renderWidth - imageCatalog.palette.img.width) / Const.GUI_RELATIVE_X);
         } else if (thisImage.type === 'popup') {
             thisImage.y = Math.floor((renderHeight - imageCatalog.panneau.img.height) / 2 - 6);
             thisImage.x = Math.floor((Const.COLUMNS - imageCatalog.panneau.img.width) / 2);
-        } else if (image === 'selector1') {
+        } else if (image === 'selectorA') {
             const offset = 6;
-            thisImage.y = imageCatalog.paletteSMOL.y - 1 + Math.floor(colorNumber1 / 9) * 15;
-            thisImage.x = imageCatalog.paletteSMOL.x + offset + colorNumber1 * 15 - Math.floor(colorNumber1 / 9) * 120;
-        } else if (image === 'selector2') {
+            thisImage.y = imageCatalog.palette.y - 1 + Math.floor(colorNumber1 / 9) * 15;
+            thisImage.x = imageCatalog.palette.x + offset + colorNumber1 * 15 - Math.floor(colorNumber1 / 9) * 120;
+        } else if (image === 'selectorB') {
             const offset = 6;
-            thisImage.y = imageCatalog.paletteSMOL.y - 1 + Math.floor(colorNumber2 / 9) * 15;
-            thisImage.x = imageCatalog.paletteSMOL.x + offset + colorNumber2 * 15 - Math.floor(colorNumber2 / 9) * 120;
+            thisImage.y = imageCatalog.palette.y - 1 + Math.floor(colorNumber2 / 9) * 15;
+            thisImage.x = imageCatalog.palette.x + offset + colorNumber2 * 15 - Math.floor(colorNumber2 / 9) * 120;
         } else if (thisImage.type === 'side') {
             thisImage.y = thisImage.startY + renderHeight + viewPosY - Const.MONOLITH_LINES - Const.MARGIN_BOTTOM - 7;
             thisImage.x = thisImage.startX + Const.MARGIN_LEFT - viewPosX;
         }
     }
     imageCatalog.panneau.display = isInSquare(227, 239, 188, 196, pointer.x, pointer.y) ? true : false;
-    imageCatalog.selector2.display = deviceType === 'mobile' ? false : true;
+    imageCatalog.selectorB.display = deviceType === 'mobile' ? false : true;
 
     transition();
 

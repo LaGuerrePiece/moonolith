@@ -3,11 +3,10 @@ import { renderWidth, renderHeight, changeViewPos, viewPosX, viewPosY, toggleZoo
 import { toggleMusic, playSound, toggleMute } from '../assets/sounds';
 import { drawPixel, getColor, eraseAllPixel, convertToMonolithPos, increaseMonolithHeight } from './monolith';
 import { closeCurrentEvent, undo, redo } from './undoStack';
-import { imageCatalog, canvas } from './display';
+import { imageCatalog, canvas, paletteCatalog } from './display';
 import { moveDrawing, bufferOnMonolith, saveToEthernity } from '../utils/imageManager';
 import Const from './constants';
 import { openLink } from '../utils/web3';
-
 
 export let tool = 'giga';
 let colorPicked1 = Const.RGB16;
@@ -38,13 +37,11 @@ export function keyManager(e){
     if (e.key === 'm') { moveDrawing(50, 400) }
     if (e.key === 'e') brushSwitch();
     if (e.key === 'i') importImage();
-    if (e.key === 'r') {tool = 'giga'; playSound('kick'); paletteUpdate();}
+    if (e.key === 'r') { tool = 'giga'; playSound('kick'); paletteUpdate(); }
     if (e.key === 'k') toggleMusic();
     if (e.key === 'l') toggleMute();
-    if (e.key === 'p') {increaseMonolithHeight(1100);}
+    if (e.key === 'p') { increaseMonolithHeight(1100); }
     if (e.key === 't') { changeViewPos(0, 999999); }
-    if (e.key === 'u') {seisme();}
-    if (e.key === 's') {saveToEthernity()}
 
     switch (e.code || e.key || e.keyCode) {
         case 'KeyW':
@@ -78,6 +75,7 @@ export function keyManager(e){
 
         case 'KeyZ':
         toggleZoom();
+        paletteUpdate();
         playSound('click6');
         break;
       }
@@ -102,7 +100,7 @@ export function touchManager(e) {
         clickManager(e);
     } else if (panMode) {
         touchPan(e);
-        imageCatalog.palette.decodedYX = imageCatalog.palettePAN.decodedYX;
+        imageCatalog.palette.img = paletteCatalog.palettePAN.img;
     } else if (!panMode) {
         touchDraw(e);
         paletteUpdate();
@@ -226,10 +224,10 @@ export function clickManager(e) {
 
     if (
         scaleFactor == 1 &&
-        mousePos.x > imageCatalog.paletteSMOL.x &&
-        mousePos.x < imageCatalog.paletteSMOL.x + imageCatalog.paletteSMOL.img.width &&
-        mousePos.y > imageCatalog.paletteSMOL.y &&
-        mousePos.y < imageCatalog.paletteSMOL.y + imageCatalog.paletteSMOL.img.height
+        mousePos.x > imageCatalog.palette.x &&
+        mousePos.x < imageCatalog.palette.x + imageCatalog.palette.img.width &&
+        mousePos.y > imageCatalog.palette.y &&
+        mousePos.y < imageCatalog.palette.y + imageCatalog.palette.img.height
     ) {
         console.log('Clicked on the GUI');
         let offsetX = 13;
@@ -256,10 +254,10 @@ export function clickManager(e) {
         else if (GUICircle(mousePos, 19, offsetX + spaceX * 8, smolRadius)) colorSwitch(e, 16);
     } else if (
         scaleFactor == 3 &&
-        mousePos.x > imageCatalog.paletteSMOL.x &&
-        mousePos.x < imageCatalog.paletteSMOL.x + imageCatalog.paletteSMOL.img.width &&
-        mousePos.y > imageCatalog.paletteSMOL.y &&
-        mousePos.y < imageCatalog.paletteSMOL.y + imageCatalog.paletteSMOL.img.height
+        mousePos.x > imageCatalog.palette.x &&
+        mousePos.x < imageCatalog.palette.x + imageCatalog.palette.img.width &&
+        mousePos.y > imageCatalog.palette.y &&
+        mousePos.y < imageCatalog.palette.y + imageCatalog.palette.img.height
     ) {
         console.log('Clicked on the GUI x3');
         let offsetX = 13;
@@ -286,10 +284,10 @@ export function clickManager(e) {
         else if (GUICircle(mousePos, 19, offsetX + spaceX * 8, smolRadius)) colorSwitch(e, 16);
     } else if (
         scaleFactor == 6 &&
-        mousePos.x > imageCatalog.paletteSMOL.x &&
-        mousePos.x < imageCatalog.paletteSMOL.x + imageCatalog.paletteSMOL.img.width &&
-        mousePos.y > imageCatalog.paletteSMOL.y &&
-        mousePos.y < imageCatalog.paletteSMOL.y + imageCatalog.paletteSMOL.img.height
+        mousePos.x > imageCatalog.palette.x &&
+        mousePos.x < imageCatalog.palette.x + imageCatalog.palette.img.width &&
+        mousePos.y > imageCatalog.palette.y &&
+        mousePos.y < imageCatalog.palette.y + imageCatalog.palette.img.height
     ) {
         console.log('Clicked on the GUI x6');
         let offsetX = 13;
@@ -425,6 +423,7 @@ function brushSwitch() {
             tool = 'smol';
             break;
         case 'giga':
+            playSound('clickB2');
             tool = 'smol';
             break;
     }
@@ -432,34 +431,10 @@ function brushSwitch() {
 }
 
 function paletteUpdate() {
-    switch (tool) {
-        case 'smol':
-            imageCatalog.paletteSMOL.display = true;
-            imageCatalog.paletteBIG.display = false;
-            imageCatalog.paletteHUGE.display = false;
-            imageCatalog.paletteGIGA.display = false;
-            break;
-        case 'medium':
-            imageCatalog.paletteSMOL.display = false;
-            imageCatalog.paletteBIG.display = true;
-            imageCatalog.paletteHUGE.display = false;
-            imageCatalog.paletteGIGA.display = false;
-            break;
-        case 'large':
-            imageCatalog.paletteSMOL.display = false;
-            imageCatalog.paletteBIG.display = false;
-            imageCatalog.paletteHUGE.display = true;
-            imageCatalog.paletteGIGA.display = false;
-            break;
-        case 'giga':
-            imageCatalog.paletteSMOL.display = false;
-            imageCatalog.paletteBIG.display = false;
-            imageCatalog.paletteHUGE.display = false;
-            imageCatalog.paletteGIGA.display = true;
-            break;
-    }
+    imageCatalog.palette.img = paletteCatalog[`palette${scaleFactor}${tool}`].img;
+    imageCatalog.selectorA.img = paletteCatalog[`selector${scaleFactor}A`].img;
+    imageCatalog.selectorB.img = paletteCatalog[`selector${scaleFactor}B`].img;
 }
-paletteUpdate();
 
 export function mousePosInGrid(e) {
     const boundingClientRect = canvas.getBoundingClientRect();
@@ -534,7 +509,7 @@ function colorSwitch(e, color) {
 
 function GUICircle(mousePos, y, x, radius) {
     // Coordinates of the center are input in the GUI
-    y += imageCatalog.paletteSMOL.y;
-    x += imageCatalog.paletteSMOL.x;
+    y += imageCatalog.palette.y;
+    x += imageCatalog.palette.x;
     return Math.floor(mousePos.x - x) ** 2 + Math.floor(mousePos.y - y) ** 2 <= radius ** 2;
 }
