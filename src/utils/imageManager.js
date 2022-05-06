@@ -2,7 +2,7 @@ import { UPNG } from './upmc';
 import Const from '../models/constants';
 import { monolith, eraseAllPixel, drawPixel, monolithIndexes } from '../models/monolith';
 import { chunkCreator, importedChunks } from '../utils/web3';
-import {compressToUTF16, decompressFromUTF16} from 'lz-String';
+import {compressToUTF16, decompressFromUTF16} from 'lz-string';
 import { animCatalog } from '../models/display';
 import { runeNumber } from '../main';
 
