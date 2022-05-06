@@ -217,13 +217,13 @@ function updateCatalog() {
             thisImage.y = Math.floor((renderHeight - imageCatalog.panneau.img.height) / 2 - 6);
             thisImage.x = Math.floor((Const.COLUMNS - imageCatalog.panneau.img.width) / 2);
         } else if (image === 'selector1') {
-            const offset = 8;
-            thisImage.y = imageCatalog.paletteSMOL.y - 1 + Math.floor(colorNumber1 / 9) * 8;
-            thisImage.x = imageCatalog.paletteSMOL.x + offset + colorNumber1 * 8 - Math.floor(colorNumber1 / 9) * 64;
+            const offset = 6;
+            thisImage.y = imageCatalog.paletteSMOL.y - 1 + Math.floor(colorNumber1 / 9) * 15;
+            thisImage.x = imageCatalog.paletteSMOL.x + offset + colorNumber1 * 15 - Math.floor(colorNumber1 / 9) * 120;
         } else if (image === 'selector2') {
-            const offset = 8;
-            thisImage.y = imageCatalog.paletteSMOL.y - 1 + Math.floor(colorNumber2 / 9) * 8;
-            thisImage.x = imageCatalog.paletteSMOL.x + offset + colorNumber2 * 8 - Math.floor(colorNumber2 / 9) * 64;
+            const offset = 6;
+            thisImage.y = imageCatalog.paletteSMOL.y - 1 + Math.floor(colorNumber2 / 9) * 15;
+            thisImage.x = imageCatalog.paletteSMOL.x + offset + colorNumber2 * 15 - Math.floor(colorNumber2 / 9) * 120;
         } else if (thisImage.type === 'side') {
             thisImage.y = thisImage.startY + renderHeight + viewPosY - Const.MONOLITH_LINES - Const.MARGIN_BOTTOM - 7;
             thisImage.x = thisImage.startX + Const.MARGIN_LEFT - viewPosX;

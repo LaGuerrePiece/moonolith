@@ -34,9 +34,9 @@ export default class Const {
     static get RGB8() { return [ 132, 122, 145 ] } // #847a91
     static get RGB9() { return [ 68, 157, 215 ] } // #449dd7
     static get RGB10() { return [ 46, 117, 87 ] } // #2e7557
-    static get RGB11() { return [ 65, 166, 246 ] } // #81e280
-    static get RGB12() { return [ 129, 226, 128 ] } // #f5d284
-    static get RGB13() { return [ 245, 210, 132 ] } // #f48d56
+    static get RGB11() { return [ 129, 226, 128 ] } // #81e280
+    static get RGB12() { return [ 245, 210, 132 ] } // #f5d284
+    static get RGB13() { return [ 244, 141, 86 ] } // #f48d56
     static get RGB14() { return [ 105, 69, 57 ] } // #694539
     static get RGB15() { return [ 232, 227, 213 ] } // #e8e3d5
     static get RGB1() { return [ 0, 0, 0 ] } // #000000
