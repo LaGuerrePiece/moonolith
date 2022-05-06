@@ -106,4 +106,4 @@ export function getContractAddress() {
     return contractAddress;
 }
 
-export { chunkCreator, getChunk, getChunksFromPosition, chunkImport };
+export { chunkCreator, getChunk, getChunksFromPosition, chunkImport, getMetaData };

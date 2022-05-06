@@ -3,8 +3,9 @@ import { renderWidth, renderHeight, changeViewPos, viewPosX, viewPosY, toggleZoo
 import { toggleMusic, playSound, toggleMute } from '../assets/sounds';
 import { drawPixel, getColor, eraseAllPixel, convertToMonolithPos, increaseMonolithHeight } from './monolith';
 import { closeCurrentEvent, undo, redo } from './undoStack';
-import { imageCatalog, canvas, paletteCatalog } from './display';
+import { imageCatalog, canvas } from './display';
 import { moveDrawing, bufferOnMonolith, saveToEthernity } from '../utils/imageManager';
+import { paletteCatalog } from '../utils/paletteCatalog';
 import Const from './constants';
 import { openLink } from './display';
 
@@ -429,7 +430,7 @@ function useColorPicker(mousePos) {
             color[1] === Const.GUI_PALETTE[i][1] &&
             color[2] === Const.GUI_PALETTE[i][2]
         ) {
-            //console.log('colorPicked1', color, i);
+            console.log('colorPicked1', color, i);
             colorSwitch({ button: 0 }, i + 1);
             return;
         }

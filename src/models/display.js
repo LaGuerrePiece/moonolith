@@ -1,4 +1,4 @@
-import { courgette64 } from '../assets/base64';
+import { courgette64, twitter } from '../assets/base64';
 import {
     renderHeight,
     renderWidth,
@@ -9,16 +9,23 @@ import {
     windowHeight,
     pixelSize,
     scaleFactor,
+    intro,
+    changeViewPos,
 } from '../main';
 import Const from './constants';
 import { convertToMonolithPos, monolith, monolithIndexes } from './monolith';
 import { clickManager, colorNumber1, colorNumber2 } from './tools';
 import { tool } from './tools';
-import { transition, animateRune } from '../utils/runeAnims';
+import { animateMonolith, animateRune } from '../utils/runeAnims';
 import { chunksToAnimateInfo } from '../utils/imageManager';
 import { getContractAddress } from '../utils/web3';
+import { toggleRumble } from '../assets/sounds';
+import { paletteCatalog } from '../utils/paletteCatalog';
 
-var clock = 0;
+let monolithDisplayHeightIntro = 0;
+let chunkNumber;
+
+export let clock = 0;
 setInterval(() => {
     clock += 100;
 }, 100);
@@ -41,89 +48,14 @@ export let imageCatalog = {
     palette: { fileName: '/palette/palette1giga', type: 'palette', display: true },
 };
 
-export let paletteCatalog = {
-    palette1smol: { fileName: 'palette1smol' },
-    palette1medium: { fileName: 'palette1medium' },
-    palette1large: { fileName: 'palette1large' },
-    palette1giga: { fileName: 'palette1giga' },
-    palette3smol: { fileName: 'palette3smol' },
-    palette3medium: { fileName: 'palette3medium' },
-    palette3large: { fileName: 'palette3large' },
-    palette3giga: { fileName: 'palette3giga' },
-    palette6smol: { fileName: 'palette6smol' },
-    palette6medium: { fileName: 'palette6medium' },
-    palette6large: { fileName: 'palette6large' },
-    palette6giga: { fileName: 'palette6giga' },
-    selector1A: { fileName: 'selector1A' },
-    selector1B: { fileName: 'selector1B' },
-    selector3A: { fileName: 'selector3A' },
-    selector3B: { fileName: 'selector3B' },
-    selector6A: { fileName: 'selector6A' },
-    selector6B: { fileName: 'selector6B' },
-    palettePAN: { fileName: 'palettePAN' },
-};
-
 //prettier-ignore
 export let animCatalog = {
-    courgette0: { fileName: 'courgette', type: 'legume', x: 31 * 0, y: 0, display: true, loop: true, base64: courgette64 },
-    // courgette1: { fileName: 'courgette', type: 'legume', x: 31 * 1, y: 0, display: true, loop: true, base64: courgette64 },
-    // courgette2: { fileName: 'courgette', type: 'legume', x: 31 * 2, y: 0, display: true, loop: true, base64: courgette64 },
-    // courgette3: { fileName: 'courgette', type: 'legume', x: 31 * 3, y: 0, display: true, loop: true, base64: courgette64 },
-    // courgette4: { fileName: 'courgette', type: 'legume', x: 31 * 4, y: 0, display: true, loop: true, base64: courgette64 },
-    // courgette5: { fileName: 'courgette', type: 'legume', x: 31 * 5, y: 0, display: true, loop: true, base64: courgette64 },
-    // courgette6: { fileName: 'courgette', type: 'legume', x: 31 * 6, y: 0, display: true, loop: true, base64: courgette64 },
-    // courgette7: { fileName: 'courgette', type: 'legume', x: 31 * 7, y: 0, display: true, loop: true, base64: courgette64 },
-    // courgette8: { fileName: 'courgette', type: 'legume', x: 31 * 8, y: 0, display: true, loop: true, base64: courgette64 },
-    // courgette9: { fileName: 'courgette', type: 'legume', x: 31 * 9, y: 0, display: true, loop: true, base64: courgette64 },
-    // courgetteA: { fileName: 'courgette', type: 'legume', x: 31 * 10, y: 0, display: true, loop: true, base64: courgette64 },
-    // courgetteB: { fileName: 'courgette', type: 'legume', x: 31 * 11, y: 0, display: true, loop: true, base64: courgette64 },
-    // courgetteC: { fileName: 'courgette', type: 'legume', x: 31 * 12, y: 0, display: true, loop: true, base64: courgette64 },
-    
-    // courgette10: { fileName: 'courgette', type: 'legume', x: 31 * 0, y: 35, display: true, loop: true, base64: courgette64 },
-    // courgette11: { fileName: 'courgette', type: 'legume', x: 31 * 1, y: 35, display: true, loop: true, base64: courgette64 },
-    // courgette12: { fileName: 'courgette', type: 'legume', x: 31 * 2, y: 35, display: true, loop: true, base64: courgette64 },
-    // courgette13: { fileName: 'courgette', type: 'legume', x: 31 * 3, y: 35, display: true, loop: true, base64: courgette64 },
-    // courgette14: { fileName: 'courgette', type: 'legume', x: 31 * 4, y: 35, display: true, loop: true, base64: courgette64 },
-    // courgette15: { fileName: 'courgette', type: 'legume', x: 31 * 5, y: 35, display: true, loop: true, base64: courgette64 },
-    // courgette16: { fileName: 'courgette', type: 'legume', x: 31 * 6, y: 35, display: true, loop: true, base64: courgette64 },
-    // courgette17: { fileName: 'courgette', type: 'legume', x: 31 * 7, y: 35, display: true, loop: true, base64: courgette64 },
-    // courgette18: { fileName: 'courgette', type: 'legume', x: 31 * 8, y: 35, display: true, loop: true, base64: courgette64 },
-    // courgette19: { fileName: 'courgette', type: 'legume', x: 31 * 9, y: 35, display: true, loop: true, base64: courgette64 },
-    // courgette1A: { fileName: 'courgette', type: 'legume', x: 31 * 10, y:35, display: true, loop: true, base64: courgette64 },
-    // courgette1B: { fileName: 'courgette', type: 'legume', x: 31 * 11, y:35, display: true, loop: true, base64: courgette64 },
-    // courgette1C: { fileName: 'courgette', type: 'legume', x: 31 * 12, y:35, display: true, loop: true, base64: courgette64 },
-
-    // courgette20: { fileName: 'courgette', type: 'legume', x: 31 * 0, y: 70, display: true, loop: true, base64: courgette64 },
-    // courgette21: { fileName: 'courgette', type: 'legume', x: 31 * 1, y: 70, display: true, loop: true, base64: courgette64 },
-    // courgette22: { fileName: 'courgette', type: 'legume', x: 31 * 2, y: 70, display: true, loop: true, base64: courgette64 },
-    // courgette23: { fileName: 'courgette', type: 'legume', x: 31 * 3, y: 70, display: true, loop: true, base64: courgette64 },
-    // courgette24: { fileName: 'courgette', type: 'legume', x: 31 * 4, y: 70, display: true, loop: true, base64: courgette64 },
-    // courgette25: { fileName: 'courgette', type: 'legume', x: 31 * 5, y: 70, display: true, loop: true, base64: courgette64 },
-    // courgette26: { fileName: 'courgette', type: 'legume', x: 31 * 6, y: 70, display: true, loop: true, base64: courgette64 },
-    // courgette27: { fileName: 'courgette', type: 'legume', x: 31 * 7, y: 70, display: true, loop: true, base64: courgette64 },
-    // courgette28: { fileName: 'courgette', type: 'legume', x: 31 * 8, y: 70, display: true, loop: true, base64: courgette64 },
-    // courgette29: { fileName: 'courgette', type: 'legume', x: 31 * 9, y: 70, display: true, loop: true, base64: courgette64 },
-    // courgette2A: { fileName: 'courgette', type: 'legume', x: 31 * 10, y:70, display: true, loop: true, base64: courgette64 },
-    // courgette2B: { fileName: 'courgette', type: 'legume', x: 31 * 11, y:70, display: true, loop: true, base64: courgette64 },
-    // courgette2C: { fileName: 'courgette', type: 'legume', x: 31 * 12, y:70, display: true, loop: true, base64: courgette64 },
-
-    // courgette30: { fileName: 'courgette', type: 'legume', x: 31 * 0, y: 105, display: true, loop: true, base64: courgette64 },
-    // courgette31: { fileName: 'courgette', type: 'legume', x: 31 * 1, y: 105, display: true, loop: true, base64: courgette64 },
-    // courgette32: { fileName: 'courgette', type: 'legume', x: 31 * 2, y: 105, display: true, loop: true, base64: courgette64 },
-    // courgette33: { fileName: 'courgette', type: 'legume', x: 31 * 3, y: 105, display: true, loop: true, base64: courgette64 },
-    // courgette34: { fileName: 'courgette', type: 'legume', x: 31 * 4, y: 105, display: true, loop: true, base64: courgette64 },
-    // courgette35: { fileName: 'courgette', type: 'legume', x: 31 * 5, y: 105, display: true, loop: true, base64: courgette64 },
-    // courgette36: { fileName: 'courgette', type: 'legume', x: 31 * 6, y: 105, display: true, loop: true, base64: courgette64 },
-    // courgette37: { fileName: 'courgette', type: 'legume', x: 31 * 7, y: 105, display: true, loop: true, base64: courgette64 },
-    // courgette38: { fileName: 'courgette', type: 'legume', x: 31 * 8, y: 105, display: true, loop: true, base64: courgette64 },
-    // courgette39: { fileName: 'courgette', type: 'legume', x: 31 * 9, y: 105, display: true, loop: true, base64: courgette64 },
-    // courgette3A: { fileName: 'courgette', type: 'legume', x: 31 * 10, y:105, display: true, loop: true, base64: courgette64 },
-    // courgette3B: { fileName: 'courgette', type: 'legume', x: 31 * 11, y:105, display: true, loop: true, base64: courgette64 },
-    // courgette3C: { fileName: 'courgette', type: 'legume', x: 31 * 12, y:105, display: true, loop: true, base64: courgette64 },
+    courgette0: { fileName: 'courgette', type: 'legume', startX: 20, startY: 450, display: true, loop: true, parallax: 0.3, base64: courgette64 },
+    courgette1: { fileName: 'courgette', type: 'legume', startX: 100, startY: 1150, display: false, loop: true, parallax: 0, base64: courgette64 },
+    twitter: { fileName: 'twitter', type: 'oiseau', startX: 94, startY: 83, display: true, loop: true, parallax: -0.15, base64: twitter },
 };
 
 function frameInClock(anim) {
-    // console.log('anim', anim);
     let frame = 0;
     let delaySum = 0;
     while (delaySum < clock % anim.totalDelay) {
@@ -158,14 +90,14 @@ export function initDisplay() {
         paletteCatalog[image].img.src = `/src/assets/images/palette/${paletteCatalog[image].fileName}.png`;
     }
     for (let anim in animCatalog) {
-        animCatalog[anim].canvas = document.createElement('canvas');
+        if (animCatalog[anim].display) {
+            animCatalog[anim].canvas = document.createElement('canvas');
+        }
     }
     requestAnimationFrame(update);
 
     function update() {
         updateCatalog();
-        // console.log(imageCatalog);
-
         // ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = 'rgb(196, 130, 127)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -173,12 +105,13 @@ export function initDisplay() {
             const thisImage = imageCatalog[image];
             if (thisImage.display) ctx.drawImage(thisImage.img, thisImage.x, thisImage.y);
             if (image === 'plan2') drawMonolith(ctx);
+            if (image === 'plan0') {
+                for (let anim in animCatalog) {
+                    const thisAnim = animCatalog[anim];
+                    if (thisAnim.display) drawAnim(thisAnim.frames[frameInClock(thisAnim)], anim, ctx);
+                }
+            }
         }
-        for (let anim in animCatalog) {
-            const thisAnim = animCatalog[anim];
-            if (thisAnim.display) drawAnim(thisAnim.frames[frameInClock(thisAnim)], anim, ctx);
-        }
-
         requestAnimationFrame(update);
     }
 }
@@ -188,28 +121,29 @@ function drawAnim(frame, name, ctx) {
     let frameData = ctxo.createImageData(animCatalog[name].width, animCatalog[name].height);
     frameData.data.set(frame);
     ctxo.putImageData(frameData, 0, 0);
-    // console.log('o', o);
     ctx.drawImage(animCatalog[name].canvas, animCatalog[name].x, animCatalog[name].y);
 }
 
 function drawMonolith(ctx) {
-    const monolithDisplayHeight =
-        renderHeight -
-        Math.max(Const.MARGIN_BOTTOM - viewPosY, 0) -
-        Math.max(Const.MARGIN_TOP - (Const.LINES - viewPosY - renderHeight), 0);
+    const monolithDisplayHeight = intro
+        ? monolithDisplayHeightIntro
+        : renderHeight -
+          Math.max(Const.MARGIN_BOTTOM - viewPosY, 0) -
+          Math.max(Const.MARGIN_TOP - (Const.LINES - viewPosY - renderHeight), 0);
     if (monolithDisplayHeight <= 0) return;
     let monolithData = ctx.createImageData(Const.MONOLITH_COLUMNS, monolithDisplayHeight);
     const a = addPointer(monolith.slice());
     monolithData.data.set(cutMonolith(a, monolithDisplayHeight));
-    ctx.putImageData(
-        monolithData,
-        Const.MARGIN_LEFT - viewPosX,
-        Math.max(Const.MARGIN_TOP - (Const.LINES - viewPosY - renderHeight), 0)
-    );
+    const posY = intro
+        ? renderHeight - Const.MARGIN_BOTTOM - monolithDisplayHeightIntro + viewPosY
+        : Const.MARGIN_TOP - Const.LINES + viewPosY + renderHeight;
+    ctx.putImageData(monolithData, Const.MARGIN_LEFT - viewPosX, Math.max(posY, 0));
 }
 
 function cutMonolith(mono, monolithDisplayHeight) {
-    const startYCoordinate = Math.max(Const.MONOLITH_LINES + Const.MARGIN_BOTTOM - renderHeight - viewPosY, 0);
+    const startYCoordinate = intro
+        ? Math.max(monolithDisplayHeight + Const.MARGIN_BOTTOM - renderHeight - viewPosY, 0)
+        : Math.max(Const.MONOLITH_LINES + Const.MARGIN_BOTTOM - renderHeight - viewPosY, 0);
     const endYCoordinate = Math.min(startYCoordinate + monolithDisplayHeight, Const.MONOLITH_LINES);
 
     return mono.subarray(Const.MONOLITH_COLUMNS * 4 * startYCoordinate, Const.MONOLITH_COLUMNS * 4 * endYCoordinate);
@@ -259,12 +193,22 @@ function updateCatalog() {
         } else if (thisImage.type === 'side') {
             thisImage.y = thisImage.startY + renderHeight + viewPosY - Const.MONOLITH_LINES - Const.MARGIN_BOTTOM - 7;
             thisImage.x = thisImage.startX + Const.MARGIN_LEFT - viewPosX;
+            if (intro) thisImage.y = thisImage.y + Const.MONOLITH_LINES - monolithDisplayHeightIntro;
         }
     }
     imageCatalog.panneau.display = isInSquare(227, 239, 188, 196, pointer.x, pointer.y) ? true : false;
     imageCatalog.selectorB.display = deviceType === 'mobile' ? false : true;
 
-    transition();
+    for (let anim in animCatalog) {
+        const thisAnim = animCatalog[anim];
+        // if (thisAnim.type === 'legume') {
+        const parallaxOffset = Math.floor(thisAnim.parallax * viewPosY);
+        thisAnim.y = renderHeight + parallaxOffset + viewPosY - thisAnim.height - thisAnim.startY;
+        thisAnim.x = thisAnim.startX - viewPosX;
+        // }
+    }
+
+    animateMonolith();
 
     chunksToAnimateInfo.forEach(([id, y]) => {
         const startY = Const.MONOLITH_LINES + Const.MARGIN_BOTTOM - viewPosY - renderHeight;
@@ -332,26 +276,17 @@ function addPointer(monolithData) {
 
 function whiten(monolithData, y, x) {
     if (x < 0 || x >= renderWidth || y < 0 || y >= renderHeight) return;
-
     const monolithPos = convertToMonolithPos({ x: x, y: y });
-    // If not on the monolith
-    if (!monolithPos) return;
-    // If not editable return
-    const posOnMonolith = (monolithPos.y * Const.MONOLITH_COLUMNS + monolithPos.x) * 4;
-    if (monolithIndexes[posOnMonolith] > 0) return;
+    if (!monolithPos) return; // If not on the monolith
 
-    // const monolithStartY = Const.MONOLITH_LINES + Const.MARGIN_BOTTOM - renderHeight - viewPosY;
-    // const monolithposition = ((monolithPos.y - monolithStartY) * Const.MONOLITH_COLUMNS + monolithPos.x) * 4;
-    // If being put off the screen during the zoom return
-    // const displayPos = (y * renderWidth + x) * 4;
-    // if (displayPos > monolithData.length) return;
+    const posOnMonolith = (monolithPos.y * Const.MONOLITH_COLUMNS + monolithPos.x) * 4;
+    if (monolithIndexes[posOnMonolith] > 0) return; // If not editable return
 
     monolithData[posOnMonolith] += (255 - monolithData[posOnMonolith]) / 3;
     monolithData[posOnMonolith + 1] += (255 - monolithData[posOnMonolith + 1]) / 3;
     monolithData[posOnMonolith + 2] += (255 - monolithData[posOnMonolith + 2]) / 3;
 }
 
-let chunkNumber;
 export function displayShareScreen(nb) {
     imageCatalog.share.display = true;
     chunkNumber = nb;
@@ -366,4 +301,58 @@ export function openLink(type) {
             '_blank'
         );
     }
+}
+
+export function monolithGoUpDuringIntro() {
+    // grows monolith
+    setTimeout(() => {
+        for (let rowAdded = 0; rowAdded < Const.MONOLITH_LINES; rowAdded++) {
+            let scalingValue = 1000 * Math.log(rowAdded);
+            setTimeout(() => {
+                monolithDisplayHeightIntro++;
+            }, scalingValue);
+        }
+        shake(Const.MONOLITH_LINES);
+    }, 1000);
+}
+
+export function shake(newRows) {
+    toggleRumble();
+    console.log('shake');
+    //shake landscapes
+    const shakeLandscape = setInterval(() => {
+        for (let layer in imageCatalog) {
+            const thisLayer = imageCatalog[layer];
+            if (thisLayer.type === 'landscape' && layer !== 'plan2') {
+                let offset = Math.floor(Math.random() * 3);
+                let direction = Math.floor(Math.random() * 2) * 2 - 1; //-1 or 1
+                switch (offset) {
+                    case 0:
+                        thisLayer.startX = -2 + direction;
+                        break;
+                    case 1:
+                    case 2:
+                        thisLayer.startX = -2;
+                        break;
+                }
+            }
+        }
+    }, 60);
+
+    const shakeViewPos = setInterval(() => {
+        changeViewPos(Math.floor(Math.random() * 3) - 1, Math.floor(Math.random() * 3) - 1);
+    }, 20);
+
+    //clear landscape shake
+    setTimeout(() => {
+        clearInterval(shakeLandscape);
+        clearInterval(shakeViewPos);
+        for (let layer in imageCatalog) {
+            const thisLayer = imageCatalog[layer];
+            if (thisLayer.type === 'landscape') {
+                thisLayer.startX = -2;
+            }
+        }
+        toggleRumble();
+    }, 2000 + 1000 * Math.log(newRows));
 }

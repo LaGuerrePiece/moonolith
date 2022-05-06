@@ -1,18 +1,19 @@
 // Imports des fonctionnalités
 import { keyManager, scrollManager, mousePosInGrid, touchManager, togglePanMode } from './models/tools';
 import Const from './models/constants';
-import { chunkImport, getChunk } from './utils/web3';
-import { buildMonolith } from './models/monolith';
+import { chunkImport, getChunk, getMetaData } from './utils/web3';
+import { buildMonolith, increaseMonolithHeight } from './models/monolith';
 import { base64ToBuffer, parseAPNG, prepareBufferForApi } from './utils/imageManager';
 import { hammer } from 'hammerjs';
-import { canvas, initDisplay } from './models/display';
+import { animCatalog, canvas, initDisplay, monolithGoUpDuringIntro, clock } from './models/display';
 
-export let viewPosY = 0;
+export let viewPosY = 100;
 export let viewPosX = 0;
 export let scaleFactor = 1;
 
 export let route;
 export let runeNumber;
+export let intro = true;
 
 export const windowHeight = window.innerHeight;
 export const windowWidth = window.innerWidth;
@@ -145,6 +146,7 @@ async function setInitialViewPos() {
                     //         renderWidth / 2
                     // );
                     changeViewPos(0, viewY);
+                    intro = false;
                     console.log('changed viewPos to :', viewY);
                 });
             })
@@ -154,31 +156,31 @@ async function setInitialViewPos() {
         // Else, look for a Y in the url
     } else if (route === 'normal') {
         const providedY = parseInt(document.URL.split('y=')[1]);
-        if (providedY) changeViewPos(0, providedY);
+        if (providedY) {
+            changeViewPos(0, providedY);
+        } else {
+            launchIntro();
+        }
     }
 }
 
-function initApiDisplay(id) {
-    getChunk(id).then((chunk) => {
-        console.log('chunk', chunk);
-        //console.log('base64ToBuffer', base64ToBuffer(chunk[4]));
-        prepareBufferForApi(chunk[4]).then((data) => {
-            let dataToDisplay = Array.from(data[0]);
-            console.log(dataToDisplay);
-            console.log(dataToDisplay.length, data[1], data[2]);
-
-            console.log(dataToDisplay, data[1], data[2]);
-            // Convert to Uint8ClampedArray
-            dataToDisplay.forEach((pixel) => {
-                if (pixel[0] == pixel[1] && pixel[2] == pixel[1] && pixel[1] == 0) {
-                    pixel.push(0);
-                } else {
-                    pixel.push(255);
-                }
-            });
-            dataToDisplay = dataToDisplay.flat();
-            // Create canvas and put image data
-            createApiDisplayPage(dataToDisplay, data[1], data[2]);
-        });
-    });
+function launchIntro() {
+    // changeViewPos(0, 1500); // aller dans le ciel
+    // animCatalog.courgette1.display = true; // lancer l' anim d'intro
+    //TODO attendre fin d'anim
+    //scroll en bas
+    // for (let i = 1500; i > 250; i--) {
+    //     setTimeout(function () {
+    //         changeViewPos(0, -1);
+    //     }, i);
+    // }
+    // animCatalog.courgette1.display = true; // lancer l' anim d'invocation
+    // getMetaData().then((metadata) => {
+    //     //sortir le monolith de la bonne taille
+    //     increaseMonolithHeight(Math.floor(192 + (metadata.nbKlon * metadata.threshold) / (1000000 * Const.COLUMNS)));
+    // });
+    monolithGoUpDuringIntro();
+    setTimeout(() => {
+        intro = false;
+    }, 10000);
 }
