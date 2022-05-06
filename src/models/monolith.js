@@ -39,6 +39,7 @@ export function drawPixel(x, y, zIndex, color) {
 
     // if (animatedPixels[pos]) return;
     const transitionType = zIndex === 0 ? 'draw' : zIndex === undefined ? 'erase' : zIndex > 0 ? 'import' : undefined;
+    if (animatedPixels.get(pos)) return;
     animatedPixels.set(pos, [transitionType, color, 1]);
     monolithIndexes[y][x] = zIndex;
 
@@ -69,8 +70,9 @@ function same(x, y, monolithPos, zIndex, color) {
 }
 
 export function getColor(x, y) {
-    console.log('monolith[y][x]', x, y, monolith[y][x]);
-    return monolith[y][x].color;
+    const pos = (y * Const.MONOLITH_COLUMNS + x) * 4;
+    console.log('pos', pos, 'x', x, 'y', y);
+    return [monolith[pos], monolith[pos + 1], monolith[pos + 2]];
 }
 
 export function eraseAllPixel() {

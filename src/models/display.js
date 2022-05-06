@@ -20,6 +20,7 @@ import { animateMonolith, animateRune } from '../utils/runeAnims';
 import { chunksToAnimateInfo } from '../utils/imageManager';
 import { getContractAddress } from '../utils/web3';
 import { toggleRumble } from '../assets/sounds';
+import { paletteCatalog } from '../utils/paletteCatalog';
 
 let monolithDisplayHeightIntro = 0;
 let chunkNumber;
@@ -45,28 +46,6 @@ export let imageCatalog = {
     selectorA: { fileName: '/palette/selector1A', type: 'GUI', display: true },
     selectorB: { fileName: '/palette/selector1B', type: 'GUI', display: true },
     palette: { fileName: '/palette/palette1giga', type: 'palette', display: true },
-};
-
-export let paletteCatalog = {
-    palette1smol: { fileName: 'palette1smol' },
-    palette1medium: { fileName: 'palette1medium' },
-    palette1large: { fileName: 'palette1large' },
-    palette1giga: { fileName: 'palette1giga' },
-    palette3smol: { fileName: 'palette3smol' },
-    palette3medium: { fileName: 'palette3medium' },
-    palette3large: { fileName: 'palette3large' },
-    palette3giga: { fileName: 'palette3giga' },
-    palette6smol: { fileName: 'palette6smol' },
-    palette6medium: { fileName: 'palette6medium' },
-    palette6large: { fileName: 'palette6large' },
-    palette6giga: { fileName: 'palette6giga' },
-    selector1A: { fileName: 'selector1A' },
-    selector1B: { fileName: 'selector1B' },
-    selector3A: { fileName: 'selector3A' },
-    selector3B: { fileName: 'selector3B' },
-    selector6A: { fileName: 'selector6A' },
-    selector6B: { fileName: 'selector6B' },
-    palettePAN: { fileName: 'palettePAN' },
 };
 
 //prettier-ignore

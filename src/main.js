@@ -5,7 +5,7 @@ import { chunkImport, getChunk, getMetaData } from './utils/web3';
 import { buildMonolith, increaseMonolithHeight } from './models/monolith';
 import { base64ToBuffer, parseAPNG, prepareBufferForApi } from './utils/imageManager';
 import { hammer } from 'hammerjs';
-import { canvas, initDisplay, monolithGoUpDuringIntro, clock } from './models/display';
+import { animCatalog, canvas, initDisplay, monolithGoUpDuringIntro, clock } from './models/display';
 
 export let viewPosY = 100;
 export let viewPosX = 0;
@@ -146,6 +146,7 @@ async function setInitialViewPos() {
                     //         renderWidth / 2
                     // );
                     changeViewPos(0, viewY);
+                    intro = false;
                     console.log('changed viewPos to :', viewY);
                 });
             })
@@ -164,20 +165,22 @@ async function setInitialViewPos() {
 }
 
 function launchIntro() {
-    changeViewPos(0, 1500); // aller dans le ciel
-    animCatalog.courgette1.display = true; // lancer l' anim d'intro
+    // changeViewPos(0, 1500); // aller dans le ciel
+    // animCatalog.courgette1.display = true; // lancer l' anim d'intro
     //TODO attendre fin d'anim
     //scroll en bas
-    for (let i = 1500; i > 250; i--) {
-        setTimeout(function () {
-            changeViewPos(0, -1);
-        }, i);
-    }
-    animCatalog.courgette1.display = true; // lancer l' anim d'invocation
-    getMetaData().then((metadata) => {
-        //sortir le monolith de la bonne taille
-        increaseMonolithHeight(Math.floor(192 + (metadata.nbKlon * metadata.threshold) / (1000000 * Const.COLUMNS)));
-    });
+    // for (let i = 1500; i > 250; i--) {
+    //     setTimeout(function () {
+    //         changeViewPos(0, -1);
+    //     }, i);
+    // }
+    // animCatalog.courgette1.display = true; // lancer l' anim d'invocation
+    // getMetaData().then((metadata) => {
+    //     //sortir le monolith de la bonne taille
+    //     increaseMonolithHeight(Math.floor(192 + (metadata.nbKlon * metadata.threshold) / (1000000 * Const.COLUMNS)));
+    // });
     monolithGoUpDuringIntro();
-    intro = false;
+    setTimeout(() => {
+        intro = false;
+    }, 10000);
 }
