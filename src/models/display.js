@@ -174,6 +174,8 @@ function drawMonolith(ctx) {
         renderHeight -
         Math.max(Const.MARGIN_BOTTOM - viewPosY, 0) -
         Math.max(Const.MARGIN_TOP - (Const.LINES - viewPosY - renderHeight), 0);
+    // console.log('monolithDisplayHeight', monolithDisplayHeight);
+    if (monolithDisplayHeight <= 0) return;
     let monolithData = ctx.createImageData(Const.MONOLITH_COLUMNS, monolithDisplayHeight);
     const a = addPointer(monolith.slice());
     monolithData.data.set(cutMonolith(a, monolithDisplayHeight));

@@ -89,7 +89,7 @@ export function changeViewPos(inputX, inputY) {
     viewPosX += inputX;
     viewPosY += inputY;
     // Limits :
-    const lowY = -renderHeight / 2 + renderHeight / (scaleFactor * 2);
+    const lowY = Math.floor(-renderHeight / 2 + renderHeight / (scaleFactor * 2));
     const lowX = Math.floor(-renderWidth / 2 + renderWidth / (scaleFactor * 2));
     if (viewPosY + renderHeight + lowY > Const.LINES) viewPosY = Const.LINES - renderHeight - lowY;
     if (viewPosY < lowY) viewPosY = lowY;
