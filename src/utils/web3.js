@@ -4,6 +4,7 @@ import contractABI from '../utils/abi.json';
 import { base64ToBuffer, bufferOnMonolith } from './imageManager';
 import Const from '../models/constants';
 import { increaseMonolithHeight } from '../models/monolith';
+import { imageCatalog } from '../models/display';
 
 const provider = new ethers.providers.InfuraProvider('rinkeby');
 const iface = new Interface(contractABI);
@@ -22,6 +23,7 @@ export let importedChunks = 1;
 
 const chunkCreator = async (res) => {
     // if (window.ethereum.chainId == '0x4') {
+    imageCatalog.share.display = true;
     await metamaskProvider.send('eth_requestAccounts', []);
     const oneGwei = ethers.BigNumber.from('1000000000');
     let overrides = {

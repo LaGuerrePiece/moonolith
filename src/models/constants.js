@@ -24,25 +24,25 @@ export default class Const {
 
     // COLORS
 
-    static get RGB16() { return [ 37, 113, 121 ] } // #257179
-    static get RGB2() { return [ 56, 183, 100 ] } // #38b764
-    static get RGB3() { return [ 167, 240, 112 ] } // #a7f070
-    static get RGB4() { return [ 255, 205, 117 ] } // #ffcd75
-    static get RGB5() { return [ 239, 125, 87 ] } // #ef7d57
-    static get RGB6() { return [ 177, 62, 83 ] } // #b13e53
-    static get RGB7() { return [ 93, 39, 93 ] } // #5d275d
-    static get RGB8() { return [ 26, 28, 44 ] } // #1a1c2c
-    static get RGB9() { return [ 41, 54, 111 ] } // #29366f
-    static get RGB10() { return [ 59, 93, 201 ] } // #3b5dc9
-    static get RGB11() { return [ 65, 166, 246 ] } // #41a6f6
-    static get RGB12() { return [ 115, 239, 247 ] } // #73eff7
-    static get RGB13() { return [ 244, 244, 244 ] } // #f4f4f4
-    static get RGB14() { return [ 148, 176, 194 ] } // #94b0c2
-    static get RGB15() { return [ 86, 108, 134 ] } // #566c86
+    static get RGB16() { return [ 47, 60, 153 ] } // #2f3c99
+    static get RGB2() { return [ 102, 62, 146 ] } // #663e92
+    static get RGB3() { return [ 222, 110, 208 ] } // #de6ed0
+    static get RGB4() { return [ 255, 137, 131 ] } // #ff8983
+    static get RGB5() { return [ 201, 76, 56 ] } // #c94c38
+    static get RGB6() { return [ 207, 138, 118 ] } // #cf8a76
+    static get RGB7() { return [ 36, 31, 44 ] } // #241f2c
+    static get RGB8() { return [ 132, 122, 145 ] } // #847a91
+    static get RGB9() { return [ 68, 157, 215 ] } // #449dd7
+    static get RGB10() { return [ 46, 117, 87 ] } // #2e7557
+    static get RGB11() { return [ 65, 166, 246 ] } // #81e280
+    static get RGB12() { return [ 129, 226, 128 ] } // #f5d284
+    static get RGB13() { return [ 245, 210, 132 ] } // #f48d56
+    static get RGB14() { return [ 105, 69, 57 ] } // #694539
+    static get RGB15() { return [ 232, 227, 213 ] } // #e8e3d5
     static get RGB1() { return [ 0, 0, 0 ] } // #000000
     
     static get DEFAULT_COLOR() { return [50, 44, 60] } // #28282e
-    static get SKY_COLOR() { return [74, 164, 167] }  // #4d8c9e
+    static get SKY_COLOR() { return [196, 130, 127] }  // #c4827f
     static get RANDOM_COLOR() { return [ Math.random()*255, Math.random()*255, Math.random()*255 ] } // #??????
     
     static get PALETTE() { return [this.RGB1, this.RGB2, this.RGB3, this.RGB4, this.RGB5, this.RGB6, this.RGB7, this.RGB8, this.RGB9, this.RGB10, this.RGB11, this.RGB12, this.RGB13, this.RGB14, this.RGB15, this.RGB16] }

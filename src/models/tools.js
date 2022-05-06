@@ -149,8 +149,7 @@ export function touchManager(e) {
 }
 
 export function scrollManager(e) {
-    if(e.ctrlKey == true)
-    {
+    if (e.ctrlKey == true) {
         toggleZoom();
     }
     let now = Date.now();
@@ -245,35 +244,46 @@ export function clickManager(e) {
         console.log('Clicked on the GUI');
 
         //BIG
-        if (GUICircle(mousePos, 7, 7, 8)) {
+        if (GUICircle(mousePos, 7, 7, 10)) {
             saveToEthernity();
+            console.log('Saved to ethernity');
             return;
         } // !!! BUTTON
         if (GUICircle(mousePos, 7, 91, 8)) {
             brushSwitch();
+            console.log('Switched brush');
             return;
         } // ??? BUTTON
 
         playSound('click6');
         //SMALL
         //FIRST CIRCLE POSITION : 3, 21
-        if (GUICircle(mousePos, 3, 21, 4)) colorSwitch(e, 1);
-        if (GUICircle(mousePos, 3, 21 + 8 * 1, 4)) colorSwitch(e, 2);
-        if (GUICircle(mousePos, 3, 21 + 8 * 2, 4)) colorSwitch(e, 3);
-        if (GUICircle(mousePos, 3, 21 + 8 * 3, 4)) colorSwitch(e, 4);
-        if (GUICircle(mousePos, 3, 21 + 8 * 4, 4)) colorSwitch(e, 5);
-        if (GUICircle(mousePos, 3, 21 + 8 * 5, 4)) colorSwitch(e, 6);
-        if (GUICircle(mousePos, 3, 21 + 8 * 6, 4)) colorSwitch(e, 7);
-        if (GUICircle(mousePos, 3, 21 + 8 * 7, 4)) colorSwitch(e, 8);
+        if (GUICircle(mousePos, 5, 28, 6)) {
+            colorSwitch(e, 1);
+            console.log('1');
+        }
+        if (GUICircle(mousePos, 5, 43, 6)) {
+            colorSwitch(e, 2);
+            console.log('2');
+        }
+        if (GUICircle(mousePos, 5, 58, 6)) {
+            colorSwitch(e, 3);
+            console.log('3');
+        }
+        if (GUICircle(mousePos, 3, 32 + 8 * 3, 4)) colorSwitch(e, 4);
+        if (GUICircle(mousePos, 3, 32 + 8 * 4, 4)) colorSwitch(e, 5);
+        if (GUICircle(mousePos, 3, 32 + 8 * 5, 4)) colorSwitch(e, 6);
+        if (GUICircle(mousePos, 3, 32 + 8 * 6, 4)) colorSwitch(e, 7);
+        if (GUICircle(mousePos, 3, 32 + 8 * 7, 4)) colorSwitch(e, 8);
         //ROW 2
-        if (GUICircle(mousePos, 11, 21, 4)) colorSwitch(e, 9);
-        if (GUICircle(mousePos, 11, 21 + 8 * 1, 4)) colorSwitch(e, 10);
-        if (GUICircle(mousePos, 11, 21 + 8 * 2, 4)) colorSwitch(e, 11);
-        if (GUICircle(mousePos, 11, 21 + 8 * 3, 4)) colorSwitch(e, 12);
-        if (GUICircle(mousePos, 11, 21 + 8 * 4, 4)) colorSwitch(e, 13);
-        if (GUICircle(mousePos, 11, 21 + 8 * 5, 4)) colorSwitch(e, 14);
-        if (GUICircle(mousePos, 11, 21 + 8 * 6, 4)) colorSwitch(e, 15);
-        if (GUICircle(mousePos, 11, 21 + 8 * 7, 4)) colorSwitch(e, 16);
+        if (GUICircle(mousePos, 11, 32, 4)) colorSwitch(e, 9);
+        if (GUICircle(mousePos, 11, 32 + 8 * 1, 4)) colorSwitch(e, 10);
+        if (GUICircle(mousePos, 11, 32 + 8 * 2, 4)) colorSwitch(e, 11);
+        if (GUICircle(mousePos, 11, 32 + 8 * 3, 4)) colorSwitch(e, 12);
+        if (GUICircle(mousePos, 11, 32 + 8 * 4, 4)) colorSwitch(e, 13);
+        if (GUICircle(mousePos, 11, 32 + 8 * 5, 4)) colorSwitch(e, 14);
+        if (GUICircle(mousePos, 11, 32 + 8 * 6, 4)) colorSwitch(e, 15);
+        if (GUICircle(mousePos, 11, 32 + 8 * 7, 4)) colorSwitch(e, 16);
     } else if (imageCatalog.share.display) {
         if (
             !(
