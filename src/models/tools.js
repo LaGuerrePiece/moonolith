@@ -7,6 +7,7 @@ import { imageCatalog, canvas } from './display';
 
 import { moveDrawing, bufferOnMonolith, saveToEthernity } from '../utils/imageManager';
 import Const from './constants';
+import { openLink } from '../utils/web3';
 
 //prettier-ignore
 export class Tool {   
@@ -296,7 +297,7 @@ export function clickManager(e) {
         ) {
             imageCatalog.share.display = false;
         } else {
-            console.log('img', imageCatalog.share.x, imageCatalog.share.y);
+            // console.log('img', imageCatalog.share.x, imageCatalog.share.y);
             if (
                 mousePos.x > imageCatalog.share.x + 15 &&
                 mousePos.x < imageCatalog.share.x + 115 &&
@@ -304,6 +305,7 @@ export function clickManager(e) {
                 mousePos.y < imageCatalog.share.y + imageCatalog.share.img.height - 25
             ) {
                 console.log('Clicked on OpenSea');
+                openLink('opensea');
             } else if (
                 mousePos.x > imageCatalog.share.x + 122 &&
                 mousePos.x < imageCatalog.share.x + 215 &&
@@ -311,6 +313,7 @@ export function clickManager(e) {
                 mousePos.y < imageCatalog.share.y + imageCatalog.share.img.height - 27
             ) {
                 console.log('Clicked on Share');
+                openLink('twitter');
             }
         }
     } else if (convertToMonolithPos(mousePos)) {

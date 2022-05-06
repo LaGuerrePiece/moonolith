@@ -102,4 +102,15 @@ async function chunkImport() {
     importedChunks = meta.nbChunks;
 }
 
+export function openLink(type) {
+    if (type === 'opensea') {
+        window.open('https://testnets.opensea.io/assets/' + contractAddress + '/' + importedChunks, '_blank');
+    } else if (type === 'twitter') {
+        window.open(
+            'https://twitter.com/intent/tweet?text=My%20rune%20%3A&url=moonolith.io/rune=' + importedChunks,
+            '_blank'
+        );
+    }
+}
+
 export { chunkCreator, getChunk, getChunksFromPosition, chunkImport };
