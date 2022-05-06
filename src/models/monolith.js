@@ -37,9 +37,9 @@ export function drawPixel(x, y, zIndex, color) {
     if (zIndex === 0 || zIndex === undefined)
         addToCurrentEvent(x, y, [monolith[pos], monolith[pos + 1], monolith[pos + 2]], monolithzIndex); //If being drawn by user, add to curent event
 
-    if (animatedPixels[pos]) return;
+    // if (animatedPixels[pos]) return;
     const transitionType = zIndex === 0 ? 'draw' : zIndex === undefined ? 'erase' : zIndex > 0 ? 'import' : undefined;
-    animatedPixels[pos] = [pos, transitionType, color, 1];
+    animatedPixels.set(pos, [transitionType, color, 1]);
     monolithIndexes[y][x] = zIndex;
 
     if (zIndex === 0 && lastPlayedSound + 40 < Date.now() && !muteState) {

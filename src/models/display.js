@@ -16,6 +16,7 @@ import { clickManager, colorNumber1, colorNumber2 } from './tools';
 import { tool } from './tools';
 import { transition, animateRune } from '../utils/runeAnims';
 import { chunksToAnimateInfo } from '../utils/imageManager';
+import { getContractAddress } from '../utils/web3';
 
 var clock = 0;
 setInterval(() => {
@@ -337,4 +338,21 @@ function whiten(monolithData, y, x) {
     monolithData[posOnMonolith] += (255 - monolithData[posOnMonolith]) / 3;
     monolithData[posOnMonolith + 1] += (255 - monolithData[posOnMonolith + 1]) / 3;
     monolithData[posOnMonolith + 2] += (255 - monolithData[posOnMonolith + 2]) / 3;
+}
+
+let chunkNumber;
+export function displayShareScreen(nb) {
+    imageCatalog.share.display = true;
+    chunkNumber = nb;
+}
+
+export function openLink(type) {
+    if (type === 'opensea') {
+        window.open('https://testnets.opensea.io/assets/' + getContractAddress() + '/' + chunkNumber, '_blank');
+    } else if (type === 'twitter') {
+        window.open(
+            'https://twitter.com/intent/tweet?text=My%20rune%20%3A&url=moonolith.io/rune=' + chunkNumber,
+            '_blank'
+        );
+    }
 }
