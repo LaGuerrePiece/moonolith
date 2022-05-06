@@ -82,7 +82,9 @@ document.addEventListener('contextmenu', (e) => { e.preventDefault(); }, false);
 //prettier-ignore
 document.addEventListener('keydown', (e) => { keyManager(e) });
 //prettier-ignore
-window.onwheel = function (e) { scrollManager(e) };
+document.addEventListener('wheel', (e) => { 
+    scrollManager(e);
+}, {passive : false});
 
 console.log('renderHeight', renderHeight);
 export function changeViewPos(inputX, inputY) {

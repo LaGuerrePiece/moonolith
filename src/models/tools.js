@@ -149,8 +149,9 @@ export function touchManager(e) {
 }
 
 export function scrollManager(e) {
-    if(e.ctrlKey == true)
+    if(e.ctrlKey == true || e.metaKey == true)
     {
+        e.preventDefault();
         toggleZoom();
     }
     let now = Date.now();
