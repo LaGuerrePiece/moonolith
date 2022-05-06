@@ -1,5 +1,5 @@
 //prettier-ignore
-import { windowHeight, windowWidth, renderWidth, renderHeight, changeViewPos, viewPosX, viewPosY, toggleZoom} from '../main';
+import { windowHeight, windowWidth, renderWidth, renderHeight, changeViewPos, viewPosX, viewPosY, toggleZoom, pixelSize, scaleFactor} from '../main';
 import { toggleMusic, playSound, toggleMute } from '../assets/sounds';
 import { drawPixel, getColor, eraseAllPixel, convertToMonolithPos, increaseMonolithHeight } from './monolith';
 import { closeCurrentEvent, undo, redo } from './undoStack';
@@ -417,10 +417,9 @@ paletteUpdate();
 
 export function mousePosInGrid(e) {
     const boundingClientRect = canvas.getBoundingClientRect();
-    let y = Math.floor(((e.y - boundingClientRect.y) * renderHeight) / boundingClientRect.height);
-    let x = Math.floor(((e.x - boundingClientRect.x) * renderWidth) / boundingClientRect.width);
+    let y = Math.floor((e.y - boundingClientRect.y) / (scaleFactor * pixelSize));
+    let x = Math.floor((e.x - boundingClientRect.x) / (scaleFactor * pixelSize));
     // console.log('mousePosInGrid', x, y);
-
     return { x: x, y: y };
 }
 
