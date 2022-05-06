@@ -13,7 +13,7 @@ import {
 import Const from './constants';
 import { convertToMonolithPos, monolith, monolithIndexes } from './monolith';
 import { clickManager, colorNumber1, colorNumber2 } from './tools';
-import { tool, Tool } from './tools';
+import { tool } from './tools';
 import { transition, animateRune } from '../utils/runeAnims';
 import { chunksToAnimateInfo } from '../utils/imageManager';
 
