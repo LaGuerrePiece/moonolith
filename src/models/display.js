@@ -16,16 +16,18 @@ import Const from './constants';
 import { convertToMonolithPos, monolith, monolithIndexes } from './monolith';
 import { clickManager, colorNumber1, colorNumber2 } from './tools';
 import { tool } from './tools';
-import { transition, animateRune } from '../utils/runeAnims';
+import { animateMonolith, animateRune } from '../utils/runeAnims';
 import { chunksToAnimateInfo } from '../utils/imageManager';
 import { getContractAddress } from '../utils/web3';
 import { toggleRumble } from '../assets/sounds';
 
-var clock = 0;
+let monolithDisplayHeightIntro = 0;
+let chunkNumber;
+
+export let clock = 0;
 setInterval(() => {
     clock += 100;
 }, 100);
-let monolithDisplayHeightIntro = 0;
 
 export let imageCatalog = {
     plan5: { fileName: 'plan5', type: 'landscape', startX: -2, startY: 330, parallax: 0.3, display: true },
@@ -70,11 +72,11 @@ export let paletteCatalog = {
 //prettier-ignore
 export let animCatalog = {
     courgette0: { fileName: 'courgette', type: 'legume', startX: 20, startY: 450, display: true, loop: true, parallax: 0.3, base64: courgette64 },
+    courgette1: { fileName: 'courgette', type: 'legume', startX: 100, startY: 1150, display: false, loop: true, parallax: 0, base64: courgette64 },
     twitter: { fileName: 'twitter', type: 'oiseau', startX: 94, startY: 83, display: true, loop: true, parallax: -0.15, base64: twitter },
 };
 
 function frameInClock(anim) {
-    // console.log('anim', anim);
     let frame = 0;
     let delaySum = 0;
     while (delaySum < clock % anim.totalDelay) {
@@ -109,7 +111,7 @@ export function initDisplay() {
         paletteCatalog[image].img.src = `/src/assets/images/palette/${paletteCatalog[image].fileName}.png`;
     }
     for (let anim in animCatalog) {
-        if(animCatalog[anim].display){
+        if (animCatalog[anim].display) {
             animCatalog[anim].canvas = document.createElement('canvas');
         }
     }
@@ -117,8 +119,6 @@ export function initDisplay() {
 
     function update() {
         updateCatalog();
-        // console.log(imageCatalog);
-        // console.log('anim.delay', animCatalog.twitter.delay);
         // ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = 'rgb(196, 130, 127)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -146,42 +146,25 @@ function drawAnim(frame, name, ctx) {
 }
 
 function drawMonolith(ctx) {
-    if (intro) {
-        if (monolithDisplayHeightIntro === 0) return;
-        let monolithData = ctx.createImageData(Const.MONOLITH_COLUMNS, monolithDisplayHeightIntro);
-        const a = addPointer(monolith.slice());
-        monolithData.data.set(cutMonolithDuringIntro(a, monolithDisplayHeightIntro));
-        ctx.putImageData(
-            monolithData,
-            Const.MARGIN_LEFT - viewPosX,
-            Math.max(renderHeight - Const.MARGIN_BOTTOM - monolithDisplayHeightIntro + viewPosY, 0)
-        );
-    } else {
-        const monolithDisplayHeight =
-            renderHeight -
-            Math.max(Const.MARGIN_BOTTOM - viewPosY, 0) -
-            Math.max(Const.MARGIN_TOP - (Const.LINES - viewPosY - renderHeight), 0);
-        if (monolithDisplayHeight <= 0) return;
-        let monolithData = ctx.createImageData(Const.MONOLITH_COLUMNS, monolithDisplayHeight);
-        const a = addPointer(monolith.slice());
-        monolithData.data.set(cutMonolith(a, monolithDisplayHeight));
-        ctx.putImageData(
-            monolithData,
-            Const.MARGIN_LEFT - viewPosX,
-            Math.max(Const.MARGIN_TOP - Const.LINES + viewPosY + renderHeight, 0)
-        );
-    }
-}
-
-function cutMonolithDuringIntro(mono, monolithDisplayHeight) {
-    const startYCoordinate = Math.max(monolithDisplayHeight + Const.MARGIN_BOTTOM - renderHeight - viewPosY, 0);
-    const endYCoordinate = Math.min(startYCoordinate + monolithDisplayHeight, Const.MONOLITH_LINES);
-
-    return mono.subarray(Const.MONOLITH_COLUMNS * 4 * startYCoordinate, Const.MONOLITH_COLUMNS * 4 * endYCoordinate);
+    const monolithDisplayHeight = intro
+        ? monolithDisplayHeightIntro
+        : renderHeight -
+          Math.max(Const.MARGIN_BOTTOM - viewPosY, 0) -
+          Math.max(Const.MARGIN_TOP - (Const.LINES - viewPosY - renderHeight), 0);
+    if (monolithDisplayHeight <= 0) return;
+    let monolithData = ctx.createImageData(Const.MONOLITH_COLUMNS, monolithDisplayHeight);
+    const a = addPointer(monolith.slice());
+    monolithData.data.set(cutMonolith(a, monolithDisplayHeight));
+    const posY = intro
+        ? renderHeight - Const.MARGIN_BOTTOM - monolithDisplayHeightIntro + viewPosY
+        : Const.MARGIN_TOP - Const.LINES + viewPosY + renderHeight;
+    ctx.putImageData(monolithData, Const.MARGIN_LEFT - viewPosX, Math.max(posY, 0));
 }
 
 function cutMonolith(mono, monolithDisplayHeight) {
-    const startYCoordinate = Math.max(Const.MONOLITH_LINES + Const.MARGIN_BOTTOM - renderHeight - viewPosY, 0);
+    const startYCoordinate = intro
+        ? Math.max(monolithDisplayHeight + Const.MARGIN_BOTTOM - renderHeight - viewPosY, 0)
+        : Math.max(Const.MONOLITH_LINES + Const.MARGIN_BOTTOM - renderHeight - viewPosY, 0);
     const endYCoordinate = Math.min(startYCoordinate + monolithDisplayHeight, Const.MONOLITH_LINES);
 
     return mono.subarray(Const.MONOLITH_COLUMNS * 4 * startYCoordinate, Const.MONOLITH_COLUMNS * 4 * endYCoordinate);
@@ -200,11 +183,6 @@ function updateCatalog() {
                 ((windowHeight - boundingClientRect.y) / (pixelSize * scaleFactor) - imageCatalog.palette.img.height) /
                     Const.GUI_RELATIVE_Y
             );
-            // thisImage.x = Math.floor(
-            //     ((windowWidth - boundingClientRect.x) * (renderWidth / boundingClientRect.width) -
-            //         imageCatalog.palette1smol.img.width) /
-            //         Const.GUI_RELATIVE_X
-            // );
             thisImage.x = Math.floor((renderWidth - imageCatalog.palette.img.width) / Const.GUI_RELATIVE_X);
         } else if (thisImage.type === 'popup') {
             thisImage.y = Math.floor((renderHeight - imageCatalog.panneau.img.height) / 2 - 6);
@@ -218,15 +196,9 @@ function updateCatalog() {
             thisImage.y = imageCatalog.palette.y - 1 + Math.floor(colorNumber2 / 9) * 15;
             thisImage.x = imageCatalog.palette.x + offset + colorNumber2 * 15 - Math.floor(colorNumber2 / 9) * 120;
         } else if (thisImage.type === 'side') {
-            if (intro) {
-                thisImage.y =
-                    thisImage.startY + renderHeight - Const.MARGIN_BOTTOM - monolithDisplayHeightIntro + viewPosY - 7;
-                thisImage.x = thisImage.startX + Const.MARGIN_LEFT - viewPosX;
-            } else {
-                thisImage.y =
-                    thisImage.startY + renderHeight + viewPosY - Const.MONOLITH_LINES - Const.MARGIN_BOTTOM - 7;
-                thisImage.x = thisImage.startX + Const.MARGIN_LEFT - viewPosX;
-            }
+            thisImage.y = thisImage.startY + renderHeight + viewPosY - Const.MONOLITH_LINES - Const.MARGIN_BOTTOM - 7;
+            thisImage.x = thisImage.startX + Const.MARGIN_LEFT - viewPosX;
+            if (intro) thisImage.y = thisImage.y + Const.MONOLITH_LINES - monolithDisplayHeightIntro;
         }
     }
     imageCatalog.panneau.display = isInSquare(227, 239, 188, 196, pointer.x, pointer.y) ? true : false;
@@ -240,7 +212,8 @@ function updateCatalog() {
         thisAnim.x = thisAnim.startX - viewPosX;
         // }
     }
-    transition();
+
+    animateMonolith();
 
     chunksToAnimateInfo.forEach(([id, y]) => {
         const startY = Const.MONOLITH_LINES + Const.MARGIN_BOTTOM - viewPosY - renderHeight;
@@ -308,26 +281,17 @@ function addPointer(monolithData) {
 
 function whiten(monolithData, y, x) {
     if (x < 0 || x >= renderWidth || y < 0 || y >= renderHeight) return;
-
     const monolithPos = convertToMonolithPos({ x: x, y: y });
-    // If not on the monolith
-    if (!monolithPos) return;
-    // If not editable return
-    const posOnMonolith = (monolithPos.y * Const.MONOLITH_COLUMNS + monolithPos.x) * 4;
-    if (monolithIndexes[posOnMonolith] > 0) return;
+    if (!monolithPos) return; // If not on the monolith
 
-    // const monolithStartY = Const.MONOLITH_LINES + Const.MARGIN_BOTTOM - renderHeight - viewPosY;
-    // const monolithposition = ((monolithPos.y - monolithStartY) * Const.MONOLITH_COLUMNS + monolithPos.x) * 4;
-    // If being put off the screen during the zoom return
-    // const displayPos = (y * renderWidth + x) * 4;
-    // if (displayPos > monolithData.length) return;
+    const posOnMonolith = (monolithPos.y * Const.MONOLITH_COLUMNS + monolithPos.x) * 4;
+    if (monolithIndexes[posOnMonolith] > 0) return; // If not editable return
 
     monolithData[posOnMonolith] += (255 - monolithData[posOnMonolith]) / 3;
     monolithData[posOnMonolith + 1] += (255 - monolithData[posOnMonolith + 1]) / 3;
     monolithData[posOnMonolith + 2] += (255 - monolithData[posOnMonolith + 2]) / 3;
 }
 
-let chunkNumber;
 export function displayShareScreen(nb) {
     imageCatalog.share.display = true;
     chunkNumber = nb;

@@ -5,7 +5,7 @@ import { chunkImport, getChunk, getMetaData } from './utils/web3';
 import { buildMonolith, increaseMonolithHeight } from './models/monolith';
 import { base64ToBuffer, parseAPNG, prepareBufferForApi } from './utils/imageManager';
 import { hammer } from 'hammerjs';
-import { canvas, initDisplay, monolithGoUpDuringIntro } from './models/display';
+import { canvas, initDisplay, monolithGoUpDuringIntro, clock } from './models/display';
 
 export let viewPosY = 100;
 export let viewPosX = 0;
@@ -29,17 +29,12 @@ export const deviceType = /(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.tes
     ? 'mobile'
     : 'desktop';
 
-setTimeout(() => {
-    intro = false;
-}, 15000);
-
 async function initApp() {
     runeNumber = parseInt(document.URL.split('rune=')[1]);
     const OS = document.URL.split('OS=')[1];
     // Router
     route = runeNumber && OS ? 'Opensea API' : runeNumber ? 'Share specific rune' : 'normal';
     console.log('route', route);
-    monolithGoUpDuringIntro();
     parseAPNG();
     await chunkImport();
     buildMonolith();
@@ -160,50 +155,29 @@ async function setInitialViewPos() {
         // Else, look for a Y in the url
     } else if (route === 'normal') {
         const providedY = parseInt(document.URL.split('y=')[1]);
-        if (providedY) {changeViewPos(0, providedY);}
-        else{
+        if (providedY) {
+            changeViewPos(0, providedY);
+        } else {
             launchIntro();
         }
     }
 }
 
-function launchIntro(){
+function launchIntro() {
     changeViewPos(0, 1500); // aller dans le ciel
-    animCatalog["courgette1"].display = true; // lancer l' anim d'intro
+    animCatalog.courgette1.display = true; // lancer l' anim d'intro
     //TODO attendre fin d'anim
     //scroll en bas
-    for(let i = 1500; i>250; i--) {
+    for (let i = 1500; i > 250; i--) {
         setTimeout(function () {
             changeViewPos(0, -1);
-        }, i)
+        }, i);
     }
-    animCatalog["courgette1"].display = true; // lancer l' anim d'invocation
-    getMetaData().then((metadata) => { //sortir le monolith de la bonne taille
-        increaseMonolithHeight(Math.floor(192 + (metadata.nbKlon * metadata.threshold) / (1000000 * Const.COLUMNS))); 
+    animCatalog.courgette1.display = true; // lancer l' anim d'invocation
+    getMetaData().then((metadata) => {
+        //sortir le monolith de la bonne taille
+        increaseMonolithHeight(Math.floor(192 + (metadata.nbKlon * metadata.threshold) / (1000000 * Const.COLUMNS)));
     });
-}
-
-function initApiDisplay(id) {
-    getChunk(id).then((chunk) => {
-        console.log('chunk', chunk);
-        //console.log('base64ToBuffer', base64ToBuffer(chunk[4]));
-        prepareBufferForApi(chunk[4]).then((data) => {
-            let dataToDisplay = Array.from(data[0]);
-            console.log(dataToDisplay);
-            console.log(dataToDisplay.length, data[1], data[2]);
-
-            console.log(dataToDisplay, data[1], data[2]);
-            // Convert to Uint8ClampedArray
-            dataToDisplay.forEach((pixel) => {
-                if (pixel[0] == pixel[1] && pixel[2] == pixel[1] && pixel[1] == 0) {
-                    pixel.push(0);
-                } else {
-                    pixel.push(255);
-                }
-            });
-            dataToDisplay = dataToDisplay.flat();
-            // Create canvas and put image data
-            createApiDisplayPage(dataToDisplay, data[1], data[2]);
-        });
-    });
+    monolithGoUpDuringIntro();
+    intro = false;
 }
