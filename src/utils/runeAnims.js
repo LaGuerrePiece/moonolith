@@ -3,13 +3,13 @@ import Const from '../models/constants';
 import { monolith, monolithIndexes } from '../models/monolith';
 import { imageCatalog } from '../models/display';
 
-export let animatedPixels = {};
+export let animatedPixels = new Map();
 // export let counter = 0;
 
 //prettier-ignore
 export function transition() {
-    for (let i in animatedPixels) {
-        const [pos, transitionType, color, counter] = animatedPixels[i];
+    for (let [pos, [transitionType, color, counter]] of animatedPixels) {
+        // console.log('value', value);
         if (transitionType === 'erase') {
             // erase
             if (counter === 1) draw(pos, [0, 118, 255]);
@@ -69,7 +69,7 @@ export function transition() {
 
             if (counter === 50) {endTransition(pos, color);continue;}
         }
-        animatedPixels[i][3] = counter + 1;
+        animatedPixels.set(pos, [transitionType, color, animatedPixels.get(pos)[2] + 1])
     }
 }
 
@@ -81,7 +81,7 @@ function draw(pos, color) {
 
 function endTransition(pos, color) {
     draw(pos, color);
-    delete animatedPixels[pos];
+    animatedPixels.delete(pos);
 }
 
 function avg(color1, pos, weightOf2 = 1) {

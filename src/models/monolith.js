@@ -37,9 +37,15 @@ export function drawPixel(x, y, zIndex, color) {
     if (zIndex === 0 || zIndex === undefined)
         addToCurrentEvent(x, y, [monolith[pos], monolith[pos + 1], monolith[pos + 2]], monolithzIndex); //If being drawn by user, add to curent event
 
-    if (animatedPixels[pos]) return;
-    const transitionType = zIndex === 0 ? 'draw' : zIndex === undefined ? 'erase' : zIndex > 0 ? 'import' : undefined;
-    animatedPixels[pos] = [pos, transitionType, color, 1];
+    // if (animatedPixels[pos]) return;
+    const transitionType = zIndex === 0 ? 'draw' : zIndex === undefined ? 'erase' : undefined;
+    // console.log([transitionType, color, 1]);
+    if (transitionType) animatedPixels.set(pos, [transitionType, color, 1]);
+    else {
+        monolith[pos] = color[0];
+        monolith[pos + 1] = color[1];
+        monolith[pos + 2] = color[2];
+    }
     monolithIndexes[y][x] = zIndex;
 
     if (zIndex === 0 && lastPlayedSound + 40 < Date.now() && !muteState) {
