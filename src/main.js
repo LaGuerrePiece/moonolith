@@ -9,6 +9,7 @@ import { canvas, initDisplay } from './models/display';
 
 export let viewPosY = 0;
 export let viewPosX = 0;
+export let scaleFactor = 1;
 
 export let route;
 export let runeNumber;
@@ -16,7 +17,7 @@ export let runeNumber;
 export const windowHeight = window.innerHeight;
 export const windowWidth = window.innerWidth;
 export let renderWidth = Const.COLUMNS;
-const pixelSize = windowWidth / renderWidth;
+export const pixelSize = windowWidth / renderWidth;
 export let renderHeight = Math.ceil((windowHeight * renderWidth) / windowWidth);
 
 export const deviceType = /(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(navigator.userAgent)
@@ -83,51 +84,34 @@ document.addEventListener('keydown', (e) => { keyManager(e) });
 //prettier-ignore
 window.onwheel = function (e) { scrollManager(e) };
 
+console.log('renderHeight', renderHeight);
 export function changeViewPos(inputX, inputY) {
     viewPosX += inputX;
     viewPosY += inputY;
-    if (viewPosY + renderHeight > Const.LINES) viewPosY = Const.LINES - renderHeight;
-    if (viewPosY < 0) viewPosY = 0;
-    if (viewPosX < 0) viewPosX = 0;
-    if (viewPosX + renderWidth > Const.COLUMNS) viewPosX = Const.COLUMNS - renderWidth;
+    // Limits :
+    const lowY = -renderHeight / 2 + renderHeight / (scaleFactor * 2);
+    const lowX = Math.floor(-renderWidth / 2 + renderWidth / (scaleFactor * 2));
+    if (viewPosY + renderHeight + lowY > Const.LINES) viewPosY = Const.LINES - renderHeight - lowY;
+    if (viewPosY < lowY) viewPosY = lowY;
+    if (viewPosX < lowX) viewPosX = lowX;
+    if (viewPosX + renderWidth + lowX > Const.COLUMNS) viewPosX = Const.COLUMNS - renderWidth - lowX;
 }
 
-let zoomState = false;
-let zoomFactor = 2.5;
 export function toggleZoom() {
-    if (canvas.style.transform === 'scale(2)') {
-        canvas.style.transform = 'scale(1)';
-    } else {
-        canvas.style.transform = 'scale(2)';
-    }
+    if (scaleFactor === 1) zoom(3);
+    else if (scaleFactor === 3) zoom(6);
+    else zoom(1);
+}
 
-    // if (renderWidth === Const.COLUMNS) {
-    //     zoomIn();
-    // } else if (renderWidth !== Const.COLUMNS) {
-    //     zoomOut();
-    // }
+function zoom(factor) {
+    canvas.style.transform = `scale(${factor})`;
+    scaleFactor = factor;
+    if (factor === 1) {
+        viewPosX = 0;
+        if (viewPosY + renderHeight > Const.LINES) viewPosY = Const.LINES - renderHeight;
+        if (viewPosY < 0) viewPosY = 0;
+    }
 }
-function zoomIn() {
-    renderWidth = Math.floor(renderWidth / zoomFactor);
-    renderHeight = Math.floor((windowHeight / pixelSize + 1) / zoomFactor);
-    viewPosX = Math.floor(renderWidth / 2);
-    viewPosY = Math.floor(viewPosY + renderHeight / 2);
-    zoomState = true;
-    refreshCanvas();
-}
-function zoomOut() {
-    renderWidth = Const.COLUMNS;
-    renderHeight = Math.ceil((windowHeight * renderWidth) / windowWidth);
-    changeViewPos(0, -Math.floor(renderHeight / 4));
-    zoomState = false;
-    refreshCanvas();
-}
-// function refreshCanvas() {
-//     selectorUpdate();
-//     myImageData = ctx.createImageData(renderWidth, renderHeight);
-//     canvas.width = renderWidth;
-//     canvas.height = renderHeight;
-// }
 
 setInterval(() => {
     chunkImport();

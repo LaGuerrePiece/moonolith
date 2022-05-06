@@ -1,5 +1,15 @@
 import { courgette64 } from '../assets/base64';
-import { renderHeight, renderWidth, viewPosX, viewPosY, deviceType, pointer, windowHeight } from '../main';
+import {
+    renderHeight,
+    renderWidth,
+    viewPosX,
+    viewPosY,
+    deviceType,
+    pointer,
+    windowHeight,
+    pixelSize,
+    scaleFactor,
+} from '../main';
 import Const from './constants';
 import { convertToMonolithPos, monolith, monolithIndexes } from './monolith';
 import { clickManager, colorNumber1, colorNumber2 } from './tools';
@@ -191,7 +201,7 @@ function updateCatalog() {
         } else if (thisImage.type === 'palette') {
             const boundingClientRect = canvas.getBoundingClientRect();
             thisImage.y = Math.floor(
-                ((windowHeight - boundingClientRect.y) * (renderHeight / boundingClientRect.height) -
+                ((windowHeight - boundingClientRect.y) / (pixelSize * scaleFactor) -
                     imageCatalog.paletteSMOL.img.height) /
                     Const.GUI_RELATIVE_Y
             );
