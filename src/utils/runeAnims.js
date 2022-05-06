@@ -110,14 +110,14 @@ export function animateRune(id) {
                 const pos = (y * Const.MONOLITH_COLUMNS + x) * 4;
                 if (x < 0 || x >= Const.MONOLITH_COLUMNS || y < 0 || y >= Const.MONOLITH_LINES) continue;
                 if (!monolithIndexes[y]?.[x]) continue;
-                // if (animatedPixels[pos]) continue;
+                // if (animatedPixels.get(pos) continue;
                 const color = [monolith[pos], monolith[pos + 1], monolith[pos + 2]];
-                if (j + i < limit / 5) animatedPixels[pos] = [pos, 'whiteOnRune', color, 90];
-                else if (j + i < limit / 4) animatedPixels[pos] = [pos, 'whiteOnRune', color, 88];
-                else if (j + i < limit / 3) animatedPixels[pos] = [pos, 'whiteOnRune', color, 86];
-                else if (j + i < limit / 2) animatedPixels[pos] = [pos, 'whiteOnRune', color, 84];
-                else if (j + i < limit / 1.5) animatedPixels[pos] = [pos, 'whiteOnRune', color, 82];
-                else if (j + i < limit / 1) animatedPixels[pos] = [pos, 'whiteOnRune', color, 80];
+                if (j + i < limit / 5) animatedPixels.set(pos, ['whiteOnRune', color, 90]);
+                else if (j + i < limit / 4) animatedPixels.set(pos, ['whiteOnRune', color, 88]);
+                else if (j + i < limit / 3) animatedPixels.set(pos, ['whiteOnRune', color, 86]);
+                else if (j + i < limit / 2) animatedPixels.set(pos, ['whiteOnRune', color, 84]);
+                else if (j + i < limit / 1.5) animatedPixels.set(pos, ['whiteOnRune', color, 82]);
+                else if (j + i < limit / 1) animatedPixels.set(pos, ['whiteOnRune', color, 80]);
             }
         }
         // console.log('animatedPixels', animatedPixels);
@@ -163,9 +163,9 @@ export function animateRune(id) {
         if (monolithIndexes[y]?.[x]) return;
         const pos = (y * Const.MONOLITH_COLUMNS + x) * 4;
         // Does nothing if an animation is already running on this pixel
-        if (animatedPixels[pos]) return;
+        if (animatedPixels.get(pos)) return;
         const color = [monolith[pos], monolith[pos + 1], monolith[pos + 2]];
-        animatedPixels[pos] = [pos, animName, color, 1];
+        animatedPixels.set(pos, [animName, color, 1]);
     }
 
     chunkStock[id].alreadyRuned = true;
