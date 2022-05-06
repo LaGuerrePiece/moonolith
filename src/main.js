@@ -5,14 +5,15 @@ import { chunkImport, getChunk } from './utils/web3';
 import { buildMonolith } from './models/monolith';
 import { base64ToBuffer, parseAPNG, prepareBufferForApi } from './utils/imageManager';
 import { hammer } from 'hammerjs';
-import { canvas, initDisplay } from './models/display';
+import { canvas, initDisplay, monolithGoUpDuringIntro } from './models/display';
 
-export let viewPosY = 0;
+export let viewPosY = 100;
 export let viewPosX = 0;
 export let scaleFactor = 1;
 
 export let route;
 export let runeNumber;
+export let intro = true;
 
 export const windowHeight = window.innerHeight;
 export const windowWidth = window.innerWidth;
@@ -28,12 +29,17 @@ export const deviceType = /(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.tes
     ? 'mobile'
     : 'desktop';
 
+setTimeout(() => {
+    intro = false;
+}, 15000);
+
 async function initApp() {
     runeNumber = parseInt(document.URL.split('rune=')[1]);
     const OS = document.URL.split('OS=')[1];
     // Router
     route = runeNumber && OS ? 'Opensea API' : runeNumber ? 'Share specific rune' : 'normal';
     console.log('route', route);
+    monolithGoUpDuringIntro();
     parseAPNG();
     await chunkImport();
     buildMonolith();

@@ -1,4 +1,4 @@
-var monolithHeight;
+var monolithHeight = 0;
 
 //prettier-ignore
 export default class Const { 
