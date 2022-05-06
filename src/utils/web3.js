@@ -113,4 +113,4 @@ export function openLink(type) {
     }
 }
 
-export { chunkCreator, getChunk, getChunksFromPosition, chunkImport };
+export { chunkCreator, getChunk, getChunksFromPosition, chunkImport, getMetaData };

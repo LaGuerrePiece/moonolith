@@ -1,11 +1,11 @@
 // Imports des fonctionnalités
 import { keyManager, scrollManager, mousePosInGrid, touchManager, togglePanMode } from './models/tools';
 import Const from './models/constants';
-import { chunkImport, getChunk } from './utils/web3';
-import { buildMonolith } from './models/monolith';
+import { chunkImport, getChunk, getMetaData } from './utils/web3';
+import { buildMonolith, increaseMonolithHeight } from './models/monolith';
 import { base64ToBuffer, parseAPNG, prepareBufferForApi } from './utils/imageManager';
 import { hammer } from 'hammerjs';
-import { canvas, initDisplay } from './models/display';
+import { animCatalog, canvas, initDisplay } from './models/display';
 
 export let viewPosY = 0;
 export let viewPosX = 0;
@@ -154,8 +154,27 @@ async function setInitialViewPos() {
         // Else, look for a Y in the url
     } else if (route === 'normal') {
         const providedY = parseInt(document.URL.split('y=')[1]);
-        if (providedY) changeViewPos(0, providedY);
+        if (providedY) {changeViewPos(0, providedY);}
+        else{
+            launchIntro();
+        }
     }
+}
+
+function launchIntro(){
+    changeViewPos(0, 1500); // aller dans le ciel
+    animCatalog["courgette1"].display = true; // lancer l' anim d'intro
+    //TODO attendre fin d'anim
+    //scroll en bas
+    for(let i = 1500; i>250; i--) {
+        setTimeout(function () {
+            changeViewPos(0, -1);
+        }, i)
+    }
+    animCatalog["courgette1"].display = true; // lancer l' anim d'invocation
+    getMetaData().then((metadata) => { //sortir le monolith de la bonne taille
+        increaseMonolithHeight(Math.floor(192 + (metadata.nbKlon * metadata.threshold) / (1000000 * Const.COLUMNS))); 
+    });
 }
 
 function initApiDisplay(id) {

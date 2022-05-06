@@ -46,8 +46,7 @@ export let imageCatalog = {
 
 //prettier-ignore
 export let animCatalog = {
-    courgette0: { fileName: 'courgette', type: 'legume', x: 31 * 0, y: 0, display: true, loop: true, base64: courgette64 },
-    // courgette1: { fileName: 'courgette', type: 'legume', x: 31 * 1, y: 0, display: true, loop: true, base64: courgette64 },
+     courgette1: { fileName: 'courgette', type: 'legume', x: 31 * 1, y: 0, display: false, loop: true, base64: courgette64 },
     // courgette2: { fileName: 'courgette', type: 'legume', x: 31 * 2, y: 0, display: true, loop: true, base64: courgette64 },
     // courgette3: { fileName: 'courgette', type: 'legume', x: 31 * 3, y: 0, display: true, loop: true, base64: courgette64 },
     // courgette4: { fileName: 'courgette', type: 'legume', x: 31 * 4, y: 0, display: true, loop: true, base64: courgette64 },
@@ -135,7 +134,9 @@ export function initDisplay() {
         imageCatalog[image].img.src = `/src/assets/images/${imageCatalog[image].fileName}.png`;
     }
     for (let anim in animCatalog) {
-        animCatalog[anim].canvas = document.createElement('canvas');
+        if(animCatalog[anim].display){
+            animCatalog[anim].canvas = document.createElement('canvas');
+        }
     }
     requestAnimationFrame(update);
 
