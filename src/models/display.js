@@ -105,12 +105,13 @@ export function initDisplay() {
             const thisImage = imageCatalog[image];
             if (thisImage.display) ctx.drawImage(thisImage.img, thisImage.x, thisImage.y);
             if (image === 'plan2') drawMonolith(ctx);
+            if (image === 'plan0') {
+                for (let anim in animCatalog) {
+                    const thisAnim = animCatalog[anim];
+                    if (thisAnim.display) drawAnim(thisAnim.frames[frameInClock(thisAnim)], anim, ctx);
+                }
+            }
         }
-        for (let anim in animCatalog) {
-            const thisAnim = animCatalog[anim];
-            if (thisAnim.display) drawAnim(thisAnim.frames[frameInClock(thisAnim)], anim, ctx);
-        }
-
         requestAnimationFrame(update);
     }
 }
@@ -120,7 +121,6 @@ function drawAnim(frame, name, ctx) {
     let frameData = ctxo.createImageData(animCatalog[name].width, animCatalog[name].height);
     frameData.data.set(frame);
     ctxo.putImageData(frameData, 0, 0);
-    // console.log('o', o);
     ctx.drawImage(animCatalog[name].canvas, animCatalog[name].x, animCatalog[name].y);
 }
 
