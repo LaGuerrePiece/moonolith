@@ -23,7 +23,6 @@ export let importedChunks = 1;
 
 const chunkCreator = async (res) => {
     // if (window.ethereum.chainId == '0x4') {
-    imageCatalog.share.display = true;
     await metamaskProvider.send('eth_requestAccounts', []);
     const oneGwei = ethers.BigNumber.from('1000000000');
     let overrides = {
@@ -31,6 +30,11 @@ const chunkCreator = async (res) => {
     };
     // console.log('Minting: ', res.position, res.ymax, res.nbPix, res.imgURI);
     let tx = metamaskContract.mint_One_4d(res.position, res.ymax, res.nbPix, res.imgURI, overrides);
+    tx.then((tx) => {
+        tx.wait().then((tx) => {
+            imageCatalog.share.display = true;     
+        });    
+    });
     //  } else {
     //    alert("Mets le testnet l'ami");
     // }
@@ -96,6 +100,17 @@ async function chunkImport() {
     if (!Const.MONOLITH_LINES) Const.setMonolithHeight(monolithHeight);
     else if (importedChunks - meta.nbChunks !== 0) increaseMonolithHeight(monolithHeight - Const.MONOLITH_LINES);
     importedChunks = meta.nbChunks;
+}
+
+export function openLink(type) {
+    if (type === 'opensea') {
+        window.open('https://testnets.opensea.io/assets/' + contractAddress + '/' + importedChunks, '_blank');
+    } else if (type === 'twitter') {
+        window.open(
+            'https://twitter.com/intent/tweet?text=My%20rune%20%3A&url=moonolith.io/rune=' + importedChunks,
+            '_blank'
+        );
+    }
 }
 
 export { chunkCreator, getChunk, getChunksFromPosition, chunkImport };
