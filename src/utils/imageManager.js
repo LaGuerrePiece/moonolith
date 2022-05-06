@@ -2,7 +2,7 @@ import { UPNG } from './upmc';
 import Const from '../models/constants';
 import { monolith, eraseAllPixel, drawPixel, monolithIndexes } from '../models/monolith';
 import { chunkCreator, importedChunks } from '../utils/web3';
-import LZString from 'lz-String';
+import {compressToUTF16, decompressFromUTF16} from 'lz-string';
 import { animCatalog } from '../models/display';
 import { runeNumber } from '../main';
 
@@ -78,7 +78,7 @@ function pngToBufferToRGB(buffer) {
 }
 
 async function prepareBufferForApi(data) {
-    let pixArray = new Uint8Array(base64ToBuffer(LZString.decompressFromUTF16(data)));
+    let pixArray = new Uint8Array(base64ToBuffer(decompressFromUTF16(data)));
     pixArray = Array.from(pixArray);
     let width = pixArray.shift();
     let height = pixArray.shift();
@@ -97,7 +97,7 @@ async function prepareBufferForApi(data) {
 
 async function bufferOnMonolith(data) {
     //console.log(LZString.decompressFromUTF16(data.buffer));
-    let pixArray = new Uint8Array(base64ToBuffer(LZString.decompressFromUTF16(data.buffer)));
+    let pixArray = new Uint8Array(base64ToBuffer(decompressFromUTF16(data.buffer)));
     pixArray = Array.from(pixArray);
     const width = pixArray.shift();
     const height = pixArray.shift();
@@ -148,8 +148,8 @@ function monolithToBase64() {
         saveLocally(
             bufferToBase64(UPNG.encode([new Uint8Array(pixelArray24bits).buffer], highLow.longueur, highLow.largeur, 0))
         );
-        let compressed = LZString.compressToUTF16(bufferToBase64(pixelArray.buffer));
-        let pArray = new Uint8Array(base64ToBuffer(LZString.decompressFromUTF16(compressed)));
+        let compressed = compressToUTF16(bufferToBase64(pixelArray.buffer));
+        let pArray = new Uint8Array(base64ToBuffer(decompressFromUTF16(compressed)));
         resolve({ position: firstPix, ymax: highLow.highY, nbPix: nbPix, imgURI: compressed });
     });
 }

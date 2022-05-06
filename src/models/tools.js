@@ -149,6 +149,10 @@ export function touchManager(e) {
 }
 
 export function scrollManager(e) {
+    if(e.ctrlKey == true)
+    {
+        toggleZoom();
+    }
     let now = Date.now();
     if (e.deltaY > 0) {
         if (now - scrollInformation.lastScrollDown < 500) {
