@@ -1,4 +1,4 @@
-import { courgette64, twitter, panneauRainbow } from '../assets/base64';
+import { courgette64, twitter, collision, panneauRainbow } from '../assets/base64';
 import {
     renderHeight,
     renderWidth,
@@ -50,10 +50,11 @@ export let imageCatalog = {
 
 //prettier-ignore
 export let animCatalog = {
-    courgette0: { fileName: 'courgette', startX: 20, startY: 450, display: true, loop: true, parallax: imageCatalog.plan5.parallax, base64: courgette64 },
-    courgette1: { fileName: 'courgette', startX: 100, startY: 1150, display: false, loop: true, parallax: 0, base64: courgette64 },
+    // courgette0: { fileName: 'courgette', startX: 20, startY: 450, display: true, loop: true, parallax: imageCatalog.plan5.parallax, base64: courgette64 },
+    // courgette1: { fileName: 'courgette', startX: 100, startY: 1150, display: false, loop: true, parallax: 0, base64: courgette64 },
     twitter: { fileName: 'twitter', startX: imageCatalog.plan0.startX + 96, startY: 83, display: true, loop: true, parallax: imageCatalog.plan0.parallax, base64: twitter },
     panneauRainbow: { fileName: 'panneauRainbow', startX: 227, startY: 183, display: true, loop: false, parallax: imageCatalog.plan1.parallax, base64: panneauRainbow },
+    collision: { type: 'intro', startX: 0, startY: 2000, display: true, loop: true, parallax: -0.15, base64: collision },
 };
 
 function frameInClock(anim) {
@@ -87,17 +88,22 @@ export function initDisplay() {
 
     for (let image in imageCatalog) {
         imageCatalog[image].img = new Image();
-        imageCatalog[image].img.src = `/src/assets/images/${imageCatalog[image].fileName}.png`;
+        imageCatalog[image].img.onload = () => {
+            imageCatalog[image].loaded = true;
+        };
+        imageCatalog[image].img.src = `/images/${imageCatalog[image].fileName}.png`;
     }
     for (let image in paletteCatalog) {
         paletteCatalog[image].img = new Image();
-        paletteCatalog[image].img.src = `/src/assets/images/palette/${paletteCatalog[image].fileName}.png`;
+        paletteCatalog[image].img.src = `/images/palette/${paletteCatalog[image].fileName}.png`;
     }
     for (let anim in animCatalog) {
-        if (animCatalog[anim].display) {
-            animCatalog[anim].canvas = document.createElement('canvas');
-        }
+        const thisAnim = animCatalog[anim];
+        thisAnim.canvas = document.createElement('canvas');
+        thisAnim.canvas.width = thisAnim.width;
+        thisAnim.canvas.height = thisAnim.height;
     }
+
     requestAnimationFrame(update);
 
     function update() {
@@ -107,7 +113,8 @@ export function initDisplay() {
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         for (let image in imageCatalog) {
             const thisImage = imageCatalog[image];
-            if (thisImage.display) ctx.drawImage(thisImage.img, thisImage.x, thisImage.y);
+            // if (!thisImage.loaded) console.log(`${thisImage.fileName} not loaded`);
+            if (thisImage.display && thisImage.loaded) ctx.drawImage(thisImage.img, thisImage.x, thisImage.y);
             if (image === 'plan2') drawMonolith(ctx);
             if (image === 'plan0') {
                 for (let anim in animCatalog) {
@@ -123,7 +130,9 @@ export function initDisplay() {
 function drawAnim(frame, name, ctx) {
     let ctxo = animCatalog[name].canvas.getContext('2d');
     let frameData = ctxo.createImageData(animCatalog[name].width, animCatalog[name].height);
+    // console.log(animCatalog[name].width);
     frameData.data.set(frame);
+    // if (name === 'collision') console.log(frameData.data.length);
     ctxo.putImageData(frameData, 0, 0);
     ctx.drawImage(animCatalog[name].canvas, animCatalog[name].x, animCatalog[name].y);
 }

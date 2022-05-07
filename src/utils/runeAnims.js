@@ -1,6 +1,10 @@
 import { chunkStock } from './imageManager';
 import Const from '../models/constants';
 import { monolith, monolithIndexes } from '../models/monolith';
+import { runeCorner, runeSide } from '../assets/base64';
+
+export let runeCornerInfo = { base64: runeCorner };
+export let runeSideInfo = { base64: runeSide };
 
 export let animatedPixels = new Map();
 
@@ -52,15 +56,22 @@ export function animateMonolith() {
 
         } else if (transitionType === 'runeContour') {
 
-            if (counter === 1) draw(pos, [10, 10, 10]);
-            else if (counter < 10) draw(pos, [10, 10, 10]);
+            if (counter === 1) draw(pos, [32, 214, 199]);
+            else if (counter < 10) draw(pos, [32, 214, 199]);
             else draw(pos, avg(color, pos, 10));
             if (counter === 50) {endTransition(pos, color);continue;}
 
-        } else if (transitionType === 'runeCorner') {
+        } else if (transitionType === 'runeCornerOrSide0') {
 
-            if (counter === 1) draw(pos, [10, 10, 10]);
-            else if (counter < 10) draw(pos, [10, 10, 10]);
+            if (counter === 1) draw(pos, [105, 193, 177]);
+            else if (counter < 10) draw(pos, [105, 193, 177]);
+            else draw(pos, avg(color, pos, 10));
+            if (counter === 50) {endTransition(pos, color);continue;}
+
+        } else if (transitionType === 'runeCornerOrSide1') {
+
+            if (counter === 1) draw(pos, [38, 93, 89]);
+            else if (counter < 10) draw(pos, [38, 93, 89]);
             else draw(pos, avg(color, pos, 10));
             if (counter === 50) {endTransition(pos, color);continue;}
 
@@ -123,13 +134,28 @@ export function animateRune(id) {
     //     const direction = order[a];
     //     const startY = direction[0] === -1 ? rune.y : rune.y + rune.height;
     //     const startX = direction[1] === -1 ? rune.x : rune.x + rune.width;
-    //     for (let j = 0; j < imageCatalog.runeCorner.height; j++) {
-    //         for (let i = 0; i < imageCatalog.runeCorner.width; i++) {
-    //             if (!runeBlueAnim.decodedYX[j][i]) continue;
-    //             const y = startY + j * direction[0];
-    //             const x = startX + i * direction[1];
-    //             animThisPixel(y, x, 'runeCorner');
+    //     for (let j = 0; j < runeCornerInfo.decoded.height; j++) {
+    //         for (let i = 0; i < runeCornerInfo.decoded.width; i++) {
+    //             const posInPng = (j * runeCornerInfo.decoded.width + i) * 4;
+    //             if (!runeCornerInfo.decoded.decodedYX[posInPng + 3]) continue;
+    //             const blue = runeCornerInfo.decoded.decodedYX[posInPng] === 38 ? 1 : 0;
+    //             const y = startY + (j - 12) * direction[0]; //25
+    //             const x = startX + (i - 6) * direction[1]; //12
+    //             animThisPixel(y, x, 'runeCornerOrSide' + blue);
     //         }
+    //     }
+    // }
+
+    //runeSide
+    // for (let j = 0; j < runeSideInfo.decoded.height; j++) {
+    //     for (let i = 0; i < runeSideInfo.decoded.width; i++) {
+    //         const posInPng = (j * runeSideInfo.decoded.width + i) * 4;
+    //         if (!runeSideInfo.decoded.decodedYX[posInPng + 3]) continue;
+    //         const blue = runeSideInfo.decoded.decodedYX[posInPng] === 38 ? 1 : 0;
+    //         console.log('rune.y', rune.y, 'rune.x', rune.x, 'rune.height', rune.height, 'rune.width', rune.width);
+    //         const y = rune.y + Math.floor(rune.height / 2) + j - 6;
+    //         const x = rune.x + rune.width + i + 6; //5
+    //         animThisPixel(y, x, 'runeCornerOrSide' + blue);
     //     }
     // }
 
@@ -140,8 +166,8 @@ export function animateRune(id) {
             if (i < 0 || i >= Const.MONOLITH_COLUMNS || j < 0 || j >= Const.MONOLITH_LINES) continue;
             if (!monolithIndexes[j]?.[i]) continue;
             // i et j sont les coordonnées du pixel à dessiner
-            for (let b = -2; b <= 2; b++) {
-                for (let a = -2; a <= 2; a++) {
+            for (let b = -1; b <= 1; b++) {
+                for (let a = -1; a <= 1; a++) {
                     if (a === 0 && b === 0) continue;
                     const y = b + j;
                     const x = a + i;
