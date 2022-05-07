@@ -104,7 +104,7 @@ export function animateRune(id) {
     if (!chunkStock[id] || chunkStock[id]?.alreadyRuned) return;
     chunkStock[id].alreadyRuned = true;
     const rune = chunkStock[id];
-    console.log('animateRune', id);
+    // console.log('animateRune', id);
 
     setTimeout(() => {
         const limit = rune.width + Math.max(rune.width, rune.height);
@@ -160,7 +160,6 @@ export function animateRune(id) {
     // }
 
     // runeContour
-    console.log('rune.width', rune.width, 'rune.height', rune.height, 'rune.y', rune.y, 'rune.x', rune.x);
     for (let j = rune.y; j < rune.height + rune.y; j++) {
         for (let i = rune.x; i < rune.width + rune.x; i++) {
             if (i < 0 || i >= Const.MONOLITH_COLUMNS || j < 0 || j >= Const.MONOLITH_LINES) continue;

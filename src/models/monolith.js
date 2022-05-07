@@ -32,7 +32,7 @@ export function drawPixel(x, y, zIndex, color) {
     if (x < 0 || x >= Const.MONOLITH_COLUMNS || y < 0 || y >= Const.MONOLITH_LINES) return; //If out of bounds, return
     if (!isEditable(zIndex, monolithzIndex)) return; //If not editable, return
     if (same(x, y, pos, zIndex, color)) return; //If same, return
-    if (animatedPixels.get(pos) && monolithzIndex === 0) return; // If drawn by user and currently animated
+    if (animatedPixels.get(pos) && (monolithzIndex === 0 || monolithzIndex === undefined)) return; // If drawn by user and currently animated
     if (zIndex === 0 || zIndex === undefined)
         addToCurrentEvent(x, y, [monolith[pos], monolith[pos + 1], monolith[pos + 2]], monolithzIndex); //If being drawn by user, add to curent event
 

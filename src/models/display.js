@@ -42,7 +42,7 @@ export let imageCatalog = {
     plan1: { fileName: 'plan1', type: 'landscape', startX: -2, startY: 80, parallax: 0, display: true },
     plan0: { fileName: 'plan0', type: 'landscape', startX: -2, startY: 0, parallax: -0.15, display: true },
     moon: { fileName: 'moon', type: 'landscape', startX: 150, startY: 165, parallax: 0, display: true },
-    topAlien: { fileName: 'topDood', type: 'landscape', startX: 150, startY: 165, parallax: 0, display: true },
+    topAlien: { fileName: 'topDood', type: 'topAlien', startX: 0, startY: 0, parallax: 0, display: false },
     panneau: { fileName: 'panneau', type: 'popup', display: false },
     share: { fileName: 'share', type: 'popup', display: false },
     selectorA: { fileName: '/palette/selector1A', type: 'GUI', display: true },
@@ -60,7 +60,6 @@ export let animCatalog = {
     runPlan1: { type: 'intro', startX: 0, startY: 100, display: false, loop: false, parallax: imageCatalog.plan1.parallax, base64: runPlan1 },
     collision: { type: 'intro', startX: 0, startY: 400, display: false, loop: false, parallax: 0, base64: collision },
 };
-
 function frameInClock(anim) {
     let frame = 0;
     let delaySum = 0;
@@ -108,6 +107,7 @@ export function initDisplay() {
         thisAnim.canvas.width = thisAnim.width;
         thisAnim.canvas.height = thisAnim.height;
     }
+    console.log('animCatalog', animCatalog);
 
     requestAnimationFrame(update);
 
@@ -137,18 +137,20 @@ export function launchCollisionAnim() {
 }
 
 export function launchRunAnim(id) {
-    if (id == 0) {
+    if (id === 0) {
         animCatalog.runPlan0.display = true;
-    } else {
+    } else if (id === 1) {
         animCatalog.runPlan1.display = true;
         imageCatalog.moon.display = false;
+    } else {
+        imageCatalog.topAlien.display = true;
     }
 }
 
 function drawAnim(frame, name, ctx) {
     let ctxo = animCatalog[name].canvas.getContext('2d');
     let frameData = ctxo.createImageData(animCatalog[name].width, animCatalog[name].height);
-    // console.log('animCatalog[name]', animCatalog[name], animCatalog[name].width);
+    // console.log('animCatalog[name]', animCatalog[name]);
     frameData.data.set(frame);
     // if (name === 'collision') console.log(frameData.data.length);
     ctxo.putImageData(frameData, 0, 0);
@@ -226,6 +228,10 @@ function updateCatalog() {
         } else if (thisImage.type === 'side') {
             thisImage.y = thisImage.startY + renderHeight + viewPosY - Const.MONOLITH_LINES - Const.MARGIN_BOTTOM - 7;
             thisImage.x = thisImage.startX + Const.MARGIN_LEFT - viewPosX;
+            if (intro) thisImage.y = thisImage.y + Const.MONOLITH_LINES - monolithDisplayHeightIntro;
+        } else if (thisImage.type === 'topAlien') {
+            thisImage.y = thisImage.startY + renderHeight + viewPosY - Const.MONOLITH_LINES - Const.MARGIN_BOTTOM - 40;
+            thisImage.x = thisImage.startX + Const.MARGIN_LEFT - viewPosX + 15;
             if (intro) thisImage.y = thisImage.y + Const.MONOLITH_LINES - monolithDisplayHeightIntro;
         }
     }
