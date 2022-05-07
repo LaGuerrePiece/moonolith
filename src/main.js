@@ -82,6 +82,9 @@ async function launchIntro() {
         setTimeout(() => {
             launchRunAnim(1);
         }, 5800);
+        setTimeout(() => {
+            launchRunAnim(2);
+        }, 10000);
 
         //animCatalog.courgette1.display = true; // lancer l' anim d'invocation
         await mongrosbite;
