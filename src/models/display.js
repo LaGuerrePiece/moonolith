@@ -1,4 +1,4 @@
-import { courgette64, twitter, collision, panneauRainbow } from '../assets/base64';
+import { courgette64, twitter, collision, panneauRainbow, runPlan0, runPlan1 } from '../assets/base64';
 import {
     renderHeight,
     renderWidth,
@@ -54,6 +54,8 @@ export let animCatalog = {
     // courgette1: { fileName: 'courgette', startX: 100, startY: 1150, display: false, loop: true, parallax: 0, base64: courgette64 },
     twitter: { fileName: 'twitter', startX: imageCatalog.plan0.startX + 96, startY: 83, display: true, loop: true, parallax: imageCatalog.plan0.parallax, base64: twitter },
     panneauRainbow: { fileName: 'panneauRainbow', startX: 227, startY: 183, display: true, loop: false, parallax: imageCatalog.plan1.parallax, base64: panneauRainbow },
+    runPlan0: { type: 'intro', startX: 184, startY: 39, display: true, loop: true, parallax: imageCatalog.plan0.parallax, base64: runPlan0 },
+    runPlan1: { type: 'intro', startX: 10, startY: 95, display: true, loop: true, parallax: imageCatalog.plan0.parallax, base64: runPlan1 },
     collision: { type: 'intro', startX: 0, startY: 2000, display: true, loop: true, parallax: -0.15, base64: collision },
 };
 
