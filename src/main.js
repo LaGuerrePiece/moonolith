@@ -181,6 +181,7 @@ function launchIntro() {
     // });
     monolithGoUpDuringIntro();
     setTimeout(() => {
+        animCatalog.panneauRainbow.display = true;
         intro = false;
     }, 10000);
 }

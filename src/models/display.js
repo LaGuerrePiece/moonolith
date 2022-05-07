@@ -1,4 +1,4 @@
-import { courgette64, twitter } from '../assets/base64';
+import { courgette64, twitter, panneauRainbow } from '../assets/base64';
 import {
     renderHeight,
     renderWidth,
@@ -27,8 +27,8 @@ let chunkNumber;
 
 export let clock = 0;
 setInterval(() => {
-    clock += 100;
-}, 100);
+    clock += 20;
+}, 20);
 
 export let imageCatalog = {
     plan5: { fileName: 'plan5', type: 'landscape', startX: -2, startY: 330, parallax: 0.3, display: true },
@@ -50,9 +50,10 @@ export let imageCatalog = {
 
 //prettier-ignore
 export let animCatalog = {
-    courgette0: { fileName: 'courgette', type: 'legume', startX: 20, startY: 450, display: true, loop: true, parallax: 0.3, base64: courgette64 },
-    courgette1: { fileName: 'courgette', type: 'legume', startX: 100, startY: 1150, display: false, loop: true, parallax: 0, base64: courgette64 },
-    twitter: { fileName: 'twitter', type: 'oiseau', startX: 94, startY: 83, display: true, loop: true, parallax: -0.15, base64: twitter },
+    courgette0: { fileName: 'courgette', startX: 20, startY: 450, display: true, loop: true, parallax: imageCatalog.plan5.parallax, base64: courgette64 },
+    courgette1: { fileName: 'courgette', startX: 100, startY: 1150, display: false, loop: true, parallax: 0, base64: courgette64 },
+    twitter: { fileName: 'twitter', startX: imageCatalog.plan0.startX + 96, startY: 83, display: true, loop: true, parallax: imageCatalog.plan0.parallax, base64: twitter },
+    panneauRainbow: { fileName: 'panneauRainbow', startX: 227, startY: 183, display: true, loop: false, parallax: imageCatalog.plan1.parallax, base64: panneauRainbow },
 };
 
 function frameInClock(anim) {
@@ -62,7 +63,10 @@ function frameInClock(anim) {
         delaySum += anim.delay[frame];
         frame++;
     }
-    if (frame >= anim.frames.length) frame = 0;
+    if (frame >= anim.frames.length - 1) {
+        // le -1 est sale mais sinon la boucle ne rentre pas pour le panneau
+        anim.loop ? (frame = 0) : (anim.display = false);
+    }
     return frame;
 }
 
@@ -201,11 +205,9 @@ function updateCatalog() {
 
     for (let anim in animCatalog) {
         const thisAnim = animCatalog[anim];
-        // if (thisAnim.type === 'legume') {
         const parallaxOffset = Math.floor(thisAnim.parallax * viewPosY);
         thisAnim.y = renderHeight + parallaxOffset + viewPosY - thisAnim.height - thisAnim.startY;
         thisAnim.x = thisAnim.startX - viewPosX;
-        // }
     }
 
     animateMonolith();
@@ -318,7 +320,6 @@ export function monolithGoUpDuringIntro() {
 
 export function shake(newRows) {
     toggleRumble();
-    console.log('shake');
     //shake landscapes
     const shakeLandscape = setInterval(() => {
         for (let layer in imageCatalog) {
