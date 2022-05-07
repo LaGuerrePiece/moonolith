@@ -83,7 +83,6 @@ async function getMetaData() {
 async function chunkImport(firstTime) {
     let meta = await getMetaData();
     // console.log(meta);
-    // console.log('importedChunks', importedChunks, 'meta.nbChunks', meta.nbChunks);
     if (importedChunks !== meta.nbChunks || importedChunks == 1) {
         for (let i = importedChunks + 1; i <= meta.nbChunks; i++) {
             getChunk(i).then((res) => {
@@ -97,7 +96,6 @@ async function chunkImport(firstTime) {
                     zIndex: i,
                 });
             });
-            console.log('getting chunk : ', i);
         }
     }
     const newMonolithHeight = Math.floor(192 + (meta.nbKlon * meta.threshold) / (1000000 * Const.COLUMNS));
