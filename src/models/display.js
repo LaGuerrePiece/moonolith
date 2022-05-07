@@ -31,7 +31,6 @@ setInterval(() => {
 }, 20);
 
 export let imageCatalog = {
-    moon: {fileName: 'moon', type: 'landscape', startX: 100, startY: 100, parallax: 0, display: true},
     plan5: { fileName: 'plan5', type: 'landscape', startX: -2, startY: 330, parallax: 0.3, display: true },
     plan4: { fileName: 'plan4', type: 'landscape', startX: -2, startY: 300, parallax: 0.25, display: true },
     plan3: { fileName: 'plan3', type: 'landscape', startX: -2, startY: 250, parallax: 0.2, display: true },
@@ -47,7 +46,7 @@ export let imageCatalog = {
     selectorA: { fileName: '/palette/selector1A', type: 'GUI', display: true },
     selectorB: { fileName: '/palette/selector1B', type: 'GUI', display: true },
     palette: { fileName: '/palette/palette1giga', type: 'palette', display: true },
-
+    moon: { fileName: 'moon', type: 'landscape', startX: 150, startY: 280, parallax: 0, display: true },
 };
 
 //prettier-ignore
@@ -108,9 +107,9 @@ export function initDisplay() {
         thisAnim.canvas.width = thisAnim.width;
         thisAnim.canvas.height = thisAnim.height;
     }
-
+    
     requestAnimationFrame(update);
-
+    
     function update() {
         updateCatalog();
         // ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -136,10 +135,10 @@ export function launchCollisionAnim() {
     animCatalog.collision.display = true; // lancer l' anim d'intro
 }
 
-export function launchRunAnim(id){
-    if(id == 0){
+export function launchRunAnim(id) {
+    if (id == 0) {
         animCatalog.runPlan0.display = true;
-    }else{
+    } else {
         animCatalog.runPlan1.display = true;
         //imageCatalog.moon.display = false;
     }
@@ -188,6 +187,7 @@ function updateCatalog() {
             const parallaxOffset = Math.floor(thisImage.parallax * viewPosY);
             thisImage.y = renderHeight + parallaxOffset + viewPosY - thisImage.img.height - thisImage.startY;
             thisImage.x = thisImage.startX - viewPosX;
+            // if (thisImage.fileName === 'plan1' || thisImage.fileName === 'moon') console.log('moon', thisImage);
         } else if (thisImage.type === 'palette') {
             const boundingClientRect = canvas.getBoundingClientRect();
             thisImage.y = Math.floor(
