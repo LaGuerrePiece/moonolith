@@ -1,5 +1,5 @@
 //prettier-ignore
-import { renderWidth, renderHeight, changeViewPos, viewPosX, viewPosY, toggleZoom, pixelSize, scaleFactor} from '../main';
+import { renderWidth, renderHeight, changeViewPos, viewPosX, viewPosY, toggleZoom, pixelSize, scaleFactor, increaseZoom, decreaseZoom} from '../main';
 import { toggleMusic, playSound, toggleMute } from '../assets/sounds';
 import { drawPixel, getColor, eraseAllPixel, convertToMonolithPos, increaseMonolithHeight } from './monolith';
 import { closeCurrentEvent, undo, redo } from './undoStack';
@@ -139,7 +139,10 @@ export function touchManager(e) {
 export function scrollManager(e) {
     if (e.ctrlKey == true || e.metaKey == true) {
         e.preventDefault();
-        toggleZoom();
+        console.log('Scroll event', e.deltaY);
+        if (e.deltaY > 2) increaseZoom();
+        else if (e.deltaY < -2) decreaseZoom();
+        paletteUpdate();
     }
     let now = Date.now();
     if (e.deltaY > 0) {
@@ -267,7 +270,7 @@ export function clickManager(e) {
 
         if (GUICircle(mousePos, bigY, bigX1, bigRadius)) saveToEthernity();
         else if (GUICircle(mousePos, bigY, bigX2, bigRadius)) brushSwitch();
-        else if (GUICircle(mousePos, row1Y, offsetX + spaceX, smolRadius)) colorSwitch(e, 1);
+        else if (GUICircle(mousePos, row1Y, offsetX + spaceX * 1, smolRadius)) colorSwitch(e, 1);
         else if (GUICircle(mousePos, row1Y, offsetX + spaceX * 2, smolRadius)) colorSwitch(e, 2);
         else if (GUICircle(mousePos, row1Y, offsetX + spaceX * 3, smolRadius)) colorSwitch(e, 3);
         else if (GUICircle(mousePos, row1Y, offsetX + spaceX * 4, smolRadius)) colorSwitch(e, 4);
@@ -275,7 +278,7 @@ export function clickManager(e) {
         else if (GUICircle(mousePos, row1Y, offsetX + spaceX * 6, smolRadius)) colorSwitch(e, 6);
         else if (GUICircle(mousePos, row1Y, offsetX + spaceX * 7, smolRadius)) colorSwitch(e, 7);
         else if (GUICircle(mousePos, row1Y, offsetX + spaceX * 8, smolRadius)) colorSwitch(e, 8);
-        else if (GUICircle(mousePos, row2Y, offsetX + spaceX, smolRadius)) colorSwitch(e, 9);
+        else if (GUICircle(mousePos, row2Y, offsetX + spaceX * 1, smolRadius)) colorSwitch(e, 9);
         else if (GUICircle(mousePos, row2Y, offsetX + spaceX * 2, smolRadius)) colorSwitch(e, 10);
         else if (GUICircle(mousePos, row2Y, offsetX + spaceX * 3, smolRadius)) colorSwitch(e, 11);
         else if (GUICircle(mousePos, row2Y, offsetX + spaceX * 4, smolRadius)) colorSwitch(e, 12);

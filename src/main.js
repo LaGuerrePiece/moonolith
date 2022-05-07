@@ -49,9 +49,10 @@ function mobileEventListener() {
     var hammertime = new Hammer(canvas);
 
     hammertime.get('pinch').set({ enable: true });
-    hammertime.on('pinch', function (e) {
-        if (e.scale > 2 && !zoomState) zoomIn();
-        else if (e.scale < 0.5 && zoomState) zoomOut();
+    hammertime.on('pinchend', function (e) {
+        console.log('pinch', e.scale);
+        if (e.scale > 2) increaseZoom();
+        else if (e.scale < 0.5) decreaseZoom();
     });
 
     hammertime.on('tap', function (e) {
@@ -98,6 +99,17 @@ export function changeViewPos(inputX, inputY) {
     if (viewPosY < lowY) viewPosY = lowY;
     if (viewPosX < lowX) viewPosX = lowX;
     if (viewPosX + renderWidth + lowX > Const.COLUMNS) viewPosX = Const.COLUMNS - renderWidth - lowX;
+}
+
+export function increaseZoom() {
+    console.log('increaseZoom');
+    if (scaleFactor === 1) zoom(3);
+    else if (scaleFactor === 3) zoom(6);
+}
+
+export function decreaseZoom() {
+    if (scaleFactor === 6) zoom(3);
+    else if (scaleFactor === 3) zoom(1);
 }
 
 export function toggleZoom() {
