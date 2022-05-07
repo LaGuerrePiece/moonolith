@@ -333,7 +333,7 @@ export function openLink(type) {
         window.open('https://testnets.opensea.io/assets/' + getContractAddress() + '/' + chunkNumber, '_blank');
     } else if (type === 'twitter') {
         window.open(
-            'https://twitter.com/intent/tweet?text=My%20rune%20%3A&url=moonolith.io/rune=' + chunkNumber,
+            'https://twitter.com/intent/tweet?text=My%20rune%20%3A&url=beta.moonolith.io/rune=' + chunkNumber,
             '_blank'
         );
     }
