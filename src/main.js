@@ -12,6 +12,7 @@ import {
     monolithGoUpDuringIntro,
     launchCollisionAnim,
     launchRunAnim,
+    imageCatalog,
 } from './models/display';
 import { toggleMusic } from './assets/sounds';
 
@@ -95,9 +96,13 @@ async function launchIntro() {
         }, 6500);
         await magrossebite;
         setTimeout(() => {
+            console.log('intro done');
             animCatalog.panneauRainbow.display = true;
+            imageCatalog.palette.display = true;
+            imageCatalog.selectorA.display = true;
+            imageCatalog.selectorB.display = deviceType === 'mobile' ? false : true;
+            toggleMusic();
             intro = false;
-            toggleMusic()
         }, 15000);
     }, 5000);
     // lazyParseAPNG();

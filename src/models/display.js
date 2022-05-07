@@ -45,9 +45,9 @@ export let imageCatalog = {
     topAlien: { fileName: 'topDood', type: 'topAlien', startX: 0, startY: 0, parallax: 0, display: false },
     panneau: { fileName: 'panneau', type: 'popup', display: false },
     share: { fileName: 'share', type: 'popup', display: false },
-    selectorA: { fileName: '/palette/selector1A', type: 'GUI', display: true },
-    selectorB: { fileName: '/palette/selector1B', type: 'GUI', display: true },
-    palette: { fileName: '/palette/palette1giga', type: 'palette', display: true },
+    selectorA: { fileName: '/palette/selector1A', type: 'GUI', display: false },
+    selectorB: { fileName: '/palette/selector1B', type: 'GUI', display: false },
+    palette: { fileName: '/palette/palette1giga', type: 'palette', display: false },
 };
 
 //prettier-ignore
@@ -236,7 +236,6 @@ function updateCatalog() {
         }
     }
     imageCatalog.panneau.display = isInSquare(227, 239, 188, 196, pointer.x, pointer.y) ? true : false;
-    imageCatalog.selectorB.display = deviceType === 'mobile' ? false : true;
 
     for (let anim in animCatalog) {
         const thisAnim = animCatalog[anim];
