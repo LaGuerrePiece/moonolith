@@ -1,7 +1,13 @@
-const music = new Audio('/src/assets/audio/ghibli8bit.mp3');
+const music = new Audio('/audio/ghibli8bit.mp3');
+const rumble = new Audio('/audio/rumble.mp3');
+
 music.loop = true;
 
-const rumble = new Audio('/src/assets/audio/rumble.mp3');
+// import musicAudio from '/src/assets/audio/ghibli8bit.mp3';
+// import rumbleAudio from '/src/assets/audio/rumble.mp3';
+
+// const music = new Audio(musicAudio);
+// const rumble = new Audio(rumbleAudio);
 
 export let muteState = false;
 
