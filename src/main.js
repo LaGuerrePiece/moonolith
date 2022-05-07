@@ -81,13 +81,13 @@ async function launchIntro() {
         buildMonolith();
         setTimeout(() => {
             monolithGoUpDuringIntro();
-        }, 6800);
-        // await magrossebite;
+        }, 6500);
+        await magrossebite;
         setTimeout(() => {
             animCatalog.panneauRainbow.display = true;
             intro = false;
         }, 10000);
-    }, 2000);
+    }, 5000);
     // lazyParseAPNG();
 }
 

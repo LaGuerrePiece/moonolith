@@ -41,12 +41,12 @@ export let imageCatalog = {
     moonolithSide3: { fileName: 'moonolithSide', type: 'side', startY: 1226, startX: 255, display: true },
     plan1: { fileName: 'plan1', type: 'landscape', startX: -2, startY: 80, parallax: 0, display: true },
     plan0: { fileName: 'plan0', type: 'landscape', startX: -2, startY: 0, parallax: -0.15, display: true },
+    moon: { fileName: 'moon', type: 'landscape', startX: 150, startY: 165, parallax: 0, display: true },
     panneau: { fileName: 'panneau', type: 'popup', display: false },
     share: { fileName: 'share', type: 'popup', display: false },
     selectorA: { fileName: '/palette/selector1A', type: 'GUI', display: true },
     selectorB: { fileName: '/palette/selector1B', type: 'GUI', display: true },
     palette: { fileName: '/palette/palette1giga', type: 'palette', display: true },
-    moon: { fileName: 'moon', type: 'landscape', startX: 150, startY: 280, parallax: 0, display: true },
 };
 
 //prettier-ignore
@@ -56,7 +56,7 @@ export let animCatalog = {
     twitter: { fileName: 'twitter', startX: imageCatalog.plan0.startX + 96, startY: 83, display: true, loop: true, parallax: imageCatalog.plan0.parallax, base64: twitter },
     panneauRainbow: { fileName: 'panneauRainbow', startX: 227, startY: 183, display: true, loop: false, parallax: imageCatalog.plan1.parallax, base64: panneauRainbow },
     runPlan0: { type: 'intro', startX: 184, startY: 39, display: false, loop: false, parallax: imageCatalog.plan0.parallax, base64: runPlan0 },
-    runPlan1: { type: 'intro', startX: 10, startY: 95, display: false, loop: false, parallax: imageCatalog.plan0.parallax, base64: runPlan1 },
+    runPlan1: { type: 'intro', startX: 0, startY: 100, display: false, loop: false, parallax: imageCatalog.plan1.parallax, base64: runPlan1 },
     collision: { type: 'intro', startX: 0, startY: 400, display: false, loop: false, parallax: 0, base64: collision },
 };
 
@@ -140,7 +140,7 @@ export function launchRunAnim(id) {
         animCatalog.runPlan0.display = true;
     } else {
         animCatalog.runPlan1.display = true;
-        //imageCatalog.moon.display = false;
+        imageCatalog.moon.display = false;
     }
 }
 
