@@ -5,7 +5,7 @@ import { chunkImport, getChunk, getMetaData, setMonolithHeight } from './utils/w
 import { buildMonolith, increaseMonolithHeight } from './models/monolith';
 import { base64ToBuffer, parseAPNG, prepareBufferForApi } from './utils/imageManager';
 import { hammer } from 'hammerjs';
-import { animCatalog, canvas, initDisplay, monolithGoUpDuringIntro, launchCollisionAnim } from './models/display';
+import { animCatalog, canvas, initDisplay, monolithGoUpDuringIntro, launchCollisionAnim, launchRunAnim } from './models/display';
 
 export let viewPosY = 0;
 export let viewPosX = 0;
@@ -64,16 +64,24 @@ async function launchIntro() {
         console.log('move viewPos :');
         let magrossebite = chunkImport(true);
         let mongrosbite = setMonolithHeight();
-        for (let i = 400; i > 70; i--) {
+        for (let i = 400; i > 110; i--) {
             setTimeout(function () {
                 changeViewPos(0, -1);
             }, i * 10);
         }
-        animCatalog.courgette1.display = true; // lancer l' anim d'invocation
+        setTimeout(() => {
+            launchRunAnim(0);
+        }, 4500);
+        setTimeout(() => {
+            launchRunAnim(1);
+        }, 5800);
+
+        //animCatalog.courgette1.display = true; // lancer l' anim d'invocation
         await mongrosbite;
         buildMonolith();
-
-        monolithGoUpDuringIntro();
+        setTimeout(() => {
+            monolithGoUpDuringIntro();
+        }, 6800);
         // await magrossebite;
         setTimeout(() => {
             animCatalog.panneauRainbow.display = true;

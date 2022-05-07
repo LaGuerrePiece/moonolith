@@ -31,6 +31,7 @@ setInterval(() => {
 }, 20);
 
 export let imageCatalog = {
+    moon: {fileName: 'moon', type: 'landscape', startX: 100, startY: 100, parallax: 0, display: true},
     plan5: { fileName: 'plan5', type: 'landscape', startX: -2, startY: 330, parallax: 0.3, display: true },
     plan4: { fileName: 'plan4', type: 'landscape', startX: -2, startY: 300, parallax: 0.25, display: true },
     plan3: { fileName: 'plan3', type: 'landscape', startX: -2, startY: 250, parallax: 0.2, display: true },
@@ -46,6 +47,7 @@ export let imageCatalog = {
     selectorA: { fileName: '/palette/selector1A', type: 'GUI', display: true },
     selectorB: { fileName: '/palette/selector1B', type: 'GUI', display: true },
     palette: { fileName: '/palette/palette1giga', type: 'palette', display: true },
+
 };
 
 //prettier-ignore
@@ -54,8 +56,8 @@ export let animCatalog = {
     courgette1: { fileName: 'courgette', startX: 100, startY: 100, display: false, loop: true, parallax: 0, base64: courgette64 },
     twitter: { fileName: 'twitter', startX: imageCatalog.plan0.startX + 96, startY: 83, display: true, loop: true, parallax: imageCatalog.plan0.parallax, base64: twitter },
     panneauRainbow: { fileName: 'panneauRainbow', startX: 227, startY: 183, display: true, loop: false, parallax: imageCatalog.plan1.parallax, base64: panneauRainbow },
-    runPlan0: { type: 'intro', startX: 184, startY: 39, display: true, loop: true, parallax: imageCatalog.plan0.parallax, base64: runPlan0 },
-    runPlan1: { type: 'intro', startX: 10, startY: 95, display: true, loop: true, parallax: imageCatalog.plan0.parallax, base64: runPlan1 },
+    runPlan0: { type: 'intro', startX: 184, startY: 39, display: false, loop: false, parallax: imageCatalog.plan0.parallax, base64: runPlan0 },
+    runPlan1: { type: 'intro', startX: 10, startY: 95, display: false, loop: false, parallax: imageCatalog.plan0.parallax, base64: runPlan1 },
     collision: { type: 'intro', startX: 0, startY: 400, display: false, loop: false, parallax: 0, base64: collision },
 };
 
@@ -131,8 +133,16 @@ export function initDisplay() {
 }
 
 export function launchCollisionAnim() {
-    const start = clock;
     animCatalog.collision.display = true; // lancer l' anim d'intro
+}
+
+export function launchRunAnim(id){
+    if(id == 0){
+        animCatalog.runPlan0.display = true;
+    }else{
+        animCatalog.runPlan1.display = true;
+        //imageCatalog.moon.display = false;
+    }
 }
 
 function drawAnim(frame, name, ctx) {
