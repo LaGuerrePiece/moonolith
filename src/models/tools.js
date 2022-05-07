@@ -9,7 +9,7 @@ import { paletteCatalog } from '../utils/paletteCatalog';
 import Const from './constants';
 import { openLink } from './display';
 
-export let tool = 'giga';
+export let tool = 'smol';
 let colorPicked1 = Const.RGB16;
 let colorPicked2 = Const.DEFAULT_COLOR;
 export let colorNumber1 = 1;
