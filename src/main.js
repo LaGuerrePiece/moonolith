@@ -86,7 +86,7 @@ async function launchIntro() {
         setTimeout(() => {
             animCatalog.panneauRainbow.display = true;
             intro = false;
-        }, 10000);
+        }, 15000);
     }, 5000);
     // lazyParseAPNG();
 }
