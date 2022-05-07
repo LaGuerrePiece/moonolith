@@ -150,9 +150,8 @@ export function touchManager(e) {
 export function scrollManager(e) {
     if (e.ctrlKey == true || e.metaKey == true) {
         e.preventDefault();
-        console.log('Scroll event', e.deltaY);
-        if (e.deltaY > 2) increaseZoom();
-        else if (e.deltaY < -2) decreaseZoom();
+        if (e.deltaY < 0) increaseZoom();
+        else if (e.deltaY > 0) decreaseZoom();
         paletteUpdate();
     }
     let now = Date.now();
