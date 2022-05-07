@@ -4,12 +4,12 @@ import { renderWidth, renderHeight, viewPosX, viewPosY, changeViewPos } from '..
 import { playSound, muteState } from '../assets/sounds';
 import { shake } from './display';
 import { animatedPixels } from '../utils/runeAnims';
+import { importedChunks } from '../utils/web3';
 
 export let monolith;
 export let monolithIndexes;
 
 export function buildMonolith() {
-    // monolith = Array.from({ length: Const.MONOLITH_LINES * Const.MONOLITH_COLUMNS }, () => [40, 40, 46, 255]).flat();
     monolith = new Uint8ClampedArray(Const.MONOLITH_LINES * Const.MONOLITH_COLUMNS * 4);
     for (let i = 0; i < Const.MONOLITH_LINES * Const.MONOLITH_COLUMNS * 4; i += 4) {
         monolith[i] = 50;
@@ -19,13 +19,10 @@ export function buildMonolith() {
     }
     // console.log('monolith', monolith);
 
-    let start = performance.now();
     monolithIndexes = new Array(Const.MONOLITH_LINES);
     for (let y = 0; y < Const.MONOLITH_LINES; y++) {
         monolithIndexes[y] = new Array(Const.MONOLITH_COLUMNS);
     }
-    console.log('time :', performance.now() - start);
-    console.log('monolithIndexes', monolithIndexes);
 }
 let lastPlayedSound = Date.now();
 
@@ -35,19 +32,20 @@ export function drawPixel(x, y, zIndex, color) {
     if (x < 0 || x >= Const.MONOLITH_COLUMNS || y < 0 || y >= Const.MONOLITH_LINES) return; //If out of bounds, return
     if (!isEditable(zIndex, monolithzIndex)) return; //If not editable, return
     if (same(x, y, pos, zIndex, color)) return; //If same, return
+    if (animatedPixels.get(pos) && monolithzIndex === 0) return; // If drawn by user and currently animated
     if (zIndex === 0 || zIndex === undefined)
         addToCurrentEvent(x, y, [monolith[pos], monolith[pos + 1], monolith[pos + 2]], monolithzIndex); //If being drawn by user, add to curent event
 
-    // if (animatedPixels[pos]) return;
-    const transitionType = zIndex === 0 ? 'draw' : zIndex === undefined ? 'erase' : undefined;
-    if (animatedPixels.get(pos)) return;
-    if (transitionType) {
-        animatedPixels.set(pos, [transitionType, color, 1]);
-    } else {
-        monolith[pos] = color[0];
-        monolith[pos + 1] = color[1];
-        monolith[pos + 2] = color[2];
-    }
+    let transitionType = zIndex === 0 ? 'draw' : zIndex === undefined ? 'erase' : 'import';
+    // if (zIndex === importedChunks) transitionType = 'import';
+    // if (transitionType) {
+    animatedPixels.set(pos, [transitionType, color, 1]);
+    // } else {
+    //     monolith[pos] = color[0];
+    //     monolith[pos + 1] = color[1];
+    //     monolith[pos + 2] = color[2];
+    // }
+
     monolithIndexes[y][x] = zIndex;
 
     if (zIndex === 0 && lastPlayedSound + 40 < Date.now() && !muteState) {

@@ -3,7 +3,7 @@ import Const from '../models/constants';
 import { monolith, eraseAllPixel, drawPixel, monolithIndexes } from '../models/monolith';
 import { chunkCreator, importedChunks } from '../utils/web3';
 import { runeCornerInfo, runeSideInfo } from '../utils/runeAnims';
-import { compressToUTF16, decompressFromUTF16 } from 'lz-string';
+import { compressToUTF16, decompressFromUTF16 } from 'lz-String';
 import { animCatalog } from '../models/display';
 import { runeNumber } from '../main';
 
@@ -128,9 +128,9 @@ async function bufferOnMonolith(data) {
     };
 
     // Si le chunk est digne d'être animé, l'envoie dans chunkToAnimateInfo
-    if ((data.zIndex <= importedChunks && !runeNumber) || data.zIndex === runeNumber) {
-        chunksToAnimateInfo.push([data.zIndex, data.y + height / 2]);
-    }
+    // if ((data.zIndex <= importedChunks && !runeNumber) || data.zIndex === runeNumber) {
+    chunksToAnimateInfo.push([data.zIndex, data.y + height / 2]);
+    // }
 
     let pixelDrawn = 0;
     let p = 0;
