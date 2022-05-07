@@ -56,8 +56,8 @@ export function animateMonolith() {
 
         } else if (transitionType === 'runeContour') {
 
-            if (counter === 1) draw(pos, [186,195,118]);
-            else if (counter < 10) draw(pos, [186,195,118]);
+            if (counter === 1) draw(pos, [32, 214, 199]);
+            else if (counter < 10) draw(pos, [32, 214, 199]);
             else draw(pos, avg(color, pos, 10));
             if (counter === 50) {endTransition(pos, color);continue;}
 
@@ -166,8 +166,8 @@ export function animateRune(id) {
             if (i < 0 || i >= Const.MONOLITH_COLUMNS || j < 0 || j >= Const.MONOLITH_LINES) continue;
             if (!monolithIndexes[j]?.[i]) continue;
             // i et j sont les coordonnées du pixel à dessiner
-            for (let b = -2; b <= 2; b++) {
-                for (let a = -2; a <= 2; a++) {
+            for (let b = -1; b <= 1; b++) {
+                for (let a = -1; a <= 1; a++) {
                     if (a === 0 && b === 0) continue;
                     const y = b + j;
                     const x = a + i;
