@@ -64,7 +64,7 @@ function mobileEventListener() {
 
     hammertime.get('pinch').set({ enable: true });
     hammertime.on('pinchend', function (e) {
-        console.log('pinch', e.scale);
+        //console.log('pinch', e);
         if (e.scale > 2) increaseZoom();
         else if (e.scale < 0.5) decreaseZoom();
     });
