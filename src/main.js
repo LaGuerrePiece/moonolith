@@ -14,6 +14,7 @@ export let scaleFactor = 1;
 export let route;
 export let runeNumber;
 export let intro = true;
+let firstTime = false;
 
 export const windowHeight = window.innerHeight;
 export const windowWidth = window.innerWidth;
@@ -30,6 +31,19 @@ export const deviceType = /(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.tes
     : 'desktop';
 
 async function initApp() {
+    console.log(document.cookie);
+    if(!document.cookie.includes("visited=true")){
+        console.log("Fiest time visiting");
+        const d = new Date();
+        d.setTime(d.getTime() + (7*24*60*60*1000));
+        let expires = "expires="+ d.toUTCString();
+        document.cookie = "visited=true;" + ";" + expires + ";path=/";
+        firstTime = true;
+    }
+    else{
+        intro = false;
+    }
+
     runeNumber = parseInt(document.URL.split('rune=')[1]);
     const OS = document.URL.split('OS=')[1];
     // Router
@@ -159,7 +173,9 @@ async function setInitialViewPos() {
         if (providedY) {
             changeViewPos(0, providedY);
         } else {
-            launchIntro();
+            if(firstTime){
+                launchIntro();
+            }
         }
     }
 }
