@@ -2,6 +2,7 @@ import { UPNG } from './upmc';
 import Const from '../models/constants';
 import { monolith, eraseAllPixel, drawPixel, monolithIndexes } from '../models/monolith';
 import { chunkCreator, importedChunks } from '../utils/web3';
+import { runeCornerInfo, runeSideInfo } from '../utils/runeAnims';
 import { compressToUTF16, decompressFromUTF16 } from 'lz-String';
 import { animCatalog } from '../models/display';
 import { runeNumber } from '../main';
@@ -24,6 +25,14 @@ export async function parseAPNG() {
         decodeAndFormatAnimation(animations[i]);
         importedAnimations++;
     }
+
+    runeCornerInfo.buffer = parsePNG(runeCornerInfo);
+    runeSideInfo.buffer = parsePNG(runeSideInfo);
+}
+
+export async function parsePNG(info) {
+    info.decoded = await ApngToBuffer(base64ToBuffer(info.base64)).catch(console.error);
+    console.log('info.decoded', info, info.decoded);
 }
 
 async function decodeAndFormatAnimation(index) {
