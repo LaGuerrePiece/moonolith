@@ -107,9 +107,9 @@ export function initDisplay() {
         thisAnim.canvas.width = thisAnim.width;
         thisAnim.canvas.height = thisAnim.height;
     }
-    
+
     requestAnimationFrame(update);
-    
+
     function update() {
         updateCatalog();
         // ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -147,7 +147,7 @@ export function launchRunAnim(id) {
 function drawAnim(frame, name, ctx) {
     let ctxo = animCatalog[name].canvas.getContext('2d');
     let frameData = ctxo.createImageData(animCatalog[name].width, animCatalog[name].height);
-    // console.log(animCatalog[name].width);
+    // console.log('animCatalog[name]', animCatalog[name], animCatalog[name].width);
     frameData.data.set(frame);
     // if (name === 'collision') console.log(frameData.data.length);
     ctxo.putImageData(frameData, 0, 0);

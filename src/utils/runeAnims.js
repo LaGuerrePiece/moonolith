@@ -115,7 +115,7 @@ export function animateRune(id) {
                 const pos = (y * Const.MONOLITH_COLUMNS + x) * 4;
                 if (x < 0 || x >= Const.MONOLITH_COLUMNS || y < 0 || y >= Const.MONOLITH_LINES) continue;
                 if (!monolithIndexes[y]?.[x]) continue;
-                // if (animatedPixels.get(pos) continue;
+                if (animatedPixels.get(pos)) continue;
                 const color = [monolith[pos], monolith[pos + 1], monolith[pos + 2]];
                 if (j + i < limit / 5) animatedPixels.set(pos, ['whiteOnRune', color, 90]);
                 else if (j + i < limit / 4) animatedPixels.set(pos, ['whiteOnRune', color, 88]);

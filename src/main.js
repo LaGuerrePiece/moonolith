@@ -5,7 +5,14 @@ import { chunkImport, getChunk, getMetaData, setMonolithHeight } from './utils/w
 import { buildMonolith, increaseMonolithHeight } from './models/monolith';
 import { base64ToBuffer, parseAPNG, prepareBufferForApi } from './utils/imageManager';
 import { hammer } from 'hammerjs';
-import { animCatalog, canvas, initDisplay, monolithGoUpDuringIntro, launchCollisionAnim, launchRunAnim } from './models/display';
+import {
+    animCatalog,
+    canvas,
+    initDisplay,
+    monolithGoUpDuringIntro,
+    launchCollisionAnim,
+    launchRunAnim,
+} from './models/display';
 
 export let viewPosY = 0;
 export let viewPosX = 0;
@@ -43,7 +50,7 @@ async function initApp() {
         launchIntro();
     } else {
         parseAPNG();
-        await chunkImport();
+        await chunkImport(true);
         buildMonolith();
         await setInitialViewPos();
         initDisplay();
@@ -178,7 +185,7 @@ function zoom(factor) {
 
 setInterval(() => {
     chunkImport(false);
-}, 5000);
+}, 30000);
 
 export let pointer = { x: 0, y: 0 };
 document.addEventListener('mousemove', (e) => {

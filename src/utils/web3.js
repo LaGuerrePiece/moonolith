@@ -19,7 +19,7 @@ if (window.ethereum) {
     metamaskContract = new ethers.Contract(contractAddress, contractABI, signer);
 }
 
-export let importedChunks = 1;
+export let importedChunks = 0;
 
 const chunkCreator = async (res) => {
     // if (window.ethereum.chainId == '0x4') {
@@ -32,7 +32,10 @@ const chunkCreator = async (res) => {
     let tx = metamaskContract.mint_One_4d(res.position, res.ymax, res.nbPix, res.imgURI, overrides);
     tx.then((tx) => {
         tx.wait().then(() => {
-            displayShareScreen(importedChunks + 1);
+            chunkImport(false);
+            setTimeout(() => {
+                displayShareScreen(importedChunks);
+            }, 3000);
         });
     });
     //  } else {
@@ -82,7 +85,7 @@ async function chunkImport(firstTime) {
     // console.log(meta);
     // console.log('importedChunks', importedChunks, 'meta.nbChunks', meta.nbChunks);
     if (importedChunks !== meta.nbChunks || importedChunks == 1) {
-        for (let i = importedChunks; i <= meta.nbChunks; i++) {
+        for (let i = importedChunks + 1; i <= meta.nbChunks; i++) {
             getChunk(i).then((res) => {
                 // console.log(res);
                 bufferOnMonolith({
@@ -94,6 +97,7 @@ async function chunkImport(firstTime) {
                     zIndex: i,
                 });
             });
+            console.log('getting chunk : ', i);
         }
     }
     const newMonolithHeight = Math.floor(192 + (meta.nbKlon * meta.threshold) / (1000000 * Const.COLUMNS));
@@ -104,7 +108,7 @@ async function chunkImport(firstTime) {
 
 export async function setMonolithHeight() {
     let meta = await getMetaData();
-    console.log(meta);
+    // console.log(meta);
     const monolithHeight = Math.floor(192 + (meta.nbKlon * meta.threshold) / (1000000 * Const.COLUMNS));
     Const.setMonolithHeight(monolithHeight);
 }
