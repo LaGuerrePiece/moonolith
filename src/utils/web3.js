@@ -8,7 +8,7 @@ import { displayShareScreen } from '../models/display';
 
 const provider = new ethers.providers.InfuraProvider('rinkeby');
 const iface = new Interface(contractABI);
-const contractAddress = '0x89d7a208e36F616D79f87d17e51cB6489e7be9b0';
+const contractAddress = '0xFA5a46C6B5C40e95Dde5cc57A08139a1c368C178';
 const contract = new ethers.Contract(contractAddress, contractABI, provider);
 let metamaskProvider;
 var metamaskContract;
