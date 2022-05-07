@@ -51,12 +51,12 @@ export let imageCatalog = {
 //prettier-ignore
 export let animCatalog = {
     // courgette0: { fileName: 'courgette', startX: 20, startY: 450, display: true, loop: true, parallax: imageCatalog.plan5.parallax, base64: courgette64 },
-    // courgette1: { fileName: 'courgette', startX: 100, startY: 1150, display: false, loop: true, parallax: 0, base64: courgette64 },
+    courgette1: { fileName: 'courgette', startX: 100, startY: 100, display: false, loop: true, parallax: 0, base64: courgette64 },
     twitter: { fileName: 'twitter', startX: imageCatalog.plan0.startX + 96, startY: 83, display: true, loop: true, parallax: imageCatalog.plan0.parallax, base64: twitter },
     panneauRainbow: { fileName: 'panneauRainbow', startX: 227, startY: 183, display: true, loop: false, parallax: imageCatalog.plan1.parallax, base64: panneauRainbow },
     runPlan0: { type: 'intro', startX: 184, startY: 39, display: true, loop: true, parallax: imageCatalog.plan0.parallax, base64: runPlan0 },
     runPlan1: { type: 'intro', startX: 10, startY: 95, display: true, loop: true, parallax: imageCatalog.plan0.parallax, base64: runPlan1 },
-    collision: { type: 'intro', startX: 0, startY: 2000, display: true, loop: true, parallax: -0.15, base64: collision },
+    collision: { type: 'intro', startX: 0, startY: 400, display: false, loop: false, parallax: 0, base64: collision },
 };
 
 function frameInClock(anim) {
@@ -102,6 +102,7 @@ export function initDisplay() {
     for (let anim in animCatalog) {
         const thisAnim = animCatalog[anim];
         thisAnim.canvas = document.createElement('canvas');
+        // console.log('thisAnim.width', thisAnim.width);
         thisAnim.canvas.width = thisAnim.width;
         thisAnim.canvas.height = thisAnim.height;
     }
@@ -129,6 +130,11 @@ export function initDisplay() {
     }
 }
 
+export function launchCollisionAnim() {
+    const start = clock;
+    animCatalog.collision.display = true; // lancer l' anim d'intro
+}
+
 function drawAnim(frame, name, ctx) {
     let ctxo = animCatalog[name].canvas.getContext('2d');
     let frameData = ctxo.createImageData(animCatalog[name].width, animCatalog[name].height);
@@ -136,6 +142,7 @@ function drawAnim(frame, name, ctx) {
     frameData.data.set(frame);
     // if (name === 'collision') console.log(frameData.data.length);
     ctxo.putImageData(frameData, 0, 0);
+    // console.log('animCatalog[name]', animCatalog[name]);
     ctx.drawImage(animCatalog[name].canvas, animCatalog[name].x, animCatalog[name].y);
 }
 

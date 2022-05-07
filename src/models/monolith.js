@@ -9,7 +9,6 @@ export let monolith;
 export let monolithIndexes;
 
 export function buildMonolith() {
-    let start = performance.now();
     // monolith = Array.from({ length: Const.MONOLITH_LINES * Const.MONOLITH_COLUMNS }, () => [40, 40, 46, 255]).flat();
     monolith = new Uint8ClampedArray(Const.MONOLITH_LINES * Const.MONOLITH_COLUMNS * 4);
     for (let i = 0; i < Const.MONOLITH_LINES * Const.MONOLITH_COLUMNS * 4; i += 4) {
@@ -18,12 +17,14 @@ export function buildMonolith() {
         monolith[i + 2] = 60;
         monolith[i + 3] = 255;
     }
-    console.log('time :', performance.now() - start);
-    console.log('monolith', monolith);
+    // console.log('monolith', monolith);
 
-    monolithIndexes = Array.from({ length: Const.MONOLITH_LINES }, () =>
-        Array.from({ length: Const.MONOLITH_COLUMNS }, () => undefined)
-    );
+    let start = performance.now();
+    monolithIndexes = new Array(Const.MONOLITH_LINES);
+    for (let y = 0; y < Const.MONOLITH_LINES; y++) {
+        monolithIndexes[y] = new Array(Const.MONOLITH_COLUMNS);
+    }
+    console.log('time :', performance.now() - start);
     console.log('monolithIndexes', monolithIndexes);
 }
 let lastPlayedSound = Date.now();

@@ -77,7 +77,7 @@ async function getMetaData() {
     return { nbKlon: metadata[2].toNumber(), threshold: metadata[1].toNumber(), nbChunks: metadata[0].toNumber() };
 }
 
-async function chunkImport() {
+async function chunkImport(firstTime) {
     let meta = await getMetaData();
     // console.log(meta);
     // console.log('importedChunks', importedChunks, 'meta.nbChunks', meta.nbChunks);
@@ -96,10 +96,17 @@ async function chunkImport() {
             });
         }
     }
-    const monolithHeight = Math.floor(192 + (meta.nbKlon * meta.threshold) / (1000000 * Const.COLUMNS));
-    if (!Const.MONOLITH_LINES) Const.setMonolithHeight(monolithHeight);
-    else if (importedChunks - meta.nbChunks !== 0) increaseMonolithHeight(monolithHeight - Const.MONOLITH_LINES);
+    const newMonolithHeight = Math.floor(192 + (meta.nbKlon * meta.threshold) / (1000000 * Const.COLUMNS));
+    if (importedChunks - meta.nbChunks !== 0 && !firstTime)
+        increaseMonolithHeight(newMonolithHeight - Const.MONOLITH_LINES);
     importedChunks = meta.nbChunks;
+}
+
+export async function setMonolithHeight() {
+    let meta = await getMetaData();
+    console.log(meta);
+    const monolithHeight = Math.floor(192 + (meta.nbKlon * meta.threshold) / (1000000 * Const.COLUMNS));
+    Const.setMonolithHeight(monolithHeight);
 }
 
 export function getContractAddress() {

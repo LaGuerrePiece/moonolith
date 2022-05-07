@@ -1,20 +1,20 @@
 // Imports des fonctionnalités
 import { keyManager, scrollManager, mousePosInGrid, touchManager, togglePanMode } from './models/tools';
 import Const from './models/constants';
-import { chunkImport, getChunk, getMetaData } from './utils/web3';
+import { chunkImport, getChunk, getMetaData, setMonolithHeight } from './utils/web3';
 import { buildMonolith, increaseMonolithHeight } from './models/monolith';
 import { base64ToBuffer, parseAPNG, prepareBufferForApi } from './utils/imageManager';
 import { hammer } from 'hammerjs';
-import { animCatalog, canvas, initDisplay, monolithGoUpDuringIntro, clock } from './models/display';
+import { animCatalog, canvas, initDisplay, monolithGoUpDuringIntro, launchCollisionAnim } from './models/display';
 
-export let viewPosY = 100;
+export let viewPosY = 0;
 export let viewPosX = 0;
 export let scaleFactor = 1;
 
-export let route;
 export let runeNumber;
-export let intro = true;
-let firstTime = false;
+export let Opensea;
+export let firstTime = false;
+export let intro = false;
 
 export const windowHeight = window.innerHeight;
 export const windowWidth = window.innerWidth;
@@ -31,33 +31,57 @@ export const deviceType = /(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.tes
     : 'desktop';
 
 async function initApp() {
-    console.log(document.cookie);
-    if(!document.cookie.includes("visited=true")){
-        console.log("Fiest time visiting");
-        const d = new Date();
-        d.setTime(d.getTime() + (7*24*60*60*1000));
-        let expires = "expires="+ d.toUTCString();
-        document.cookie = "visited=true;" + ";" + expires + ";path=/";
-        firstTime = true;
-    }
-    else{
-        intro = false;
-    }
-
-    runeNumber = parseInt(document.URL.split('rune=')[1]);
-    const OS = document.URL.split('OS=')[1];
-    // Router
-    route = runeNumber && OS ? 'Opensea API' : runeNumber ? 'Share specific rune' : 'normal';
-    console.log('route', route);
-    parseAPNG();
-    await chunkImport();
-    buildMonolith();
-    await setInitialViewPos();
-    initDisplay();
     if (deviceType == 'mobile') mobileEventListener();
+
+    setRoute();
+    firstTime = true; // To test
+    if (firstTime && !Opensea) {
+        console.log('parsing first APNGs before intro...');
+        await parseAPNG();
+        console.log('parsing done, launching intro');
+        intro = true;
+        launchIntro();
+    } else {
+        parseAPNG();
+        await chunkImport();
+        buildMonolith();
+        await setInitialViewPos();
+        initDisplay();
+        // lazyParseAPNG();
+    }
 }
 
 initApp();
+
+async function launchIntro() {
+    console.log('changing viewPos to the sky');
+    changeViewPos(0, 400); // aller dans le ciel
+    initDisplay();
+    console.log('launching collision anim');
+    launchCollisionAnim();
+    console.log('waiting 2 secs...');
+    setTimeout(async () => {
+        console.log('move viewPos :');
+        let magrossebite = chunkImport(true);
+        let mongrosbite = setMonolithHeight();
+        for (let i = 400; i > 70; i--) {
+            setTimeout(function () {
+                changeViewPos(0, -1);
+            }, i * 10);
+        }
+        animCatalog.courgette1.display = true; // lancer l' anim d'invocation
+        await mongrosbite;
+        buildMonolith();
+
+        monolithGoUpDuringIntro();
+        // await magrossebite;
+        setTimeout(() => {
+            animCatalog.panneauRainbow.display = true;
+            intro = false;
+        }, 10000);
+    }, 2000);
+    // lazyParseAPNG();
+}
 
 function mobileEventListener() {
     var hammertime = new Hammer(canvas);
@@ -102,14 +126,16 @@ document.addEventListener('wheel', (e) => {
     scrollManager(e);
 }, {passive : false});
 
-console.log('renderHeight', renderHeight);
 export function changeViewPos(inputX, inputY) {
     viewPosX += inputX;
     viewPosY += inputY;
     // Limits :
     const lowY = Math.floor(-renderHeight / 2 + renderHeight / (scaleFactor * 2));
     const lowX = Math.floor(-renderWidth / 2 + renderWidth / (scaleFactor * 2));
-    if (viewPosY + renderHeight + lowY > Const.LINES) viewPosY = Const.LINES - renderHeight - lowY;
+    if (!intro) {
+        // During intro, we can go in the sky
+        if (viewPosY + renderHeight + lowY > Const.LINES) viewPosY = Const.LINES - renderHeight - lowY;
+    }
     if (viewPosY < lowY) viewPosY = lowY;
     if (viewPosX < lowX) viewPosX = lowX;
     if (viewPosX + renderWidth + lowX > Const.COLUMNS) viewPosX = Const.COLUMNS - renderWidth - lowX;
@@ -143,7 +169,7 @@ function zoom(factor) {
 }
 
 setInterval(() => {
-    chunkImport();
+    chunkImport(false);
 }, 5000);
 
 export let pointer = { x: 0, y: 0 };
@@ -164,13 +190,6 @@ async function setInitialViewPos() {
                             data[2] / 2 -
                             renderHeight / 2
                     );
-                    // const viewX = Math.floor(
-                    //     Const.MARGIN_RIGHT +
-                    //         Const.MONOLITH_COLUMNS -
-                    //         (res[0].toNumber() % Const.MONOLITH_COLUMNS) -
-                    //         data[1] / 2 -
-                    //         renderWidth / 2
-                    // );
                     changeViewPos(0, viewY);
                     intro = false;
                     console.log('changed viewPos to :', viewY);
@@ -180,36 +199,23 @@ async function setInitialViewPos() {
                 console.log('error : rune not found');
             });
         // Else, look for a Y in the url
-    } else if (route === 'normal') {
+    } else {
         const providedY = parseInt(document.URL.split('y=')[1]);
         if (providedY) {
             changeViewPos(0, providedY);
-        } else {
-            if(firstTime){
-                launchIntro();
-            }
         }
     }
 }
 
-function launchIntro() {
-    // changeViewPos(0, 1500); // aller dans le ciel
-    // animCatalog.courgette1.display = true; // lancer l' anim d'intro
-    //TODO attendre fin d'anim
-    //scroll en bas
-    // for (let i = 1500; i > 250; i--) {
-    //     setTimeout(function () {
-    //         changeViewPos(0, -1);
-    //     }, i);
-    // }
-    // animCatalog.courgette1.display = true; // lancer l' anim d'invocation
-    // getMetaData().then((metadata) => {
-    //     //sortir le monolith de la bonne taille
-    //     increaseMonolithHeight(Math.floor(192 + (metadata.nbKlon * metadata.threshold) / (1000000 * Const.COLUMNS)));
-    // });
-    monolithGoUpDuringIntro();
-    setTimeout(() => {
-        animCatalog.panneauRainbow.display = true;
-        intro = false;
-    }, 10000);
+function setRoute() {
+    if (!document.cookie.includes('visited=true')) {
+        console.log('First time visiting');
+        const d = new Date();
+        d.setTime(d.getTime() + 7 * 24 * 60 * 60 * 1000);
+        let expires = 'expires=' + d.toUTCString();
+        document.cookie = 'visited=true;' + ';' + expires + ';path=/';
+        firstTime = true;
+    }
+    runeNumber = parseInt(document.URL.split('rune=')[1]);
+    Opensea = document.URL.split('OS=')[1];
 }

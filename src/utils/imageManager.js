@@ -22,12 +22,12 @@ export async function parseAPNG() {
     let animations = Object.keys(animCatalog);
 
     for (let i = animations.length - 1; i >= 0; i--) {
-        decodeAndFormatAnimation(animations[i]);
+        await decodeAndFormatAnimation(animations[i]);
         importedAnimations++;
     }
 
-    runeCornerInfo.buffer = parsePNG(runeCornerInfo);
-    runeSideInfo.buffer = parsePNG(runeSideInfo);
+    // runeCornerInfo.buffer = parsePNG(runeCornerInfo);
+    // runeSideInfo.buffer = parsePNG(runeSideInfo);
 }
 
 export async function parsePNG(info) {
