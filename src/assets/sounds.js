@@ -1,4 +1,4 @@
-const music = new Audio('/audio/ghibli8bit.mp3');
+const music = new Audio('/audio/theEndOfTheWorld.mp3');
 const rumble = new Audio('/audio/rumble.mp3');
 
 music.loop = true;

@@ -99,16 +99,15 @@ export function touchManager(e) {
             button: 0,
         };
         clickManager(e);
-    } else{
+    } else {
         //console.log(e);
-        if(e.changedTouches[0].pageX < Const.MARGIN_LEFT || e.changedTouches[0].pageX > 370 - Const.MARGIN_RIGHT ){
+        if (e.changedTouches[0].pageX < Const.MARGIN_LEFT || e.changedTouches[0].pageX > 370 - Const.MARGIN_RIGHT) {
             touchPan(e);
-        }else if (e.touches.length == 1 && e.type == "touchmove" && e.timeStamp > 3000){
+        } else if (e.touches.length == 1 && e.type == 'touchmove' && e.timeStamp > 3000) {
             console.log(e);
             touchDraw(e);
         }
     }
-    
 
     //  else if (panMode) {
     //     touchPan(e);

@@ -13,6 +13,7 @@ import {
     launchCollisionAnim,
     launchRunAnim,
 } from './models/display';
+import { toggleMusic } from './assets/sounds';
 
 export let viewPosY = 0;
 export let viewPosX = 0;
@@ -96,6 +97,7 @@ async function launchIntro() {
         setTimeout(() => {
             animCatalog.panneauRainbow.display = true;
             intro = false;
+            toggleMusic()
         }, 15000);
     }, 5000);
     // lazyParseAPNG();
