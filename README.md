@@ -1,5 +1,1 @@
-# THE MONOLITH
-
-It looks harsh and cold, but it is actually soft and warm.
-
-??
+# t   h   e      m   o   o   n   o   l   i   t   h
