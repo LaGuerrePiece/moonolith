@@ -23,7 +23,7 @@ export function toggleMute() {
 }
 
 export function playSound(name) {
-    const audio = new Audio('/src/assets/audio/' + name + '.mp3');
+    const audio = new Audio('/audio/' + name + '.mp3');
     audio.play();
 }
 
@@ -32,7 +32,7 @@ export function toggleMusic() {
 }
 
 export function stopSound(name) {
-    const audio = new Audio('/src/assets/audio/' + name + '.mp3');
+    const audio = new Audio('/audio/' + name + '.mp3');
     console.log('stopSound', name);
     audio.pause();
 }
