@@ -1,4 +1,5 @@
-import { changeViewPos, chunkImport, setMonoHeight } from './main';
+import { chunkImport, setMonoHeight } from './main';
+import { viewPosY, changeViewPos } from './display/view';
 import { initDisplay } from './display/displayLoop';
 import { animCatalog, launchAnim } from './display/animations';
 import { shake } from './display/displayLoop';

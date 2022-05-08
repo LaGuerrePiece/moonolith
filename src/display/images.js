@@ -1,4 +1,5 @@
-import { renderHeight, viewPosX, viewPosY } from '../main';
+import { renderHeight } from '../main';
+import { viewPosY, viewPosX } from './view';
 import { drawMonolith } from './displayLoop';
 import { monolithDisplayHeightIntro, intro } from '../intro';
 import Const from '../constants';

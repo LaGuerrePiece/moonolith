@@ -1,5 +1,6 @@
 //prettier-ignore
-import { renderWidth, renderHeight, changeViewPos, viewPosX, viewPosY, pixelSize } from '../main';
+import { scaleFactor, viewPosX, viewPosY, changeViewPos, increaseZoom, decreaseZoom, toggleZoom} from '../display/view';
+import { renderWidth, renderHeight, pixelSize } from '../main';
 import { canvas } from '../display/displayLoop';
 import { GUICatalog, updatePalette } from '../display/GUI';
 import Const from '../constants';
@@ -11,8 +12,6 @@ import { toggleMusic, playSound, toggleMute } from '../assets/sounds';
 import { eraseAllPixel, increaseMonolithHeight } from '../monolith/monolith';
 import { undo, redo } from '../monolith/undoStack';
 import { brushSwitch, startUsingTool, colorSwitch, selectBrush } from '../monolith/tools';
-
-export let scaleFactor = 1;
 
 export const deviceType = /(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(navigator.userAgent)
     ? 'tablet'
@@ -86,33 +85,6 @@ function keyManager(e){
         playSound('click6');
         break;
       }
-}
-
-export function increaseZoom() {
-    console.log('increaseZoom');
-    if (scaleFactor === 1) zoom(3);
-    else if (scaleFactor === 3) zoom(6);
-}
-
-export function decreaseZoom() {
-    if (scaleFactor === 6) zoom(3);
-    else if (scaleFactor === 3) zoom(1);
-}
-
-export function toggleZoom() {
-    if (scaleFactor === 1) zoom(3);
-    else if (scaleFactor === 3) zoom(6);
-    else zoom(1);
-}
-
-function zoom(factor) {
-    canvas.style.transform = `scale(${factor})`;
-    scaleFactor = factor;
-    if (factor === 1) {
-        viewPosX = 0;
-        if (viewPosY + renderHeight > Const.LINES) viewPosY = Const.LINES - renderHeight;
-        if (viewPosY < 0) viewPosY = 0;
-    }
 }
 
 export function clickManager(e) {

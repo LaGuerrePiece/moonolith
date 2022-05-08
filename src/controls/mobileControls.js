@@ -1,6 +1,5 @@
 //prettier-ignore
-import { increaseZoom, decreaseZoom } from './controls';
-import { changeViewPos } from '../main';
+import { changeViewPos, increaseZoom, decreaseZoom } from '../display/view';
 import { canvas } from '../display/displayLoop';
 import { startUsingTool } from '../monolith/tools';
 import { clickManager } from './controls';

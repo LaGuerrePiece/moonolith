@@ -1,6 +1,6 @@
 import Const from '../constants';
-import { pixelSize, viewPosY, viewPosX, renderHeight } from '../main';
-import { scaleFactor } from '../controls/controls';
+import { pixelSize, renderHeight } from '../main';
+import { scaleFactor, viewPosY, viewPosX } from '../display/view';
 import { canvas } from '../display/displayLoop';
 
 export function isInSquare(xmin, xmax, ymin, ymax, pointerX, pointerY) {

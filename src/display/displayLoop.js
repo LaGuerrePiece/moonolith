@@ -1,5 +1,6 @@
 //prettier-ignore
-import { renderHeight, renderWidth, viewPosX, viewPosY, changeViewPos } from '../main';
+import { renderHeight, renderWidth } from '../main';
+import { viewPosX, viewPosY, changeViewPos } from './view';
 import Const from '../constants';
 import { monolith } from '../monolith/monolith';
 import { animateMonolith } from '../monolith/monolithAnims';
@@ -40,7 +41,6 @@ export function initDisplay() {
         ctx.fillStyle = 'rgb(196, 130, 127)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         drawImages(ctx);
-        drawMonolith(ctx);
         drawAnimations(ctx);
         drawGUI(ctx);
 

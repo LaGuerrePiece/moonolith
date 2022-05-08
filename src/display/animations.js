@@ -1,5 +1,6 @@
 import { courgette64, twitter, collision, panneauRainbow, runPlan0, runPlan1 } from '../assets/base64';
-import { renderHeight, viewPosX, viewPosY } from '../main';
+import { renderHeight } from '../main';
+import { viewPosX, viewPosY } from './view';
 import { imageCatalog } from './images';
 import Const from '../constants';
 

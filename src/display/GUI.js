@@ -1,5 +1,6 @@
-import { pointer, scaleFactor } from '../controls/controls';
+import { pointer } from '../controls/controls';
 import { canvas } from './displayLoop';
+import { scaleFactor } from './view';
 import { colorNumber1, colorNumber2, tool } from '../monolith/tools';
 import { isInSquare } from '../utils/conversions';
 import { renderHeight, renderWidth, windowHeight, pixelSize } from '../main';

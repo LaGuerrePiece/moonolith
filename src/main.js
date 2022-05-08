@@ -1,16 +1,13 @@
 // prettier-ignore
 import Const from './constants';
 import { getChunk, getMetaData } from './utils/web3';
+import { setInitialViewPos } from './display/view';
 import { buildMonolith, increaseMonolithHeight } from './monolith/monolith';
-import { parseAPNG, prepareBufferForApi } from './utils/imageManager';
+import { parseAPNG } from './utils/imageManager';
 import { intro, launchIntro } from './intro';
-import { scaleFactor } from './controls/controls';
 import { hammer } from 'hammerjs';
 
 export let importedChunks = 0;
-
-export let viewPosY = 0;
-export let viewPosX = 0;
 
 export let runeNumber;
 export let Opensea;
@@ -42,54 +39,9 @@ async function initApp() {
 
 initApp();
 
-export function changeViewPos(inputX, inputY) {
-    viewPosX += inputX;
-    viewPosY += inputY;
-    // Limits :
-    const lowY = Math.floor(-renderHeight / 2 + renderHeight / (scaleFactor * 2));
-    const lowX = Math.floor(-renderWidth / 2 + renderWidth / (scaleFactor * 2));
-    if (!intro) {
-        // During intro, we can go in the sky
-        if (viewPosY + renderHeight + lowY > Const.LINES) viewPosY = Const.LINES - renderHeight - lowY;
-    }
-    if (viewPosY < lowY) viewPosY = lowY;
-    if (viewPosX < lowX) viewPosX = lowX;
-    if (viewPosX + renderWidth + lowX > Const.COLUMNS) viewPosX = Const.COLUMNS - renderWidth - lowX;
-}
-
 setInterval(() => {
     chunkImport(false);
 }, 30000);
-
-async function setInitialViewPos() {
-    // If runeNumber given, change viewPos to it
-    if (runeNumber) {
-        await getChunk(runeNumber)
-            .then((res) => {
-                prepareBufferForApi(res[4]).then((data) => {
-                    const viewY = Math.floor(
-                        Const.MARGIN_BOTTOM +
-                            Const.MONOLITH_LINES -
-                            res[0].toNumber() / Const.MONOLITH_COLUMNS -
-                            data[2] / 2 -
-                            renderHeight / 2
-                    );
-                    changeViewPos(0, viewY);
-                    intro = false;
-                    console.log('changed viewPos to :', viewY);
-                });
-            })
-            .catch((err) => {
-                console.log('error : rune not found');
-            });
-        // Else, look for a Y in the url
-    } else {
-        const providedY = parseInt(document.URL.split('y=')[1]);
-        if (providedY) {
-            changeViewPos(0, providedY);
-        }
-    }
-}
 
 function setRoute() {
     if (!document.cookie.includes('visited=true')) {

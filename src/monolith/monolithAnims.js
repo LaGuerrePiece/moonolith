@@ -1,7 +1,8 @@
 import Const from '../constants';
 import { monolith, monolithIndexes } from './monolith';
 import { runeCorner, runeSide } from '../assets/base64';
-import { viewPosY, renderHeight } from '../main';
+import { renderHeight } from '../main';
+import { viewPosY } from '../display/view';
 
 export let chunkStock = [];
 export let chunksToAnimateInfo = [];

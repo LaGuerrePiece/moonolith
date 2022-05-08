@@ -3,7 +3,6 @@ import { Interface } from 'ethers/lib/utils';
 import contractABI from '../utils/abi.json';
 import { displayShareScreen } from '../display/GUI';
 import { chunkImport, importedChunks } from '../main';
-import Const from '../constants';
 
 const provider = new ethers.providers.InfuraProvider('rinkeby');
 const iface = new Interface(contractABI);
