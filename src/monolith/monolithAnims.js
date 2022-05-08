@@ -1,7 +1,10 @@
-import { chunkStock } from './imageManager';
-import Const from '../models/constants';
-import { monolith, monolithIndexes } from '../models/monolith';
+import Const from '../constants';
+import { monolith, monolithIndexes } from './monolith';
 import { runeCorner, runeSide } from '../assets/base64';
+import { viewPosY, renderHeight } from '../main';
+
+export let chunkStock = [];
+export let chunksToAnimateInfo = [];
 
 export let runeCornerInfo = { base64: runeCorner };
 export let runeSideInfo = { base64: runeSide };
@@ -10,6 +13,12 @@ export let animatedPixels = new Map();
 
 //prettier-ignore
 export function animateMonolith() {
+    // Trigger animateRune for visible chunks
+    chunksToAnimateInfo.forEach(([id, y]) => {
+        const startY = Const.MONOLITH_LINES + Const.MARGIN_BOTTOM - viewPosY - renderHeight;
+        if (y > startY && y < startY + renderHeight) animateRune(id);
+    });
+
     for (let [pos, [transitionType, color, counter]] of animatedPixels) {
         if (transitionType === 'erase') {
 

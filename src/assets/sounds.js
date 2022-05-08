@@ -3,13 +3,8 @@ const rumble = new Audio('/audio/rumble.mp3');
 
 music.loop = true;
 
-// import musicAudio from '/src/assets/audio/ghibli8bit.mp3';
-// import rumbleAudio from '/src/assets/audio/rumble.mp3';
-
-// const music = new Audio(musicAudio);
-// const rumble = new Audio(rumbleAudio);
-
-export let muteState = false;
+let muteState = false;
+let lastPlayedSound = Date.now();
 
 export function toggleMute() {
     if (muteState) {
@@ -22,9 +17,12 @@ export function toggleMute() {
     }
 }
 
-export function playSound(name) {
+export function playSound(name, limit) {
+    if (muteState) return;
+    if (lastPlayedSound + limit > Date.now()) return;
     const audio = new Audio('/audio/' + name + '.mp3');
     audio.play();
+    lastPlayedSound = Date.now();
 }
 
 export function toggleMusic() {

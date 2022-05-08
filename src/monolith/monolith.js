@@ -1,10 +1,9 @@
-import Const from './constants';
+import Const from '../constants';
 import { addToCurrentEvent, closeCurrentEvent } from './undoStack';
-import { renderWidth, renderHeight, viewPosX, viewPosY, changeViewPos } from '../main';
-import { playSound, muteState } from '../assets/sounds';
-import { shake } from './display';
-import { animatedPixels } from '../utils/runeAnims';
-import { importedChunks } from '../utils/web3';
+import { playSound } from '../assets/sounds';
+import { shake } from '../display/displayLoop';
+import { animatedPixels } from './monolithAnims';
+import { importedChunks } from '../main';
 
 export let monolith;
 export let monolithIndexes;
@@ -24,7 +23,6 @@ export function buildMonolith() {
         monolithIndexes[y] = new Array(Const.MONOLITH_COLUMNS);
     }
 }
-let lastPlayedSound = Date.now();
 
 export function drawPixel(x, y, zIndex, color) {
     const pos = (y * Const.MONOLITH_COLUMNS + x) * 4;
@@ -48,13 +46,8 @@ export function drawPixel(x, y, zIndex, color) {
 
     monolithIndexes[y][x] = zIndex;
 
-    if (zIndex === 0 && lastPlayedSound + 40 < Date.now() && !muteState) {
-        playSound('click5p26');
-        lastPlayedSound = Date.now();
-    } else if (zIndex === undefined && lastPlayedSound + 120 < Date.now() && !muteState) {
-        playSound('revBip');
-        lastPlayedSound = Date.now();
-    }
+    if (zIndex === 0) playSound('click5p26', 40);
+    if (zIndex === undefined) playSound('revBip', 120);
 }
 
 function isEditable(newZIndex, oldZIndex) {
@@ -88,14 +81,6 @@ export function eraseAllPixel() {
     }
     closeCurrentEvent();
     playSound('dwouipPitched');
-}
-
-export function convertToMonolithPos(mousePos) {
-    mousePos.y = Const.MONOLITH_LINES + Const.MARGIN_BOTTOM - viewPosY - renderHeight + mousePos.y;
-    mousePos.x = viewPosX - Const.MARGIN_LEFT + mousePos.x;
-    if (mousePos.x < 0 || mousePos.x >= Const.MONOLITH_COLUMNS || mousePos.y < 0 || mousePos.y >= Const.MONOLITH_LINES)
-        return undefined;
-    return mousePos;
 }
 
 export function increaseMonolithHeight(newRows) {

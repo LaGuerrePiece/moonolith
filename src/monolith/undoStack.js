@@ -1,5 +1,5 @@
+import Const from '../constants';
 import { monolith, monolithIndexes } from './monolith';
-import Const from './constants';
 
 // Arrays of events
 let eventStack = [];
