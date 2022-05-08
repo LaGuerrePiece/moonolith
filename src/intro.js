@@ -1,5 +1,6 @@
 import { chunkImport, setMonoHeight } from './main';
 import { changeViewPos } from './display/view';
+import { displayPalette } from './display/GUI';
 import { initDisplay } from './display/displayLoop';
 import { animCatalog, launchAnim } from './display/animations';
 import { shake } from './display/displayLoop';
@@ -48,12 +49,11 @@ export async function launchIntro() {
         await magrossebite;
         setTimeout(() => {
             console.log('intro done');
-            // animCatalog.panneauRainbow.display = true;
-            // imageCatalog.palette.display = true;
-            // imageCatalog.selectorA.display = true;
-            // imageCatalog.selectorB.display = deviceType === 'mobile' ? false : true;
+            launchAnim('panneauRainbow');
+
             toggleMusic();
             introState = false;
+            displayPalette();
             unlockControls();
         }, 15000);
     }, 5000);

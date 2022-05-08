@@ -1,4 +1,5 @@
 import { pointer } from '../controls/controls';
+import { deviceType } from '../controls/controls';
 import { canvas } from './displayLoop';
 import { scaleFactor } from './view';
 import { colorNumber1, colorNumber2, tool } from '../monolith/tools';
@@ -39,6 +40,12 @@ export let GUICatalog = {
 export function displayShareScreen(nb) {
     GUICatalog.share.display = true;
     chunkNumber = nb;
+}
+
+export function displayPalette() {
+    GUICatalog.palette.display = true;
+    GUICatalog.selectorA.display = true;
+    GUICatalog.selectorB.display = deviceType === 'mobile' ? false : true;
 }
 
 export function updatePalette() {
