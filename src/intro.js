@@ -1,5 +1,5 @@
 import { chunkImport, setMonoHeight } from './main';
-import { viewPosY, changeViewPos } from './display/view';
+import { changeViewPos } from './display/view';
 import { initDisplay } from './display/displayLoop';
 import { animCatalog, launchAnim } from './display/animations';
 import { shake } from './display/displayLoop';
@@ -10,10 +10,10 @@ import { toggleMusic } from './assets/sounds';
 import Const from './constants';
 
 export let monolithDisplayHeightIntro = 0;
-export let intro = false;
+export let introState = false;
 
 export async function launchIntro() {
-    intro = true;
+    introState = true;
     console.log('changing viewPos to the sky');
     changeViewPos(0, 400); // aller dans le ciel
     initDisplay();
@@ -53,7 +53,7 @@ export async function launchIntro() {
             // imageCatalog.selectorA.display = true;
             // imageCatalog.selectorB.display = deviceType === 'mobile' ? false : true;
             toggleMusic();
-            intro = false;
+            introState = false;
             unlockControls();
         }, 15000);
     }, 5000);

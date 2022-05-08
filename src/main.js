@@ -4,7 +4,7 @@ import { getChunk, getMetaData } from './utils/web3';
 import { setInitialViewPos } from './display/view';
 import { buildMonolith, increaseMonolithHeight } from './monolith/monolith';
 import { parseAPNG } from './utils/imageManager';
-import { intro, launchIntro } from './intro';
+import { launchIntro } from './intro';
 import { hammer } from 'hammerjs';
 
 export let importedChunks = 0;

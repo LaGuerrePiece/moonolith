@@ -43,17 +43,6 @@ export function launchAnim(name, endTime) {
     }
 }
 
-export function drawAnim(frame, name, ctx) {
-    let ctxo = animCatalog[name].canvas.getContext('2d');
-    let frameData = ctxo.createImageData(animCatalog[name].width, animCatalog[name].height);
-    // console.log('animCatalog[name]', animCatalog[name]);
-    frameData.data.set(frame);
-    // if (name === 'collision') console.log(frameData.data.length);
-    ctxo.putImageData(frameData, 0, 0);
-    // console.log('animCatalog[name]', animCatalog[name]);
-    ctx.drawImage(animCatalog[name].canvas, animCatalog[name].x, animCatalog[name].y);
-}
-
 export function updateAnimCatalog() {
     for (let anim in animCatalog) {
         const thisAnim = animCatalog[anim];
@@ -63,20 +52,27 @@ export function updateAnimCatalog() {
     }
 }
 
+export function drawAnimations(ctx) {
+    for (let anim in animCatalog) {
+        const thisAnim = animCatalog[anim];
+        if (thisAnim.display) drawFrame(thisAnim.frames[frameInClock(thisAnim)], anim, ctx);
+    }
+}
+
+function drawFrame(frame, name, ctx) {
+    let ctxo = animCatalog[name].canvas.getContext('2d');
+    let frameData = ctxo.createImageData(animCatalog[name].width, animCatalog[name].height);
+    frameData.data.set(frame);
+    ctxo.putImageData(frameData, 0, 0);
+    ctx.drawImage(animCatalog[name].canvas, animCatalog[name].x, animCatalog[name].y);
+}
+
 export function loadAnims() {
     for (let anim in animCatalog) {
         const thisAnim = animCatalog[anim];
         thisAnim.canvas = document.createElement('canvas');
-        // console.log('thisAnim.width', thisAnim.width);
         thisAnim.canvas.width = thisAnim.width;
         thisAnim.canvas.height = thisAnim.height;
     }
     console.log('animCatalog', animCatalog);
-}
-
-export function drawAnimations(ctx) {
-    for (let anim in animCatalog) {
-        const thisAnim = animCatalog[anim];
-        if (thisAnim.display) drawAnim(thisAnim.frames[frameInClock(thisAnim)], anim, ctx);
-    }
 }

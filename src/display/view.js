@@ -1,6 +1,6 @@
 import Const from '../constants';
 import { renderHeight, renderWidth, runeNumber } from '../main';
-import { intro } from '../intro';
+import { introState } from '../intro';
 import { getChunk } from '../utils/web3';
 import { prepareBufferForApi } from '../utils/imageManager';
 import { canvas } from '../display/displayLoop';
@@ -17,7 +17,7 @@ export function changeViewPos(inputX, inputY) {
     const lowX = Math.floor(-renderWidth / 2 + renderWidth / (scaleFactor * 2));
 
     // During intro, we can go in the sky
-    if (viewPosY + renderHeight + lowY > Const.LINES && !intro) viewPosY = Const.LINES - renderHeight - lowY;
+    if (viewPosY + renderHeight + lowY > Const.LINES && !introState) viewPosY = Const.LINES - renderHeight - lowY;
     if (viewPosY < lowY) viewPosY = lowY;
     if (viewPosX < lowX) viewPosX = lowX;
     if (viewPosX + renderWidth + lowX > Const.COLUMNS) viewPosX = Const.COLUMNS - renderWidth - lowX;

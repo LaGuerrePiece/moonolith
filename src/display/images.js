@@ -1,7 +1,7 @@
 import { renderHeight } from '../main';
 import { viewPosY, viewPosX } from './view';
 import { drawMonolith } from './displayLoop';
-import { monolithDisplayHeightIntro, intro } from '../intro';
+import { monolithDisplayHeightIntro, introState } from '../intro';
 import Const from '../constants';
 
 export let imageCatalog = {
@@ -31,11 +31,11 @@ export function updateImageCatalog() {
         } else if (thisImage.type === 'side') {
             thisImage.y = thisImage.startY + renderHeight + viewPosY - Const.MONOLITH_LINES - Const.MARGIN_BOTTOM - 7;
             thisImage.x = thisImage.startX + Const.MARGIN_LEFT - viewPosX;
-            if (intro) thisImage.y = thisImage.y + Const.MONOLITH_LINES - monolithDisplayHeightIntro;
+            if (introState) thisImage.y = thisImage.y + Const.MONOLITH_LINES - monolithDisplayHeightIntro;
         } else if (thisImage.type === 'topAlien') {
             thisImage.y = thisImage.startY + renderHeight + viewPosY - Const.MONOLITH_LINES - Const.MARGIN_BOTTOM - 40;
             thisImage.x = thisImage.startX + Const.MARGIN_LEFT - viewPosX + 15;
-            if (intro) thisImage.y = thisImage.y + Const.MONOLITH_LINES - monolithDisplayHeightIntro;
+            if (introState) thisImage.y = thisImage.y + Const.MONOLITH_LINES - monolithDisplayHeightIntro;
         }
     }
 }
