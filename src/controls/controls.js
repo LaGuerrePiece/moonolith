@@ -81,7 +81,6 @@ function keyManager(e){
 
         case 'KeyZ':
         toggleZoom();
-        updatePalette();
         playSound('click6');
         break;
       }
@@ -211,7 +210,6 @@ function scrollManager(e) {
         e.preventDefault();
         if (e.deltaY < 0) increaseZoom();
         else if (e.deltaY > 0) decreaseZoom();
-        updatePalette();
     }
     let now = Date.now();
     if (e.deltaY > 0) {

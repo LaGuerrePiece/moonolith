@@ -4,6 +4,7 @@ import { introState } from '../intro';
 import { getChunk } from '../utils/web3';
 import { prepareBufferForApi } from '../utils/imageManager';
 import { canvas } from '../display/displayLoop';
+import { updatePalette } from './GUI';
 
 export let scaleFactor = 1;
 export let viewPosY = 0;
@@ -77,4 +78,5 @@ function zoom(factor) {
         if (viewPosY + renderHeight > Const.LINES) viewPosY = Const.LINES - renderHeight;
         if (viewPosY < 0) viewPosY = 0;
     }
+    updatePalette();
 }
