@@ -40,7 +40,6 @@ export async function launchIntro() {
             displayImage('topAlien');
         }, 10000);
 
-        //animCatalog.courgette1.display = true; // lancer l' anim d'invocation
         await mongrosbite;
         buildMonolith();
         setTimeout(() => {
@@ -49,10 +48,9 @@ export async function launchIntro() {
         await magrossebite;
         setTimeout(() => {
             console.log('intro done');
-            launchAnim('panneauRainbow');
-
-            toggleMusic();
             introState = false;
+            launchAnim('panneauRainbow');
+            toggleMusic();
             displayPalette();
             unlockControls();
         }, 15000);

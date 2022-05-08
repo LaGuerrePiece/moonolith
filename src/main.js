@@ -3,7 +3,7 @@ import Const from './constants';
 import { getChunk, getMetaData } from './utils/web3';
 import { setInitialViewPos } from './display/view';
 import { buildMonolith, increaseMonolithHeight } from './monolith/monolith';
-import { parseAPNG } from './utils/imageManager';
+import { parseAPNG, bufferOnMonolith } from './utils/imageManager';
 import { launchIntro } from './intro';
 import { hammer } from 'hammerjs';
 

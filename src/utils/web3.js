@@ -18,7 +18,7 @@ if (window.ethereum) {
 }
 
 export const chunkCreator = async (res) => {
-    // if (window.ethereum.chainId == '0x4') {
+    if (window.ethereum.chainId == '0x4') {
     await metamaskProvider.send('eth_requestAccounts', []);
     const oneGwei = ethers.BigNumber.from('1000000000');
     let overrides = {
@@ -34,9 +34,9 @@ export const chunkCreator = async (res) => {
             }, 3000);
         });
     });
-    //  } else {
-    //    alert("Mets le testnet l'ami");
-    // }
+    } else {
+        alert("Mets le testnet l'ami");
+    }
 };
 
 /**

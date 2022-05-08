@@ -7,12 +7,12 @@ import Const from '../constants';
 //prettier-ignore
 export let animCatalog = {
     // courgette0: { fileName: 'courgette', startX: 20, startY: 450, display: true, loop: true, parallax: imageCatalog.plan5.parallax, base64: courgette64 },
-    courgette1: { fileName: 'courgette', startX: 100, startY: 100, display: false, loop: true, parallax: 0, base64: courgette64 },
-    twitter: { fileName: 'twitter', startX: 0 + 96, startY: 83, display: true, loop: true, parallax: -0.15, base64: twitter },
-    panneauRainbow: { fileName: 'panneauRainbow', startX: 227, startY: 183, display: true, loop: false, parallax: 0, base64: panneauRainbow },
-    runPlan0: { type: 'intro', startX: 184, startY: 39, display: false, loop: false, parallax: -0.15, base64: runPlan0 },
-    runPlan1: { type: 'intro', startX: 0, startY: 100, display: false, loop: false, parallax: 0, base64: runPlan1 },
-    collision: { type: 'intro', startX: 0, startY: 400, display: false, loop: false, parallax: 0, base64: collision },
+    courgette1: { fileName: 'courgette', startX: 100, startY: 100, display: false, loop: true, parallaxLayer: 1, base64: courgette64 },
+    twitter: { fileName: 'twitter', startX: 0 + 96, startY: 83, display: true, loop: true, parallaxLayer: 0, base64: twitter },
+    panneauRainbow: { fileName: 'panneauRainbow', startX: 227, startY: 183, display: false, loop: false, parallaxLayer: 1, base64: panneauRainbow },
+    runPlan0: { type: 'intro', startX: 184, startY: 39, display: false, loop: false, parallaxLayer: 0, base64: runPlan0 },
+    runPlan1: { type: 'intro', startX: 0, startY: 100, display: false, loop: false, parallaxLayer: 1, base64: runPlan1 },
+    collision: { type: 'intro', startX: 0, startY: 400, display: false, loop: false, parallaxLayer: 1, base64: collision },
 };
 
 export let clock = 0;
@@ -46,7 +46,7 @@ export function launchAnim(name, endTime) {
 export function updateAnimCatalog() {
     for (let anim in animCatalog) {
         const thisAnim = animCatalog[anim];
-        const parallaxOffset = Math.floor(thisAnim.parallax * viewPosY);
+        const parallaxOffset = Math.floor(imageCatalog['plan' + thisAnim.parallaxLayer].parallax * viewPosY);
         thisAnim.y = renderHeight + parallaxOffset + viewPosY - thisAnim.height - thisAnim.startY;
         thisAnim.x = thisAnim.startX - viewPosX;
     }
