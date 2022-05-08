@@ -24,6 +24,15 @@ export function changeViewPos(inputX, inputY) {
     if (viewPosX + renderWidth + lowX > Const.COLUMNS) viewPosX = Const.COLUMNS - renderWidth - lowX;
 }
 
+export function changeViewPosSmoothly(inputY, inverseSpeed) {
+    const sign = inputY > 0 ? 1 : -1;
+    for (let i = 0; i < Math.abs(inputY); i++) {
+        setTimeout(function () {
+            changeViewPos(0, sign);
+        }, i * inverseSpeed);
+    }
+}
+
 export async function setInitialViewPos() {
     // If runeNumber given, change viewPos to it
     if (runeNumber) {

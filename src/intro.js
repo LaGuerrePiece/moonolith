@@ -1,12 +1,11 @@
-import { chunkImport, setMonoHeight } from './main';
-import { changeViewPos } from './display/view';
+import { chunkImport, setMonoHeightAndBuildIt } from './main';
+import { changeViewPos, changeViewPosSmoothly } from './display/view';
 import { displayPalette } from './display/GUI';
 import { initDisplay } from './display/displayLoop';
-import { animCatalog, launchAnim } from './display/animations';
+import { launchAnim } from './display/animations';
 import { shake } from './display/displayLoop';
-import { imageCatalog, displayImage } from './display/images';
+import { displayImage } from './display/images';
 import { unlockControls } from './controls/controls';
-import { buildMonolith } from './monolith/monolith';
 import { toggleMusic } from './assets/sounds';
 import Const from './constants';
 
@@ -18,55 +17,45 @@ export async function launchIntro() {
     console.log('changing viewPos to the sky');
     changeViewPos(0, 400); // aller dans le ciel
     initDisplay();
-    console.log('launching collision anim');
     launchAnim('collision');
-    console.log('waiting 2 secs...');
-    setTimeout(async () => {
-        console.log('move viewPos :');
-        let magrossebite = chunkImport(true);
-        let mongrosbite = setMonoHeight();
-        for (let i = 400; i > 110; i--) {
-            setTimeout(function () {
-                changeViewPos(0, -1);
-            }, i * 10);
-        }
-        setTimeout(() => {
-            launchAnim('runPlan0');
-        }, 4500);
-        setTimeout(() => {
-            launchAnim('runPlan1');
-        }, 5800);
-        setTimeout(() => {
-            displayImage('topAlien');
-        }, 10000);
+    // Ask for metadata and build monolith
+    let monoHeightSet = setMonoHeightAndBuildIt();
+    // Ask for chunks but only display when monolith is built
+    chunkImport(true, monoHeightSet);
 
-        await mongrosbite;
-        buildMonolith();
-        setTimeout(() => {
-            monolithGoUpDuringIntro();
-        }, 6500);
-        await magrossebite;
-        setTimeout(() => {
-            console.log('intro done');
-            introState = false;
-            launchAnim('panneauRainbow');
-            toggleMusic();
-            displayPalette();
-            unlockControls();
-        }, 15000);
-    }, 5000);
+    delay(2000, changeViewPosSmoothly, -350, 7);
+    delay(5500, launchAnim, 'runPlan0');
+    delay(6300, changeViewPosSmoothly, 60, 7);
+    delay(6800, launchAnim, 'runPlan1');
+    delay(7500, monolithGoUpDuringIntro);
+    delay(10000, displayImage, 'topAlien');
+
     // lazyParseAPNG();
 }
 
 export function monolithGoUpDuringIntro() {
     // grows monolith
+    for (let rowAdded = 0; rowAdded < Const.MONOLITH_LINES; rowAdded++) {
+        let scalingValue = 1000 * Math.log(rowAdded);
+        setTimeout(() => {
+            monolithDisplayHeightIntro++;
+        }, scalingValue);
+    }
+    shake(Const.MONOLITH_LINES);
+
+    // When monolith is built :
+    delay(1000 * Math.log(Const.MONOLITH_LINES), () => {
+        console.log('intro done');
+        introState = false;
+        launchAnim('panneauRainbow');
+        toggleMusic();
+        displayPalette();
+        unlockControls();
+    });
+}
+
+function delay(ms, funct, arg1, arg2) {
     setTimeout(() => {
-        for (let rowAdded = 0; rowAdded < Const.MONOLITH_LINES; rowAdded++) {
-            let scalingValue = 1000 * Math.log(rowAdded);
-            setTimeout(() => {
-                monolithDisplayHeightIntro++;
-            }, scalingValue);
-        }
-        shake(Const.MONOLITH_LINES);
-    }, 1000);
+        funct(arg1, arg2);
+    }, ms);
 }

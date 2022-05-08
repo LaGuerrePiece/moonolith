@@ -56,8 +56,9 @@ function setRoute() {
     Opensea = document.URL.split('OS=')[1];
 }
 
-export async function chunkImport(first) {
+export async function chunkImport(first, monoHeightSet) {
     let meta = await getMetaData();
+    if (monoHeightSet) await monoHeightSet;
     // console.log(meta);
     if (importedChunks !== meta.nbChunks || importedChunks == 1) {
         for (let i = importedChunks + 1; i <= meta.nbChunks; i++) {
@@ -80,9 +81,10 @@ export async function chunkImport(first) {
     importedChunks = meta.nbChunks;
 }
 
-export async function setMonoHeight() {
+export async function setMonoHeightAndBuildIt() {
     let meta = await getMetaData();
     // console.log(meta);
     const monolithHeight = Math.floor(192 + (meta.nbKlon * meta.threshold) / (1000000 * Const.COLUMNS));
     Const.setMonolithHeight(monolithHeight);
+    buildMonolith();
 }
