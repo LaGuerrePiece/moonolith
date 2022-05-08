@@ -103,7 +103,7 @@ async function prepareBufferForApi(data) {
     return [colors, width, height];
 }
 
-async function bufferOnMonolith(data) {
+export async function bufferOnMonolith(data) {
     //console.log(LZString.decompressFromUTF16(data.buffer));
     let pixArray = new Uint8Array(base64ToBuffer(decompressFromUTF16(data.buffer)));
     pixArray = Array.from(pixArray);
