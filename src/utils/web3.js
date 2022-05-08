@@ -8,7 +8,7 @@ import { displayShareScreen } from '../models/display';
 
 const provider = new ethers.providers.InfuraProvider('rinkeby');
 const iface = new Interface(contractABI);
-const contractAddress = '0xFA5a46C6B5C40e95Dde5cc57A08139a1c368C178';
+const contractAddress = '0x031E60b42aed43c7cfa7b135ddA8f09E76D078c4';
 const contract = new ethers.Contract(contractAddress, contractABI, provider);
 let metamaskProvider;
 var metamaskContract;
@@ -26,10 +26,10 @@ const chunkCreator = async (res) => {
     await metamaskProvider.send('eth_requestAccounts', []);
     const oneGwei = ethers.BigNumber.from('1000000000');
     let overrides = {
-        value: oneGwei.mul(res.nbPix),
+        value: oneGwei.mul(res.nbPix).mul(10000),
     };
     // console.log('Minting: ', res.position, res.ymax, res.nbPix, res.imgURI);
-    let tx = metamaskContract.mint_One_4d(res.position, res.ymax, res.nbPix, res.imgURI, overrides);
+    let tx = metamaskContract.draw2438054C(res.position, res.ymax, res.nbPix, res.imgURI, overrides);
     tx.then((tx) => {
         tx.wait().then(() => {
             chunkImport(false);

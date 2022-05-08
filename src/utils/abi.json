@@ -5,7 +5,7 @@
 			{
 				"indexed": true,
 				"internalType": "address",
-				"name": "owner",
+				"name": "account",
 				"type": "address"
 			},
 			{
@@ -116,7 +116,7 @@
 			{
 				"indexed": false,
 				"internalType": "uint256[]",
-				"name": "amounts",
+				"name": "values",
 				"type": "uint256[]"
 			}
 		],
@@ -153,7 +153,7 @@
 			{
 				"indexed": false,
 				"internalType": "uint256",
-				"name": "amount",
+				"name": "value",
 				"type": "uint256"
 			}
 		],
@@ -202,7 +202,7 @@
 				"type": "string"
 			}
 		],
-		"name": "mint_One_4d",
+		"name": "draw2438054C",
 		"outputs": [],
 		"stateMutability": "payable",
 		"type": "function"
@@ -387,7 +387,7 @@
 		"inputs": [
 			{
 				"internalType": "address",
-				"name": "owner",
+				"name": "account",
 				"type": "address"
 			},
 			{
@@ -400,7 +400,7 @@
 		"outputs": [
 			{
 				"internalType": "uint256",
-				"name": "balance",
+				"name": "",
 				"type": "uint256"
 			}
 		],
@@ -411,7 +411,7 @@
 		"inputs": [
 			{
 				"internalType": "address[]",
-				"name": "owners",
+				"name": "accounts",
 				"type": "address[]"
 			},
 			{
@@ -424,7 +424,7 @@
 		"outputs": [
 			{
 				"internalType": "uint256[]",
-				"name": "balances",
+				"name": "",
 				"type": "uint256[]"
 			}
 		],
@@ -439,6 +439,25 @@
 				"internalType": "string",
 				"name": "",
 				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_address",
+				"type": "address"
+			}
+		],
+		"name": "getERC721BalanceOffChain",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
 			}
 		],
 		"stateMutability": "view",
@@ -462,6 +481,19 @@
 				"internalType": "uint256",
 				"name": "klonTotal",
 				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getOwnershipRecordOffChain",
+		"outputs": [
+			{
+				"internalType": "address[5000]",
+				"name": "",
+				"type": "address[5000]"
 			}
 		],
 		"stateMutability": "view",
@@ -506,6 +538,19 @@
 	},
 	{
 		"inputs": [],
+		"name": "MAX_SUPPLY",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
 		"name": "name",
 		"outputs": [
 			{
@@ -538,7 +583,7 @@
 				"type": "uint256"
 			}
 		],
-		"name": "ownerOf",
+		"name": "ownerOfERC721Like",
 		"outputs": [
 			{
 				"internalType": "address",
@@ -594,7 +639,7 @@
 				"type": "bool"
 			}
 		],
-		"stateMutability": "pure",
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
