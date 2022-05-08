@@ -15,7 +15,7 @@ export let imageCatalog = {
     moonolithSide3: { fileName: 'moonolithSide', type: 'side', startY: 1226, startX: 255, display: true },
     plan1: { fileName: 'plan1', type: 'landscape', startX: -2, startY: 80, parallax: 0, display: true },
     plan0: { fileName: 'plan0', type: 'landscape', startX: -2, startY: 0, parallax: -0.15, display: true },
-    planLogos: { fileName: 'planLogos', type: 'landscape', startX: -2, startY: -300, parallax: -1.5, display: true },
+    planLogos: { fileName: 'planLogos', type: 'landscape', startX: -25, startY: -45, parallax: 1, display: true },
     moon: { fileName: 'moon', type: 'landscape', startX: 150, startY: 165, parallax: 0, display: true },
     topAlien: { fileName: 'topDood', type: 'topAlien', startX: 0, startY: 0, parallax: 0, display: false },
 };
