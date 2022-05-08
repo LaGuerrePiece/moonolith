@@ -1,14 +1,11 @@
 import { UPNG } from './upmc';
-import Const from '../models/constants';
-import { monolith, eraseAllPixel, drawPixel, monolithIndexes } from '../models/monolith';
-import { chunkCreator, importedChunks } from '../utils/web3';
-import { runeCornerInfo, runeSideInfo } from '../utils/runeAnims';
+import Const from '../constants';
+import { monolith, drawPixel, monolithIndexes } from '../monolith/monolith';
+import { chunkCreator } from './web3';
+import { importedChunks } from '../main';
 import { compressToUTF16, decompressFromUTF16 } from 'lz-string';
-import { animCatalog } from '../models/display';
-import { runeNumber } from '../main';
-
-export let chunkStock = [];
-export let chunksToAnimateInfo = [];
+import { animCatalog } from '../display/animations';
+import { chunkStock, chunksToAnimateInfo } from '../monolith/monolithAnims';
 
 function saveToEthernity() {
     monolithToBase64().then((data) => {
@@ -235,6 +232,7 @@ function getHighLow() {
     let largeur = highY - lowY + 1;
     return { lowX, lowY, highX, highY, longueur, largeur };
 }
+
 function rgbaToColorArray(array) {
     // [r, g, b, a, r, g, b, a] => [colordId, colorId]
     let converted = [];
@@ -281,23 +279,33 @@ function decode4bitsArray(array) {
     return decoded;
 }
 
-export function moveDrawing(x, y) {
-    //TODO : À BOUGER DANS TOOLS ?
-    const drawing = gridToArray();
+export function importImage() {
+    let input = document.createElement('input');
+    input.type = 'file';
 
-    eraseAllPixel();
-    // if (outx > 127) outx = 127;
-    // if (outx < 0) outx = 0;
-    drawBuffer(
-        drawing.saveArray,
-        x,
-        y,
-        Const.FREE_DRAWING,
-        Const.FREE_DRAWING,
-        0,
-        drawing.highLow.longueur,
-        drawing.highLow.largeur
-    );
+    input.onchange = (e) => {
+        let file = e.target.files[0];
+        let reader = new FileReader();
+        reader.readAsArrayBuffer(file);
+        reader.onload = (res) => {
+            let importedImage = res.target.result; // this is the content!
+            bufferOnMonolith({
+                buffer: importedImage,
+                x: 1,
+                y: 1,
+                paid: Const.FREE_DRAWING,
+                yMaxLegal: Const.FREE_DRAWING,
+                zIndex: 0,
+            });
+
+            //! NE PAS SUPPRIMER LES LIGNES CI-DESSOUS !//
+            let base64 = btoa(
+                new Uint8Array(importedImage).reduce((data, byte) => data + String.fromCharCode(byte), '')
+            );
+            console.log('base64', base64);
+        };
+    };
+    input.click();
 }
 
 export { saveToEthernity, base64ToBuffer, pngToBufferToRGBA8, pngToBufferToRGB, prepareBufferForApi, bufferOnMonolith };
