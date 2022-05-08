@@ -37,9 +37,8 @@ export let GUICatalog = {
     palette: { fileName: '/palette/palette1giga', type: 'palette', display: false },
 };
 
-export function displayShareScreen(nb) {
+export function displayShareScreen() {
     GUICatalog.share.display = true;
-    // chunkNumber = nb;
 }
 
 export function displayPalette() {

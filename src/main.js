@@ -56,7 +56,7 @@ function setRoute() {
     Opensea = document.URL.split('OS=')[1];
 }
 
-export async function chunkImport(firstTime) {
+export async function chunkImport(first) {
     let meta = await getMetaData();
     // console.log(meta);
     if (importedChunks !== meta.nbChunks || importedChunks == 1) {
@@ -75,7 +75,7 @@ export async function chunkImport(firstTime) {
         }
     }
     const newMonolithHeight = Math.floor(192 + (meta.nbKlon * meta.threshold) / (1000000 * Const.COLUMNS));
-    if (importedChunks - meta.nbChunks !== 0 && !firstTime)
+    if (importedChunks - meta.nbChunks !== 0 && !first)
         increaseMonolithHeight(newMonolithHeight - Const.MONOLITH_LINES);
     importedChunks = meta.nbChunks;
 }

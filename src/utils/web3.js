@@ -11,6 +11,8 @@ const contract = new ethers.Contract(contractAddress, contractABI, provider);
 let metamaskProvider;
 var metamaskContract;
 
+let sentChunk;
+
 if (window.ethereum) {
     metamaskProvider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = metamaskProvider.getSigner();
@@ -19,21 +21,24 @@ if (window.ethereum) {
 
 export const chunkCreator = async (res) => {
     if (window.ethereum.chainId == '0x4') {
-    await metamaskProvider.send('eth_requestAccounts', []);
-    const oneGwei = ethers.BigNumber.from('1000000000');
-    let overrides = {
-        value: oneGwei.mul(res.nbPix).mul(10000),
-    };
-    // console.log('Minting: ', res.position, res.ymax, res.nbPix, res.imgURI);
-    let tx = metamaskContract.draw2438054C(res.position, res.ymax, res.nbPix, res.imgURI, overrides);
-    tx.then((tx) => {
-        tx.wait().then(() => {
-            chunkImport(false);
-            setTimeout(() => {
-                displayShareScreen(importedChunks);
-            }, 3000);
+        await metamaskProvider.send('eth_requestAccounts', []);
+        const oneGwei = ethers.BigNumber.from('1000000000');
+        let overrides = {
+            value: oneGwei.mul(res.nbPix).mul(10000),
+        };
+        // console.log('Minting: ', res.position, res.ymax, res.nbPix, res.imgURI);
+        let tx = metamaskContract.draw2438054C(res.position, res.ymax, res.nbPix, res.imgURI, overrides);
+        tx.then((tx) => {
+            tx.wait().then(() => {
+                chunkImport(false);
+                getMetaData().then((meta) => {
+                    sentChunk = meta.nbChunks;
+                    setTimeout(() => {
+                        displayShareScreen();
+                    }, 3000);
+                });
+            });
         });
-    });
     } else {
         alert("Mets le testnet l'ami");
     }
@@ -72,16 +77,15 @@ export const getChunksFromPosition = async (min, max) => {
 
 export async function getMetaData() {
     let metadata = await contract.getMonolithInfo();
-    // console.log(metadata);
     return { nbKlon: metadata[2].toNumber(), threshold: metadata[1].toNumber(), nbChunks: metadata[0].toNumber() };
 }
 
 export function openLink(type) {
     if (type === 'opensea') {
-        window.open('https://testnets.opensea.io/assets/' + contractAddress + '/' + chunkNumber, '_blank');
+        window.open('https://testnets.opensea.io/assets/' + contractAddress + '/' + sentChunk, '_blank');
     } else if (type === 'twitter') {
         window.open(
-            'https://twitter.com/intent/tweet?text=My%20rune%20%3A&url=beta.moonolith.io/rune=' + chunkNumber,
+            'https://twitter.com/intent/tweet?text=My%20rune%20%3A&url=beta.moonolith.io/rune=' + sentChunk,
             '_blank'
         );
     }
