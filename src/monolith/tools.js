@@ -66,8 +66,8 @@ function useTool(e) {
             }
             break;
         case 'giga':
-            for (let i = -20; i <= 20; i++) {
-                for (let j = -20; j <= 20; j++) {
+            for (let i = -50; i <= 50; i++) {
+                for (let j = -50; j <= 50; j++) {
                     drawPixel(mousePos.x + i, mousePos.y + j, zIndex, color);
                 }
             }
