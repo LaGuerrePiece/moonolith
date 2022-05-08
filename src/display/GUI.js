@@ -39,7 +39,7 @@ export let GUICatalog = {
 
 export function displayShareScreen(nb) {
     GUICatalog.share.display = true;
-    chunkNumber = nb;
+    // chunkNumber = nb;
 }
 
 export function displayPalette() {

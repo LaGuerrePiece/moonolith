@@ -34,15 +34,15 @@ export function drawPixel(x, y, zIndex, color) {
     if (zIndex === 0 || zIndex === undefined)
         addToCurrentEvent(x, y, [monolith[pos], monolith[pos + 1], monolith[pos + 2]], monolithzIndex); //If being drawn by user, add to curent event
 
-    let transitionType = zIndex === 0 ? 'draw' : zIndex === undefined ? 'erase' : 'import';
-    // if (zIndex === importedChunks) transitionType = 'import';
-    // if (transitionType) {
-    animatedPixels.set(pos, [transitionType, color, 1]);
-    // } else {
-    //     monolith[pos] = color[0];
-    //     monolith[pos + 1] = color[1];
-    //     monolith[pos + 2] = color[2];
-    // }
+    let transitionType =
+        zIndex === 0 ? 'draw' : zIndex === undefined ? 'erase' : zIndex === importedChunks ? 'import' : undefined;
+    if (transitionType) {
+        animatedPixels.set(pos, [transitionType, color, 1]);
+    } else {
+        monolith[pos] = color[0];
+        monolith[pos + 1] = color[1];
+        monolith[pos + 2] = color[2];
+    }
 
     monolithIndexes[y][x] = zIndex;
 
