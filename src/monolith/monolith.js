@@ -47,7 +47,7 @@ export function drawPixel(x, y, zIndex, color) {
     monolithIndexes[y][x] = zIndex;
 
     if (zIndex === 0) playSound('click5p26', 40);
-    if (zIndex === undefined) playSound('revBip', 120);
+    else if (zIndex === undefined) playSound('revBip', 120);
 }
 
 function isEditable(newZIndex, oldZIndex) {

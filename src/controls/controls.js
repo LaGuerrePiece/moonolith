@@ -29,10 +29,13 @@ export let pointer = { x: 0, y: 0 };
 //prettier-ignore
 export function unlockControls() {
     document.addEventListener('keydown', (e) => { keyManager(e) });
-    document.addEventListener('wheel', (e) => {scrollManager(e);}, {passive : false});
     document.addEventListener('mousemove', (e) => { pointer = mousePosInGrid({ x: e.x, y: e.y });});
     if (deviceType === 'mobile') mobileEventListener();
     else canvas.onmousedown = clickManager;
+}
+
+export function unlockScroll() {
+    document.addEventListener('wheel', (e) => {scrollManager(e);}, {passive : false});
 }
 
 //prettier-ignore
@@ -43,7 +46,7 @@ function keyManager(e){
     if (e.key === 'c') console.log('Total H', Const.COLUMNS, 'Total W', Const.LINES, 'render W', renderWidth, 'render H', renderHeight, 'viewPosX', viewPosX, 'viewPosY', viewPosY, '\nE : Brush Switch \nX : Erase All \nI : Import \nL : Mute \nK : Pause music \nP : Grow Monolith \nR : GIGA tool \nT : Go to top');
     if (e.key === 'e') brushSwitch();
     if (e.key === 'i') importImage();
-    if (e.key === 'r') { selectBrush('giga'); playSound('kick'); }
+    if (e.key === 'r') { selectBrush('giga'); playSound('kick', 50); }
     if (e.key === 'k') toggleMusic();
     if (e.key === 'l') toggleMute();
     if (e.key === 'p') { increaseMonolithHeight(1100); }

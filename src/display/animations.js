@@ -29,7 +29,7 @@ function frameInClock(anim) {
         frame++;
     }
     if (frame >= anim.frames.length - 1) {
-        // le -1 est sale mais sinon la boucle ne rentre pas pour le panneau
+        // le -1 est sale mais sinon la boucle ne rentre pas pour le panneau   
         anim.loop ? (frame = 0) : (anim.display = false);
     }
     return frame;
@@ -77,5 +77,4 @@ export function loadAnims() {
         thisAnim.canvas.width = thisAnim.width;
         thisAnim.canvas.height = thisAnim.height;
     }
-    console.log('animCatalog', animCatalog);
 }

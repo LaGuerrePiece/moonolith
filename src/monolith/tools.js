@@ -78,19 +78,19 @@ function useTool(e) {
 export function brushSwitch() {
     switch (tool) {
         case 'smol':
-            playSound('clickB2B');
+            playSound('clickB2B', 50);
             tool = 'medium';
             break;
         case 'medium':
-            playSound('clickB2C');
+            playSound('clickB2C', 50);
             tool = 'large';
             break;
         case 'large':
-            playSound('clickB2');
+            playSound('clickB2', 50);
             tool = 'smol';
             break;
         case 'giga':
-            playSound('clickB2');
+            playSound('clickB2', 50);
             tool = 'smol';
             break;
     }
@@ -133,5 +133,5 @@ export function colorSwitch(e, color) {
         colorNumber2 = color;
         colorPicked2 = Const.GUI_PALETTE[color - 1];
     }
-    playSound('click6');
+    playSound('click6', 50);
 }
