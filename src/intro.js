@@ -14,7 +14,7 @@ export let introState = false;
 
 export async function launchIntro() {
     introState = true;
-    console.log('changing viewPos to the sky');
+    // console.log('changing viewPos to the sky');
     changeViewPos(0, 400); // aller dans le ciel
     initDisplay();
     launchAnim('collision');

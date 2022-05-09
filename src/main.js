@@ -23,9 +23,9 @@ async function initApp() {
     setRoute();
     firstTime = true; // To test
     if (firstTime && !Opensea) {
-        console.log('parsing first APNGs before intro...');
+        // console.log('parsing first APNGs before intro...');
         await parseAPNG();
-        console.log('parsing done, launching intro');
+        // console.log('parsing done, launching intro');
         launchIntro();
     } else {
         parseAPNG();
@@ -46,9 +46,9 @@ setInterval(() => {
 function setRoute() {
     if (!document.cookie.includes('visited=true')) {
         console.log('First time visiting');
-        const d = new Date();
-        d.setTime(d.getTime() + 7 * 24 * 60 * 60 * 1000);
-        let expires = 'expires=' + d.toUTCString();
+        const date = new Date();
+        date.setTime(date.getTime() + 7 * 24 * 60 * 60 * 1000);
+        let expires = 'expires=' + date.toUTCString();
         document.cookie = 'visited=true;' + ';' + expires + ';path=/';
         firstTime = true;
     }

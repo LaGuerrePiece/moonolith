@@ -29,7 +29,7 @@ export async function parseAPNG() {
 
 export async function parsePNG(info) {
     info.decoded = await ApngToBuffer(base64ToBuffer(info.base64)).catch(console.error);
-    console.log('info.decoded', info, info.decoded);
+    // console.log('info.decoded', info, info.decoded);
 }
 
 async function decodeAndFormatAnimation(index) {
@@ -41,7 +41,7 @@ async function decodeAndFormatAnimation(index) {
     thisAnim.width = decoded.width;
     thisAnim.height = decoded.height;
     delete thisAnim.base64;
-    console.log(thisAnim);
+    // console.log(thisAnim);
 }
 
 export async function ApngToBuffer(buffer) {

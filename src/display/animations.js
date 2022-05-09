@@ -23,7 +23,8 @@ setInterval(() => {
 function frameInClock(anim) {
     let frame = 0;
     let delaySum = 0;
-    while (delaySum < clock % anim.totalDelay) {
+    let currentClock = clock - anim.startClock;
+    while (delaySum < currentClock % anim.totalDelay) {
         delaySum += anim.delay[frame];
         frame++;
     }
@@ -34,11 +35,12 @@ function frameInClock(anim) {
     return frame;
 }
 
-export function launchAnim(name, endTime) {
-    animCatalog[name].display = true;
+export function launchAnim(anim, endTime) {
+    animCatalog[anim].startClock = clock;
+    animCatalog[anim].display = true;
     if (endTime) {
         setTimeout(() => {
-            animCatalog[name].display = false;
+            animCatalog[anim].display = false;
         }, endTime);
     }
 }
@@ -60,11 +62,12 @@ export function drawAnimations(ctx) {
 }
 
 function drawFrame(frame, name, ctx) {
-    let ctxo = animCatalog[name].canvas.getContext('2d');
-    let frameData = ctxo.createImageData(animCatalog[name].width, animCatalog[name].height);
+    let thisAnim = animCatalog[name];
+    let ctxo = thisAnim.canvas.getContext('2d');
+    let frameData = ctxo.createImageData(thisAnim.width, thisAnim.height);
     frameData.data.set(frame);
     ctxo.putImageData(frameData, 0, 0);
-    ctx.drawImage(animCatalog[name].canvas, animCatalog[name].x, animCatalog[name].y);
+    ctx.drawImage(thisAnim.canvas, thisAnim.x, thisAnim.y);
 }
 
 export function loadAnims() {
