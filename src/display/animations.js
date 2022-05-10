@@ -10,18 +10,17 @@ import {
 } from '../assets/base64';
 import { renderHeight } from '../main';
 import { viewPosX, viewPosY } from './view';
-import { imageCatalog } from './images';
 import Const from '../constants';
 
 //prettier-ignore
 export let animCatalog = {
-    collision: { type: 'intro', startX: 0, startY: 400, display: false, loop: false, parallaxLayer: 1, base64: collision },
-    runPlan0: { type: 'intro', startX: 184, startY: 39, display: false, loop: false, parallaxLayer: 0, base64: runPlan0 },
-    runPlan1: { type: 'intro', startX: 0, startY: 100, display: false, loop: false, parallaxLayer: 1, base64: runPlan1 },
-    twitter: { fileName: 'twitter', startX: 0 + 96, startY: 83, display: true, loop: true, parallaxLayer: 0, base64: twitter },
-    panneauRainbow: { fileName: 'panneauRainbow', startX: 227, startY: 183, display: false, loop: false, parallaxLayer: 1, base64: panneauRainbow },
-    arbre0: { fileName: 'arbre0', startX: 0, startY: 20, display: true, loop: true, parallaxLayer: 0, base64: arbre0 },
-    vaisseau: { fileName: 'vaisseau', startX: 280, startY: 0, display: true, loop: true, parallaxLayer: 0, base64: vaisseau },
+    collision: { type: 'intro', startX: 0, startY: 400, display: false, loop: false, layer: 1, base64: collision },
+    runPlan0: { type: 'intro', startX: 184, startY: 39, display: false, loop: false, layer: 0, base64: runPlan0 },
+    runPlan1: { type: 'intro', startX: 0, startY: 100, display: false, loop: false, layer: 1, base64: runPlan1 },
+    twitter: { fileName: 'twitter', startX: 0 + 96, startY: 83, display: true, loop: true, layer: 0, base64: twitter },
+    panneauRainbow: { fileName: 'panneauRainbow', startX: 227, startY: 183, display: false, loop: false, layer: 1, base64: panneauRainbow },
+    arbre0: { fileName: 'arbre0', startX: 0, startY: 20, display: true, loop: true, layer: 0, base64: arbre0 },
+    vaisseau: { fileName: 'vaisseau', startX: 280, startY: 0, display: true, loop: true, layer: 0, base64: vaisseau },
 };
 
 export let clock = 0;
@@ -37,11 +36,11 @@ function frameInClock(anim) {
         delaySum += anim.delay[frame];
         frame++;
     }
-    if (anim.fileName == 'arbre0') {
-        console.log('frameInClock', anim.frames.length, frame);
-    }
+    // if (anim.fileName == 'arbre0') {
+    //     console.log('frameInClock', anim.frames.length, frame);
+    // }
     if (frame >= anim.frames.length - 1) {
-        console.log('Animation', anim.fileName, 'finished');
+        // console.log('Animation', anim.fileName, 'finished');
         anim.loop ? (anim.startClock = clock) : (anim.display = false);
         return anim.frames.length - 1;
     }
@@ -61,16 +60,17 @@ export function launchAnim(anim, endTime) {
 export function updateAnimCatalog() {
     for (let anim in animCatalog) {
         const thisAnim = animCatalog[anim];
-        const parallaxOffset = Math.floor(imageCatalog['plan' + thisAnim.parallaxLayer].parallax * viewPosY);
+        const parallaxOffset = Math.floor(thisAnim.parallax * viewPosY);
         thisAnim.y = renderHeight + parallaxOffset + viewPosY - thisAnim.height - thisAnim.startY;
         thisAnim.x = thisAnim.startX - viewPosX;
     }
 }
 
-export function drawAnimations(ctx) {
+export function drawAnimations(ctx, layer) {
     for (let anim in animCatalog) {
         const thisAnim = animCatalog[anim];
-        if (thisAnim.display) drawFrame(thisAnim.frames[frameInClock(thisAnim)], anim, ctx);
+        if (thisAnim.layer !== layer || !thisAnim.display) continue;
+        drawFrame(thisAnim.frames[frameInClock(thisAnim)], anim, ctx);
     }
 }
 
@@ -90,5 +90,8 @@ export function loadAnims() {
         thisAnim.canvas = document.createElement('canvas');
         thisAnim.canvas.width = thisAnim.width;
         thisAnim.canvas.height = thisAnim.height;
+
+        //prettier-ignore
+        thisAnim.parallax = Const.PARALLAX_LAYERS[thisAnim.layer];
     }
 }

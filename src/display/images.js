@@ -1,23 +1,22 @@
 import { renderHeight } from '../main';
 import { viewPosY, viewPosX } from './view';
-import { drawMonolith } from './displayLoop';
 import { monolithDisplayHeightIntro, introState } from '../intro';
 import Const from '../constants';
 
 export let imageCatalog = {
-    plan5: { fileName: 'plan5', type: 'landscape', startX: -2, startY: 330, parallax: 0.3, display: true },
-    plan4: { fileName: 'plan4', type: 'landscape', startX: -2, startY: 300, parallax: 0.25, display: true },
-    plan3: { fileName: 'plan3', type: 'landscape', startX: -2, startY: 250, parallax: 0.2, display: true },
-    plan2: { fileName: 'plan2', type: 'landscape', startX: -2, startY: 190, parallax: 0.15, display: true },
+    plan5: { fileName: 'plan5', type: 'landscape', startX: -2, startY: 330, layer: 5, display: true },
+    plan4: { fileName: 'plan4', type: 'landscape', startX: -2, startY: 300, layer: 4, display: true },
+    plan3: { fileName: 'plan3', type: 'landscape', startX: -2, startY: 250, layer: 3, display: true },
+    plan2: { fileName: 'plan2', type: 'landscape', startX: -2, startY: 190, layer: 2, display: true },
     moonolithTop: { fileName: 'moonolithTop', type: 'side', startY: 0, startX: 0, display: true },
     moonolithSide: { fileName: 'moonolithSide', type: 'side', startY: 290, startX: 255, display: true },
     moonolithSide2: { fileName: 'moonolithSide', type: 'side', startY: 758, startX: 255, display: true },
     moonolithSide3: { fileName: 'moonolithSide', type: 'side', startY: 1226, startX: 255, display: true },
-    plan1: { fileName: 'plan1', type: 'landscape', startX: -2, startY: 14, parallax: 0, display: true },
-    plan0: { fileName: 'plan0', type: 'landscape', startX: -2, startY: -75, parallax: -0.15, display: true },
-    planLogos: { fileName: 'planLogos', type: 'landscape', startX: -25, startY: -45, parallax: 1, display: true },
-    moon: { fileName: 'moon', type: 'landscape', startX: 150, startY: 165, parallax: 0, display: true },
-    topAlien: { fileName: 'topDood', type: 'topAlien', startX: 0, startY: 0, parallax: 0, display: false },
+    plan1: { fileName: 'plan1', type: 'landscape', startX: -2, startY: 14, layer: 1, display: true },
+    plan0: { fileName: 'plan0', type: 'landscape', startX: -2, startY: -75, layer: 0, display: true },
+    planLogos: { fileName: 'planLogos', type: 'landscape', startX: -25, startY: -45, layer: -1, display: true },
+    moon: { fileName: 'moon', type: 'landscape', startX: 150, startY: 165, layer: 1, display: true },
+    topAlien: { fileName: 'topDood', type: 'topAlien', startX: 0, startY: 0, layer: 1, display: false },
 };
 
 export function updateImageCatalog() {
@@ -51,20 +50,27 @@ export function displayImage(name, endTime) {
 
 export function loadImages() {
     for (let image in imageCatalog) {
-        imageCatalog[image].img = new Image();
-        imageCatalog[image].img.onload = () => {
-            imageCatalog[image].loaded = true;
+        const thisImage = imageCatalog[image];
+        thisImage.img = new Image();
+        thisImage.img.onload = () => {
+            thisImage.loaded = true;
         };
-        imageCatalog[image].img.src = `/images/${imageCatalog[image].fileName}.png`;
-        imageCatalog[image].shakeX = 0;
+        thisImage.img.src = `/images/${thisImage.fileName}.png`;
+        thisImage.shakeX = 0;
+
+        //prettier-ignore
+        thisImage.parallax = Const.PARALLAX_LAYERS[thisImage.layer];
     }
+    console.log('imageCatalog', imageCatalog);
 }
 
-export function drawImages(ctx) {
+export function drawImages(ctx, layer) {
     for (let image in imageCatalog) {
         const thisImage = imageCatalog[image];
+        if (thisImage.layer !== layer) continue;
+        // console.log('drawImage', thisImage, 'layer', layer);
+
         // if (!thisImage.loaded) console.log(`${thisImage.fileName} not loaded`);
         if (thisImage.display && thisImage.loaded) ctx.drawImage(thisImage.img, thisImage.x, thisImage.y);
-        if (image === 'plan2') drawMonolith(ctx);
     }
 }

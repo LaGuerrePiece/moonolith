@@ -32,12 +32,24 @@ export function initDisplay() {
         // ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = 'rgb(196, 130, 127)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        drawImages(ctx);
-        drawAnimations(ctx);
+
+        drawLayer(ctx, 5);
+        drawLayer(ctx, 4);
+        drawLayer(ctx, 3);
+        drawLayer(ctx, 2);
+        drawMonolith(ctx);
+        drawLayer(ctx, 1);
+        drawLayer(ctx, 0);
+        drawLayer(ctx, -1);
         drawGUI(ctx);
 
         requestAnimationFrame(update);
     }
+}
+
+function drawLayer(ctx, layer) {
+    drawImages(ctx, layer);
+    drawAnimations(ctx, layer);
 }
 
 export function drawMonolith(ctx) {
