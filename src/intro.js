@@ -9,7 +9,7 @@ import { unlockControls, unlockScroll } from './controls/controls';
 import { toggleMusic } from './assets/sounds';
 import Const from './constants';
 
-export let monolithDisplayHeightIntro = 0;
+export let monolithDisplayHeightIntro = -10;
 export let introState = false;
 
 export async function launchIntro() {
@@ -24,14 +24,16 @@ export async function launchIntro() {
     launchAnim('collision');
     await new Promise((resolve) => setTimeout(resolve, animCatalog.collision.totalDelay + 1000));
 
+    if (!introState) return;
+
     changeViewPosSmoothly(-350, 7);
     await new Promise((resolve) => {
         function waitForViewPos() {
-            if (viewPosY == 50) {
+            if (viewPosY == 50 || !introState) {
                 resolve('Cette fonction est-elle propre ?');
                 return;
             }
-            setTimeout(waitForViewPos, 300);
+            setTimeout(waitForViewPos, 100);
         }
         waitForViewPos();
     });
@@ -39,24 +41,47 @@ export async function launchIntro() {
     launchAnim('runPlan0');
     await new Promise((resolve) => setTimeout(resolve, animCatalog.runPlan0.totalDelay));
 
+    if (!introState) return;
+
     changeViewPosSmoothly(70, 50);
 
     launchAnim('runPlan1');
     await new Promise((resolve) => setTimeout(resolve, animCatalog.runPlan1.totalDelay));
 
+    if (!introState) return;
+
     monolithGoUpDuringIntro();
+
+    if (!introState) return;
+
     displayImage('topAlien');
-    toggleMusic();
     unlockScroll();
+
+    if (!introState) return;
 
     // When monolith is built :
     setTimeout(() => {
         console.log('Intro Finished');
         launchAnim('panneauRainbow');
         unlockControls();
+        toggleMusic();
         displayPalette();
         introState = false;
     }, 1000 * Math.log(Const.MONOLITH_LINES));
+}
+
+export function skipIntro() {
+    animCatalog.runPlan0.display = false;
+    animCatalog.runPlan1.display = false;
+    animCatalog.collision.display = false;
+    changeViewPos(0, -999999);
+    unlockScroll();
+    console.log('Intro Skipped');
+    launchAnim('panneauRainbow');
+    unlockControls();
+    toggleMusic();
+    displayPalette();
+    introState = false;
 }
 
 function monolithGoUpDuringIntro() {

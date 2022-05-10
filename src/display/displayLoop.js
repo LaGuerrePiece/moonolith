@@ -76,11 +76,11 @@ export function shake(newRows) {
                 let direction = Math.floor(Math.random() * 2) * 2 - 1; //-1 or 1
                 switch (offset) {
                     case 0:
-                        thisLayer.startX = -2 + direction;
+                        thisLayer.shakeX = -2 + direction;
                         break;
                     case 1:
                     case 2:
-                        thisLayer.startX = -2;
+                        thisLayer.shakeX = -2;
                         break;
                 }
             }
@@ -98,7 +98,7 @@ export function shake(newRows) {
         for (let layer in imageCatalog) {
             const thisLayer = imageCatalog[layer];
             if (thisLayer.type === 'landscape') {
-                thisLayer.startX = -2;
+                thisLayer.shakeX = -2;
             }
         }
         toggleRumble();

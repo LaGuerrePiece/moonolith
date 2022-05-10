@@ -12,6 +12,7 @@ import { toggleMusic, playSound, toggleMute } from '../assets/sounds';
 import { eraseAllPixel, increaseMonolithHeight } from '../monolith/monolith';
 import { undo, redo } from '../monolith/undoStack';
 import { brushSwitch, startUsingTool, colorSwitch, selectBrush } from '../monolith/tools';
+import { skipIntro } from '../intro';
 
 export const deviceType = /(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(navigator.userAgent)
     ? 'tablet'
@@ -23,6 +24,9 @@ export const deviceType = /(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.tes
 
 //prettier-ignore
 document.addEventListener('contextmenu', (e) => { e.preventDefault(); }, false);
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') skipIntro();
+});
 
 export let pointer = { x: 0, y: 0 };
 

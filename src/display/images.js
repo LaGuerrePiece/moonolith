@@ -13,8 +13,8 @@ export let imageCatalog = {
     moonolithSide: { fileName: 'moonolithSide', type: 'side', startY: 290, startX: 255, display: true },
     moonolithSide2: { fileName: 'moonolithSide', type: 'side', startY: 758, startX: 255, display: true },
     moonolithSide3: { fileName: 'moonolithSide', type: 'side', startY: 1226, startX: 255, display: true },
-    plan1: { fileName: 'plan1', type: 'landscape', startX: -2, startY: 80, parallax: 0, display: true },
-    plan0: { fileName: 'plan0', type: 'landscape', startX: -2, startY: 0, parallax: -0.15, display: true },
+    plan1: { fileName: 'plan1', type: 'landscape', startX: -2, startY: 14, parallax: 0, display: true },
+    plan0: { fileName: 'plan0', type: 'landscape', startX: -2, startY: -75, parallax: -0.15, display: true },
     planLogos: { fileName: 'planLogos', type: 'landscape', startX: -25, startY: -45, parallax: 1, display: true },
     moon: { fileName: 'moon', type: 'landscape', startX: 150, startY: 165, parallax: 0, display: true },
     topAlien: { fileName: 'topDood', type: 'topAlien', startX: 0, startY: 0, parallax: 0, display: false },
@@ -26,7 +26,7 @@ export function updateImageCatalog() {
         if (thisImage.type === 'landscape') {
             const parallaxOffset = Math.floor(thisImage.parallax * viewPosY);
             thisImage.y = renderHeight + parallaxOffset + viewPosY - thisImage.img.height - thisImage.startY;
-            thisImage.x = thisImage.startX - viewPosX;
+            thisImage.x = thisImage.startX - viewPosX + thisImage.shakeX;
             // if (thisImage.fileName === 'plan1' || thisImage.fileName === 'moon') console.log('moon', thisImage);
         } else if (thisImage.type === 'side') {
             thisImage.y = thisImage.startY + renderHeight + viewPosY - Const.MONOLITH_LINES - Const.MARGIN_BOTTOM - 7;
@@ -34,7 +34,7 @@ export function updateImageCatalog() {
             if (introState) thisImage.y = thisImage.y + Const.MONOLITH_LINES - monolithDisplayHeightIntro;
         } else if (thisImage.type === 'topAlien') {
             thisImage.y = thisImage.startY + renderHeight + viewPosY - Const.MONOLITH_LINES - Const.MARGIN_BOTTOM - 40;
-            thisImage.x = thisImage.startX + Const.MARGIN_LEFT - viewPosX + 15;
+            thisImage.x = thisImage.startX + Const.MARGIN_LEFT - viewPosX - 22;
             if (introState) thisImage.y = thisImage.y + Const.MONOLITH_LINES - monolithDisplayHeightIntro;
         }
     }
@@ -56,6 +56,7 @@ export function loadImages() {
             imageCatalog[image].loaded = true;
         };
         imageCatalog[image].img.src = `/images/${imageCatalog[image].fileName}.png`;
+        imageCatalog[image].shakeX = 0;
     }
 }
 
