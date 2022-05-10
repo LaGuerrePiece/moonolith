@@ -1,4 +1,13 @@
-import { courgette64, twitter, collision, panneauRainbow, runPlan0, runPlan1 } from '../assets/base64';
+import {
+    courgette64,
+    twitter,
+    collision,
+    panneauRainbow,
+    runPlan0,
+    runPlan1,
+    arbre0,
+    vaisseau,
+} from '../assets/base64';
 import { renderHeight } from '../main';
 import { viewPosX, viewPosY } from './view';
 import { imageCatalog } from './images';
@@ -6,13 +15,13 @@ import Const from '../constants';
 
 //prettier-ignore
 export let animCatalog = {
-    // courgette0: { fileName: 'courgette', startX: 20, startY: 450, display: true, loop: true, parallax: imageCatalog.plan5.parallax, base64: courgette64 },
-    courgette1: { fileName: 'courgette', startX: 100, startY: 100, display: false, loop: true, parallaxLayer: 1, base64: courgette64 },
-    twitter: { fileName: 'twitter', startX: 0 + 96, startY: 83, display: true, loop: true, parallaxLayer: 0, base64: twitter },
-    panneauRainbow: { fileName: 'panneauRainbow', startX: 227, startY: 183, display: false, loop: false, parallaxLayer: 1, base64: panneauRainbow },
+    collision: { type: 'intro', startX: 0, startY: 400, display: false, loop: false, parallaxLayer: 1, base64: collision },
     runPlan0: { type: 'intro', startX: 184, startY: 39, display: false, loop: false, parallaxLayer: 0, base64: runPlan0 },
     runPlan1: { type: 'intro', startX: 0, startY: 100, display: false, loop: false, parallaxLayer: 1, base64: runPlan1 },
-    collision: { type: 'intro', startX: 0, startY: 400, display: false, loop: false, parallaxLayer: 1, base64: collision },
+    twitter: { fileName: 'twitter', startX: 0 + 96, startY: 83, display: true, loop: true, parallaxLayer: 0, base64: twitter },
+    panneauRainbow: { fileName: 'panneauRainbow', startX: 227, startY: 183, display: false, loop: false, parallaxLayer: 1, base64: panneauRainbow },
+    arbre0: { fileName: 'arbre0', startX: 0, startY: 20, display: true, loop: true, parallaxLayer: 0, base64: arbre0 },
+    vaisseau: { fileName: 'vaisseau', startX: 280, startY: 0, display: true, loop: true, parallaxLayer: 0, base64: vaisseau },
 };
 
 export let clock = 0;
@@ -28,9 +37,13 @@ function frameInClock(anim) {
         delaySum += anim.delay[frame];
         frame++;
     }
+    if (anim.fileName == 'arbre0') {
+        console.log('frameInClock', anim.frames.length, frame);
+    }
     if (frame >= anim.frames.length - 1) {
-        // le -1 est sale mais sinon la boucle ne rentre pas pour le panneau   
-        anim.loop ? (frame = 0) : (anim.display = false);
+        console.log('Animation', anim.fileName, 'finished');
+        anim.loop ? (anim.startClock = clock) : (anim.display = false);
+        return anim.frames.length - 1;
     }
     return frame;
 }
@@ -73,6 +86,7 @@ function drawFrame(frame, name, ctx) {
 export function loadAnims() {
     for (let anim in animCatalog) {
         const thisAnim = animCatalog[anim];
+        thisAnim.startClock = clock;
         thisAnim.canvas = document.createElement('canvas');
         thisAnim.canvas.width = thisAnim.width;
         thisAnim.canvas.height = thisAnim.height;
