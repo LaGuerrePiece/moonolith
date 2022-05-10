@@ -58,7 +58,6 @@ export function loadImages() {
         thisImage.img.src = `/images/${thisImage.fileName}.png`;
         thisImage.shakeX = 0;
 
-        //prettier-ignore
         thisImage.parallax = Const.PARALLAX_LAYERS[thisImage.layer];
     }
     console.log('imageCatalog', imageCatalog);

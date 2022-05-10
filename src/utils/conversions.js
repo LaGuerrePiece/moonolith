@@ -2,17 +2,30 @@ import Const from '../constants';
 import { pixelSize, renderHeight } from '../main';
 import { scaleFactor, viewPosY, viewPosX } from '../display/view';
 import { canvas } from '../display/displayLoop';
+import { imageCatalog } from '../display/images';
+import { GUICatalog } from '../display/GUI';
 
-export function isInSquare(xmin, xmax, ymin, ymax, pointerX, pointerY) {
-    let pos = absolutePosition(pointerX, pointerY);
-    if (pos.x >= xmin && pos.x <= xmax && pos.y >= ymin && pos.y <= ymax) return true;
+export function isInCircle(mousePos, y, x, radius, plan) {
+    mousePos = convertToLayer(mousePos, plan);
+    // console.log('convertedmousePos', mousePos);
+    return Math.ceil(mousePos.x - x) ** 2 + Math.ceil(mousePos.y - y) ** 2 <= radius ** 2;
+}
+
+export function isInSquare(mousePos, xmin, xmax, ymin, ymax, plan) {
+    mousePos = convertToLayer(mousePos, plan);
+    // console.log('convertedmousePos', mousePos);
+    if (mousePos.x >= xmin && mousePos.x <= xmax && mousePos.y >= ymin && mousePos.y <= ymax) {
+        return true;
+    }
     return false;
 }
 
-function absolutePosition(pointerX, pointerY) {
+function convertToLayer(coords, plan) {
+    const thisImage = imageCatalog[plan] ? imageCatalog[plan] : GUICatalog[plan];
+
     return {
-        x: viewPosX + pointerX,
-        y: renderHeight - pointerY + viewPosY,
+        x: coords.x - thisImage.x,
+        y: coords.y - thisImage.y,
     };
 }
 

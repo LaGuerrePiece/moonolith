@@ -91,7 +91,6 @@ export function loadAnims() {
         thisAnim.canvas.width = thisAnim.width;
         thisAnim.canvas.height = thisAnim.height;
 
-        //prettier-ignore
         thisAnim.parallax = Const.PARALLAX_LAYERS[thisAnim.layer];
     }
 }

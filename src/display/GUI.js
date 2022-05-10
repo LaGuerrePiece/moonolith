@@ -92,7 +92,7 @@ export function updateGUICatalog() {
                 GUICatalog.palette.x + offsetX + colorNumber2 * spaceX - Math.floor(colorNumber2 / 9) * secondLine;
         }
     }
-    GUICatalog.panneau.display = isInSquare(227, 239, 188, 196, pointer.x, pointer.y) ? true : false;
+    GUICatalog.panneau.display = isInSquare({ x: pointer.x, y: pointer.y }, 229, 241, 66, 72, 'plan1') ? true : false;
 }
 
 export function loadGUI() {

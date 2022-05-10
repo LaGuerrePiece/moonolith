@@ -2,12 +2,12 @@
 import { scaleFactor, viewPosX, viewPosY, changeViewPos, increaseZoom, decreaseZoom, toggleZoom} from '../display/view';
 import { renderWidth, renderHeight, pixelSize } from '../main';
 import { canvas } from '../display/displayLoop';
-import { GUICatalog, updatePalette } from '../display/GUI';
+import { GUICatalog } from '../display/GUI';
 import Const from '../constants';
 import { mobileEventListener } from './mobileControls';
 import { openLink } from '../utils/web3';
 import { saveToEthernity, importImage } from '../utils/imageManager';
-import { convertToMonolithPos, mousePosInGrid } from '../utils/conversions';
+import { convertToMonolithPos, mousePosInGrid, isInCircle, isInSquare } from '../utils/conversions';
 import { toggleMusic, playSound, toggleMute } from '../assets/sounds';
 import { eraseAllPixel, increaseMonolithHeight } from '../monolith/monolith';
 import { undo, redo } from '../monolith/undoStack';
@@ -39,7 +39,13 @@ export function unlockControls() {
 }
 
 export function unlockScroll() {
-    document.addEventListener('wheel', (e) => {scrollManager(e);}, {passive : false});
+    document.addEventListener(
+        'wheel',
+        (e) => {
+            scrollManager(e);
+        },
+        { passive: false }
+    );
 }
 
 //prettier-ignore
@@ -139,66 +145,51 @@ export function clickManager(e) {
             bigRadius = 4;
         }
 
-        if (GUICircle(mousePos, bigY, bigX1, bigRadius)) saveToEthernity();
-        else if (GUICircle(mousePos, bigY, bigX2, bigRadius)) brushSwitch();
-        else if (GUICircle(mousePos, row1Y, offsetX + spaceX * 1, smolRadius)) colorSwitch(e, 1);
-        else if (GUICircle(mousePos, row1Y, offsetX + spaceX * 2, smolRadius)) colorSwitch(e, 2);
-        else if (GUICircle(mousePos, row1Y, offsetX + spaceX * 3, smolRadius)) colorSwitch(e, 3);
-        else if (GUICircle(mousePos, row1Y, offsetX + spaceX * 4, smolRadius)) colorSwitch(e, 4);
-        else if (GUICircle(mousePos, row1Y, offsetX + spaceX * 5, smolRadius)) colorSwitch(e, 5);
-        else if (GUICircle(mousePos, row1Y, offsetX + spaceX * 6, smolRadius)) colorSwitch(e, 6);
-        else if (GUICircle(mousePos, row1Y, offsetX + spaceX * 7, smolRadius)) colorSwitch(e, 7);
-        else if (GUICircle(mousePos, row1Y, offsetX + spaceX * 8, smolRadius)) colorSwitch(e, 8);
-        else if (GUICircle(mousePos, row2Y, offsetX + spaceX * 1, smolRadius)) colorSwitch(e, 9);
-        else if (GUICircle(mousePos, row2Y, offsetX + spaceX * 2, smolRadius)) colorSwitch(e, 10);
-        else if (GUICircle(mousePos, row2Y, offsetX + spaceX * 3, smolRadius)) colorSwitch(e, 11);
-        else if (GUICircle(mousePos, row2Y, offsetX + spaceX * 4, smolRadius)) colorSwitch(e, 12);
-        else if (GUICircle(mousePos, row2Y, offsetX + spaceX * 5, smolRadius)) colorSwitch(e, 13);
-        else if (GUICircle(mousePos, row2Y, offsetX + spaceX * 6, smolRadius)) colorSwitch(e, 14);
-        else if (GUICircle(mousePos, row2Y, offsetX + spaceX * 7, smolRadius)) colorSwitch(e, 15);
-        else if (GUICircle(mousePos, row2Y, offsetX + spaceX * 8, smolRadius)) colorSwitch(e, 16);
+        if (isInCircle(mousePos, bigY, bigX1, bigRadius, 'palette')) saveToEthernity();
+        else if (isInCircle(mousePos, bigY, bigX2, bigRadius, 'palette')) brushSwitch();
+        else if (isInCircle(mousePos, row1Y, offsetX + spaceX * 1, smolRadius, 'palette')) colorSwitch(e, 1);
+        else if (isInCircle(mousePos, row1Y, offsetX + spaceX * 2, smolRadius, 'palette')) colorSwitch(e, 2);
+        else if (isInCircle(mousePos, row1Y, offsetX + spaceX * 3, smolRadius, 'palette')) colorSwitch(e, 3);
+        else if (isInCircle(mousePos, row1Y, offsetX + spaceX * 4, smolRadius, 'palette')) colorSwitch(e, 4);
+        else if (isInCircle(mousePos, row1Y, offsetX + spaceX * 5, smolRadius, 'palette')) colorSwitch(e, 5);
+        else if (isInCircle(mousePos, row1Y, offsetX + spaceX * 6, smolRadius, 'palette')) colorSwitch(e, 6);
+        else if (isInCircle(mousePos, row1Y, offsetX + spaceX * 7, smolRadius, 'palette')) colorSwitch(e, 7);
+        else if (isInCircle(mousePos, row1Y, offsetX + spaceX * 8, smolRadius, 'palette')) colorSwitch(e, 8);
+        else if (isInCircle(mousePos, row2Y, offsetX + spaceX * 1, smolRadius, 'palette')) colorSwitch(e, 9);
+        else if (isInCircle(mousePos, row2Y, offsetX + spaceX * 2, smolRadius, 'palette')) colorSwitch(e, 10);
+        else if (isInCircle(mousePos, row2Y, offsetX + spaceX * 3, smolRadius, 'palette')) colorSwitch(e, 11);
+        else if (isInCircle(mousePos, row2Y, offsetX + spaceX * 4, smolRadius, 'palette')) colorSwitch(e, 12);
+        else if (isInCircle(mousePos, row2Y, offsetX + spaceX * 5, smolRadius, 'palette')) colorSwitch(e, 13);
+        else if (isInCircle(mousePos, row2Y, offsetX + spaceX * 6, smolRadius, 'palette')) colorSwitch(e, 14);
+        else if (isInCircle(mousePos, row2Y, offsetX + spaceX * 7, smolRadius, 'palette')) colorSwitch(e, 15);
+        else if (isInCircle(mousePos, row2Y, offsetX + spaceX * 8, smolRadius, 'palette')) colorSwitch(e, 16);
     } else if (GUICatalog.share.display) {
-        if (
-            !(
-                mousePos.x > GUICatalog.share.x &&
-                mousePos.x < GUICatalog.share.x + GUICatalog.share.img.width &&
-                mousePos.y > GUICatalog.share.y &&
-                mousePos.y < GUICatalog.share.y + GUICatalog.share.img.height
-            )
-        ) {
+        if (!isInSquare(mousePos, 0, GUICatalog.share.img.width, 0, GUICatalog.share.img.height, 'share')) {
             GUICatalog.share.display = false;
         } else {
             // console.log('img', GUICatalog.share.x, GUICatalog.share.y);
-            if (
-                mousePos.x > GUICatalog.share.x + 15 &&
-                mousePos.x < GUICatalog.share.x + 115 &&
-                mousePos.y > GUICatalog.share.y + 30 &&
-                mousePos.y < GUICatalog.share.y + GUICatalog.share.img.height - 25
-            ) {
+            if (isInSquare(mousePos, 15, 115, 30, 146, 'share')) {
                 console.log('Clicked on OpenSea');
                 openLink('opensea');
-            } else if (
-                mousePos.x > GUICatalog.share.x + 122 &&
-                mousePos.x < GUICatalog.share.x + 215 &&
-                mousePos.y > GUICatalog.share.y + 30 &&
-                mousePos.y < GUICatalog.share.y + GUICatalog.share.img.height - 27
-            ) {
+            } else if (isInSquare(mousePos, 122, 215, 30, 144, 'share')) {
                 console.log('Clicked on Share');
                 openLink('twitter');
             }
         }
+    } else if (isInCircle(mousePos, 38, 74, 13, 'planLogos')) {
+        console.log('Discord !');
+        window.open('https://discord.gg/QQQQQQQQ', '_blank');
+    } else if (isInCircle(mousePos, 72, 72, 13, 'planLogos')) {
+        console.log('GitHub !');
+        window.open('https://github.com/laguerrepiece/moonolith', '_blank');
+    } else if (isInCircle(mousePos, 58, 116, 15, 'planLogos')) {
+        console.log('Medium !');
+        window.open('https://medium.com/', '_blank');
     } else if (convertToMonolithPos(mousePos)) {
         // clicked on monolith
         console.log('monolithPos', mousePos);
         startUsingTool(e, mousePos);
     }
-}
-
-function GUICircle(mousePos, y, x, radius) {
-    // Coordinates of the center are input in the GUI
-    y += GUICatalog.palette.y;
-    x += GUICatalog.palette.x;
-    return Math.ceil(mousePos.x - x) ** 2 + Math.ceil(mousePos.y - y) ** 2 <= radius ** 2;
 }
 
 let scrollInformation = {
