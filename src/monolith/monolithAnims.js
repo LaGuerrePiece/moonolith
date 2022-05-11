@@ -41,20 +41,20 @@ export function animateMonolith() {
         } else if (transitionType === 'import') {
 
             if (counter === 1) draw(pos, Const.DEFAULT_COLOR);
-            else if (counter === 2) draw(pos, Const.DEFAULT_COLOR);
-            else if (counter === 3) draw(pos, [88, 141, 190]);
-            else if (counter === 5) draw(pos, [132, 172, 228]);
-            else if (counter === 7) draw(pos, [166, 252, 219]);
-            else if (counter === 9) draw(pos, [88, 141, 190]);
+            else if (counter === 3) draw(pos, Const.DEFAULT_COLOR);
+            else if (counter === 5) draw(pos, [88, 141, 190]);
+            else if (counter === 8) draw(pos, [132, 172, 228]);
             else if (counter === 11) draw(pos, [166, 252, 219]);
-            else if (counter === 13) draw(pos, [132, 172, 228]);
-            else if (counter === 15) draw(pos, [88, 141, 190]);
-            else if (counter > 15) draw(pos, avg(color, pos, 5));
-            if (counter === 22) {endTransition(pos, color);continue;}
+            else if (counter === 14) draw(pos, [88, 141, 190]);
+            else if (counter === 15) draw(pos, [166, 252, 219]);
+            else if (counter === 18) draw(pos, [132, 172, 228]);
+            else if (counter === 21) draw(pos, [88, 141, 190]);
+            else if (counter > 21) draw(pos, avg(color, pos, 5));
+            if (counter === 34) {endTransition(pos, color);continue;}
 
         } else if (transitionType === 'whiteOnRune') {
 
-            if (counter === 97) draw(pos, [255, 255, 255]);
+            if (counter === 96) draw(pos, [255, 255, 255]);
             if (counter === 100) {endTransition(pos, color);continue;}
 
         } else if (transitionType === 'runeBlueAnim') {
@@ -67,7 +67,7 @@ export function animateMonolith() {
         } else if (transitionType === 'runeContour') {
 
             if (counter === 1) draw(pos, [32, 214, 199]);
-            else if (counter < 10) draw(pos, [32, 214, 199]);
+            else if (counter < 15) draw(pos, [32, 214, 199]);
             else draw(pos, avg(color, pos, 10));
             if (counter === 50) {endTransition(pos, color);continue;}
 
