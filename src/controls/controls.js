@@ -28,7 +28,7 @@ document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') skipIntro();
 });
 export function skipManager(e) {
-    if (isInSquare(mousePosInGrid(e), 0, 400, 0, 400, 'palette')) {
+    if (isInSquare(mousePosInGrid(e), 0, 81, 0, 47, 'skipIntro')) {
         skipIntro();
         console.log('Clicked on skipIntro');
     }
