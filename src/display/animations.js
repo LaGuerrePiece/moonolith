@@ -17,7 +17,6 @@ export let animCatalog = {
 function animFrameManager(anim) {
     let thisAnim = animCatalog[anim];
     let currentFrame = thisAnim.currentFrame;
-    console.log('animFrameManager', anim, currentFrame, thisAnim.frames.length);
     setTimeout(() => {
         if (thisAnim.currentFrame < thisAnim.frames.length - 1) {
             thisAnim.currentFrame++;
@@ -76,5 +75,8 @@ export function loadAnims() {
 
         thisAnim.parallax = Const.PARALLAX_LAYERS[thisAnim.layer];
         thisAnim.currentFrame = 0;
+        if (thisAnim.type !== 'intro') {
+            launchAnim(anim);
+        }
     }
 }

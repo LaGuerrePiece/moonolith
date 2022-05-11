@@ -27,6 +27,12 @@ document.addEventListener('contextmenu', (e) => { e.preventDefault(); }, false);
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') skipIntro();
 });
+export function skipManager(e) {
+    if (isInSquare(mousePosInGrid(e), 0, 400, 0, 400, 'palette')) {
+        skipIntro();
+        console.log('Clicked on skipIntro');
+    }
+}
 
 export let pointer = { x: 0, y: 0 };
 

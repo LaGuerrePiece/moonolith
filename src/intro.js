@@ -1,11 +1,11 @@
 import { chunkImport, setMonoHeightAndBuildIt } from './main';
 import { changeViewPos, changeViewPosSmoothly, viewPosY } from './display/view';
-import { displayPalette } from './display/GUI';
-import { initDisplay } from './display/displayLoop';
+import { displayPalette, GUICatalog } from './display/GUI';
+import { canvas, initDisplay } from './display/displayLoop';
 import { animCatalog, launchAnim } from './display/animations';
 import { shake } from './display/displayLoop';
 import { displayImage } from './display/images';
-import { unlockControls, unlockScroll } from './controls/controls';
+import { skipManager, unlockControls, unlockScroll } from './controls/controls';
 import { toggleMusic } from './assets/sounds';
 import Const from './constants';
 
@@ -20,6 +20,7 @@ export async function launchIntro() {
     // Ask for metadata and build monolith
     // Ask for chunks but only display when monolith is built
     chunkImport(true, monoHeightSet);
+    canvas.onmousedown = skipManager;
 
     launchAnim('collision');
     await new Promise((resolve) => setTimeout(resolve, animCatalog.collision.totalDelay + 1000));
@@ -66,6 +67,7 @@ export async function launchIntro() {
         unlockControls();
         toggleMusic();
         displayPalette();
+        GUICatalog.skipIntro.display = false;
         introState = false;
     }, 800 * Math.log(Const.MONOLITH_LINES) - 500);
 }
@@ -74,6 +76,7 @@ export function skipIntro() {
     animCatalog.runPlan0.display = false;
     animCatalog.runPlan1.display = false;
     animCatalog.collision.display = false;
+    GUICatalog.skipIntro.display = false;
     changeViewPos(0, -999999);
     unlockScroll();
     console.log('Intro Skipped');

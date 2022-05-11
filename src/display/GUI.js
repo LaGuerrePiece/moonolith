@@ -30,6 +30,7 @@ export let paletteCatalog = {
 };
 
 export let GUICatalog = {
+    skipIntro: { fileName: 'skipIntro', display: true },
     panneau: { fileName: 'panneau', type: 'popup', display: false },
     share: { fileName: 'share', type: 'popup', display: false },
     selectorA: { fileName: '/palette/selector1A', type: 'GUI', display: false },
@@ -65,8 +66,11 @@ export function updateGUICatalog() {
             );
             thisLayer.x = Math.floor((renderWidth - GUICatalog.palette.img.width) / Const.GUI_RELATIVE_X);
         } else if (thisLayer.type === 'popup') {
-            thisLayer.y = Math.floor((renderHeight - GUICatalog.panneau.img.height) / 2 - 6);
             thisLayer.x = Math.floor((Const.COLUMNS - GUICatalog.panneau.img.width) / 2);
+            thisLayer.y = Math.floor((renderHeight - GUICatalog.panneau.img.height) / 2 - 6);
+        } else if (thisLayer.fileName == 'skipIntro') {
+            thisLayer.x = Math.floor(Const.COLUMNS - GUICatalog.skipIntro.img.width) - 20;
+            thisLayer.y = Math.floor((renderHeight - GUICatalog.skipIntro.img.height) / 20);
         } else if (GUILayer === 'selectorA') {
             let offsetX, secondLine, spaceX;
             if (thisLayer.img.width === 15) {
