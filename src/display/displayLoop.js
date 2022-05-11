@@ -1,5 +1,4 @@
 //prettier-ignore
-import { renderHeight, renderWidth } from '../main';
 import { viewPosX, viewPosY, changeViewPos } from './view';
 import Const from '../constants';
 import { monolith } from '../monolith/monolith';
@@ -11,6 +10,11 @@ import { loadAnims, updateAnimCatalog, drawAnimations } from './animations';
 import { loadGUI, updateGUICatalog, drawGUI } from './GUI';
 import { monolithDisplayHeightIntro, introState } from '../intro';
 
+export let windowHeight = window.innerHeight;
+export let windowWidth = window.innerWidth;
+export let renderWidth = Const.COLUMNS;
+export let pixelSize = windowWidth / renderWidth;
+export let renderHeight = Math.ceil((windowHeight * renderWidth) / windowWidth);
 export let canvas;
 
 export function initDisplay() {
@@ -127,4 +131,15 @@ function initCanvas() {
     canvas.style.width = '100%';
     canvas.style.imageRendering = 'pixelated';
     document.body.style.cssText = 'margin:0;padding:0;';
+    window.onresize = resizeManager;
+}
+
+function resizeManager() {
+    windowHeight = window.innerHeight;
+    windowWidth = window.innerWidth;
+    pixelSize = windowWidth / renderWidth;
+    renderHeight = Math.ceil((windowHeight * renderWidth) / windowWidth);
+
+    canvas.width = renderWidth;
+    canvas.height = renderHeight;
 }

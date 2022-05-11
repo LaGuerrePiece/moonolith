@@ -1,10 +1,9 @@
 import { pointer } from '../controls/controls';
 import { deviceType } from '../controls/controls';
-import { canvas } from './displayLoop';
+import { canvas, renderHeight, renderWidth, windowHeight, pixelSize } from './displayLoop';
 import { scaleFactor } from './view';
 import { colorNumber1, colorNumber2, tool } from '../monolith/tools';
 import { isInSquare } from '../utils/conversions';
-import { renderHeight, renderWidth, windowHeight, pixelSize } from '../main';
 import Const from '../constants';
 
 export let paletteCatalog = {
@@ -55,15 +54,15 @@ export function displayPalette() {
 
 export function updatePalette() {
     GUICatalog.palette.img = paletteCatalog[`palette${scaleFactor}${tool}`].img;
-    GUICatalog.palette.info = Const.PALETTE_INFO[scaleFactor];
-    // dirty case for phone unzoomed
-    console.log(deviceType, scaleFactor);
     GUICatalog.selectorA.img = paletteCatalog[`selector${scaleFactor}A`].img;
     GUICatalog.selectorB.img = paletteCatalog[`selector${scaleFactor}B`].img;
+    GUICatalog.palette.info = Const.PALETTE_INFO[scaleFactor];
+
+    // dirty case for phone unzoomed
     if (deviceType === 'mobile' && scaleFactor === 1) {
         GUICatalog.palette.img = paletteCatalog[`palette1${tool}_x2`].img;
-        GUICatalog.palette.info = Const.PALETTE_INFO['mobileUnzoomed'];
         GUICatalog.selectorA.img = paletteCatalog[`selector1A_x2`].img;
+        GUICatalog.palette.info = Const.PALETTE_INFO['mobileUnzoomed'];
     }
 }
 
@@ -107,7 +106,7 @@ export function updateGUICatalog() {
                 secondLine = 40;
             }
             thisLayer.y = GUICatalog.palette.y - 1 + Math.floor(colorNumber1 / 9) * spaceX;
-            // dirty adjustment
+            // dirty adjustment for phone unzoomed
             if (thisLayer.img.width === 30) thisLayer.y--;
             thisLayer.x =
                 GUICatalog.palette.x + offsetX + colorNumber1 * spaceX - Math.floor(colorNumber1 / 9) * secondLine;

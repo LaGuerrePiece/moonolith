@@ -13,12 +13,6 @@ export let runeNumber;
 export let Opensea;
 export let firstTime = false;
 
-export const windowHeight = window.innerHeight;
-export const windowWidth = window.innerWidth;
-export let renderWidth = Const.COLUMNS;
-export const pixelSize = windowWidth / renderWidth;
-export let renderHeight = Math.ceil((windowHeight * renderWidth) / windowWidth);
-
 async function initApp() {
     setRoute();
     firstTime = true; // To test

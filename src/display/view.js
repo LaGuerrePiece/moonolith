@@ -1,9 +1,9 @@
 import Const from '../constants';
-import { renderHeight, renderWidth, runeNumber } from '../main';
+import { runeNumber } from '../main';
 import { introState } from '../intro';
 import { getChunk } from '../utils/web3';
 import { prepareBufferForApi } from '../utils/imageManager';
-import { canvas } from '../display/displayLoop';
+import { canvas, renderHeight, renderWidth } from '../display/displayLoop';
 import { updatePalette } from './GUI';
 
 export let scaleFactor = 1;

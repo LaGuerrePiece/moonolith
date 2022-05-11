@@ -1,6 +1,6 @@
 import Const from '../constants';
 import { tool } from '../monolith/tools';
-import { renderWidth, renderHeight } from '../main';
+import { renderWidth, renderHeight } from './displayLoop';
 import { convertToMonolithPos } from '../utils/conversions';
 import { monolithIndexes } from '../monolith/monolith';
 import { pointer } from '../controls/controls';

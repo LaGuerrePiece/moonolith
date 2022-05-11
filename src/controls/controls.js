@@ -1,7 +1,6 @@
 //prettier-ignore
 import { scaleFactor, viewPosX, viewPosY, changeViewPos, increaseZoom, decreaseZoom, toggleZoom} from '../display/view';
-import { renderWidth, renderHeight, pixelSize } from '../main';
-import { canvas } from '../display/displayLoop';
+import { renderWidth, renderHeight, pixelSize, canvas } from '../display/displayLoop';
 import { GUICatalog } from '../display/GUI';
 import Const from '../constants';
 import { mobileEventListener } from './mobileControls';

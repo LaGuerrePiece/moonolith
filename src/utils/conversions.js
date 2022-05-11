@@ -1,7 +1,6 @@
 import Const from '../constants';
-import { pixelSize, renderHeight } from '../main';
 import { scaleFactor, viewPosY, viewPosX } from '../display/view';
-import { canvas } from '../display/displayLoop';
+import { canvas, pixelSize, renderHeight } from '../display/displayLoop';
 import { imageCatalog } from '../display/images';
 import { GUICatalog } from '../display/GUI';
 

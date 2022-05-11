@@ -1,5 +1,5 @@
 import { twitter, collision, panneauRainbow, runPlan0, runPlan1, arbre0, vaisseau } from '../assets/base64';
-import { renderHeight } from '../main';
+import { renderHeight } from './displayLoop';
 import { viewPosX, viewPosY } from './view';
 import Const from '../constants';
 
