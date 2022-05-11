@@ -1,13 +1,4 @@
-import {
-    courgette64,
-    twitter,
-    collision,
-    panneauRainbow,
-    runPlan0,
-    runPlan1,
-    arbre0,
-    vaisseau,
-} from '../assets/base64';
+import { twitter, collision, panneauRainbow, runPlan0, runPlan1, arbre0, vaisseau } from '../assets/base64';
 import { renderHeight } from '../main';
 import { viewPosX, viewPosY } from './view';
 import Const from '../constants';
@@ -23,32 +14,25 @@ export let animCatalog = {
     vaisseau: { fileName: 'vaisseau', startX: 280, startY: 0, display: true, loop: true, layer: 0, base64: vaisseau },
 };
 
-export let clock = 0;
-setInterval(() => {
-    clock += 20;
-}, 20);
-
-function frameInClock(anim) {
-    let frame = 0;
-    let delaySum = 0;
-    let currentClock = clock - anim.startClock;
-    while (delaySum < currentClock % anim.totalDelay) {
-        delaySum += anim.delay[frame];
-        frame++;
-    }
-    // if (anim.fileName == 'arbre0') {
-    //     console.log('frameInClock', anim.frames.length, frame);
-    // }
-    if (frame >= anim.frames.length - 1) {
-        // console.log('Animation', anim.fileName, 'finished');
-        anim.loop ? (anim.startClock = clock) : (anim.display = false);
-        return anim.frames.length - 1;
-    }
-    return frame;
+function animFrameManager(anim) {
+    let thisAnim = animCatalog[anim];
+    let currentFrame = thisAnim.currentFrame;
+    console.log('animFrameManager', anim, currentFrame, thisAnim.frames.length);
+    setTimeout(() => {
+        if (thisAnim.currentFrame < thisAnim.frames.length - 1) {
+            thisAnim.currentFrame++;
+            animFrameManager(anim);
+        } else if (thisAnim.loop) {
+            thisAnim.currentFrame = 0;
+            animFrameManager(anim);
+        } else {
+            thisAnim.display = false;
+        }
+    }, thisAnim.delay[currentFrame]);
 }
 
 export function launchAnim(anim, endTime) {
-    animCatalog[anim].startClock = clock;
+    animFrameManager(anim);
     animCatalog[anim].display = true;
     if (endTime) {
         setTimeout(() => {
@@ -70,7 +54,7 @@ export function drawAnimations(ctx, layer) {
     for (let anim in animCatalog) {
         const thisAnim = animCatalog[anim];
         if (thisAnim.layer !== layer || !thisAnim.display) continue;
-        drawFrame(thisAnim.frames[frameInClock(thisAnim)], anim, ctx);
+        drawFrame(thisAnim.frames[thisAnim.currentFrame], anim, ctx);
     }
 }
 
@@ -86,11 +70,11 @@ function drawFrame(frame, name, ctx) {
 export function loadAnims() {
     for (let anim in animCatalog) {
         const thisAnim = animCatalog[anim];
-        thisAnim.startClock = clock;
         thisAnim.canvas = document.createElement('canvas');
         thisAnim.canvas.width = thisAnim.width;
         thisAnim.canvas.height = thisAnim.height;
 
         thisAnim.parallax = Const.PARALLAX_LAYERS[thisAnim.layer];
+        thisAnim.currentFrame = 0;
     }
 }
