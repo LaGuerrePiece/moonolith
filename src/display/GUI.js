@@ -8,6 +8,10 @@ import { renderHeight, renderWidth, windowHeight, pixelSize } from '../main';
 import Const from '../constants';
 
 export let paletteCatalog = {
+    palette1smol_x2: { fileName: 'palette1smol_x2' },
+    palette1medium_x2: { fileName: 'palette1medium_x2' },
+    palette1large_x2: { fileName: 'palette1large_x2' },
+    palette1giga_x2: { fileName: 'palette1giga_x2' },
     palette1smol: { fileName: 'palette1smol' },
     palette1medium: { fileName: 'palette1medium' },
     palette1large: { fileName: 'palette1large' },
@@ -21,6 +25,7 @@ export let paletteCatalog = {
     palette6large: { fileName: 'palette6large' },
     palette6giga: { fileName: 'palette6giga' },
     selector1A: { fileName: 'selector1A' },
+    selector1A_x2: { fileName: 'selector1A_x2' },
     selector1B: { fileName: 'selector1B' },
     selector3A: { fileName: 'selector3A' },
     selector3B: { fileName: 'selector3B' },
@@ -50,8 +55,16 @@ export function displayPalette() {
 
 export function updatePalette() {
     GUICatalog.palette.img = paletteCatalog[`palette${scaleFactor}${tool}`].img;
+    GUICatalog.palette.info = Const.PALETTE_INFO[scaleFactor];
+    // dirty case for phone unzoomed
+    console.log(deviceType, scaleFactor);
     GUICatalog.selectorA.img = paletteCatalog[`selector${scaleFactor}A`].img;
     GUICatalog.selectorB.img = paletteCatalog[`selector${scaleFactor}B`].img;
+    if (deviceType === 'mobile' && scaleFactor === 1) {
+        GUICatalog.palette.img = paletteCatalog[`palette1${tool}_x2`].img;
+        GUICatalog.palette.info = Const.PALETTE_INFO['mobileUnzoomed'];
+        GUICatalog.selectorA.img = paletteCatalog[`selector1A_x2`].img;
+    }
 }
 
 export function updateGUICatalog() {
@@ -73,6 +86,11 @@ export function updateGUICatalog() {
             thisLayer.y = Math.floor((renderHeight - GUICatalog.skipIntro.img.height) / 20);
         } else if (GUILayer === 'selectorA') {
             let offsetX, secondLine, spaceX;
+            if (thisLayer.img.width === 30) {
+                offsetX = 12;
+                spaceX = 30;
+                secondLine = 240;
+            }
             if (thisLayer.img.width === 15) {
                 offsetX = 6;
                 spaceX = 15;
@@ -89,6 +107,8 @@ export function updateGUICatalog() {
                 secondLine = 40;
             }
             thisLayer.y = GUICatalog.palette.y - 1 + Math.floor(colorNumber1 / 9) * spaceX;
+            // dirty adjustment
+            if (thisLayer.img.width === 30) thisLayer.y--;
             thisLayer.x =
                 GUICatalog.palette.x + offsetX + colorNumber1 * spaceX - Math.floor(colorNumber1 / 9) * secondLine;
             GUICatalog.selectorB.y = GUICatalog.palette.y - 1 + Math.floor(colorNumber2 / 9) * spaceX;
@@ -111,6 +131,8 @@ export function loadGUI() {
         };
         GUICatalog[GUILayer].img.src = `/images/${GUICatalog[GUILayer].fileName}.png`;
     }
+    GUICatalog.palette.info = Const.PALETTE_INFO[scaleFactor];
+    updatePalette();
 }
 
 export function drawGUI(ctx) {

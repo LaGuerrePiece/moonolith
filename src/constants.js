@@ -58,33 +58,55 @@ export default class Const {
       "5" : 0.3,
     }}
 
+    static get PALETTE_INFO() { return {
+      'mobileUnzoomed': {
+        offsetX: 26,
+        spaceX: 30,
+        row1Y: 10,
+        row2Y: 38,
+        bigY: 28,
+        bigX1: 16,
+        bigX2: 306,
+        smolRadius: 12,
+        bigRadius: 22,
+      },
+
+      '1': {
+        offsetX: 13,
+        spaceX: 15,
+        row1Y: 5,
+        row2Y: 19,
+        bigY: 14,
+        bigX1: 8,
+        bigX2: 153,
+        smolRadius: 6,
+        bigRadius: 11,
+      },
+
+      "3" : {
+        offsetX: 8,
+        spaceX: 8,
+        row1Y: 4,
+        row2Y: 9,
+        bigY: 7,
+        bigX1: 4,
+        bigX2: 84,
+        smolRadius: 4,
+        bigRadius: 6,
+      },
+
+      "6" : {
+        offsetX: 5,
+        spaceX: 5,
+        row1Y: 2,
+        row2Y: 5,
+        bigY: 4,
+        bigX1: 2,
+        bigX2: 51,
+        smolRadius: 2,
+        bigRadius: 4,
+      }
+
+    }}
+
   }
-
-// let arrayToConvert = [
-//     '257179',
-//     '38b764',
-//     'a7f070',
-//     'ffcd75',
-//     'ef7d57',
-//     'b13e53',
-//     '5d275d',
-//     '1a1c2c',
-//     '29366f',
-//     '3b5dc9',
-//     '41a6f6',
-//     '73eff7',
-//     'f4f4f4',
-//     '94b0c2',
-//     '566c86',
-//     '333c57',
-// ];
-// arrayToConvert.forEach((hex) => {
-//     console.log(hexToRGB(hex));
-// });
-
-function hexToRGB(hex) {
-    var r = Math.floor((parseInt(hex.slice(0, 2), 16) / 255) * 10000) / 10000,
-        g = Math.floor((parseInt(hex.slice(2, 4), 16) / 255) * 10000) / 10000,
-        b = Math.floor((parseInt(hex.slice(4, 6), 16) / 255) * 10000) / 10000;
-    return [r, g, b];
-}

@@ -105,70 +105,25 @@ function keyManager(e){
       }
 }
 
+//prettier-ignore
 export function clickManager(e) {
     let mousePos = mousePosInGrid(e);
     console.log('Click', mousePos);
 
-    if (
-        mousePos.x >= GUICatalog.palette.x &&
-        mousePos.x < GUICatalog.palette.x + GUICatalog.palette.img.width &&
-        mousePos.y >= GUICatalog.palette.y &&
-        mousePos.y < GUICatalog.palette.y + GUICatalog.palette.img.height
-    ) {
+    if (isInSquare(mousePos, 0, GUICatalog.palette.img.width, 0, GUICatalog.palette.img.height, 'palette')) {
         console.log('Clicked on the GUI');
-
-        let offsetX, spaceX, row1Y, row2Y, bigY, bigX1, bigX2, smolRadius, bigRadius;
-
-        if (scaleFactor == 1) {
-            offsetX = 13;
-            spaceX = 15;
-            row1Y = 5;
-            row2Y = 19;
-            bigY = 14;
-            bigX1 = 8;
-            bigX2 = 153;
-            smolRadius = 6;
-            bigRadius = 11;
-        } else if (scaleFactor == 3) {
-            offsetX = 8;
-            spaceX = 8;
-            row1Y = 4;
-            row2Y = 9;
-            bigY = 7;
-            bigX1 = 4;
-            bigX2 = 84;
-            smolRadius = 4;
-            bigRadius = 6;
-        } else if (scaleFactor == 6) {
-            offsetX = 5;
-            spaceX = 5;
-            row1Y = 2;
-            row2Y = 5;
-            bigY = 4;
-            bigX1 = 2;
-            bigX2 = 51;
-            smolRadius = 2;
-            bigRadius = 4;
+        // get palette info
+        const info = GUICatalog.palette.info;
+        // check for each circle if the click is in
+        for (let i = 1; i <= 16; i++) {
+            const row = i > 8 ? 2 : 1;
+            const column = i > 8 ? i - 8 : i;
+            if (isInCircle(mousePos, info[`row${row}Y`], info.offsetX + info.spaceX * column, info.smolRadius, 'palette')) colorSwitch(e, i);
         }
 
-        if (isInCircle(mousePos, bigY, bigX1, bigRadius, 'palette')) saveToEthernity();
-        else if (isInCircle(mousePos, bigY, bigX2, bigRadius, 'palette')) brushSwitch();
-        else if (isInCircle(mousePos, row1Y, offsetX + spaceX * 1, smolRadius, 'palette')) colorSwitch(e, 1);
-        else if (isInCircle(mousePos, row1Y, offsetX + spaceX * 2, smolRadius, 'palette')) colorSwitch(e, 2);
-        else if (isInCircle(mousePos, row1Y, offsetX + spaceX * 3, smolRadius, 'palette')) colorSwitch(e, 3);
-        else if (isInCircle(mousePos, row1Y, offsetX + spaceX * 4, smolRadius, 'palette')) colorSwitch(e, 4);
-        else if (isInCircle(mousePos, row1Y, offsetX + spaceX * 5, smolRadius, 'palette')) colorSwitch(e, 5);
-        else if (isInCircle(mousePos, row1Y, offsetX + spaceX * 6, smolRadius, 'palette')) colorSwitch(e, 6);
-        else if (isInCircle(mousePos, row1Y, offsetX + spaceX * 7, smolRadius, 'palette')) colorSwitch(e, 7);
-        else if (isInCircle(mousePos, row1Y, offsetX + spaceX * 8, smolRadius, 'palette')) colorSwitch(e, 8);
-        else if (isInCircle(mousePos, row2Y, offsetX + spaceX * 1, smolRadius, 'palette')) colorSwitch(e, 9);
-        else if (isInCircle(mousePos, row2Y, offsetX + spaceX * 2, smolRadius, 'palette')) colorSwitch(e, 10);
-        else if (isInCircle(mousePos, row2Y, offsetX + spaceX * 3, smolRadius, 'palette')) colorSwitch(e, 11);
-        else if (isInCircle(mousePos, row2Y, offsetX + spaceX * 4, smolRadius, 'palette')) colorSwitch(e, 12);
-        else if (isInCircle(mousePos, row2Y, offsetX + spaceX * 5, smolRadius, 'palette')) colorSwitch(e, 13);
-        else if (isInCircle(mousePos, row2Y, offsetX + spaceX * 6, smolRadius, 'palette')) colorSwitch(e, 14);
-        else if (isInCircle(mousePos, row2Y, offsetX + spaceX * 7, smolRadius, 'palette')) colorSwitch(e, 15);
-        else if (isInCircle(mousePos, row2Y, offsetX + spaceX * 8, smolRadius, 'palette')) colorSwitch(e, 16);
+        if (isInCircle(mousePos, info.bigY, info.bigX1, info.bigRadius, 'palette')) saveToEthernity();
+        else if (isInCircle(mousePos, info.bigY, info.bigX2, info.bigRadius, 'palette')) brushSwitch();
+
     } else if (GUICatalog.share.display) {
         if (!isInSquare(mousePos, 0, GUICatalog.share.img.width, 0, GUICatalog.share.img.height, 'share')) {
             GUICatalog.share.display = false;
