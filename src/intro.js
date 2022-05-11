@@ -67,7 +67,7 @@ export async function launchIntro() {
         toggleMusic();
         displayPalette();
         introState = false;
-    }, 1000 * Math.log(Const.MONOLITH_LINES));
+    }, 800 * Math.log(Const.MONOLITH_LINES) - 500);
 }
 
 export function skipIntro() {
@@ -85,8 +85,8 @@ export function skipIntro() {
 }
 
 function monolithGoUpDuringIntro() {
-    for (let rowAdded = 0; rowAdded < Const.MONOLITH_LINES; rowAdded++) {
-        let scalingValue = 1000 * Math.log(rowAdded);
+    for (let row = 0; row < Const.MONOLITH_LINES; row++) {
+        let scalingValue = 800 * Math.log(row) - 500;
         setTimeout(() => {
             monolithDisplayHeightIntro++;
         }, scalingValue);

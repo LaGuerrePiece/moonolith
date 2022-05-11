@@ -114,7 +114,7 @@ export function shake(newRows) {
             }
         }
         toggleRumble();
-    }, 2000 + 1000 * Math.log(newRows));
+    }, 2000 + 500 * Math.log(newRows));
 }
 
 function initCanvas() {
