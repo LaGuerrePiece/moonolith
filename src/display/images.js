@@ -8,10 +8,8 @@ export let imageCatalog = {
     plan4: { fileName: 'plan4', type: 'landscape', startX: -2, startY: 300, layer: 4, display: true },
     plan3: { fileName: 'plan3', type: 'landscape', startX: -2, startY: 250, layer: 3, display: true },
     plan2: { fileName: 'plan2', type: 'landscape', startX: -2, startY: 190, layer: 2, display: true },
-    moonolithTop: { fileName: 'moonolithTop', type: 'side', startY: 0, startX: 0, display: true },
-    moonolithSide: { fileName: 'moonolithSide', type: 'side', startY: 290, startX: 255, display: true },
-    moonolithSide2: { fileName: 'moonolithSide', type: 'side', startY: 758, startX: 255, display: true },
-    moonolithSide3: { fileName: 'moonolithSide', type: 'side', startY: 1226, startX: 255, display: true },
+    moonolithTop: { fileName: 'moonolithTop', type: 'side', startY: 0, startX: 0, layer: 1, display: true },
+    moonolithSide: { fileName: 'moonolithSide', type: 'side', startY: 290, startX: 255, layer: 2, display: true },
     plan1: { fileName: 'plan1', type: 'landscape', startX: -2, startY: 14, layer: 1, display: true },
     plan0: { fileName: 'plan0', type: 'landscape', startX: -2, startY: -75, layer: 0, display: true },
     planLogos: { fileName: 'planLogos', type: 'landscape', startX: -25, startY: -45, layer: -1, display: true },
@@ -26,7 +24,6 @@ export function updateImageCatalog() {
             const parallaxOffset = Math.floor(thisImage.parallax * viewPosY);
             thisImage.y = renderHeight + parallaxOffset + viewPosY - thisImage.img.height - thisImage.startY;
             thisImage.x = thisImage.startX - viewPosX + thisImage.shakeX;
-            // if (thisImage.fileName === 'plan1' || thisImage.fileName === 'moon') console.log('moon', thisImage);
         } else if (thisImage.type === 'side') {
             thisImage.y = thisImage.startY + renderHeight + viewPosY - Const.MONOLITH_LINES - Const.MARGIN_BOTTOM - 7;
             thisImage.x = thisImage.startX + Const.MARGIN_LEFT - viewPosX;
@@ -67,9 +64,26 @@ export function drawImages(ctx, layer) {
     for (let image in imageCatalog) {
         const thisImage = imageCatalog[image];
         if (thisImage.layer !== layer) continue;
-        // console.log('drawImage', thisImage, 'layer', layer);
-
-        // if (!thisImage.loaded) console.log(`${thisImage.fileName} not loaded`);
         if (thisImage.display && thisImage.loaded) ctx.drawImage(thisImage.img, thisImage.x, thisImage.y);
+    }
+}
+
+let numberOfSides = 0;
+export function addSideMonolith(monolithHeight) {
+    console.log('pos', imageCatalog.moonolithTop.x, imageCatalog.moonolithTop.y);
+    let sidesHeight = numberOfSides * imageCatalog.moonolithSide.img.height;
+    let sidesToAdd = (monolithHeight - sidesHeight) / imageCatalog.moonolithSide.img.height;
+    console.log('monolithHeight', monolithHeight, 'sidesHeight', sidesHeight, 'sidesToAdd', sidesToAdd);
+    if (sidesToAdd > 0) {
+        for (let i = 0; i < sidesToAdd; i++) {
+            imageCatalog['moonolithSide' + numberOfSides] = {
+                ...imageCatalog.moonolithSide,
+                startX: 255,
+                startY: sidesHeight + imageCatalog.moonolithSide.img.height,
+            };
+            sidesHeight = sidesHeight + imageCatalog.moonolithSide.img.height;
+            numberOfSides++;
+            console.log('numberOfSides', numberOfSides, 'imageCatalog', imageCatalog);
+        }
     }
 }
