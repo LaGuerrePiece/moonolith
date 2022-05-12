@@ -30,9 +30,8 @@ function convertToLayer(coords, plan) {
 
 export function mousePosInGrid(e) {
     const boundingClientRect = canvas.getBoundingClientRect();
-    let y = Math.floor((e.y - boundingClientRect.y) / (scaleFactor * pixelSize));
     let x = Math.floor((e.x - boundingClientRect.x) / (scaleFactor * pixelSize));
-    // console.log('mousePosInGrid', x, y);
+    let y = Math.floor((e.y - boundingClientRect.y) / (scaleFactor * pixelSize));
     return { x: x, y: y };
 }
 

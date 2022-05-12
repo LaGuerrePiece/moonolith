@@ -3,9 +3,10 @@ import { tool } from '../monolith/tools';
 import { renderWidth, renderHeight } from './displayLoop';
 import { convertToMonolithPos } from '../utils/conversions';
 import { monolithIndexes } from '../monolith/monolith';
-import { pointer } from '../controls/controls';
+import { deviceType, pointer } from '../controls/controls';
 
 export function addPointer(monolithData) {
+    if (deviceType === 'mobile') return monolithData
     if (tool === 'smol') {
         whiten(monolithData, pointer.y, pointer.x);
     } else if (tool === 'medium') {

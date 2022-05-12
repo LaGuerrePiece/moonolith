@@ -1,6 +1,6 @@
 //prettier-ignore
-import { scaleFactor, viewPosX, viewPosY, changeViewPos, increaseZoom, decreaseZoom, toggleZoom} from '../display/view';
-import { renderWidth, renderHeight, pixelSize, canvas } from '../display/displayLoop';
+import { viewPosX, viewPosY, changeViewPos, increaseZoom, decreaseZoom, toggleZoom} from '../display/view';
+import { renderWidth, renderHeight, canvas } from '../display/displayLoop';
 import { GUICatalog } from '../display/GUI';
 import Const from '../constants';
 import { mobileEventListener } from './mobileControls';
@@ -11,7 +11,7 @@ import { toggleMusic, playSound, toggleMute } from '../assets/sounds';
 import { eraseAllPixel, increaseMonolithHeight } from '../monolith/monolith';
 import { undo, redo } from '../monolith/undoStack';
 import { brushSwitch, startUsingTool, colorSwitch, selectBrush } from '../monolith/tools';
-import { skipIntro } from '../intro';
+import { introState, skipIntro } from '../intro';
 
 export const deviceType = /(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(navigator.userAgent)
     ? 'tablet'
@@ -26,7 +26,9 @@ document.addEventListener('contextmenu', (e) => { e.preventDefault(); }, false);
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') skipIntro();
 });
+
 export function skipManager(e) {
+    if (!introState) return;
     if (isInSquare(mousePosInGrid(e), 0, 81, 0, 47, 'skipIntro')) {
         skipIntro();
         console.log('Clicked on skipIntro');
