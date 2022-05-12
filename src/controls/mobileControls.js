@@ -3,7 +3,8 @@ import { changeViewPos, increaseZoom, decreaseZoom } from '../display/view';
 import { canvas } from '../display/displayLoop';
 import { startUsingTool } from '../monolith/tools';
 import { clickManager } from './controls';
-import Const from '../constants';
+import { GUICatalog } from '../display/GUI';
+import { isInSquare, mousePosInGrid } from '../utils/conversions';
 
 var prevTouchY = null;
 var prevTouchX = null;
@@ -23,9 +24,9 @@ export function mobileEventListener() {
         touchManager(e);
     });
 
-    hammertime.on('doubletap', function (e) {
-        togglePanMode();
-    });
+    // hammertime.on('doubletap', function (e) {
+    //     togglePanMode();
+    // });
 
     document.addEventListener(
         'touchmove',
@@ -45,8 +46,13 @@ export function mobileEventListener() {
 
 function togglePanMode() {
     panMode = !panMode;
+    GUICatalog.palette.display = !GUICatalog.palette.display;
+    GUICatalog.selectorA.display = !GUICatalog.selectorA.display;
+    GUICatalog.mobileDraw.display = !GUICatalog.mobileDraw.display;
+    GUICatalog.mobileMove.display = !GUICatalog.mobileMove.display;
     console.log('Pan mode', panMode);
 }
+
 function touchManager(e) {
     if (e.type == 'tap') {
         e = {
@@ -55,24 +61,17 @@ function touchManager(e) {
             type: 'touch',
             button: 0,
         };
-        clickManager(e);
-    } else {
-        //console.log(e);
-        if (e.changedTouches[0].pageX < Const.MARGIN_LEFT || e.changedTouches[0].pageX > 370 - Const.MARGIN_RIGHT) {
-            touchPan(e);
-        } else if (e.touches.length == 1 && e.type == 'touchmove' && e.timeStamp > 3000) {
-            console.log(e);
-            touchDraw(e);
-        }
+        console.log('tap', e);
+        if (isInSquare(mousePosInGrid(e), 0, 81, 0, 47, 'palette')) {
+            togglePanMode();
+            console.log('Clicked on togglePanMode');
+        } else clickManager(e);
+    } else if (panMode) {
+        touchPan(e);
+    } else if (!panMode) {
+        touchDraw(e);
+        // updatePalette();
     }
-
-    //  else if (panMode) {
-    //     touchPan(e);
-    //     imageCatalog.palette.img = paletteCatalog.palettePAN.img;
-    // } else if (!panMode) {
-    //     touchDraw(e);
-    //     updatePalette();
-    // }
 
     function touchDraw(e) {
         e = {
@@ -90,7 +89,6 @@ function touchManager(e) {
             prevTouchX = e.touches[0].clientX;
         } else if (e.type === 'touchmove') {
             const touch = e.touches[0];
-            let deltaY = e.changedTouches[0].clientY - e.touches[0].clientY;
             const changedY = touch.clientY - prevTouchY;
             const changedX = touch.clientX - prevTouchX;
             changeViewPos(-Math.floor(changedX / 2), Math.floor(changedY / 2));

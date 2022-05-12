@@ -35,6 +35,8 @@ export let paletteCatalog = {
 
 export let GUICatalog = {
     skipIntro: { fileName: 'skipIntro', display: true },
+    mobileDraw: { fileName: 'mobileDraw', type: 'toggleMode', display: false },
+    mobileMove: { fileName: 'mobileMove', type: 'toggleMode', display: false },
     panneau: { fileName: 'panneau', type: 'popup', display: false },
     share: { fileName: 'share', type: 'popup', display: false },
     selectorA: { fileName: '/palette/selector1A', type: 'GUI', display: false },
@@ -50,6 +52,7 @@ export function displayPalette() {
     GUICatalog.palette.display = true;
     GUICatalog.selectorA.display = true;
     GUICatalog.selectorB.display = deviceType === 'mobile' ? false : true;
+    GUICatalog.mobileMove.display = deviceType === 'mobile' ? true : false;
 }
 
 export function updatePalette() {
@@ -80,6 +83,9 @@ export function updateGUICatalog() {
         } else if (thisLayer.type === 'popup') {
             thisLayer.x = Math.floor((Const.COLUMNS - GUICatalog.panneau.img.width) / 2);
             thisLayer.y = Math.floor((renderHeight - GUICatalog.panneau.img.height) / 2 - 6);
+        } else if (thisLayer.type === 'toggleMode') {
+            thisLayer.x = Math.floor(Const.COLUMNS - GUICatalog.panneau.img.width);
+            thisLayer.y = Math.floor((renderHeight - GUICatalog.panneau.img.height) / 20);
         } else if (thisLayer.fileName == 'skipIntro') {
             thisLayer.x = Math.floor(Const.COLUMNS - GUICatalog.skipIntro.img.width) - 20;
             thisLayer.y = Math.floor((renderHeight - GUICatalog.skipIntro.img.height) / 20);
