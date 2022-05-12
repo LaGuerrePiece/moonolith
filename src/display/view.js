@@ -5,6 +5,7 @@ import { getChunk } from '../utils/web3';
 import { prepareBufferForApi } from '../utils/imageManager';
 import { canvas, renderHeight, renderWidth } from '../display/displayLoop';
 import { updatePalette } from './GUI';
+import { imageCatalog } from './images';
 
 export let scaleFactor = 1;
 export let viewPosY = 0;
@@ -87,5 +88,7 @@ function zoom(factor) {
         if (viewPosY + renderHeight > Const.LINES) viewPosY = Const.LINES - renderHeight;
         if (viewPosY < 0) viewPosY = 0;
     }
+    if (scaleFactor > 1) imageCatalog.planLogos.display = false;
+    else imageCatalog.planLogos.display = true;
     updatePalette();
 }

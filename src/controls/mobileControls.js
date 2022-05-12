@@ -1,5 +1,5 @@
 //prettier-ignore
-import { changeViewPos, increaseZoom, decreaseZoom } from '../display/view';
+import { changeViewPos, increaseZoom, decreaseZoom, scaleFactor } from '../display/view';
 import { canvas } from '../display/displayLoop';
 import { startUsingTool } from '../monolith/tools';
 import { clickManager } from './controls';
@@ -23,10 +23,6 @@ export function mobileEventListener() {
     hammertime.on('tap', function (e) {
         touchManager(e);
     });
-
-    // hammertime.on('doubletap', function (e) {
-    //     togglePanMode();
-    // });
 
     document.addEventListener(
         'touchmove',
@@ -91,7 +87,8 @@ function touchManager(e) {
             const touch = e.touches[0];
             const changedY = touch.clientY - prevTouchY;
             const changedX = touch.clientX - prevTouchX;
-            changeViewPos(-Math.floor(changedX / 2), Math.floor(changedY / 2));
+            if (scaleFactor == 1) changeViewPos(-Math.floor(changedX / 2), Math.floor(changedY));
+            else changeViewPos(-Math.floor(changedX / 2), Math.floor(changedY / 2));
             prevTouchY = Math.floor(e.changedTouches[0].clientY);
             prevTouchX = Math.floor(e.changedTouches[0].clientX);
         } else if (e.type === 'touchend') {
