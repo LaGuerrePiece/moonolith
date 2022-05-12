@@ -63,30 +63,33 @@ export async function setInitialViewPos() {
     }
 }
 
-export function increaseZoom() {
+export function increaseZoom(x = 0.2) {
     console.log('increaseZoom');
-    zoom(scaleFactor + 0.2);
+    zoom(scaleFactor + x);
 }
 
-export function decreaseZoom() {
-    zoom(scaleFactor - 0.2);
+export function decreaseZoom(x = 0.2) {
+    zoom(scaleFactor - x);
 }
 
 export function toggleZoom() {
-    zoom(scaleFactor + 0.2);
+    if (scaleFactor === 1) zoom(3);
+    else if (scaleFactor === 3) zoom(6);
+    else zoom(1);
 }
 
 function zoom(factor) {
-    if (factor < 1 || factor > 6.6) return;
+    if (factor < 1) factor = 1;
+    if (factor > 6.6) factor = 6.6;
     canvas.style.transform = `scale(${factor})`;
-    scaleFactor = factor;
     if (factor === 1) {
         viewPosX = 0;
         if (viewPosY + renderHeight > Const.LINES) viewPosY = Const.LINES - renderHeight;
         if (viewPosY < 0) viewPosY = 0;
     }
-    if (scaleFactor > 1) imageCatalog.planLogos.display = false;
+    if (factor > 1) imageCatalog.planLogos.display = false;
     else imageCatalog.planLogos.display = true;
+    scaleFactor = factor;
     console.log('scaleFactor', scaleFactor);
     updatePalette();
 }

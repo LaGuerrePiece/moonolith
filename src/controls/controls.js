@@ -172,6 +172,7 @@ function scrollManager(e) {
         e.preventDefault();
         if (e.deltaY < 0) increaseZoom();
         else if (e.deltaY > 0) decreaseZoom();
+        return;
     }
     let now = Date.now();
     if (e.deltaY > 0) {

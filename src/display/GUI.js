@@ -1,5 +1,5 @@
-import { pointer } from '../controls/controls';
-import { deviceType } from '../controls/controls';
+import { pointer, deviceType } from '../controls/controls';
+import { panMode } from '../controls/mobileControls';
 import { canvas, renderHeight, renderWidth, windowHeight, pixelSize } from './displayLoop';
 import { scaleFactor } from './view';
 import { colorNumber1, colorNumber2, tool } from '../monolith/tools';
@@ -49,10 +49,11 @@ export function displayShareScreen() {
 }
 
 export function displayPalette() {
+    GUICatalog.mobileDraw.display = deviceType === 'mobile' ? true : false;
+    if (deviceType === 'mobile' && panMode) return;
     GUICatalog.palette.display = true;
     GUICatalog.selectorA.display = true;
     GUICatalog.selectorB.display = deviceType === 'mobile' ? false : true;
-    GUICatalog.mobileMove.display = deviceType === 'mobile' ? true : false;
 }
 
 export function updatePalette() {
@@ -73,10 +74,10 @@ export function updatePalette() {
 }
 
 export function updateGUICatalog() {
+    const boundingClientRect = canvas.getBoundingClientRect();
     for (let GUILayer in GUICatalog) {
         const thisLayer = GUICatalog[GUILayer];
         if (thisLayer.type === 'palette') {
-            const boundingClientRect = canvas.getBoundingClientRect();
             thisLayer.y = Math.floor(
                 ((windowHeight - boundingClientRect.y) / (pixelSize * scaleFactor) - GUICatalog.palette.img.height) /
                     Const.GUI_RELATIVE_Y +
@@ -87,8 +88,9 @@ export function updateGUICatalog() {
             thisLayer.x = Math.floor((Const.COLUMNS - GUICatalog.panneau.img.width) / 2);
             thisLayer.y = Math.floor((renderHeight - GUICatalog.panneau.img.height) / 2 - 6);
         } else if (thisLayer.type === 'toggleMode') {
-            thisLayer.x = Math.floor(Const.COLUMNS - GUICatalog.panneau.img.width);
-            thisLayer.y = Math.floor((renderHeight - GUICatalog.panneau.img.height) / 20);
+            // thisLayer.y = Math.floor((renderHeight - GUICatalog.mobileMove.img.height) / 20);
+            thisLayer.y = Math.floor(-boundingClientRect.y / (pixelSize * scaleFactor) + 3 / scaleFactor);
+            thisLayer.x = Math.floor(Const.COLUMNS - GUICatalog.mobileMove.img.width) / 2;
         } else if (thisLayer.fileName == 'skipIntro') {
             thisLayer.x = Math.floor(Const.COLUMNS - GUICatalog.skipIntro.img.width) - 20;
             thisLayer.y = Math.floor((renderHeight - GUICatalog.skipIntro.img.height) / 20);

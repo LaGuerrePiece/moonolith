@@ -8,16 +8,18 @@ import { isInSquare, mousePosInGrid } from '../utils/conversions';
 
 var prevTouchY = null;
 var prevTouchX = null;
-var panMode = false;
+export var panMode = true;
 
 export function mobileEventListener() {
     var hammertime = new Hammer(canvas);
 
     hammertime.get('pinch').set({ enable: true });
-    hammertime.on('pinchend', function (e) {
-        //console.log('pinch', e);
-        if (e.scale > 2) increaseZoom();
-        else if (e.scale < 0.5) decreaseZoom();
+
+    hammertime.on('pinch', function (e) {
+        console.log('pinch', e);
+        if (!panMode) return;
+        if (e.scale > 1) increaseZoom();
+        else decreaseZoom();
     });
 
     hammertime.on('tap', function (e) {
@@ -61,7 +63,7 @@ function touchManager(e) {
         if (isInSquare(mousePosInGrid(e), 0, 120, 0, 40, 'mobileDraw')) {
             togglePanMode();
             console.log('Clicked on togglePanMode');
-        } else clickManager(e);
+        } else if (!panMode) clickManager(e);
     } else if (panMode) {
         touchPan(e);
     } else if (!panMode) {
