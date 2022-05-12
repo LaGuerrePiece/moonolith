@@ -64,8 +64,7 @@ export function drawMonolith(ctx) {
           Math.max(Const.MARGIN_TOP - (Const.LINES - viewPosY - renderHeight), 0);
     if (monolithDisplayHeight <= 0) return;
     let monolithData = ctx.createImageData(Const.MONOLITH_COLUMNS, monolithDisplayHeight);
-    const a = addPointer(monolith.slice());
-    monolithData.data.set(cutMonolith(a, monolithDisplayHeight));
+    monolithData.data.set(cutMonolith(addPointer(monolith.slice()), monolithDisplayHeight));
     const posY = introState
         ? renderHeight - Const.MARGIN_BOTTOM - monolithDisplayHeightIntro + viewPosY
         : Const.MARGIN_TOP - Const.LINES + viewPosY + renderHeight;

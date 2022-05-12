@@ -3,6 +3,7 @@ import Const from './constants';
 import { getChunk, getMetaData } from './utils/web3';
 import { setInitialViewPos } from './display/view';
 import { buildMonolith, increaseMonolithHeight } from './monolith/monolith';
+import { addSideMonolith } from './display/images';
 import { parseAPNG, bufferOnMonolith } from './utils/imageManager';
 import { launchIntro } from './intro';
 import { hammer } from 'hammerjs';
@@ -73,6 +74,7 @@ export async function chunkImport(first, monoHeightSet) {
     if (importedChunks - meta.nbChunks !== 0 && !first)
         increaseMonolithHeight(newMonolithHeight - Const.MONOLITH_LINES);
     importedChunks = meta.nbChunks;
+    addSideMonolith(newMonolithHeight);
 }
 
 export async function setMonoHeightAndBuildIt() {
