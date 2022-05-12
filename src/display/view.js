@@ -64,22 +64,19 @@ export async function setInitialViewPos() {
 
 export function increaseZoom() {
     console.log('increaseZoom');
-    if (scaleFactor === 1) zoom(3);
-    else if (scaleFactor === 3) zoom(6);
+    zoom(scaleFactor + 0.2);
 }
 
 export function decreaseZoom() {
-    if (scaleFactor === 6) zoom(3);
-    else if (scaleFactor === 3) zoom(1);
+    zoom(scaleFactor - 0.2);
 }
 
 export function toggleZoom() {
-    if (scaleFactor === 1) zoom(3);
-    else if (scaleFactor === 3) zoom(6);
-    else zoom(1);
+    zoom(scaleFactor + 0.2);
 }
 
 function zoom(factor) {
+    if (factor < 1 || factor > 6.6) return;
     canvas.style.transform = `scale(${factor})`;
     scaleFactor = factor;
     if (factor === 1) {
@@ -87,5 +84,6 @@ function zoom(factor) {
         if (viewPosY + renderHeight > Const.LINES) viewPosY = Const.LINES - renderHeight;
         if (viewPosY < 0) viewPosY = 0;
     }
+    console.log('scaleFactor', scaleFactor);
     updatePalette();
 }

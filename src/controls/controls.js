@@ -66,6 +66,8 @@ function keyManager(e){
     if (e.key === 'l') toggleMute();
     if (e.key === 'p') { increaseMonolithHeight(1100); }
     if (e.key === 't') { changeViewPos(0, 999999); }
+    if (e.key === '+') increaseZoom();
+    if (e.key === '-') decreaseZoom();
 
     switch (e.code || e.key || e.keyCode) {
         case 'KeyW':

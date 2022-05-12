@@ -53,10 +53,13 @@ export function displayPalette() {
 }
 
 export function updatePalette() {
-    GUICatalog.palette.img = paletteCatalog[`palette${scaleFactor}${tool}`].img;
-    GUICatalog.selectorA.img = paletteCatalog[`selector${scaleFactor}A`].img;
-    GUICatalog.selectorB.img = paletteCatalog[`selector${scaleFactor}B`].img;
-    GUICatalog.palette.info = Const.PALETTE_INFO[scaleFactor];
+    // the scalefactor
+    const paletteFactor = scaleFactor <= 2 ? 1 : scaleFactor <= 4 ? 3 : 6;
+
+    GUICatalog.palette.img = paletteCatalog[`palette${paletteFactor}${tool}`].img;
+    GUICatalog.selectorA.img = paletteCatalog[`selector${paletteFactor}A`].img;
+    GUICatalog.selectorB.img = paletteCatalog[`selector${paletteFactor}B`].img;
+    GUICatalog.palette.info = Const.PALETTE_INFO[paletteFactor];
 
     // dirty case for phone unzoomed
     if (deviceType === 'mobile' && scaleFactor === 1) {
