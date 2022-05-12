@@ -62,7 +62,7 @@ function touchManager(e) {
             button: 0,
         };
         console.log('tap', e);
-        if (isInSquare(mousePosInGrid(e), 0, 81, 0, 47, 'palette')) {
+        if (isInSquare(mousePosInGrid(e), 0, 120, 0, 40, 'mobileDraw')) {
             togglePanMode();
             console.log('Clicked on togglePanMode');
         } else clickManager(e);
