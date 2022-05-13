@@ -57,8 +57,11 @@ export default class Const {
       "2" : 0.15,
       "2.5" : 0.18,
       "3" : 0.2,
+      "3.5" : 0.22,
       "4" : 0.25,
       "5" : 0.3,
+      "6" : 0,
+
     }}
 
     static get PALETTE_INFO() { return {

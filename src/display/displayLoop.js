@@ -37,13 +37,15 @@ export function initDisplay() {
         ctx.fillStyle = 'rgb(196, 130, 127)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+        drawLayer(ctx, 6);
         drawLayer(ctx, 5);
         drawLayer(ctx, 4);
+        drawLayer(ctx, 3.5);
         drawLayer(ctx, 3);
         drawLayer(ctx, 2.5);
         drawLayer(ctx, 2);
         drawLayer(ctx, 1.5);
-        drawMonolith(ctx);
+        // drawMonolith(ctx);
         drawLayer(ctx, 1);
         drawLayer(ctx, 0.5);
         drawLayer(ctx, 0);
