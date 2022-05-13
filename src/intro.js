@@ -1,5 +1,5 @@
 import { chunkImport, setMonoHeightAndBuildIt } from './main';
-import { changeViewPos, changeViewPosSmoothly, viewPosY } from './display/view';
+import { changeViewPos, changeViewPosSmoothly, viewPosY, setInitialViewPos } from './display/view';
 import { displayPalette, GUICatalog } from './display/GUI';
 import { canvas, initDisplay } from './display/displayLoop';
 import { animCatalog, launchAnim } from './display/animations';
@@ -79,6 +79,7 @@ export function skipIntro() {
     animCatalog.collision.display = false;
     GUICatalog.skipIntro.display = false;
     changeViewPos(0, -999999);
+    setInitialViewPos();
     unlockScroll();
     console.log('Intro Skipped');
     launchAnim('panneauRainbow');

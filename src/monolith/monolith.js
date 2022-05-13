@@ -2,8 +2,8 @@ import Const from '../constants';
 import { addToCurrentEvent, closeCurrentEvent } from './undoStack';
 import { playSound } from '../assets/sounds';
 import { shake } from '../display/displayLoop';
-import { animatedPixels } from './monolithAnims';
-import { importedChunks } from '../main';
+import { animatedPixels, chunksToAnimateInfo } from './monolithAnims';
+import { importedChunks, runeNumber } from '../main';
 
 export let monolith;
 export let monolithIndexes;
@@ -35,9 +35,11 @@ export function drawPixel(x, y, zIndex, color) {
         addToCurrentEvent(x, y, [monolith[pos], monolith[pos + 1], monolith[pos + 2]], monolithzIndex); //If being drawn by user, add to curent event
 
     let transitionType =
-        zIndex === 0 ? 'draw' : zIndex === undefined ? 'erase' : zIndex === importedChunks ? 'import' : undefined;
-    if (transitionType) {
+        zIndex === 0 ? 'draw' : zIndex === undefined ? 'erase' : chunksToAnimateInfo[zIndex] ? 'import' : undefined;
+    if (transitionType === 'draw' || transitionType === 'erase') {
         animatedPixels.set(pos, [transitionType, color, 1]);
+    } else if (transitionType === 'import') {
+        chunksToAnimateInfo[zIndex].data.push([pos, color]);
     } else {
         monolith[pos] = color[0];
         monolith[pos + 1] = color[1];
