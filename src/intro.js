@@ -80,6 +80,8 @@ export async function launchIntro() {
 }
 
 export function skipIntro() {
+    displayImage('topAlien');
+    displayImage('terreRetournee');
     animCatalog.runPlan0.display = false;
     animCatalog.introRunB.display = false;
     animCatalog.collision.display = false;

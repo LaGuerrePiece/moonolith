@@ -6,6 +6,9 @@ import Const from '../constants';
 // prettier-ignore
 export let imageCatalog = {
     plan5: { fileName: 'plan5', type: 'landscape', startX: -2, startY: 330, layer: 5, display: true },
+    stratus: { fileName: 'stratus', type: 'sky', startX: 0, startY: 460, layer: 6, display: true },
+    cumulus: { fileName: 'cumulus', type: 'sky', startX: 0, startY: 240, layer: 3.5, display: true },
+    stars: { fileName: 'stars', type: 'sky', startX: 0, startY: 470, layer: 6, display: true },
     plan4: { fileName: 'plan4', type: 'landscape', startX: -2, startY: 300, layer: 4, display: true },
     plan3: { fileName: 'plan3', type: 'landscape', startX: -2, startY: 250, layer: 3, display: true },
     plan2C: { fileName: 'plan2C', type: 'landscape', startX: -2, startY: 230, layer: 2.5, display: true },
@@ -27,7 +30,7 @@ export let imageCatalog = {
 export function updateImageCatalog() {
     for (let image in imageCatalog) {
         const thisImage = imageCatalog[image];
-        if (thisImage.type === 'landscape') {
+        if (thisImage.type === 'landscape' || thisImage.type === 'sky') {
             const parallaxOffset = Math.floor(thisImage.parallax * viewPosY);
             thisImage.y = renderHeight + parallaxOffset + viewPosY - thisImage.img.height - thisImage.startY;
             thisImage.x = thisImage.startX - viewPosX + thisImage.shakeX;

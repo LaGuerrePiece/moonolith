@@ -35,8 +35,8 @@ export let paletteCatalog = {
 
 export let GUICatalog = {
     skipIntro: { fileName: 'skipIntro', display: true },
-    mobileDraw: { fileName: 'mobileDraw', type: 'toggleMode', display: false },
-    mobileMove: { fileName: 'mobileMove', type: 'toggleMode', display: false },
+    mobileDraw: { fileName: 'mobile/draw1', type: 'toggleMode', display: false },
+    mobileMove: { fileName: 'mobile/move1', type: 'toggleMode', display: false },
     panneau: { fileName: 'panneau', type: 'popup', display: false },
     share: { fileName: 'share', type: 'popup', display: false },
     selectorA: { fileName: '/palette/selector1A', type: 'GUI', display: false },
