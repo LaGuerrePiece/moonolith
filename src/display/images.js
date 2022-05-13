@@ -20,8 +20,8 @@ export let imageCatalog = {
     plan0B: { fileName: 'plan0B', type: 'landscape', startX: -2, startY: 5, layer: 0.5, display: true },
     plan0: { fileName: 'plan0', type: 'landscape', startX: -2, startY: -75, layer: 0, display: true },
     planLogos: { fileName: 'planLogos', type: 'landscape', startX: -25, startY: -45, layer: -1, display: true },
-    // moon: { fileName: 'moon', type: 'landscape', startX: 150, startY: 165, layer: 1, display: true },
-    topAlien: { fileName: 'topDood', type: 'topAlien', startX: 0, startY: 0, layer: 1, display: false },
+    moon: { fileName: 'moon', type: 'landscape', startX: 141, startY: 161, layer: 1, display: true },
+    TibonomEmporte: { fileName: 'TibonomEmporte', type: 'TibonomEmporte', startX: 129, startY: 8, layer: 1, display: false },
 };
 
 export function updateImageCatalog() {
@@ -35,7 +35,7 @@ export function updateImageCatalog() {
             thisImage.y = thisImage.startY + renderHeight + viewPosY - Const.MONOLITH_LINES - Const.MARGIN_BOTTOM - 7;
             thisImage.x = thisImage.startX + Const.MARGIN_LEFT - viewPosX;
             if (introState) thisImage.y = thisImage.y + Const.MONOLITH_LINES - monolithDisplayHeightIntro;
-        } else if (thisImage.type === 'topAlien') {
+        } else if (thisImage.type === 'TibonomEmporte') {
             thisImage.y = thisImage.startY + renderHeight + viewPosY - Const.MONOLITH_LINES - Const.MARGIN_BOTTOM - 40;
             thisImage.x = thisImage.startX + Const.MARGIN_LEFT - viewPosX - 22;
             if (introState) thisImage.y = thisImage.y + Const.MONOLITH_LINES - monolithDisplayHeightIntro;

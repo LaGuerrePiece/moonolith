@@ -6,17 +6,17 @@ import Const from '../constants';
 
 //prettier-ignore
 export let animCatalog = {
-    collision: { type: 'intro', startX: 0, startY: 400, display: false, loop: false, layer: 1, base64: collision },
-    runPlan0: { type: 'intro', startX: 184, startY: 39, display: false, loop: false, layer: 0, base64: runPlan0 },
-    // runPlan1: { type: 'intro', startX: 0, startY: 13, display: false, loop: false, layer: 1, base64: runPlan1 },
-    introRunB: { type: 'intro', startX: 0, startY: 13, display: false, loop: false, layer: 1, base64: introRunB },
-    introRunC: { type: 'intro', startX: 0, startY: 13, display: false, loop: false, layer: 1, base64: introRunC },
-    introRunD: { type: 'intro', startX: 0, startY: 13, display: false, loop: false, layer: 1, base64: introRunD },
     // twitter: { fileName: 'twitter', startX: 0 + 96, startY: 83, display: true, loop: true, layer: 0, base64: twitter },
     panneauRainbow: { fileName: 'panneauRainbow', startX: 227, startY: 183, display: false, loop: false, layer: 1, base64: panneauRainbow },
-    arbre0: { fileName: 'arbre0', startX: 0, startY: 0, display: true, loop: true, layer: 0, base64: arbre0 },
+    arbre0: { fileName: 'arbre0', startX: 25, startY: 0, display: true, loop: true, layer: 0, base64: arbre0 },
     vent0: { fileName: 'vent0', startX: 0, startY: 0, display: true, loop: true, layer: 0, base64: vent0 },
-    vaisseau: { fileName: 'vaisseau', startX: 280, startY: 0, display: true, loop: true, layer: 0, base64: vaisseau },
+    vaisseau: { fileName: 'vaisseau', startX: 280, startY: 15, display: true, loop: true, layer: 0, base64: vaisseau },
+
+    collision: { type: 'intro', startX: 0, startY: 400, display: false, loop: false, layer: 1, base64: collision },
+    runPlan0: { type: 'intro', startX: 187, startY: 33, display: false, loop: false, layer: 0, base64: runPlan0 },
+    introRunB: { type: 'intro', startX: 71, startY: 92, display: false, loop: false, layer: 1, base64: introRunB },
+    introRunC: { type: 'intro', startX: -25, startY: 1, display: false, loop: false, layer: 1, base64: introRunC },
+    introRunD: { type: 'intro', startX: -5, startY: 13, display: false, loop: false, layer: 1, base64: introRunD },
 };
 
 function animFrameManager(anim) {

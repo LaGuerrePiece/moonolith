@@ -4,7 +4,7 @@ import { displayPalette, GUICatalog } from './display/GUI';
 import { canvas, initDisplay } from './display/displayLoop';
 import { animCatalog, launchAnim } from './display/animations';
 import { shake } from './display/displayLoop';
-import { displayImage } from './display/images';
+import { displayImage, imageCatalog } from './display/images';
 import { skipManager, unlockControls, unlockScroll } from './controls/controls';
 import { toggleMusic } from './assets/sounds';
 import Const from './constants';
@@ -27,10 +27,10 @@ export async function launchIntro() {
 
     if (!introState) return;
 
-    changeViewPosSmoothly(-350, 7);
+    changeViewPosSmoothly(-390, 7);
     await new Promise((resolve) => {
         function waitForViewPos() {
-            if (viewPosY == 50 || !introState) {
+            if (viewPosY == 10 || !introState) {
                 resolve('Cette fonction est-elle propre ?');
                 return;
             }
@@ -47,21 +47,21 @@ export async function launchIntro() {
     changeViewPosSmoothly(70, 50);
 
     launchAnim('introRunB');
+    imageCatalog.moon.display = false;
     await new Promise((resolve) => setTimeout(resolve, animCatalog.introRunB.totalDelay));
 
     launchAnim('introRunC');
     await new Promise((resolve) => setTimeout(resolve, animCatalog.introRunC.totalDelay));
-
+    monolithDisplayHeightIntro += 12;
     launchAnim('introRunD');
-    await new Promise((resolve) => setTimeout(resolve, animCatalog.introRunD.totalDelay));
-
-    if (!introState) return;
-
     monolithGoUpDuringIntro();
 
     if (!introState) return;
 
-    displayImage('topAlien');
+    // displayImage('topAlien');
+    displayImage('TibonomEmporte');
+    // await new Promise((resolve) => setTimeout(resolve, animCatalog.introRunD.totalDelay));
+
     displayImage('terreRetournee');
     unlockScroll();
 
@@ -76,7 +76,7 @@ export async function launchIntro() {
         displayPalette();
         GUICatalog.skipIntro.display = false;
         introState = false;
-    }, 800 * Math.log(Const.MONOLITH_LINES) - 500);
+    }, 650 * Math.log(Const.MONOLITH_LINES - 12));
 }
 
 export function skipIntro() {
@@ -96,8 +96,8 @@ export function skipIntro() {
 }
 
 function monolithGoUpDuringIntro() {
-    for (let row = 0; row < Const.MONOLITH_LINES; row++) {
-        let scalingValue = 800 * Math.log(row) - 500;
+    for (let row = 0; row < Const.MONOLITH_LINES - 12; row++) {
+        let scalingValue = 650 * Math.log(row);
         setTimeout(() => {
             monolithDisplayHeightIntro++;
         }, scalingValue);
