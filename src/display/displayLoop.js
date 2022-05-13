@@ -41,6 +41,7 @@ export function initDisplay() {
         drawLayer(ctx, 4);
         drawLayer(ctx, 3);
         drawLayer(ctx, 2);
+        drawLayer(ctx, 1.5);
         drawMonolith(ctx);
         drawLayer(ctx, 1);
         drawLayer(ctx, 0);

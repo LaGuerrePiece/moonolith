@@ -1,4 +1,4 @@
-import { twitter, collision, panneauRainbow, runPlan0, runPlan1, arbre0, vaisseau } from '../assets/base64';
+import { twitter, vent0, collision, panneauRainbow, runPlan0, runPlan1, arbre0, vaisseau } from '../assets/base64';
 import { renderHeight } from './displayLoop';
 import { viewPosX, viewPosY } from './view';
 import Const from '../constants';
@@ -7,10 +7,11 @@ import Const from '../constants';
 export let animCatalog = {
     collision: { type: 'intro', startX: 0, startY: 400, display: false, loop: false, layer: 1, base64: collision },
     runPlan0: { type: 'intro', startX: 184, startY: 39, display: false, loop: false, layer: 0, base64: runPlan0 },
-    runPlan1: { type: 'intro', startX: 0, startY: 100, display: false, loop: false, layer: 1, base64: runPlan1 },
-    twitter: { fileName: 'twitter', startX: 0 + 96, startY: 83, display: true, loop: true, layer: 0, base64: twitter },
+    runPlan1: { type: 'intro', startX: 0, startY: 13, display: false, loop: false, layer: 1, base64: runPlan1 },
+    // twitter: { fileName: 'twitter', startX: 0 + 96, startY: 83, display: true, loop: true, layer: 0, base64: twitter },
     panneauRainbow: { fileName: 'panneauRainbow', startX: 227, startY: 183, display: false, loop: false, layer: 1, base64: panneauRainbow },
-    arbre0: { fileName: 'arbre0', startX: 0, startY: 20, display: true, loop: true, layer: 0, base64: arbre0 },
+    arbre0: { fileName: 'arbre0', startX: 0, startY: 0, display: true, loop: true, layer: 0, base64: arbre0 },
+    vent0: { fileName: 'vent0', startX: 0, startY: 0, display: true, loop: true, layer: 0, base64: vent0 },
     vaisseau: { fileName: 'vaisseau', startX: 280, startY: 0, display: true, loop: true, layer: 0, base64: vaisseau },
 };
 

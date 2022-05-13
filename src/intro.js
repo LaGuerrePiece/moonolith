@@ -56,6 +56,7 @@ export async function launchIntro() {
     if (!introState) return;
 
     displayImage('topAlien');
+    displayImage('terreRetournee');
     unlockScroll();
 
     if (!introState) return;
