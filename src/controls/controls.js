@@ -124,8 +124,8 @@ export function clickManager(e) {
             if (isInCircle(mousePos, info[`row${row}Y`], info.offsetX + info.spaceX * column, info.smolRadius, 'palette')) colorSwitch(e, i);
         }
 
-        if (isInCircle(mousePos, info.bigY, info.bigX1, info.bigRadius, 'palette')) saveToEthernity();
-        else if (isInCircle(mousePos, info.bigY, info.bigX2, info.bigRadius, 'palette')) brushSwitch();
+        if (isInCircle(mousePos, info.bigY, info.bigX2, info.bigRadius, 'palette')) saveToEthernity();
+        else if (isInCircle(mousePos, info.bigY, info.bigX1, info.bigRadius, 'palette')) brushSwitch();
 
     } else if (GUICatalog.share.display) {
         if (!isInSquare(mousePos, 0, GUICatalog.share.img.width, 0, GUICatalog.share.img.height, 'share')) {
