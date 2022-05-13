@@ -51,9 +51,11 @@ export default class Const {
     static get PARALLAX_LAYERS() { return {
       '-1': 1,
       "0" : -0.15, 
+      '0.5': -0.075,
       "1" : 0,
       "1.5" : 0,
       "2" : 0.15,
+      "2.5" : 0.18,
       "3" : 0.2,
       "4" : 0.25,
       "5" : 0.3,

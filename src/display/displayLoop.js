@@ -40,10 +40,12 @@ export function initDisplay() {
         drawLayer(ctx, 5);
         drawLayer(ctx, 4);
         drawLayer(ctx, 3);
+        drawLayer(ctx, 2.5);
         drawLayer(ctx, 2);
         drawLayer(ctx, 1.5);
         drawMonolith(ctx);
         drawLayer(ctx, 1);
+        drawLayer(ctx, 0.5);
         drawLayer(ctx, 0);
         drawLayer(ctx, -1);
         drawGUI(ctx);

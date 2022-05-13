@@ -3,18 +3,21 @@ import { viewPosY, viewPosX } from './view';
 import { monolithDisplayHeightIntro, introState } from '../intro';
 import Const from '../constants';
 
+// prettier-ignore
 export let imageCatalog = {
-    // plan5: { fileName: 'plan5', type: 'landscape', startX: -2, startY: 330, layer: 5, display: true },
-    // plan4: { fileName: 'plan4', type: 'landscape', startX: -2, startY: 300, layer: 4, display: true },
-    // plan3: { fileName: 'plan3', type: 'landscape', startX: -2, startY: 250, layer: 3, display: true },
-    // plan2: { fileName: 'plan2', type: 'landscape', startX: -2, startY: 190, layer: 2, display: true },
+    plan5: { fileName: 'plan5', type: 'landscape', startX: -2, startY: 330, layer: 5, display: true },
+    plan4: { fileName: 'plan4', type: 'landscape', startX: -2, startY: 300, layer: 4, display: true },
+    plan3: { fileName: 'plan3', type: 'landscape', startX: -2, startY: 250, layer: 3, display: true },
+    plan2C: { fileName: 'plan2C', type: 'landscape', startX: -2, startY: 230, layer: 2.5, display: true },
+    plan2B: { fileName: 'plan2B', type: 'landscape', startX: -2, startY: 230, layer: 2.5, display: true },
+    plan2: { fileName: 'plan2', type: 'landscape', startX: -2, startY: 190, layer: 2, display: true },
     plan1B: { fileName: 'plan1B', type: 'landscape', startX: -2, startY: 198, layer: 1.5, display: true },
     moonolithTop: { fileName: 'moonolithTop', type: 'side', startY: 0, startX: 0, layer: 1.5, display: true },
     moonolithSide: { fileName: 'moonolithSide', type: 'side', startY: 290, startX: 255, layer: 1.5, display: true },
     plan1A: { fileName: 'plan1A', type: 'landscape', startX: -2, startY: 98, layer: 1, display: true },
     plan1arbres: { fileName: 'plan1arbres', type: 'landscape', startX: 0, startY: 108, layer: 1, display: true },
     terreRetournee: { fileName: 'terreRetournee', type: 'landscape', startX: 24, startY: 157, layer: 1, display: false },
-    // plan1: { fileName: 'plan1', type: 'landscape', startX: -2, startY: 14, layer: 1, display: true },
+    plan0B: { fileName: 'plan0B', type: 'landscape', startX: -2, startY: 5, layer: 0.5, display: true },
     plan0: { fileName: 'plan0', type: 'landscape', startX: -2, startY: -75, layer: 0, display: true },
     planLogos: { fileName: 'planLogos', type: 'landscape', startX: -25, startY: -45, layer: -1, display: true },
     // moon: { fileName: 'moon', type: 'landscape', startX: 150, startY: 165, layer: 1, display: true },

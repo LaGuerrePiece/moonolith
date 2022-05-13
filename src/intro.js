@@ -46,8 +46,14 @@ export async function launchIntro() {
 
     changeViewPosSmoothly(70, 50);
 
-    launchAnim('runPlan1');
-    await new Promise((resolve) => setTimeout(resolve, animCatalog.runPlan1.totalDelay));
+    launchAnim('introRunB');
+    await new Promise((resolve) => setTimeout(resolve, animCatalog.introRunB.totalDelay));
+
+    launchAnim('introRunC');
+    await new Promise((resolve) => setTimeout(resolve, animCatalog.introRunC.totalDelay));
+
+    launchAnim('introRunD');
+    await new Promise((resolve) => setTimeout(resolve, animCatalog.introRunD.totalDelay));
 
     if (!introState) return;
 
@@ -75,7 +81,7 @@ export async function launchIntro() {
 
 export function skipIntro() {
     animCatalog.runPlan0.display = false;
-    animCatalog.runPlan1.display = false;
+    animCatalog.introRunB.display = false;
     animCatalog.collision.display = false;
     GUICatalog.skipIntro.display = false;
     changeViewPos(0, -999999);
