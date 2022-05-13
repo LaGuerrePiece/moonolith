@@ -63,13 +63,13 @@ export async function setInitialViewPos() {
     }
 }
 
-export function increaseZoom(x = 0.2) {
-    console.log('increaseZoom');
-    zoom(scaleFactor + x);
+export function increaseZoom(x = 0.1) {
+    // console.log('increaseZoom');
+    zoom(scaleFactor * (1 + x));
 }
 
-export function decreaseZoom(x = 0.2) {
-    zoom(scaleFactor - x);
+export function decreaseZoom(x = 0.1) {
+    zoom(scaleFactor * (1 - x));
 }
 
 export function toggleZoom() {
@@ -81,7 +81,7 @@ export function toggleZoom() {
 function zoom(factor) {
     if (factor < 1) factor = 1;
     if (factor > 6.6) factor = 6.6;
-    canvas.style.transform = `scale(${factor})`;
+
     if (factor === 1) {
         viewPosX = 0;
         if (viewPosY + renderHeight > Const.LINES) viewPosY = Const.LINES - renderHeight;
@@ -89,7 +89,9 @@ function zoom(factor) {
     }
     if (factor > 1) imageCatalog.planLogos.display = false;
     else imageCatalog.planLogos.display = true;
+
+    canvas.style.transform = `scale(${factor})`;
     scaleFactor = factor;
-    console.log('scaleFactor', scaleFactor);
+    // console.log('scaleFactor', scaleFactor);
     updatePalette();
 }

@@ -9,20 +9,21 @@ import { isInSquare, mousePosInGrid } from '../utils/conversions';
 var prevTouchY = null;
 var prevTouchX = null;
 export var panMode = true;
+let pinchTimeStamp = new Date();
 
 export function mobileEventListener() {
     var hammertime = new Hammer(canvas);
 
     hammertime.get('pinch').set({ enable: true });
 
-    hammertime.on('pinch', function (e) {
-        console.log('pinch', e);
+    hammertime.on('pinch', (e) => {
+        pinchTimeStamp = new Date();
         if (!panMode) return;
-        if (e.scale > 1) increaseZoom();
-        else decreaseZoom();
+        if (e.scale > 1) increaseZoom(0.02);
+        else decreaseZoom(0.02);
     });
 
-    hammertime.on('tap', function (e) {
+    hammertime.on('tap', (e) => {
         touchManager(e);
     });
 
@@ -52,6 +53,7 @@ function togglePanMode() {
 }
 
 function touchManager(e) {
+    if (new Date() - pinchTimeStamp < 300) return;
     if (e.type == 'tap') {
         e = {
             x: Math.floor(e.center.x),
