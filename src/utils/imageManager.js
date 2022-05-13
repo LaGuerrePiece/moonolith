@@ -1,4 +1,5 @@
 import { UPNG } from './upmc';
+import { runeNumber } from '../main';
 import Const from '../constants';
 import { monolith, drawPixel, monolithIndexes } from '../monolith/monolith';
 import { chunkCreator } from './web3';
@@ -105,10 +106,11 @@ async function prepareBufferForApi(data) {
 
 export async function bufferOnMonolith(data) {
     //console.log(LZString.decompressFromUTF16(data.buffer));
-    let pixArray = new Uint8Array(base64ToBuffer(decompressFromUTF16(data.buffer)));
-    pixArray = Array.from(pixArray);
-    const width = pixArray.shift();
-    const height = pixArray.shift();
+    let buffer = base64ToBuffer(decompressFromUTF16(data.buffer));
+    const width = new Uint8Array(buffer.slice(0, 1))[0];
+    const height = new Uint8Array(buffer.slice(1, 2))[0];
+    let pixArray = new Uint8Array(buffer.slice(2, buffer.length));
+
     pixArray = decode4bitsArray(pixArray);
     while (pixArray[pixArray.length - 1] === 0) {
         // virer les 0 de la fin
@@ -125,16 +127,24 @@ export async function bufferOnMonolith(data) {
     };
 
     // Si le chunk est digne d'être animé, l'envoie dans chunkToAnimateInfo
-    // if ((data.zIndex <= importedChunks && !runeNumber) || data.zIndex === runeNumber) {
-    chunksToAnimateInfo.push([data.zIndex, data.y + height / 2]);
-    // }
+    if ((data.zIndex === importedChunks && !runeNumber) || data.zIndex === runeNumber) {
+        chunksToAnimateInfo[data.zIndex] = { trigger: data.y + height / 2, data: [] };
+        console.log('rune digne dêtre animée :', data.zIndex, chunkStock[data.zIndex]);
+    }
 
+    let start = performance.now();
     let pixelDrawn = 0;
     let p = 0;
     for (let y = data.y; y < data.yMaxLegal; y++) {
         for (let x = data.x; x < width + data.x; x++) {
-            if (y >= data.yMaxLegal) return;
-            if (pixelDrawn >= data.paid) return;
+            if (y >= data.yMaxLegal) {
+                if (data.zIndex === 1) console.log('time:', performance.now() - start);
+                return;
+            }
+            if (pixelDrawn >= data.paid) {
+                if (data.zIndex === 1) console.log('time:', performance.now() - start);
+                return;
+            }
             if (x < 0 || x >= Const.MONOLITH_COLUMNS || y < 0 || y >= Const.MONOLITH_LINES) continue;
             if (pixArray[p] > 0) {
                 drawPixel(x, y, data.zIndex, Const.PALETTE[pixArray[p]]);
@@ -144,6 +154,15 @@ export async function bufferOnMonolith(data) {
         }
     }
 }
+
+// if (data.zIndex === 1) {
+//     console.log('data', data);
+//     console.log('decompressFromUTF16', decompressFromUTF16(data.buffer));
+//     console.log('base64ToBuffer', base64ToBuffer(decompressFromUTF16(data.buffer)));
+//     console.log('pixArray', pixArray);
+//     console.log('Array.from(pixArray)', Array.from(pixArray));
+//     console.log('pixArray', pixArray);
+// }
 
 function monolithToBase64() {
     return new Promise((resolve) => {
@@ -276,6 +295,7 @@ function decode4bitsArray(array) {
         decoded.push((array[i] - (array[i] % 16)) / 16);
         decoded.push(array[i] % 16);
     }
+    // console.log(decoded);
     return decoded;
 }
 

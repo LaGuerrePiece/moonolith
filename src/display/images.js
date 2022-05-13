@@ -83,7 +83,7 @@ export function addSideMonolith(monolithHeight) {
             };
             sidesHeight = sidesHeight + imageCatalog.moonolithSide.img.height;
             numberOfSides++;
-            console.log('numberOfSides', numberOfSides, 'imageCatalog', imageCatalog);
+            // console.log('numberOfSides', numberOfSides, 'imageCatalog', imageCatalog);
         }
     }
 }

@@ -5,7 +5,7 @@ import { renderHeight } from '../display/displayLoop';
 import { viewPosY } from '../display/view';
 
 export let chunkStock = [];
-export let chunksToAnimateInfo = [];
+export let chunksToAnimateInfo = {};
 
 export let runeCornerInfo = { base64: runeCorner };
 export let runeSideInfo = { base64: runeSide };
@@ -14,11 +14,13 @@ export let animatedPixels = new Map();
 
 //prettier-ignore
 export function animateMonolith() {
+   
     // Trigger animateRune for visible chunks
-    chunksToAnimateInfo.forEach(([id, y]) => {
+    for (let chunk in chunksToAnimateInfo) {
+        const thisChunk = chunksToAnimateInfo[chunk];
         const startY = Const.MONOLITH_LINES + Const.MARGIN_BOTTOM - viewPosY - renderHeight;
-        if (y > startY && y < startY + renderHeight) animateRune(id);
-    });
+        if (thisChunk.trigger > startY && thisChunk.trigger < startY + renderHeight) animateRune(parseInt(chunk));
+    }
 
     for (let [pos, [transitionType, color, counter]] of animatedPixels) {
         if (transitionType === 'erase') {
@@ -97,6 +99,7 @@ function draw(pos, color) {
 }
 
 function endTransition(pos, color) {
+    // console.log('endTransition', pos, color);
     draw(pos, color);
     animatedPixels.delete(pos);
 }
@@ -114,8 +117,16 @@ export function animateRune(id) {
     if (!chunkStock[id] || chunkStock[id]?.alreadyRuned) return;
     chunkStock[id].alreadyRuned = true;
     const rune = chunkStock[id];
-    // console.log('animateRune', id);
+    console.log('animateRune', id);
 
+    // Display rune
+    const runeData = chunksToAnimateInfo[id].data;
+    // console.log('runeData', runeData);
+    runeData.forEach((pos) => {
+        // console.log('pos', pos, 'color', color);
+        animatedPixels.set(pos[0], ['import', pos[1], 1]);
+    });
+    // White on Rune
     setTimeout(() => {
         const limit = rune.width + Math.max(rune.width, rune.height);
         for (let j = 0; j < rune.height; j++) {
