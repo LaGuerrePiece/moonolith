@@ -8,7 +8,7 @@ export default class Const {
   static get MONOLITH_COLUMNS() { return this.COLUMNS - this.MARGIN_LEFT - this.MARGIN_RIGHT }
   static get MONOLITH_LINES() { return monolithHeight }
   
-  static get MARGIN_TOP() { return 54 }
+  static get MARGIN_TOP() { return 650 }
   static get MARGIN_BOTTOM() { return 198 }
   static get MARGIN_LEFT() { return 50 }
   static get MARGIN_RIGHT() { return 65 }
