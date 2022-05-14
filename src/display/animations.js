@@ -1,5 +1,5 @@
 //prettier-ignore
-import { twitter, vent0, collision, panneauRainbow, runPlan0, runPlan1, arbre0, vaisseau, introRunB, introRunC, introRunD } from '../assets/base64';
+import { twitter, vent0, collision, panneauRainbow, runPlan0, runPlan1, arbre0, vaisseau, introRunB, introRunC, introRunD, postMonolith, autourDuFeu } from '../assets/base64';
 import { renderHeight } from './displayLoop';
 import { viewPosX, viewPosY } from './view';
 import Const from '../constants';
@@ -12,11 +12,13 @@ export let animCatalog = {
     vent0: { fileName: 'vent0', startX: 0, startY: 0, display: true, loop: true, layer: 0, base64: vent0 },
     vaisseau: { fileName: 'vaisseau', startX: 280, startY: 15, display: true, loop: true, layer: 0, base64: vaisseau },
 
-    collision: { type: 'intro', startX: 0, startY: 400, display: false, loop: false, layer: 1, base64: collision },
+    collision: { type: 'intro', startX: 0, startY: 0, display: false, loop: false, layer: 1, base64: collision },
     runPlan0: { type: 'intro', startX: 187, startY: 33, display: false, loop: false, layer: 0, base64: runPlan0 },
     introRunB: { type: 'intro', startX: 71, startY: 92, display: false, loop: false, layer: 1, base64: introRunB },
     introRunC: { type: 'intro', startX: -25, startY: 1, display: false, loop: false, layer: 1, base64: introRunC },
     introRunD: { type: 'intro', startX: -5, startY: 13, display: false, loop: false, layer: 1, base64: introRunD },
+    postMonolith: { type: 'intro', startX: 71, startY: -5, display: false, loop: false, layer: 1, base64: postMonolith },
+    autourDuFeu: { type: 'intro', startX: 67, startY: -9, display: false, loop: true, layer: 1, base64: autourDuFeu },
 };
 
 function animFrameManager(anim) {
@@ -51,6 +53,10 @@ export function updateAnimCatalog() {
         const parallaxOffset = Math.floor(thisAnim.parallax * viewPosY);
         thisAnim.y = renderHeight + parallaxOffset + viewPosY - thisAnim.height - thisAnim.startY;
         thisAnim.x = thisAnim.startX - viewPosX;
+        if (anim === 'postMonolith' || anim === 'autourDuFeu') {
+            thisAnim.y -= Const.MONOLITH_LINES + Const.MARGIN_BOTTOM;
+            thisAnim.x += Const.MARGIN_LEFT;
+        }
     }
 }
 

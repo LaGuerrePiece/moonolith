@@ -15,8 +15,8 @@ export let imageCatalog = {
     plan2B: { fileName: 'plan2B', type: 'landscape', startX: -2, startY: 230, layer: 2.5, display: true },
     plan2: { fileName: 'plan2', type: 'landscape', startX: -2, startY: 190, layer: 2, display: true },
     plan1B: { fileName: 'plan1B', type: 'landscape', startX: -2, startY: 198, layer: 1.5, display: true },
-    moonolithTop: { fileName: 'moonolithTop', type: 'side', startY: 0, startX: 0, layer: 1.5, display: true },
-    moonolithSide: { fileName: 'moonolithSide', type: 'side', startY: 290, startX: 255, layer: 1.5, display: true },
+    moonolithTop: { fileName: 'moonolithTop', type: 'side', startY: -10, startX: 0, layer: 1.5, display: true },
+    moonolithSide: { fileName: 'moonolithSide', type: 'side', startY: 283, startX: 255, layer: 1.5, display: true },
     plan1A: { fileName: 'plan1A', type: 'landscape', startX: -2, startY: 98, layer: 1, display: true },
     plan1arbres: { fileName: 'plan1arbres', type: 'landscape', startX: 0, startY: 108, layer: 1, display: true },
     terreRetournee: { fileName: 'terreRetournee', type: 'landscape', startX: 24, startY: 157, layer: 1, display: false },
@@ -24,7 +24,7 @@ export let imageCatalog = {
     plan0: { fileName: 'plan0', type: 'landscape', startX: -2, startY: -75, layer: 0, display: true },
     planLogos: { fileName: 'planLogos', type: 'landscape', startX: -25, startY: -45, layer: -1, display: true },
     moon: { fileName: 'moon', type: 'landscape', startX: 141, startY: 161, layer: 1, display: true },
-    TibonomEmporte: { fileName: 'TibonomEmporte', type: 'TibonomEmporte', startX: 129, startY: 8, layer: 1, display: false },
+    TibonomEmporte: { fileName: 'TibonomEmporte', type: 'TibonomEmporte', startX: 109, startY: -30, layer: 1, display: false },
 };
 
 export function updateImageCatalog() {
@@ -35,24 +35,19 @@ export function updateImageCatalog() {
             thisImage.y = renderHeight + parallaxOffset + viewPosY - thisImage.img.height - thisImage.startY;
             thisImage.x = thisImage.startX - viewPosX + thisImage.shakeX;
         } else if (thisImage.type === 'side') {
-            thisImage.y = thisImage.startY + renderHeight + viewPosY - Const.MONOLITH_LINES - Const.MARGIN_BOTTOM - 7;
+            thisImage.y = thisImage.startY + renderHeight + viewPosY - Const.MONOLITH_LINES - Const.MARGIN_BOTTOM;
             thisImage.x = thisImage.startX + Const.MARGIN_LEFT - viewPosX;
             if (introState) thisImage.y = thisImage.y + Const.MONOLITH_LINES - monolithDisplayHeightIntro;
         } else if (thisImage.type === 'TibonomEmporte') {
-            thisImage.y = thisImage.startY + renderHeight + viewPosY - Const.MONOLITH_LINES - Const.MARGIN_BOTTOM - 40;
-            thisImage.x = thisImage.startX + Const.MARGIN_LEFT - viewPosX - 22;
+            thisImage.y = thisImage.startY + renderHeight + viewPosY - Const.MONOLITH_LINES - Const.MARGIN_BOTTOM;
+            thisImage.x = thisImage.startX + Const.MARGIN_LEFT - viewPosX;
             if (introState) thisImage.y = thisImage.y + Const.MONOLITH_LINES - monolithDisplayHeightIntro;
         }
     }
 }
 
-export function displayImage(name, endTime) {
+export function displayImage(name) {
     imageCatalog[name].display = true;
-    if (endTime) {
-        setTimeout(() => {
-            imageCatalog[name].display = false;
-        }, endTime);
-    }
 }
 
 export function loadImages() {

@@ -52,23 +52,24 @@ export async function launchIntro() {
 
     launchAnim('introRunC');
     await new Promise((resolve) => setTimeout(resolve, animCatalog.introRunC.totalDelay));
-    monolithDisplayHeightIntro += 12;
+    monolithDisplayHeightIntro += 17;
     launchAnim('introRunD');
+
     monolithGoUpDuringIntro();
+    if (!introState) return;
+    displayImage('TibonomEmporte');
+    displayImage('terreRetournee');
 
     if (!introState) return;
 
-    // displayImage('topAlien');
-    displayImage('TibonomEmporte');
-    // await new Promise((resolve) => setTimeout(resolve, animCatalog.introRunD.totalDelay));
-
-    displayImage('terreRetournee');
+    await new Promise((resolve) => setTimeout(resolve, animCatalog.introRunD.totalDelay));
     unlockScroll();
 
     if (!introState) return;
 
     // When monolith is built :
-    setTimeout(() => {
+    setTimeout(async () => {
+        if (!introState) return;
         console.log('Intro Finished');
         launchAnim('panneauRainbow');
         unlockControls();
@@ -76,21 +77,30 @@ export async function launchIntro() {
         displayPalette();
         GUICatalog.skipIntro.display = false;
         introState = false;
-    }, 650 * Math.log(Const.MONOLITH_LINES - 12));
+        imageCatalog.TibonomEmporte.display = false;
+        launchAnim('postMonolith');
+        await new Promise((resolve) => setTimeout(resolve, animCatalog.postMonolith.totalDelay));
+        launchAnim('autourDuFeu');
+    }, 650 * Math.log(Const.MONOLITH_LINES - 7));
 }
 
 export function skipIntro() {
-    displayImage('topAlien');
     displayImage('terreRetournee');
     animCatalog.runPlan0.display = false;
     animCatalog.introRunB.display = false;
+    animCatalog.introRunC.display = false;
+    animCatalog.introRunD.display = false;
+    animCatalog.postMonolith.display = false;
     animCatalog.collision.display = false;
+    imageCatalog.moon.display = false;
+    imageCatalog.TibonomEmporte.display = false;
     GUICatalog.skipIntro.display = false;
     changeViewPos(0, -999999);
     setInitialViewPos();
     unlockScroll();
     console.log('Intro Skipped');
     launchAnim('panneauRainbow');
+    launchAnim('autourDuFeu');
     unlockControls();
     toggleMusic();
     displayPalette();
@@ -98,7 +108,7 @@ export function skipIntro() {
 }
 
 function monolithGoUpDuringIntro() {
-    for (let row = 0; row < Const.MONOLITH_LINES - 12; row++) {
+    for (let row = 0; row < Const.MONOLITH_LINES - 9; row++) {
         let scalingValue = 650 * Math.log(row);
         setTimeout(() => {
             monolithDisplayHeightIntro++;
