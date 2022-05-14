@@ -7,11 +7,10 @@ import Const from '../constants';
 //prettier-ignore
 export let animCatalog = {
     // twitter: { fileName: 'twitter', startX: 0 + 96, startY: 83, display: true, loop: true, layer: 0, base64: twitter },
-    panneauRainbow: { fileName: 'panneauRainbow', startX: 292, startY: 178, display: false, loop: false, layer: 1, base64: panneauRainbow },
+    panneauRainbow: { type: 'intro', startX: 292, startY: 178, display: false, loop: false, layer: 1, base64: panneauRainbow },
     arbre0: { fileName: 'arbre0', startX: 25, startY: 0, display: true, loop: true, layer: 0, base64: arbre0 },
     vent0: { fileName: 'vent0', startX: 0, startY: 0, display: true, loop: true, layer: 0, base64: vent0 },
     vaisseau: { fileName: 'vaisseau', startX: 280, startY: 15, display: true, loop: true, layer: 0, base64: vaisseau },
-
     collision: { type: 'intro', startX: 0, startY: 0, display: false, loop: false, layer: 1, base64: collision },
     runPlan0: { type: 'intro', startX: 187, startY: 33, display: false, loop: false, layer: 0, base64: runPlan0 },
     introRunB: { type: 'intro', startX: 71, startY: 92, display: false, loop: false, layer: 1, base64: introRunB },
