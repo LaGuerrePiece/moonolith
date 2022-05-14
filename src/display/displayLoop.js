@@ -31,7 +31,7 @@ export function initDisplay() {
         updateImageCatalog();
         updateAnimCatalog();
         updateGUICatalog();
-        animateMonolith();
+        if (!introState) animateMonolith();
 
         // ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = 'rgb(196, 130, 127)';

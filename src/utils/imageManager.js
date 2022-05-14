@@ -155,15 +155,6 @@ export async function bufferOnMonolith(data) {
     }
 }
 
-// if (data.zIndex === 1) {
-//     console.log('data', data);
-//     console.log('decompressFromUTF16', decompressFromUTF16(data.buffer));
-//     console.log('base64ToBuffer', base64ToBuffer(decompressFromUTF16(data.buffer)));
-//     console.log('pixArray', pixArray);
-//     console.log('Array.from(pixArray)', Array.from(pixArray));
-//     console.log('pixArray', pixArray);
-// }
-
 function monolithToBase64() {
     return new Promise((resolve) => {
         let { highLow, nbPix, pixelArray, pixelArray24bits } = gridToArray();
@@ -171,9 +162,9 @@ function monolithToBase64() {
         pixelArray.unshift(highLow.largeur);
         pixelArray.unshift(highLow.longueur);
         pixelArray = new Uint8Array(pixelArray);
-        saveLocally(
-            bufferToBase64(UPNG.encode([new Uint8Array(pixelArray24bits).buffer], highLow.longueur, highLow.largeur, 0))
-        );
+        // saveLocally(
+        //     bufferToBase64(UPNG.encode([new Uint8Array(pixelArray24bits).buffer], highLow.longueur, highLow.largeur, 0))
+        // );
         let compressed = compressToUTF16(bufferToBase64(pixelArray.buffer));
         let pArray = new Uint8Array(base64ToBuffer(decompressFromUTF16(compressed)));
         resolve({ position: firstPix, ymax: highLow.highY, nbPix: nbPix, imgURI: compressed });
