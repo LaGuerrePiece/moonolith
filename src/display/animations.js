@@ -56,7 +56,7 @@ export function updateAnimCatalog() {
             thisAnim.y -= Const.MONOLITH_LINES + Const.MARGIN_BOTTOM;
             thisAnim.x += Const.MARGIN_LEFT;
         } else if (anim === 'collision') {
-            thisAnim.y = renderHeight / 2 - 55;
+            thisAnim.y = Math.floor(renderHeight / 2) - 55;
         }
     }
 }
