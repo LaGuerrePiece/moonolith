@@ -56,6 +56,8 @@ export function updateAnimCatalog() {
         if (anim === 'postMonolith' || anim === 'autourDuFeu') {
             thisAnim.y -= Const.MONOLITH_LINES + Const.MARGIN_BOTTOM;
             thisAnim.x += Const.MARGIN_LEFT;
+        } else if (anim === 'collision') {
+            thisAnim.y = renderHeight / 2 - 55;
         }
     }
 }

@@ -7,30 +7,35 @@ import { isInSquare } from '../utils/conversions';
 import Const from '../constants';
 
 export let paletteCatalog = {
-    palette1smol_x2: { fileName: 'palette1smol_x2' },
-    palette1medium_x2: { fileName: 'palette1medium_x2' },
-    palette1large_x2: { fileName: 'palette1large_x2' },
-    palette1giga_x2: { fileName: 'palette1giga_x2' },
-    palette1smol: { fileName: 'palette1smol' },
-    palette1medium: { fileName: 'palette1medium' },
-    palette1large: { fileName: 'palette1large' },
-    palette1giga: { fileName: 'palette1giga' },
-    palette3smol: { fileName: 'palette3smol' },
-    palette3medium: { fileName: 'palette3medium' },
-    palette3large: { fileName: 'palette3large' },
-    palette3giga: { fileName: 'palette3giga' },
-    palette6smol: { fileName: 'palette6smol' },
-    palette6medium: { fileName: 'palette6medium' },
-    palette6large: { fileName: 'palette6large' },
-    palette6giga: { fileName: 'palette6giga' },
-    selector1A: { fileName: 'selector1A' },
-    selector1A_x2: { fileName: 'selector1A_x2' },
-    selector1B: { fileName: 'selector1B' },
-    selector3A: { fileName: 'selector3A' },
-    selector3B: { fileName: 'selector3B' },
-    selector6A: { fileName: 'selector6A' },
-    selector6B: { fileName: 'selector6B' },
-    palettePAN: { fileName: 'palettePAN' },
+    palette1smol_x2: { fileName: 'palette/palette1smol_x2' },
+    palette1medium_x2: { fileName: 'palette/palette1medium_x2' },
+    palette1large_x2: { fileName: 'palette/palette1large_x2' },
+    palette1giga_x2: { fileName: 'palette/palette1giga_x2' },
+    palette1smol: { fileName: 'palette/palette1smol' },
+    palette1medium: { fileName: 'palette/palette1medium' },
+    palette1large: { fileName: 'palette/palette1large' },
+    palette1giga: { fileName: 'palette/palette1giga' },
+    palette3smol: { fileName: 'palette/palette3smol' },
+    palette3medium: { fileName: 'palette/palette3medium' },
+    palette3large: { fileName: 'palette/palette3large' },
+    palette3giga: { fileName: 'palette/palette3giga' },
+    palette6smol: { fileName: 'palette/palette6smol' },
+    palette6medium: { fileName: 'palette/palette6medium' },
+    palette6large: { fileName: 'palette/palette6large' },
+    palette6giga: { fileName: 'palette/palette6giga' },
+    selector1A: { fileName: 'palette/selector1A' },
+    selector1A_x2: { fileName: 'palette/selector1A_x2' },
+    selector1B: { fileName: 'palette/selector1B' },
+    selector3A: { fileName: 'palette/selector3A' },
+    selector3B: { fileName: 'palette/selector3B' },
+    selector6A: { fileName: 'palette/selector6A' },
+    selector6B: { fileName: 'palette/selector6B' },
+    draw1: { fileName: 'mobile/draw1' },
+    draw3: { fileName: 'mobile/draw3' },
+    draw6: { fileName: 'mobile/draw6' },
+    move1: { fileName: 'mobile/move1' },
+    move3: { fileName: 'mobile/move3' },
+    move6: { fileName: 'mobile/move6' },
 };
 
 export let GUICatalog = {
@@ -64,6 +69,9 @@ export function updatePalette() {
     GUICatalog.selectorA.img = paletteCatalog[`selector${paletteFactor}A`].img;
     GUICatalog.selectorB.img = paletteCatalog[`selector${paletteFactor}B`].img;
     GUICatalog.palette.info = Const.PALETTE_INFO[paletteFactor];
+
+    GUICatalog.mobileDraw.img = paletteCatalog[`draw${paletteFactor}`].img;
+    GUICatalog.mobileMove.img = paletteCatalog[`move${paletteFactor}`].img;
 
     // dirty case for phone unzoomed
     if (deviceType === 'mobile' && scaleFactor === 1) {
@@ -132,7 +140,7 @@ export function updateGUICatalog() {
 export function loadGUI() {
     for (let image in paletteCatalog) {
         paletteCatalog[image].img = new Image();
-        paletteCatalog[image].img.src = `/images/palette/${paletteCatalog[image].fileName}.png`;
+        paletteCatalog[image].img.src = `/images/${paletteCatalog[image].fileName}.png`;
     }
     for (let GUILayer in GUICatalog) {
         GUICatalog[GUILayer].img = new Image();
