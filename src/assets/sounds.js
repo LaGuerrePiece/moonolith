@@ -36,6 +36,7 @@ export function stopSound(name) {
 }
 
 export function toggleRumble() {
+    if (muteState) return;
     return rumble.paused ? rumble.play() : fadeAudio(rumble);
 }
 

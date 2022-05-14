@@ -64,8 +64,6 @@ function keyManager(e){
     if (e.key === 'e') brushSwitch();
     if (e.key === 'i') importImage();
     if (e.key === 'r') { selectBrush('giga'); playSound('kick', 50); }
-    if (e.key === 'k') toggleMusic();
-    if (e.key === 'l') toggleMute();
     if (e.key === 'p') { increaseMonolithHeight(1100); }
     if (e.key === 't') { changeViewPos(0, 999999); }
     if (e.key === '+') increaseZoom();
@@ -105,6 +103,11 @@ function keyManager(e){
         toggleZoom();
         playSound('click6');
         break;
+
+        case 'KeyM':
+            toggleMute();
+            break;
+    
       }
 }
 
