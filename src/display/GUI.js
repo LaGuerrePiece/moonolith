@@ -37,7 +37,7 @@ export let GUICatalog = {
     skipIntro: { fileName: 'skipIntro', display: true },
     mobileDraw: { fileName: 'mobile/draw1', type: 'toggleMode', display: false },
     mobileMove: { fileName: 'mobile/move1', type: 'toggleMode', display: false },
-    panneau: { fileName: 'panneau', type: 'popup', display: false },
+    panneau: { fileName: 'panneauAZERTY', type: 'popup', display: false },
     share: { fileName: 'share', type: 'popup', display: false },
     selectorA: { fileName: '/palette/selector1A', type: 'GUI', display: false },
     selectorB: { fileName: '/palette/selector1B', type: 'GUI', display: false },
@@ -126,7 +126,7 @@ export function updateGUICatalog() {
                 GUICatalog.palette.x + offsetX + colorNumber2 * spaceX - Math.floor(colorNumber2 / 9) * secondLine;
         }
     }
-    GUICatalog.panneau.display = isInSquare({ x: pointer.x, y: pointer.y }, 229, 241, 66, 72, 'plan1B') ? true : false;
+    GUICatalog.panneau.display = isInSquare({ x: pointer.x, y: pointer.y }, 294, 306, 76, 84, 'plan1B') ? true : false;
 }
 
 export function loadGUI() {

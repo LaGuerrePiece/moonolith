@@ -24,6 +24,7 @@ export let imageCatalog = {
     plan0: { fileName: 'plan0', type: 'landscape', startX: -2, startY: -75, layer: 0, display: true },
     planLogos: { fileName: 'planLogos', type: 'landscape', startX: -25, startY: -45, layer: -1, display: true },
     moon: { fileName: 'moon', type: 'landscape', startX: 141, startY: 161, layer: 1, display: true },
+    panneauDecor: { fileName: 'panneauDecor', type: 'landscape', startX: 292, startY: 178, layer: 1, display: false },
     TibonomEmporte: { fileName: 'TibonomEmporte', type: 'TibonomEmporte', startX: 129, startY: 8, layer: 1, display: false },
 };
 

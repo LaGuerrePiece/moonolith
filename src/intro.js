@@ -5,9 +5,10 @@ import { canvas, initDisplay } from './display/displayLoop';
 import { animCatalog, launchAnim } from './display/animations';
 import { shake } from './display/displayLoop';
 import { displayImage, imageCatalog } from './display/images';
-import { skipManager, unlockControls, unlockScroll } from './controls/controls';
+import { deviceType, skipManager, unlockControls, unlockScroll } from './controls/controls';
 import { toggleMusic } from './assets/sounds';
 import Const from './constants';
+import { getBrowserLocales } from './utils/web3';
 
 export let monolithDisplayHeightIntro = -10;
 export let introState = false;
@@ -70,8 +71,8 @@ export async function launchIntro() {
     // When monolith is built :
     setTimeout(() => {
         console.log('Intro Finished');
-        launchAnim('panneauRainbow');
         unlockControls();
+        displayPanneau();
         toggleMusic();
         displayPalette();
         GUICatalog.skipIntro.display = false;
@@ -80,7 +81,6 @@ export async function launchIntro() {
 }
 
 export function skipIntro() {
-    displayImage('topAlien');
     displayImage('terreRetournee');
     animCatalog.runPlan0.display = false;
     animCatalog.introRunB.display = false;
@@ -90,7 +90,7 @@ export function skipIntro() {
     setInitialViewPos();
     unlockScroll();
     console.log('Intro Skipped');
-    launchAnim('panneauRainbow');
+    displayPanneau();
     unlockControls();
     toggleMusic();
     displayPalette();
@@ -105,4 +105,14 @@ function monolithGoUpDuringIntro() {
         }, scalingValue);
     }
     shake(Const.MONOLITH_LINES);
+}
+
+export function displayPanneau() {
+    if (deviceType === 'mobile') return;
+    launchAnim('panneauRainbow');
+    let lang = getBrowserLocales()[0];
+    if (lang !== 'fr') {
+        GUICatalog.panneau.img.src = '/images/panneauQWERTY.png';
+    }
+    displayImage('panneauDecor');
 }
