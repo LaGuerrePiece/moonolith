@@ -6,7 +6,7 @@ import { chunkImport, importedChunks } from '../main';
 
 const provider = new ethers.providers.InfuraProvider('rinkeby');
 const iface = new Interface(contractABI);
-const contractAddress = '0x031E60b42aed43c7cfa7b135ddA8f09E76D078c4';
+const contractAddress = '0x7d7603b79b5d26abbb9be8e9fe0f7456d1fce283';
 // const contractAddress = '0xde02A804Dd2eFe93F353ea7365A9972513B9ae2E'; //CONTRAT VIERGE
 // const contractAddress = '0xB1F21b3799DA0eEC6765cBF38f0c7278a0EaF51E'; //CONTRAT VIERGE
 // const contractAddress = '0x1593f13eC77e01Ec93B8c51846613Fe567b2258a'; //CONTRAT VIERGE AVEC PLUS DE PLACE
