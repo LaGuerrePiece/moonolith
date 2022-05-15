@@ -36,14 +36,9 @@ function animFrameManager(anim) {
     }, thisAnim.delay[currentFrame]);
 }
 
-export function launchAnim(anim, endTime) {
+export function launchAnim(anim) {
     animFrameManager(anim);
     animCatalog[anim].display = true;
-    if (endTime) {
-        setTimeout(() => {
-            animCatalog[anim].display = false;
-        }, endTime);
-    }
 }
 
 export function updateAnimCatalog() {

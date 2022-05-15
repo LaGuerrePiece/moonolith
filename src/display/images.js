@@ -26,12 +26,18 @@ export let imageCatalog = {
     moon: { fileName: 'moon', type: 'landscape', startX: 141, startY: 161, layer: 1, display: true },
     panneauDecor: { fileName: 'panneauDecor', type: 'landscape', startX: 292, startY: 178, layer: 1, display: false },
     TibonomEmporte: { fileName: 'TibonomEmporte', type: 'TibonomEmporte', startX: 109, startY: -30, layer: 1, display: false },
+    cloud1: { fileName: 'clouds/cloud1', type: 'cloud', startX: 0, startY: 480, layer: 6, display: true },
+    cloud2: { fileName: 'clouds/cloud2', type: 'cloud', startX: 0, startY: 335, layer: 6, display: true },
+    cloud3: { fileName: 'clouds/cloud3', type: 'cloud', startX: 0, startY: 267, layer: 6, display: true },
+    cloud4: { fileName: 'clouds/cloud4', type: 'cloud', startX: 0, startY: 600, layer: 6, display: true },
+    cloud5: { fileName: 'clouds/cloud5', type: 'cloud', startX: 0, startY: 1120, layer: 6, display: true },
+    cloud6: { fileName: 'clouds/cloud6', type: 'cloud', startX: 0, startY: 952, layer: 6, display: true },
 };
 
 export function updateImageCatalog() {
     for (let image in imageCatalog) {
         const thisImage = imageCatalog[image];
-        if (thisImage.type === 'landscape' || thisImage.type === 'sky') {
+        if (thisImage.type === 'landscape' || thisImage.type === 'sky' || thisImage.type === 'cloud') {
             const parallaxOffset = Math.floor(thisImage.parallax * viewPosY);
             thisImage.y = renderHeight + parallaxOffset + viewPosY - thisImage.img.height - thisImage.startY;
             thisImage.x = thisImage.startX - viewPosX + thisImage.shakeX;
@@ -60,8 +66,12 @@ export function loadImages() {
         };
         thisImage.img.src = `/images/${thisImage.fileName}.png`;
         thisImage.shakeX = 0;
-
         thisImage.parallax = Const.PARALLAX_LAYERS[thisImage.layer];
+
+        if (thisImage.type === 'cloud') {
+            thisImage.startX = Math.floor(Math.random() * Const.COLUMNS);
+            translateImage(thisImage);
+        }
     }
     console.log('imageCatalog', imageCatalog);
 }
@@ -89,4 +99,13 @@ export function addSideMonolith(monolithHeight) {
             numberOfSides++;
         }
     }
+}
+
+function translateImage(anim) {
+    let minSpeed = 2000;
+    let speed = Math.floor(Math.random() * 5000) + minSpeed;
+    setInterval(() => {
+        if (anim.startX > Const.COLUMNS) anim.startX = anim.img.width * -3;
+        anim.startX++;
+    }, speed);
 }

@@ -100,8 +100,8 @@ export function skipIntro() {
     setInitialViewPos();
     unlockScroll();
     console.log('Intro Skipped');
-    displayPanneau();
     launchAnim('autourDuFeu');
+    displayPanneau();
     unlockControls();
     toggleMusic();
     displayPalette();
@@ -120,6 +120,7 @@ function monolithGoUpDuringIntro() {
 
 export async function displayPanneau() {
     if (deviceType === 'mobile') return;
+    await new Promise((resolve) => setTimeout(resolve, animCatalog.panneauRainbow.autourDuFeu));
     launchAnim('panneauRainbow');
     await new Promise((resolve) => setTimeout(resolve, animCatalog.panneauRainbow.totalDelay));
     let lang = getBrowserLocales()[0];
