@@ -10,10 +10,12 @@ let inverseEventStack = [];
 let currentEvent = [];
 let inverseCurrentEvent = [];
 
+const maxSize = 1000;
+
 const closeCurrentEvent = () => {
     if (currentEvent.length === 0) return;
     eventStack.push(currentEvent);
-    if (eventStack.length > 20) eventStack.shift();
+    if (eventStack.length > maxSize) eventStack.shift();
     currentEvent = [];
     inverseEventStack = [];
 };
@@ -44,7 +46,7 @@ const undo = () => {
     }
 
     inverseEventStack.push(inverseCurrentEvent);
-    if (inverseEventStack.length > 20) inverseEventStack.shift();
+    if (inverseEventStack.length > maxSize) inverseEventStack.shift();
     inverseCurrentEvent = [];
 };
 
@@ -70,7 +72,7 @@ const redo = () => {
     }
 
     eventStack.push(currentEvent);
-    if (eventStack.length > 20) eventStack.shift();
+    if (eventStack.length > maxSize) eventStack.shift();
     currentEvent = [];
 };
 

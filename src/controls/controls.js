@@ -1,6 +1,8 @@
 //prettier-ignore
 import { viewPosX, viewPosY, changeViewPos, increaseZoom, decreaseZoom, toggleZoom} from '../display/view';
 import { renderWidth, renderHeight, canvas } from '../display/displayLoop';
+import { displayFAQ, FAQ, FAQType, exitFAQ } from '../display/FAQ';
+import { imageCatalog } from '../display/images';
 import { GUICatalog } from '../display/GUI';
 import Const from '../constants';
 import { mobileEventListener } from './mobileControls';
@@ -24,12 +26,12 @@ export const deviceType = /(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.tes
 //prettier-ignore
 document.addEventListener('contextmenu', (e) => { e.preventDefault(); }, false);
 document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') skipIntro();
+    if (e.key === 'Escape' && introState) skipIntro();
 });
 
 export function skipManager(e) {
     if (!introState) return;
-    if (isInSquare(mousePosInGrid(e), 0, 81, 0, 47, 'skipIntro')) {
+    if (isInSquare(mousePosInGrid(e), 0, 81, 0, 47, 'skipIntro', 'GUICatalog')) {
         skipIntro();
         console.log('Clicked on skipIntro');
     }
@@ -116,7 +118,29 @@ export function clickManager(e) {
     let mousePos = mousePosInGrid(e);
     console.log('Click', mousePos);
 
-    if (isInSquare(mousePos, 0, GUICatalog.palette.img.width, 0, GUICatalog.palette.img.height, 'palette')) {
+    if (FAQ) {
+        if (isInSquare(mousePos, 0, GUICatalog.quitFAQ.img.width, 0, GUICatalog.quitFAQ.img.height, 'quitFAQ', 'GUICatalog')) {
+            console.log('isInSquare');
+            exitFAQ()
+        } else if (isInSquare(mousePos, 70, 293, 380, 400, 'FAQ', 'FAQCatalog')){
+            window.open('https://metamask.io/download/', '_blank');
+        } else if (isInSquare(mousePos, 61, 312, 785, 802, 'FAQ', 'FAQCatalog')){
+            window.open('https://faucets.chain.link/', '_blank');
+        }
+    } else if (GUICatalog.share.display) {
+        if (!isInSquare(mousePos, 0, GUICatalog.share.img.width, 0, GUICatalog.share.img.height, 'share', 'GUICatalog')) {
+            GUICatalog.share.display = false;
+        } else {
+            // console.log('img', GUICatalog.share.x, GUICatalog.share.y);
+            if (isInSquare(mousePos, 15, 115, 30, 146, 'share', 'GUICatalog')) {
+                console.log('Clicked on OpenSea');
+                openLink('opensea');
+            } else if (isInSquare(mousePos, 122, 215, 30, 144, 'share', 'GUICatalog')) {
+                console.log('Clicked on Share');
+                openLink('twitter');
+            }
+        }
+    } else if (isInSquare(mousePos, 0, GUICatalog.palette.img.width, 0, GUICatalog.palette.img.height, 'palette', 'GUICatalog')) {
         console.log('Clicked on the GUI');
         // get palette info
         const info = GUICatalog.palette.info;
@@ -124,34 +148,22 @@ export function clickManager(e) {
         for (let i = 1; i <= 16; i++) {
             const row = i > 8 ? 2 : 1;
             const column = i > 8 ? i - 8 : i;
-            if (isInCircle(mousePos, info[`row${row}Y`], info.offsetX + info.spaceX * column, info.smolRadius, 'palette')) colorSwitch(e, i);
+            if (isInCircle(mousePos, info[`row${row}Y`], info.offsetX + info.spaceX * column, info.smolRadius, 'palette', 'GUICatalog')) colorSwitch(e, i);
         }
 
-        if (isInCircle(mousePos, info.bigY, info.bigX2, info.bigRadius, 'palette')) saveToEthernity();
-        else if (isInCircle(mousePos, info.bigY, info.bigX1, info.bigRadius, 'palette')) brushSwitch();
+        if (isInCircle(mousePos, info.bigY, info.bigX2, info.bigRadius, 'palette', 'GUICatalog')) saveToEthernity();
+        else if (isInCircle(mousePos, info.bigY, info.bigX1, info.bigRadius, 'palette', 'GUICatalog')) brushSwitch();
 
-    } else if (GUICatalog.share.display) {
-        if (!isInSquare(mousePos, 0, GUICatalog.share.img.width, 0, GUICatalog.share.img.height, 'share')) {
-            GUICatalog.share.display = false;
-        } else {
-            // console.log('img', GUICatalog.share.x, GUICatalog.share.y);
-            if (isInSquare(mousePos, 15, 115, 30, 146, 'share')) {
-                console.log('Clicked on OpenSea');
-                openLink('opensea');
-            } else if (isInSquare(mousePos, 122, 215, 30, 144, 'share')) {
-                console.log('Clicked on Share');
-                openLink('twitter');
-            }
-        }
-    } else if (isInCircle(mousePos, 38, 74, 13, 'planLogos')) {
+    } else if (isInCircle(mousePos, 38, 74, 13, 'planLogos', 'imageCatalog')) {
         console.log('Discord !');
         window.open('https://discord.gg/QQQQQQQQ', '_blank');
-    } else if (isInCircle(mousePos, 72, 72, 13, 'planLogos')) {
+    } else if (isInCircle(mousePos, 72, 72, 13, 'planLogos', 'imageCatalog')) {
         console.log('GitHub !');
         window.open('https://github.com/laguerrepiece/moonolith', '_blank');
-    } else if (isInCircle(mousePos, 58, 116, 15, 'planLogos')) {
-        console.log('Medium !');
-        window.open('https://medium.com/', '_blank');
+    } else if (isInCircle(mousePos, 58, 116, 15, 'planLogos', 'imageCatalog')) {
+        console.log('FAQ !');
+        displayFAQ('FAQ')
+        // window.open('https://medium.com/', '_blank');
     } else if (convertToMonolithPos(mousePos)) {
         // clicked on monolith
         console.log('monolithPos', mousePos);

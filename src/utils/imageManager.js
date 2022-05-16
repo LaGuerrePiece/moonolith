@@ -2,16 +2,21 @@ import { UPNG } from './upmc';
 import { runeNumber } from '../main';
 import Const from '../constants';
 import { monolith, drawPixel, monolithIndexes } from '../monolith/monolith';
-import { chunkCreator } from './web3';
+import { chunkCreator, isMetamaskHere } from './web3';
 import { importedChunks } from '../main';
 import { compressToUTF16, decompressFromUTF16 } from 'lz-string';
 import { animCatalog } from '../display/animations';
+import { displayFAQ } from '../display/FAQ';
 import { chunkStock, chunksToAnimateInfo } from '../monolith/monolithAnims';
 
 function saveToEthernity() {
-    monolithToBase64().then((data) => {
-        chunkCreator(data);
-    });
+    if (isMetamaskHere()) {
+        monolithToBase64().then((data) => {
+            chunkCreator(data);
+        });
+    } else {
+        displayFAQ('MetamaskFAQ');
+    }
 }
 
 export async function parseAPNG() {

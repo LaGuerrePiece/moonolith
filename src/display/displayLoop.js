@@ -7,8 +7,9 @@ import { toggleRumble } from '../assets/sounds';
 import { addPointer } from './pointer';
 import { loadImages, imageCatalog, updateImageCatalog, drawImages } from './images';
 import { loadAnims, updateAnimCatalog, drawAnimations } from './animations';
-import { loadGUI, updateGUICatalog, drawGUI } from './GUI';
+import { loadGUI, updateGUICatalog, drawGUI, GUICatalog } from './GUI';
 import { monolithDisplayHeightIntro, introState } from '../intro';
+import { FAQ, drawFAQ } from './FAQ';
 
 export let windowHeight = window.innerHeight;
 export let windowWidth = window.innerWidth;
@@ -37,6 +38,11 @@ export function initDisplay() {
         ctx.fillStyle = 'rgb(196, 130, 127)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+        if (FAQ) {
+            drawFAQ(ctx);
+            requestAnimationFrame(update);
+            return;
+        }
         drawLayer(ctx, 6);
         drawLayer(ctx, 5);
         drawLayer(ctx, 4);
@@ -134,7 +140,7 @@ function initCanvas() {
     // Set canvas size to size of screen
     canvas.style.width = '100%';
     canvas.style.imageRendering = 'pixelated';
-    document.body.style.cssText = 'margin:0;padding:0;';
+    document.body.style.overflow = 'hidden';
     window.onresize = resizeManager;
 }
 

@@ -26,6 +26,7 @@ export let imageCatalog = {
     moon: { fileName: 'moon', type: 'landscape', startX: 141, startY: 161, layer: 1, display: true },
     panneauDecor: { fileName: 'panneauDecor', type: 'landscape', startX: 292, startY: 178, layer: 1, display: false },
     TibonomEmporte: { fileName: 'TibonomEmporte', type: 'TibonomEmporte', startX: 109, startY: -30, layer: 1, display: false },
+    FAQ: { fileName: 'FAQ', type: 'FAQ', startX: 20, startY: 20, display: false },
 };
 
 export function updateImageCatalog() {
@@ -44,6 +45,7 @@ export function updateImageCatalog() {
             thisImage.x = thisImage.startX + Const.MARGIN_LEFT - viewPosX;
             if (introState) thisImage.y = thisImage.y + Const.MONOLITH_LINES - monolithDisplayHeightIntro;
         }
+        // console.log(image, thisImage.img.height);
     }
 }
 
@@ -101,8 +103,8 @@ export function loadImages() {
 export function drawImages(ctx, layer) {
     for (let image in imageCatalog) {
         const thisImage = imageCatalog[image];
-        if (thisImage.layer !== layer) continue;
-        if (thisImage.display && thisImage.loaded) ctx.drawImage(thisImage.img, thisImage.x, thisImage.y);
+        if (thisImage.layer !== layer || !thisImage.display || !thisImage.loaded) continue;
+        ctx.drawImage(thisImage.img, thisImage.x, thisImage.y);
     }
 }
 

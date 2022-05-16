@@ -4,14 +4,21 @@ import { introState } from '../intro';
 import { getChunk } from '../utils/web3';
 import { prepareBufferForApi } from '../utils/imageManager';
 import { canvas, renderHeight, renderWidth } from '../display/displayLoop';
+import { FAQ } from '../display/FAQ';
 import { updatePalette } from './GUI';
 import { imageCatalog } from './images';
 
 export let scaleFactor = 1;
 export let viewPosY = 0;
 export let viewPosX = 0;
+export let FAQviewPosY = 0;
 
 export function changeViewPos(inputX, inputY) {
+    if (FAQ) {
+        changeFAQViewPos(inputY);
+        return;
+    }
+
     viewPosX += inputX;
     viewPosY += inputY;
     // Limits :
@@ -23,6 +30,15 @@ export function changeViewPos(inputX, inputY) {
     if (viewPosY < lowY) viewPosY = lowY;
     if (viewPosX < lowX) viewPosX = lowX;
     if (viewPosX + renderWidth + lowX > Const.COLUMNS) viewPosX = Const.COLUMNS - renderWidth - lowX;
+}
+
+function changeFAQViewPos(inputY) {
+    const FAQHeight = imageCatalog.FAQ.img.height;
+    // console.log('inputY', inputY, 'FAQviewPosY', FAQviewPosY, 'renderHeight', renderHeight, 'FAQHeight', FAQHeight);
+    // console.log('renderHeight - FAQHeight', renderHeight - FAQHeight);
+    FAQviewPosY += inputY;
+    if (FAQviewPosY > 0) FAQviewPosY = 0;
+    if (FAQviewPosY < renderHeight - FAQHeight) FAQviewPosY = renderHeight - FAQHeight;
 }
 
 export function changeViewPosSmoothly(inputY, inverseSpeed) {
@@ -79,8 +95,9 @@ export function toggleZoom() {
 }
 
 function zoom(factor) {
+    const limit = 6.6;
     if (factor < 1) factor = 1;
-    if (factor > 6.6) factor = 6.6;
+    if (factor > limit) factor = limit;
 
     if (factor === 1) {
         viewPosX = 0;

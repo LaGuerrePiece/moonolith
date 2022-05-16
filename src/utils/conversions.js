@@ -3,15 +3,16 @@ import { scaleFactor, viewPosY, viewPosX } from '../display/view';
 import { canvas, pixelSize, renderHeight } from '../display/displayLoop';
 import { imageCatalog } from '../display/images';
 import { GUICatalog } from '../display/GUI';
+import { FAQCatalog } from '../display/FAQ';
 
-export function isInCircle(mousePos, y, x, radius, plan) {
-    mousePos = convertToLayer(mousePos, plan);
+export function isInCircle(mousePos, y, x, radius, plan, catalog) {
+    mousePos = convertToLayer(mousePos, plan, catalog);
     // console.log('convertedmousePos', mousePos);
     return Math.ceil(mousePos.x - x) ** 2 + Math.ceil(mousePos.y - y) ** 2 <= radius ** 2;
 }
 
-export function isInSquare(mousePos, xmin, xmax, ymin, ymax, plan) {
-    mousePos = convertToLayer(mousePos, plan);
+export function isInSquare(mousePos, xmin, xmax, ymin, ymax, plan, catalog) {
+    mousePos = convertToLayer(mousePos, plan, catalog);
     // console.log('convertedmousePos', mousePos);
     if (mousePos.x >= xmin && mousePos.x <= xmax && mousePos.y >= ymin && mousePos.y <= ymax) {
         return true;
@@ -19,8 +20,16 @@ export function isInSquare(mousePos, xmin, xmax, ymin, ymax, plan) {
     return false;
 }
 
-function convertToLayer(coords, plan) {
-    const thisImage = imageCatalog[plan] ? imageCatalog[plan] : GUICatalog[plan];
+function convertToLayer(coords, plan, catalog) {
+    const thisCatalog =
+        catalog === 'imageCatalog'
+            ? imageCatalog
+            : catalog === 'GUICatalog'
+            ? GUICatalog
+            : catalog === 'FAQCatalog'
+            ? FAQCatalog
+            : undefined;
+    const thisImage = thisCatalog[plan];
 
     return {
         x: coords.x - thisImage.x,

@@ -111,3 +111,8 @@ export function getBrowserLocales(options = {}) {
         return opt.languageCodeOnly ? trimmedLocale.split(/-|_/)[0] : trimmedLocale;
     });
 }
+
+export function isMetamaskHere() {
+    if (window.ethereum) return true;
+    else return false;
+}
