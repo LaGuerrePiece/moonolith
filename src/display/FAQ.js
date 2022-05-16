@@ -27,9 +27,10 @@ export function drawFAQ(ctx) {
         const parallaxOffset = Math.floor(thisLayer.parallax * FAQviewPosY);
         thisLayer.y = thisLayer.startY + FAQviewPosY + parallaxOffset;
         thisLayer.x = thisLayer.startX;
-        // console.log(thisLayer.name, imageCatalog[thisLayer.name]);
+        if (thisLayer.name === 'FAQ') drawClouds(ctx);
         ctx.drawImage(imageCatalog[thisLayer.name].img, thisLayer.x, thisLayer.y);
     }
+    // console.log(imageCatalog);
 
     ctx.drawImage(GUICatalog.quitFAQ.img, GUICatalog.quitFAQ.x, GUICatalog.quitFAQ.y);
 }
@@ -38,4 +39,15 @@ export function exitFAQ() {
     changeViewPos(0, 99999);
     FAQ = false;
     FAQType = undefined;
+}
+
+function drawClouds(ctx) {
+    for (let image in imageCatalog) {
+        const thisImage = imageCatalog[image];
+        if (thisImage.type !== 'cloud') continue;
+        const parallaxOffset = Math.floor(0.15 * FAQviewPosY);
+        const y = thisImage.y + FAQviewPosY + parallaxOffset + 600;
+        // console.log(y);
+        ctx.drawImage(thisImage.img, thisImage.x, y);
+    }
 }
