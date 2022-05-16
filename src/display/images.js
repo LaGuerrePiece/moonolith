@@ -54,35 +54,32 @@ export function displayImage(name) {
 }
 
 export function initClouds() {
-    setTimeout(() => {
-        let nbClouds = Math.floor(Const.MONOLITH_LINES / 10);
-        let nbDifferentAssets = 9;
-        let currentAsset = 0;
-        for (let i = 0; i < nbClouds; i++) {
-            imageCatalog['cloud' + i] = {
-                type: 'cloud',
-                startX: Math.floor(Math.random() * Const.COLUMNS),
-                startY: i * 65 + Math.floor(Math.random() * 100),
-                shakeX: 0,
-                layer: 2.5,
-                parallax: Const.PARALLAX_LAYERS[2.5],
-                display: true,
-            };
-            const thisCloud = imageCatalog['cloud' + i];
-            thisCloud.img = new Image();
-            thisCloud.img.onload = () => {
-                thisCloud.loaded = true;
-            };
-            thisCloud.img.src = 'images/clouds/cloud' + currentAsset + '.png';
-            translateImage(thisCloud);
-            currentAsset++;
-            if (currentAsset === nbDifferentAssets) currentAsset = 0;
-        }
-    }, 1000);
+    let nbClouds = Math.floor(Const.MONOLITH_LINES / 10);
+    let nbDifferentAssets = 9;
+    let currentAsset = 0;
+    for (let i = 0; i < nbClouds; i++) {
+        imageCatalog['cloud' + i] = {
+            type: 'cloud',
+            startX: Math.floor(Math.random() * Const.COLUMNS),
+            startY: i * 65 + Math.floor(Math.random() * 100),
+            shakeX: 0,
+            layer: 3.5,
+            parallax: Const.PARALLAX_LAYERS[2.5],
+            display: true,
+        };
+        const thisCloud = imageCatalog['cloud' + i];
+        thisCloud.img = new Image();
+        thisCloud.img.onload = () => {
+            thisCloud.loaded = true;
+        };
+        thisCloud.img.src = 'images/clouds/cloud' + currentAsset + '.png';
+        translateImage(thisCloud);
+        currentAsset++;
+        if (currentAsset === nbDifferentAssets) currentAsset = 0;
+    }
 }
 
 export function loadImages() {
-    initClouds();
     for (let image in imageCatalog) {
         const thisImage = imageCatalog[image];
         thisImage.img = new Image();

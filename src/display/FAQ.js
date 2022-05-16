@@ -7,10 +7,10 @@ export let FAQ = false;
 export let FAQType;
 
 export let FAQCatalog = {
-    stratus: { name: 'stratus', parallax: 0.05, startX: 0, startY: 0 },
+    stratus: { name: 'stratus', parallax: 0.3, startX: 0, startY: 0 },
     stars: { name: 'stars', parallax: 0.1, startX: 0, startY: 0 },
     // cumulus: { name: 'cumulus', parallax: 0.22, startX: 0, startY: 0 },
-    stratus2: { name: 'stratus', parallax: 0.05, startX: 0, startY: 732 },
+    stratus2: { name: 'stratus', parallax: 0.25, startX: 0, startY: 732 },
     stars2: { name: 'stars', parallax: 0.1, startX: 0, startY: 300 },
     // cumulus2: { name: 'cumulus', parallax: 0.22, startX: 0, startY: 918 },
     FAQ: { name: 'FAQ', parallax: 0, startX: 0, startY: 0 },
@@ -27,7 +27,7 @@ export function drawFAQ(ctx) {
         const parallaxOffset = Math.floor(thisLayer.parallax * FAQviewPosY);
         thisLayer.y = thisLayer.startY + FAQviewPosY + parallaxOffset;
         thisLayer.x = thisLayer.startX;
-        console.log(thisLayer.name, imageCatalog[thisLayer.name]);
+        // console.log(thisLayer.name, imageCatalog[thisLayer.name]);
         ctx.drawImage(imageCatalog[thisLayer.name].img, thisLayer.x, thisLayer.y);
     }
 

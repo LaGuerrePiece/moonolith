@@ -3,7 +3,7 @@ import Const from './constants';
 import { getChunk, getMetaData } from './utils/web3';
 import { setInitialViewPos } from './display/view';
 import { buildMonolith, increaseMonolithHeight } from './monolith/monolith';
-import { addSideMonolith } from './display/images';
+import { addSideMonolith, initClouds } from './display/images';
 import { parseAPNG, bufferOnMonolith } from './utils/imageManager';
 import { launchIntro } from './intro';
 import { hammer } from 'hammerjs';
@@ -79,8 +79,8 @@ export async function chunkImport(first, monoHeightSet) {
 
 export async function setMonoHeightAndBuildIt() {
     let meta = await getMetaData();
-    // console.log(meta);
     const monolithHeight = Math.floor(192 + (meta.nbKlon * meta.threshold) / (1000000 * Const.COLUMNS));
     Const.setMonolithHeight(monolithHeight);
     buildMonolith();
+    initClouds()
 }
