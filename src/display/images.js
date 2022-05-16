@@ -55,7 +55,7 @@ export function displayImage(name) {
 
 export function initClouds() {
     let nbClouds = Math.floor(Const.MONOLITH_LINES / 10);
-    let nbDifferentAssets = 9;
+    let nbDifferentAssets = 8;
     let currentAsset = 0;
     for (let i = 0; i < nbClouds; i++) {
         imageCatalog['cloud' + i] = {
