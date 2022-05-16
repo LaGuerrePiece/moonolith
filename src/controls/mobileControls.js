@@ -62,7 +62,8 @@ function touchManager(e) {
             button: 0,
         };
         console.log('tap', e);
-        if (isInSquare(mousePosInGrid(e), 0, 120, 0, 40, 'mobileDraw', 'GUICatalog')) {
+        // prettier-ignore
+        if (isInSquare(mousePosInGrid(e), 0, GUICatalog.mobileDraw.img.width, 0, GUICatalog.mobileDraw.img.height, 'mobileDraw', 'GUICatalog')) {
             togglePanMode();
             console.log('Clicked on togglePanMode');
         } else if (!panMode) clickManager(e);
