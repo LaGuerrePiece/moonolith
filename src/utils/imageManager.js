@@ -129,7 +129,7 @@ export async function bufferOnMonolith(data) {
     // Si le chunk est digne d'être animé, l'envoie dans chunkToAnimateInfo
     if ((data.zIndex === importedChunks && !runeNumber) || data.zIndex === runeNumber) {
         chunksToAnimateInfo[data.zIndex] = { trigger: data.y + height / 2, data: [] };
-        console.log('rune digne dêtre animée :', data.zIndex, chunkStock[data.zIndex]);
+        // console.log('rune digne dêtre animée :', data.zIndex, chunkStock[data.zIndex]);
     }
 
     let start = performance.now();

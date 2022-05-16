@@ -77,15 +77,16 @@ export async function launchIntro() {
         toggleMusic();
         displayPalette();
         GUICatalog.skipIntro.display = false;
-        introState = false;
         imageCatalog.TibonomEmporte.display = false;
         launchAnim('postMonolith');
         await new Promise((resolve) => setTimeout(resolve, animCatalog.postMonolith.totalDelay));
         launchAnim('autourDuFeu');
+        introState = false;
     }, 650 * Math.log(Const.MONOLITH_LINES - 7));
 }
 
 export function skipIntro() {
+    if (!introState) return
     displayImage('terreRetournee');
     animCatalog.runPlan0.display = false;
     animCatalog.introRunB.display = false;

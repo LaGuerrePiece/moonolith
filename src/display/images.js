@@ -7,7 +7,7 @@ import Const from '../constants';
 export let imageCatalog = {
     plan5: { fileName: 'plan5', type: 'landscape', startX: -2, startY: 330, layer: 5, display: true },
     stratus: { fileName: 'stratus', type: 'sky', startX: 0, startY: 460, layer: 6, display: true },
-    cumulus: { fileName: 'cumulus', type: 'sky', startX: 0, startY: 240, layer: 3.5, display: true },
+    // cumulus: { fileName: 'cumulus', type: 'sky', startX: 0, startY: 240, layer: 3.5, display: true },
     stars: { fileName: 'stars', type: 'sky', startX: 0, startY: 470, layer: 6, display: true },
     plan4: { fileName: 'plan4', type: 'landscape', startX: -2, startY: 300, layer: 4, display: true },
     plan3: { fileName: 'plan3', type: 'landscape', startX: -2, startY: 250, layer: 3, display: true },
@@ -26,12 +26,6 @@ export let imageCatalog = {
     moon: { fileName: 'moon', type: 'landscape', startX: 141, startY: 161, layer: 1, display: true },
     panneauDecor: { fileName: 'panneauDecor', type: 'landscape', startX: 292, startY: 178, layer: 1, display: false },
     TibonomEmporte: { fileName: 'TibonomEmporte', type: 'TibonomEmporte', startX: 109, startY: -30, layer: 1, display: false },
-    cloud1: { fileName: 'clouds/cloud1', type: 'cloud', startX: 0, startY: 480, layer: 6, display: true },
-    cloud2: { fileName: 'clouds/cloud2', type: 'cloud', startX: 0, startY: 335, layer: 6, display: true },
-    cloud3: { fileName: 'clouds/cloud3', type: 'cloud', startX: 0, startY: 267, layer: 6, display: true },
-    cloud4: { fileName: 'clouds/cloud4', type: 'cloud', startX: 0, startY: 600, layer: 6, display: true },
-    cloud5: { fileName: 'clouds/cloud5', type: 'cloud', startX: 0, startY: 1120, layer: 6, display: true },
-    cloud6: { fileName: 'clouds/cloud6', type: 'cloud', startX: 0, startY: 952, layer: 6, display: true },
 };
 
 export function updateImageCatalog() {
@@ -57,7 +51,36 @@ export function displayImage(name) {
     imageCatalog[name].display = true;
 }
 
+export function initClouds() {
+    setTimeout(() => {
+        let nbClouds = Math.floor(Const.MONOLITH_LINES / 10);
+        let nbDifferentAssets = 9;
+        let currentAsset = 0;
+        for (let i = 0; i < nbClouds; i++) {
+            imageCatalog['cloud' + i] = {
+                type: 'cloud',
+                startX: Math.floor(Math.random() * Const.COLUMNS),
+                startY: i * 65 + Math.floor(Math.random() * 100),
+                shakeX: 0,
+                layer: 2.5,
+                parallax: Const.PARALLAX_LAYERS[2.5],
+                display: true,
+            };
+            const thisCloud = imageCatalog['cloud' + i];
+            thisCloud.img = new Image();
+            thisCloud.img.onload = () => {
+                thisCloud.loaded = true;
+            };
+            thisCloud.img.src = 'images/clouds/cloud' + currentAsset + '.png';
+            translateImage(thisCloud);
+            currentAsset++;
+            if (currentAsset === nbDifferentAssets) currentAsset = 0;
+        }
+    }, 1000);
+}
+
 export function loadImages() {
+    initClouds();
     for (let image in imageCatalog) {
         const thisImage = imageCatalog[image];
         thisImage.img = new Image();
@@ -69,7 +92,6 @@ export function loadImages() {
         thisImage.parallax = Const.PARALLAX_LAYERS[thisImage.layer];
 
         if (thisImage.type === 'cloud') {
-            thisImage.startX = Math.floor(Math.random() * Const.COLUMNS);
             translateImage(thisImage);
         }
     }
@@ -102,8 +124,8 @@ export function addSideMonolith(monolithHeight) {
 }
 
 function translateImage(anim) {
-    let minSpeed = 2000;
-    let speed = Math.floor(Math.random() * 5000) + minSpeed;
+    let minSpeed = 1000;
+    let speed = Math.floor(Math.random() * 6000) + minSpeed;
     setInterval(() => {
         if (anim.startX > Const.COLUMNS) anim.startX = anim.img.width * -3;
         anim.startX++;
