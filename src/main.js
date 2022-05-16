@@ -82,5 +82,5 @@ export async function setMonoHeightAndBuildIt() {
     const monolithHeight = Math.floor(192 + (meta.nbKlon * meta.threshold) / (1000000 * Const.COLUMNS));
     Const.setMonolithHeight(monolithHeight);
     buildMonolith();
-    initClouds()
+    initClouds();
 }

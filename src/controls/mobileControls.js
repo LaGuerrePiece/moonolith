@@ -4,7 +4,8 @@ import { canvas } from '../display/displayLoop';
 import { startUsingTool } from '../monolith/tools';
 import { clickManager } from './controls';
 import { GUICatalog } from '../display/GUI';
-import { isInSquare, mousePosInGrid } from '../utils/conversions';
+import { FAQ, displayFAQ } from '../display/FAQ';
+import { isInCircle, isInSquare, mousePosInGrid } from '../utils/conversions';
 
 var prevTouchY = null;
 var prevTouchX = null;
@@ -62,11 +63,28 @@ function touchManager(e) {
             button: 0,
         };
         console.log('tap', e);
-        // prettier-ignore
-        if (isInSquare(mousePosInGrid(e), 0, GUICatalog.mobileDraw.img.width, 0, GUICatalog.mobileDraw.img.height, 'mobileDraw', 'GUICatalog')) {
-            togglePanMode();
-            console.log('Clicked on togglePanMode');
-        } else if (!panMode) clickManager(e);
+        const mousePos = mousePosInGrid(e);
+
+        if (FAQ) {
+            clickManager(e);
+        } else {
+            // prettier-ignore
+            if (isInSquare(mousePos, 0, GUICatalog.mobileDraw.img.width, 0, GUICatalog.mobileDraw.img.height, 'mobileDraw', 'GUICatalog')) {
+                togglePanMode();
+                console.log('Clicked on togglePanMode');
+            } else if (isInCircle(mousePos, 38, 74, 13, 'planLogos', 'imageCatalog')) {
+                console.log('Discord !');
+                window.open('https://discord.gg/QQQQQQQQ', '_blank');
+            } else if (isInCircle(mousePos, 72, 72, 13, 'planLogos', 'imageCatalog')) {
+                console.log('GitHub !');
+                window.open('https://github.com/laguerrepiece/moonolith', '_blank');
+            } else if (isInCircle(mousePos, 58, 116, 15, 'planLogos', 'imageCatalog')) {
+                console.log('FAQ !');
+                panMode = true;
+                displayFAQ('FAQ');
+                // window.open('https://medium.com/', '_blank');
+            } else if (!panMode) clickManager(e);
+        }
     } else if (panMode) {
         touchPan(e);
     } else if (!panMode) {
