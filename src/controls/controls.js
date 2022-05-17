@@ -2,26 +2,28 @@
 import { viewPosX, viewPosY, changeViewPos, increaseZoom, decreaseZoom, toggleZoom} from '../display/view';
 import { renderWidth, renderHeight, canvas } from '../display/displayLoop';
 import { displayFAQ, FAQ, FAQType, exitFAQ } from '../display/FAQ';
-import { imageCatalog } from '../display/images';
 import { GUICatalog } from '../display/GUI';
 import Const from '../constants';
 import { mobileEventListener } from './mobileControls';
 import { openLink } from '../utils/web3';
 import { saveToEthernity, importImage } from '../utils/imageManager';
 import { convertToMonolithPos, mousePosInGrid, isInCircle, isInSquare } from '../utils/conversions';
-import { toggleMusic, playSound, toggleMute } from '../assets/sounds';
+import { playSound, toggleMute } from '../assets/sounds';
 import { eraseAllPixel, increaseMonolithHeight } from '../monolith/monolith';
 import { undo, redo } from '../monolith/undoStack';
 import { brushSwitch, startUsingTool, colorSwitch, selectBrush } from '../monolith/tools';
 import { introState, skipIntro } from '../intro';
 
-export const deviceType = /(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(navigator.userAgent)
-    ? 'tablet'
-    : /Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(
-          navigator.userAgent
-      )
-    ? 'mobile'
-    : 'desktop';
+export const deviceType =
+    renderWidth / renderHeight < 0.65
+        ? 'mobile'
+        : /(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(navigator.userAgent)
+        ? 'tablet'
+        : /Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(
+              navigator.userAgent
+          )
+        ? 'mobile'
+        : 'desktop';
 
 //prettier-ignore
 document.addEventListener('contextmenu', (e) => { e.preventDefault(); }, false);
