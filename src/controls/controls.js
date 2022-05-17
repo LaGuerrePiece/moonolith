@@ -185,19 +185,19 @@ let scrollInformation = {
 };
 
 function scrollManager(e) {
-    if (e.ctrlKey == true || e.metaKey == true) {
+    if (e.ctrlKey == true || e.metaKey == true) { // si ctrl + molette on zoom 
         e.preventDefault();
         if (e.deltaY < 0) increaseZoom();
         else if (e.deltaY > 0) decreaseZoom();
         return;
     }
     let now = Date.now();
-    if (e.deltaY > 0) {
-        if (now - scrollInformation.lastScrollDown < 500) {
-            scrollInformation.consecutiveDown++;
-            scrollInformation.downInertia++;
+    if (e.deltaY > 0) { // scroll vers le bas
+        if (now - scrollInformation.lastScrollDown < 500 && now - scrollInformation.lastScrollDown > 50) { // si on a scroll dans la derniere demie sec
+            scrollInformation.consecutiveDown++; // on compte le nombre de scrolls consécutifs
+            scrollInformation.downInertia++; // on applique de l'inertie
         } else {
-            scrollInformation.consecutiveDown = 0;
+            scrollInformation.consecutiveDown = 0; // sinon reset du compteurs
         }
         scrollInformation.lastScrollDown = now;
         changeViewPos(0, -6 - parseInt(scrollInformation.consecutiveDown / 5) * 2);
@@ -205,8 +205,8 @@ function scrollManager(e) {
             clearInertia();
             scrollInformation.lastDirUp = false;
         }
-    } else {
-        if (now - scrollInformation.lastScrollUp < 500) {
+    } else { // scroll vers le haut
+            if (now - scrollInformation.lastScrollUp < 500 && now - scrollInformation.lastScrollUp > 50) {
             scrollInformation.consecutiveUp++;
             scrollInformation.upInertia++;
         } else {
