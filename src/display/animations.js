@@ -1,5 +1,5 @@
 //prettier-ignore
-import { twitter, vent0, collision, panneauRainbow, runPlan0, runPlan1, arbre0, vaisseau, introRunB, introRunC, introRunD, postMonolith, autourDuFeu } from '../assets/base64';
+import { twitter, vent0, collision, panneauRainbow, runPlan0, arbre0, arbre1, vaisseau, introRunB, introRunC, introRunD, postMonolith, autourDuFeu } from '../assets/base64';
 import { renderHeight } from './displayLoop';
 import { viewPosX, viewPosY } from './view';
 import Const from '../constants';
@@ -9,6 +9,7 @@ export let animCatalog = {
     // twitter: { fileName: 'twitter', startX: 0 + 96, startY: 83, display: true, loop: true, layer: 0, base64: twitter },
     panneauRainbow: { type: 'intro', startX: 292, startY: 178, display: false, loop: false, layer: 1, base64: panneauRainbow },
     arbre0: { fileName: 'arbre0', startX: 25, startY: 0, display: true, loop: true, layer: 0, base64: arbre0 },
+    arbre1: { fileName: 'arbre1', startX: 0, startY: 82, display: true, loop: true, layer: 1, base64: arbre1 },
     vent0: { fileName: 'vent0', startX: 0, startY: 0, display: true, loop: true, layer: 0, base64: vent0 },
     vaisseau: { fileName: 'vaisseau', startX: 280, startY: 15, display: true, loop: true, layer: 0, base64: vaisseau },
     collision: { type: 'intro', startX: 0, startY: 0, display: false, loop: false, layer: 1, base64: collision },
