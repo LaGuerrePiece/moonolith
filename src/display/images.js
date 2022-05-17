@@ -17,7 +17,7 @@ export let imageCatalog = {
     plan1B: { fileName: 'plan1B', type: 'landscape', startX: -2, startY: 198, layer: 1.5, display: true },
     moonolithTop: { fileName: 'moonolithTop', type: 'side', startY: -10, startX: 0, layer: 1.5, display: true },
     moonolithSide: { fileName: 'moonolithSide', type: 'side', startY: 283, startX: 255, layer: 1.5, display: true },
-    plan1A: { fileName: 'plan1A', type: 'landscape', startX: -2, startY: 98, layer: 1, display: true },
+    plan1A: { fileName: 'plan1A', type: 'landscape', startX: -2, startY: 48, layer: 1, display: true },
     plan1arbres: { fileName: 'plan1arbres', type: 'landscape', startX: 0, startY: 108, layer: 1, display: true },
     terreRetournee: { fileName: 'terreRetournee', type: 'landscape', startX: 24, startY: 157, layer: 1, display: false },
     plan0B: { fileName: 'plan0B', type: 'landscape', startX: -2, startY: 5, layer: 0.5, display: true },
