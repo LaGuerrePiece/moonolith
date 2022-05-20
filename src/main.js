@@ -24,8 +24,9 @@ async function initApp() {
         console.log('route : not first time, no intro');
         await parseAPNG();
         let monoHeightSet = setMonoHeightAndBuildIt();
+        changeViewPos(0, 2000);
         initDisplay();
-        chunkImport(true, monoHeightSet);
+        await chunkImport(true, monoHeightSet);
         skipIntro(true);
     }
 }
