@@ -86,7 +86,7 @@ export async function launchIntro() {
 }
 
 export function skipIntro() {
-    if (!introState) return
+    if (!introState) return;
     displayImage('terreRetournee');
     animCatalog.runPlan0.display = false;
     animCatalog.introRunB.display = false;
@@ -113,10 +113,11 @@ function monolithGoUpDuringIntro() {
     for (let row = 0; row < Const.MONOLITH_LINES - 9; row++) {
         let scalingValue = 650 * Math.log(row);
         setTimeout(() => {
+            if (!introState) return;
             monolithDisplayHeightIntro++;
         }, scalingValue);
     }
-    shake(Const.MONOLITH_LINES);
+    shake(Const.MONOLITH_LINES, true);
 }
 
 export async function displayPanneau() {

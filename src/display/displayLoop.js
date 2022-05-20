@@ -91,10 +91,11 @@ function cutMonolith(mono, monolithDisplayHeight) {
     return mono.subarray(Const.MONOLITH_COLUMNS * 4 * startYCoordinate, Const.MONOLITH_COLUMNS * 4 * endYCoordinate);
 }
 
-export function shake(newRows) {
+export function shake(newRows, launchedDuringIntro = false) {
     toggleRumble();
     //shake landscapes
     const shakeLandscape = setInterval(() => {
+        if (launchedDuringIntro && !introState) return;
         for (let layer in imageCatalog) {
             const thisLayer = imageCatalog[layer];
             if (thisLayer.type === 'landscape' && layer !== 'plan2') {
@@ -114,6 +115,7 @@ export function shake(newRows) {
     }, 60);
 
     const shakeViewPos = setInterval(() => {
+        if (launchedDuringIntro && !introState) return;
         changeViewPos(Math.floor(Math.random() * 3) - 1, Math.floor(Math.random() * 3) - 1);
     }, 20);
 

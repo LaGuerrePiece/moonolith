@@ -44,7 +44,8 @@ function changeFAQViewPos(inputY) {
 export function changeViewPosSmoothly(inputY, inverseSpeed) {
     const sign = inputY > 0 ? 1 : -1;
     for (let i = 0; i < Math.abs(inputY); i++) {
-        setTimeout(function () {
+        setTimeout(() => {
+            if (!introState) return;
             changeViewPos(0, sign);
         }, i * inverseSpeed);
     }
