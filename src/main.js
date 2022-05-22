@@ -1,11 +1,12 @@
 // prettier-ignore
 import Const from './constants';
 import { getChunk, getMetaData } from './utils/web3';
-import { setInitialViewPos } from './display/view';
+import { initDisplay } from './display/displayLoop';
+import { changeViewPos } from './display/view';
 import { buildMonolith, increaseMonolithHeight } from './monolith/monolith';
 import { addSideMonolith, initClouds } from './display/images';
 import { parseAPNG, bufferOnMonolith } from './utils/imageManager';
-import { launchIntro } from './intro';
+import { launchIntro, skipIntro } from './intro';
 import { hammer } from 'hammerjs';
 
 export let importedChunks = 0;
@@ -16,19 +17,17 @@ export let firstTime = false;
 
 async function initApp() {
     setRoute();
-    firstTime = true; // To test
     if (firstTime && !Opensea) {
-        // console.log('parsing first APNGs before intro...');
         await parseAPNG();
-        // console.log('parsing done, launching intro');
         launchIntro();
     } else {
-        parseAPNG();
-        await chunkImport(true);
-        buildMonolith();
-        await setInitialViewPos();
+        console.log('route : not first time, no intro');
+        await parseAPNG();
+        let monoHeightSet = setMonoHeightAndBuildIt();
+        changeViewPos(0, 2000);
         initDisplay();
-        // lazyParseAPNG();
+        await chunkImport(true, monoHeightSet);
+        skipIntro(true);
     }
 }
 
@@ -39,6 +38,9 @@ setInterval(() => {
 }, 30000);
 
 function setRoute() {
+    Opensea = document.URL.split('OS=')[1];
+    runeNumber = parseInt(document.URL.split('rune=')[1]);
+    if (Opensea) return;
     if (!document.cookie.includes('visited=true')) {
         console.log('First time visiting');
         const date = new Date();
@@ -47,8 +49,6 @@ function setRoute() {
         document.cookie = 'visited=true;' + ';' + expires + ';path=/';
         firstTime = true;
     }
-    runeNumber = parseInt(document.URL.split('rune=')[1]);
-    Opensea = document.URL.split('OS=')[1];
 }
 
 export async function chunkImport(first, monoHeightSet) {

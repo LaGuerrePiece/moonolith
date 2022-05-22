@@ -135,9 +135,12 @@ export function updateGUICatalog() {
                 GUICatalog.palette.x + offsetX + colorNumber2 * spaceX - Math.floor(colorNumber2 / 9) * secondLine;
         }
     }
-    GUICatalog.panneau.display = isInSquare({ x: pointer.x, y: pointer.y }, 294, 306, 76, 84, 'plan1B', 'imageCatalog')
-        ? true
-        : false;
+    GUICatalog.panneau.display =
+        deviceType === 'mobile'
+            ? false
+            : isInSquare({ x: pointer.x, y: pointer.y }, 294, 306, 76, 84, 'plan1B', 'imageCatalog')
+            ? true
+            : false;
 }
 
 export function loadGUI() {

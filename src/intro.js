@@ -85,8 +85,9 @@ export async function launchIntro() {
     }, 650 * Math.log(Const.MONOLITH_LINES - 7));
 }
 
-export function skipIntro() {
-    if (!introState) return;
+export function skipIntro(force = false) {
+    if (!introState && !force) return;
+    console.log('Intro Skipped');
     displayImage('terreRetournee');
     animCatalog.runPlan0.display = false;
     animCatalog.introRunB.display = false;
@@ -97,15 +98,13 @@ export function skipIntro() {
     imageCatalog.moon.display = false;
     imageCatalog.TibonomEmporte.display = false;
     GUICatalog.skipIntro.display = false;
-    changeViewPos(0, -999999);
-    setInitialViewPos();
     unlockScroll();
-    console.log('Intro Skipped');
     launchAnim('autourDuFeu');
     displayPanneau();
     unlockControls();
     toggleMusic();
     displayPalette();
+    setInitialViewPos();
     introState = false;
 }
 

@@ -76,6 +76,8 @@ export async function setInitialViewPos() {
         const providedY = parseInt(document.URL.split('y=')[1]);
         if (providedY) {
             changeViewPos(0, providedY);
+        } else {
+            changeViewPos(0, -9999);
         }
     }
 }
