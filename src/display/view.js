@@ -1,8 +1,8 @@
 import Const from '../constants';
-import { runeNumber } from '../main';
+import { Opensea, runeNumber } from '../main';
 import { introState } from '../intro';
 import { getChunk } from '../utils/web3';
-import { getHeight } from '../utils/imageManager';
+import { getWidthandHeight } from '../utils/imageManager';
 import { canvas, renderHeight, renderWidth } from '../display/displayLoop';
 import { FAQ } from '../display/FAQ';
 import { updatePalette } from './GUI';
@@ -57,12 +57,19 @@ export async function setInitialViewPos() {
         await getChunk(runeNumber)
             .then((res) => {
                 const y = Math.floor(res[0].toNumber() / Const.MONOLITH_COLUMNS);
-                getHeight(res[4]).then((height) => {
+                getWidthandHeight(res[4]).then(([width, height]) => {
                     const viewY = Math.floor(
                         Const.MARGIN_BOTTOM + Const.MONOLITH_LINES - y - height / 2 - renderHeight / 2
                     );
                     viewPosY = viewY;
-                    changeViewPos(0, 0);
+                    if (Opensea) {
+                        setInitialOpenseaZoom(width, height);
+                        const x = res[0].toNumber() % Const.MONOLITH_COLUMNS;
+                        const viewX = Math.floor(Const.MARGIN_LEFT + x + width / 2 - renderWidth / 2);
+                        changeViewPos(viewX, 0);
+                    } else {
+                        changeViewPos(0, 0);
+                    }
                 });
             })
             .catch((err) => {
@@ -93,6 +100,13 @@ export function toggleZoom() {
     if (scaleFactor === 1) zoom(3);
     else if (scaleFactor === 3) zoom(6);
     else zoom(1);
+}
+
+function setInitialOpenseaZoom(width, height) {
+    const scale1 = Const.COLUMNS / 1.5 / width;
+    const scale2 = renderHeight / 1.5 / height;
+    const min = Math.min(scale1, scale2);
+    zoom(min);
 }
 
 function zoom(factor) {

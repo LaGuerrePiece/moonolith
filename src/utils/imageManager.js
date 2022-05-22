@@ -92,10 +92,11 @@ function pngToBufferToRGB(buffer) {
     });
 }
 
-export async function getHeight(data) {
-    let buffer = base64ToBuffer(decompressFromUint8Array(ethers.utils.arrayify(data)));
+export async function getWidthandHeight(data) {
+    const buffer = base64ToBuffer(decompressFromUint8Array(ethers.utils.arrayify(data)));
+    const width = new Uint8Array(buffer.slice(0, 1))[0];
     const height = new Uint8Array(buffer.slice(1, 2))[0];
-    return height;
+    return [width, height];
 }
 
 export async function bufferOnMonolith(data) {

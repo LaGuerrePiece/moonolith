@@ -1,4 +1,4 @@
-import { chunkImport, setMonoHeightAndBuildIt } from './main';
+import { chunkImport, setMonoHeightAndBuildIt, Opensea } from './main';
 import { changeViewPos, changeViewPosSmoothly, viewPosY, setInitialViewPos } from './display/view';
 import { displayPalette, GUICatalog } from './display/GUI';
 import { canvas, initDisplay } from './display/displayLoop';
