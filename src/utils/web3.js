@@ -23,13 +23,12 @@ if (window.ethereum) {
 }
 
 export const chunkCreator = async (res) => {
-    if (window.ethereum.chainId == '0x4') {
+    // if (window.ethereum.chainId == '0x4') {
         await metamaskProvider.send('eth_requestAccounts', []);
         let p = await getPrice()
         let overrides = {
             value: p.mul(res.nbPix),
         };
-        console.log(p.mul(res.nbPix).toNumber())
         // console.log('Minting: ', res.position, res.ymax, res.nbPix, res.imgURI);
         let tx = metamaskContract.draw2438054C(res.position, res.ymax, res.nbPix, res.imgURI, overrides);
         tx.then((tx) => {
@@ -43,9 +42,9 @@ export const chunkCreator = async (res) => {
                 });
             });
         });
-    } else {
-        alert("Mets le testnet l'ami");
-    }
+    // } else {
+    //     alert("Mets le testnet l'ami");
+    // }
 };
 
 /**
