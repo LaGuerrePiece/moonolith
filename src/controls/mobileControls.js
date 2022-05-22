@@ -89,9 +89,9 @@ function touchManager(e) {
         touchPan(e);
     } else if (!panMode) {
         touchDraw(e);
-        // updatePalette();
     }
 
+    // prettier-ignore
     function touchDraw(e) {
         e = {
             x: Math.floor(e.changedTouches[0].clientX),
@@ -99,6 +99,7 @@ function touchManager(e) {
             type: 'touch',
             button: 0,
         };
+        if (isInSquare(mousePosInGrid({ x: e.x, y: e.y }), 0, GUICatalog.palette.img.width, 0, GUICatalog.palette.img.height, 'palette', 'GUICatalog')) return
         startUsingTool(e);
     }
 
