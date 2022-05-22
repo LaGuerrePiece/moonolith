@@ -176,6 +176,8 @@ export function clickManager(e) {
 let scrollInformation = {
     lastScrollDown: Date.now(),
     lastScrollUp: Date.now(),
+    lastAccDown: Date.now(),
+    lastAccUp: Date.now(),
     consecutiveDown: 0,
     consecutiveUp: 0,
     upInertia: 0,
@@ -193,9 +195,14 @@ function scrollManager(e) {
     }
     let now = Date.now();
     if (e.deltaY > 0) { // scroll vers le bas
-        if (now - scrollInformation.lastScrollDown < 500 && now - scrollInformation.lastScrollDown > 50) { // si on a scroll dans la derniere demie sec
-            scrollInformation.consecutiveDown++; // on compte le nombre de scrolls consécutifs
-            scrollInformation.downInertia++; // on applique de l'inertie
+        console.log(now - scrollInformation.lastAccDown)
+        if (now - scrollInformation.lastScrollDown < 500) { // si on a scroll dans la derniere demie sec
+            if(now - scrollInformation.lastAccDown > 10){ // limite pour les trackpad
+                scrollInformation.consecutiveDown++; // on compte le nombre de scrolls consécutifs
+                scrollInformation.downInertia++; // on applique de l'inertie
+                scrollInformation.lastAccDown = now;
+            }
+            console.log("acc")
         } else {
             scrollInformation.consecutiveDown = 0; // sinon reset du compteurs
         }
@@ -206,12 +213,15 @@ function scrollManager(e) {
             scrollInformation.lastDirUp = false;
         }
     } else { // scroll vers le haut
-            if (now - scrollInformation.lastScrollUp < 500 && now - scrollInformation.lastScrollUp > 50) {
-            scrollInformation.consecutiveUp++;
-            scrollInformation.upInertia++;
-        } else {
-            scrollInformation.consecutiveUp = 0;
-        }
+            if (now - scrollInformation.lastScrollUp < 500) {
+                if(now - scrollInformation.lastAccUp > 10){
+                    scrollInformation.consecutiveUp++;
+                    scrollInformation.upInertia++;
+                    scrollInformation.lastAccUp = now;
+                }
+            } else {
+                scrollInformation.consecutiveUp = 0;
+            }
         scrollInformation.lastScrollUp = now;
         changeViewPos(0, 6 + parseInt(scrollInformation.consecutiveUp / 5) * 2);
         if (!scrollInformation.lastDirUp) {
