@@ -2,7 +2,7 @@ import Const from '../constants';
 import { runeNumber } from '../main';
 import { introState } from '../intro';
 import { getChunk } from '../utils/web3';
-import { prepareBufferForApi } from '../utils/imageManager';
+import { getHeight } from '../utils/imageManager';
 import { canvas, renderHeight, renderWidth } from '../display/displayLoop';
 import { FAQ } from '../display/FAQ';
 import { updatePalette } from './GUI';
@@ -52,30 +52,28 @@ export function changeViewPosSmoothly(inputY, inverseSpeed) {
 }
 
 export async function setInitialViewPos() {
-    // If runeNumber given, change viewPos to it
     if (runeNumber) {
+        // If runeNumber given, change viewPos to it
         await getChunk(runeNumber)
             .then((res) => {
-                prepareBufferForApi(res[4]).then((data) => {
+                const y = Math.floor(res[0].toNumber() / Const.MONOLITH_COLUMNS);
+                getHeight(res[4]).then((height) => {
                     const viewY = Math.floor(
-                        Const.MARGIN_BOTTOM +
-                            Const.MONOLITH_LINES -
-                            res[0].toNumber() / Const.MONOLITH_COLUMNS -
-                            data[2] / 2 -
-                            renderHeight / 2
+                        Const.MARGIN_BOTTOM + Const.MONOLITH_LINES - y - height / 2 - renderHeight / 2
                     );
-                    changeViewPos(0, viewY);
-                    console.log('changed viewPos to :', viewY);
+                    viewPosY = viewY;
+                    changeViewPos(0, 0);
                 });
             })
             .catch((err) => {
                 console.log('error : rune not found');
             });
-        // Else, look for a Y in the url
     } else {
+        // Else, look for a Y in the url
         const providedY = parseInt(document.URL.split('y=')[1]);
         if (providedY) {
-            changeViewPos(0, providedY);
+            viewPosY = providedY;
+            changeViewPos(0, 0);
         } else {
             changeViewPos(0, -9999);
         }

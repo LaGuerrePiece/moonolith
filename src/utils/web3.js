@@ -25,7 +25,7 @@ if (window.ethereum) {
 export const chunkCreator = async (res) => {
     // if (window.ethereum.chainId == '0x4') {
         await metamaskProvider.send('eth_requestAccounts', []);
-        let p = await getPrice()
+        let p = await getPrice();
         let overrides = {
             value: p.mul(res.nbPix),
         };
