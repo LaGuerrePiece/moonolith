@@ -4,10 +4,12 @@ import Const from '../constants';
 import { monolith, drawPixel, monolithIndexes } from '../monolith/monolith';
 import { chunkCreator, isMetamaskHere } from './web3';
 import { importedChunks } from '../main';
-import { compressToUTF16, decompressFromUTF16 } from 'lz-string';
+import { compressToUint8Array, decompressFromUint8Array} from 'lz-string';
 import { animCatalog } from '../display/animations';
 import { displayFAQ } from '../display/FAQ';
 import { chunkStock, chunksToAnimateInfo } from '../monolith/monolithAnims';
+import { ethers } from 'ethers';
+
 
 function saveToEthernity() {
     if (isMetamaskHere()) {
@@ -92,7 +94,7 @@ function pngToBufferToRGB(buffer) {
 }
 
 async function prepareBufferForApi(data) {
-    let pixArray = new Uint8Array(base64ToBuffer(decompressFromUTF16(data)));
+    let pixArray = new Uint8Array(base64ToBuffer(decompressFromUint8Array(data)));
     pixArray = Array.from(pixArray);
     let width = pixArray.shift();
     let height = pixArray.shift();
@@ -111,7 +113,11 @@ async function prepareBufferForApi(data) {
 
 export async function bufferOnMonolith(data) {
     //console.log(LZString.decompressFromUTF16(data.buffer));
-    let buffer = base64ToBuffer(decompressFromUTF16(data.buffer));
+    // console.log(data)
+    // console.log(data.buffer)
+    // console.log(ethers.utils.arrayify(data.buffer))
+    // console.log(decompressFromUint8Array(ethers.utils.arrayify(data.buffer)))
+    let buffer = base64ToBuffer(decompressFromUint8Array(ethers.utils.arrayify(data.buffer)));
     const width = new Uint8Array(buffer.slice(0, 1))[0];
     const height = new Uint8Array(buffer.slice(1, 2))[0];
     let pixArray = new Uint8Array(buffer.slice(2, buffer.length));
@@ -143,11 +149,11 @@ export async function bufferOnMonolith(data) {
     for (let y = data.y; y < data.yMaxLegal; y++) {
         for (let x = data.x; x < width + data.x; x++) {
             if (y >= data.yMaxLegal) {
-                if (data.zIndex === 1) console.log('time:', performance.now() - start);
+                if (data.zIndex === 1) //console.log('time:', performance.now() - start);
                 return;
             }
             if (pixelDrawn >= data.paid) {
-                if (data.zIndex === 1) console.log('time:', performance.now() - start);
+                if (data.zIndex === 1) //console.log('time:', performance.now() - start);
                 return;
             }
             if (x < 0 || x >= Const.MONOLITH_COLUMNS || y < 0 || y >= Const.MONOLITH_LINES) continue;
@@ -170,8 +176,13 @@ function monolithToBase64() {
         // saveLocally(
         //     bufferToBase64(UPNG.encode([new Uint8Array(pixelArray24bits).buffer], highLow.longueur, highLow.largeur, 0))
         // );
-        let compressed = compressToUTF16(bufferToBase64(pixelArray.buffer));
-        let pArray = new Uint8Array(base64ToBuffer(decompressFromUTF16(compressed)));
+        // console.log(pixelArray)
+        // console.log(pixelArray.buffer)
+        // console.log(bufferToBase64(pixelArray.buffer))
+        let compressed = compressToUint8Array(bufferToBase64(pixelArray.buffer));
+        // console.log(compressed)
+        let pArray = new Uint8Array(base64ToBuffer(decompressFromUint8Array(compressed)));
+        // console.log(pArray)
         resolve({ position: firstPix, ymax: highLow.highY, nbPix: nbPix, imgURI: compressed });
     });
 }
@@ -318,7 +329,7 @@ export function importImage() {
             let base64 = btoa(
                 new Uint8Array(importedImage).reduce((data, byte) => data + String.fromCharCode(byte), '')
             );
-            console.log('base64', base64);
+            // console.log('base64', base64);
         };
     };
     input.click();

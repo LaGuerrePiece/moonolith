@@ -59,9 +59,9 @@
 			},
 			{
 				"indexed": false,
-				"internalType": "string",
+				"internalType": "bytes",
 				"name": "image",
-				"type": "string"
+				"type": "bytes"
 			}
 		],
 		"name": "Chunk",
@@ -197,9 +197,9 @@
 				"type": "uint256"
 			},
 			{
-				"internalType": "string",
+				"internalType": "bytes",
 				"name": "image",
-				"type": "string"
+				"type": "bytes"
 			}
 		],
 		"name": "draw2438054C",

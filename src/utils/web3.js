@@ -6,8 +6,7 @@ import { chunkImport, importedChunks } from '../main';
 
 const provider = new ethers.providers.InfuraProvider('rinkeby');
 const iface = new Interface(contractABI);
-const contractAddress = '0xf4Fe5B96f355D5753fbd9DDd1D2c490821D527bf';
-//const contractAddress = '0x7d7603b79b5d26abbb9be8e9fe0f7456d1fce283';
+const contractAddress = '0x24d1fEA9115602779E6112aA40520640aDF35062';
 // const contractAddress = '0xde02A804Dd2eFe93F353ea7365A9972513B9ae2E'; //CONTRAT VIERGE
 // const contractAddress = '0xB1F21b3799DA0eEC6765cBF38f0c7278a0EaF51E'; //CONTRAT VIERGE
 // const contractAddress = '0x1593f13eC77e01Ec93B8c51846613Fe567b2258a'; //CONTRAT VIERGE AVEC PLUS DE PLACE
@@ -26,10 +25,11 @@ if (window.ethereum) {
 export const chunkCreator = async (res) => {
     if (window.ethereum.chainId == '0x4') {
         await metamaskProvider.send('eth_requestAccounts', []);
-        const oneGwei = ethers.BigNumber.from('1000000000');
+        let p = await getPrice()
         let overrides = {
-            value: oneGwei.mul(res.nbPix).mul(10000),
+            value: p.mul(res.nbPix),
         };
+        console.log(p.mul(res.nbPix).toNumber())
         // console.log('Minting: ', res.position, res.ymax, res.nbPix, res.imgURI);
         let tx = metamaskContract.draw2438054C(res.position, res.ymax, res.nbPix, res.imgURI, overrides);
         tx.then((tx) => {
@@ -78,6 +78,11 @@ export const getChunksFromPosition = async (min, max) => {
     //console.log(res);
     return res;
 };
+
+async function getPrice() {
+    let price = await contract._pricePerPix();
+    return price;
+}
 
 export async function getMetaData() {
     let metadata = await contract.getMonolithInfo();
