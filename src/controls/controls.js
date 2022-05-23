@@ -195,14 +195,14 @@ function scrollManager(e) {
     }
     let now = Date.now();
     if (e.deltaY > 0) { // scroll vers le bas
-        console.log(now - scrollInformation.lastAccDown)
+        // console.log(now - scrollInformation.lastAccDown)
         if (now - scrollInformation.lastScrollDown < 500) { // si on a scroll dans la derniere demie sec
             if(now - scrollInformation.lastAccDown > 10){ // limite pour les trackpad
                 scrollInformation.consecutiveDown++; // on compte le nombre de scrolls consécutifs
                 scrollInformation.downInertia++; // on applique de l'inertie
                 scrollInformation.lastAccDown = now;
             }
-            console.log("acc")
+             // console.log("acc")
         } else {
             scrollInformation.consecutiveDown = 0; // sinon reset du compteurs
         }

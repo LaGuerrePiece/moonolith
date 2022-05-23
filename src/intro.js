@@ -28,7 +28,7 @@ export async function launchIntro() {
 
     if (!introState) return;
 
-    changeViewPosSmoothly(-390, 7);
+    changeViewPosSmoothly(-390, 3);
     await new Promise((resolve) => {
         function waitForViewPos() {
             if (viewPosY == 10 || !introState) {
