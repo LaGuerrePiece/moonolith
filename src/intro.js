@@ -24,11 +24,11 @@ export async function launchIntro() {
     canvas.onmousedown = skipManager;
 
     launchAnim('collision');
-    await new Promise((resolve) => setTimeout(resolve, animCatalog.collision.totalDelay + 1000));
+    await new Promise((resolve) => setTimeout(resolve, animCatalog.collision.totalDelay + 100));
 
     if (!introState) return;
 
-    changeViewPosSmoothly(-390, 3);
+    changeViewPosSmoothly(-390, 4);
     await new Promise((resolve) => {
         function waitForViewPos() {
             if (viewPosY == 10 || !introState) {
@@ -45,7 +45,8 @@ export async function launchIntro() {
 
     if (!introState) return;
 
-    changeViewPosSmoothly(70, 50);
+    changeViewPosSmoothly(130, 25);
+    imageCatalog.titleLogo.display = true;
 
     launchAnim('introRunB');
     imageCatalog.moon.display = false;
@@ -79,6 +80,7 @@ export async function launchIntro() {
         GUICatalog.skipIntro.display = false;
         GUICatalog.faqButton.display = true;
         imageCatalog.TibonomEmporte.display = false;
+        imageCatalog.titleLogo.display = false;
         launchAnim('postMonolith');
         await new Promise((resolve) => setTimeout(resolve, animCatalog.postMonolith.totalDelay));
         launchAnim('autourDuFeu');
@@ -98,6 +100,7 @@ export function skipIntro(force = false) {
     animCatalog.collision.display = false;
     imageCatalog.moon.display = false;
     imageCatalog.TibonomEmporte.display = false;
+    imageCatalog.titleLogo.display = false;
     GUICatalog.faqButton.display = true;
     GUICatalog.skipIntro.display = false;
     unlockScroll();
