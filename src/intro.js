@@ -77,6 +77,7 @@ export async function launchIntro() {
         toggleMusic();
         displayPalette();
         GUICatalog.skipIntro.display = false;
+        GUICatalog.faqButton.display = true;
         imageCatalog.TibonomEmporte.display = false;
         launchAnim('postMonolith');
         await new Promise((resolve) => setTimeout(resolve, animCatalog.postMonolith.totalDelay));
@@ -97,6 +98,7 @@ export function skipIntro(force = false) {
     animCatalog.collision.display = false;
     imageCatalog.moon.display = false;
     imageCatalog.TibonomEmporte.display = false;
+    GUICatalog.faqButton.display = true;
     GUICatalog.skipIntro.display = false;
     unlockScroll();
     launchAnim('autourDuFeu');
