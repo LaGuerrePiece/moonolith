@@ -53,24 +53,29 @@ export function displayImage(name) {
 
 export function initClouds() {
     let nbClouds = Math.floor(Const.MONOLITH_LINES / 10);
-    let nbDifferentAssets = 8;
+    console.log(nbClouds);
+    let nbDifferentAssets = 12;
     let currentAsset = 0;
     for (let i = 0; i < nbClouds; i++) {
-        imageCatalog['cloud' + i] = {
+        let type;
+        if (Math.random() > 0.01) type = 'cloud' + currentAsset;
+        else type = 'rare' + (currentAsset % 3);
+        imageCatalog[type + '_' + i] = {
             type: 'cloud',
             startX: Math.floor(Math.random() * Const.COLUMNS),
-            startY: i * 65 + Math.floor(Math.random() * 100),
+            startY: i * 84 + Math.floor(Math.random() * 100),
             shakeX: 0,
             layer: 3.5,
             parallax: Const.PARALLAX_LAYERS[2.5],
             display: true,
         };
-        const thisCloud = imageCatalog['cloud' + i];
+
+        const thisCloud = imageCatalog[type + '_' + i];
         thisCloud.img = new Image();
         thisCloud.img.onload = () => {
             thisCloud.loaded = true;
         };
-        thisCloud.img.src = 'images/clouds/cloud' + currentAsset + '.png';
+        thisCloud.img.src = 'images/clouds/' + type + '.png';
         translateImage(thisCloud);
         currentAsset++;
         if (currentAsset === nbDifferentAssets) currentAsset = 0;

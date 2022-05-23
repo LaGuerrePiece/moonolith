@@ -17,6 +17,7 @@ function saveToEthernity() {
         });
     } else {
         displayFAQ('MetamaskFAQ');
+        decreaseZoom(1);
     }
 }
 
@@ -307,11 +308,11 @@ export function importImage() {
                 zIndex: 0,
             });
 
-            //! NE PAS SUPPRIMER LES LIGNES CI-DESSOUS !//
+            //! NE PAS SUPPRIMER OU COMMENTER LES LIGNES CI-DESSOUS !//
             let base64 = btoa(
                 new Uint8Array(importedImage).reduce((data, byte) => data + String.fromCharCode(byte), '')
             );
-            // console.log('base64', base64);
+            console.log('base64', base64); //! IDEM !//
         };
     };
     input.click();
