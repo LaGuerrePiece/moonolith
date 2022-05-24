@@ -102,8 +102,8 @@ export function updateGUICatalog() {
             thisLayer.y = Math.floor(-boundingClientRect.y / (pixelSize * scaleFactor) + 3 / scaleFactor);
             thisLayer.x = Math.floor(Const.COLUMNS - GUICatalog.mobileMove.img.width) / 2;
         } else if (thisLayer.fileName == 'skipIntro') {
-            thisLayer.x = Math.floor(Const.COLUMNS - GUICatalog.skipIntro.img.width) - 20;
-            thisLayer.y = Math.floor((renderHeight - GUICatalog.skipIntro.img.height) / 20);
+            thisLayer.x = 16;
+            thisLayer.y = renderHeight - GUICatalog.skipIntro.img.height - 16;
         } else if (GUILayer === 'selectorA') {
             let offsetX, secondLine, spaceX;
             if (thisLayer.img.width === 30) {

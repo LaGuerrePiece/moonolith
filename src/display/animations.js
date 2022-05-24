@@ -6,7 +6,6 @@ import Const from '../constants';
 
 //prettier-ignore
 export let animCatalog = {
-    // twitter: { fileName: 'twitter', startX: 0 + 96, startY: 83, display: true, loop: true, layer: 0, base64: twitter },
     panneauRainbow: { type: 'intro', startX: 292, startY: 178, display: false, loop: false, layer: 1, base64: panneauRainbow },
     arbre0: { fileName: 'arbre0', startX: 25, startY: 0, display: true, loop: true, layer: 0, base64: arbre0 },
     arbre1: { fileName: 'arbre1', startX: 0, startY: 82, display: true, loop: true, layer: 1, base64: arbre1 },
@@ -19,6 +18,7 @@ export let animCatalog = {
     introRunD: { type: 'intro', startX: -5, startY: 13, display: false, loop: false, layer: 1, base64: introRunD },
     postMonolith: { type: 'intro', startX: 71, startY: -5, display: false, loop: false, layer: 1, base64: postMonolith },
     autourDuFeu: { type: 'intro', startX: 67, startY: -9, display: false, loop: true, layer: 1, base64: autourDuFeu },
+    twitter: { fileName: 'twitter', startX: 126, startY: 83, display: true, loop: true, layer: 0, base64: twitter },
 };
 
 function animFrameManager(anim) {

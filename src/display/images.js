@@ -13,7 +13,7 @@ export let imageCatalog = {
     plan2C: { startX: -2, startY: 230, layer: 2.5, type: 'landscape', fileName: 'landscape/plan2C', display: true },
     plan2B: { startX: -2, startY: 230, layer: 2.5, type: 'landscape', fileName: 'landscape/plan2B', display: true },
     plan2: { startX: -2, startY: 190, layer: 2, type: 'landscape', fileName: 'landscape/plan2', display: true },
-    titleLogo: { startX: 25, startY: 294, layer: 1.5, type: 'landscape', fileName: 'titleLogo', display: false },
+    titleLogo: { startX: 25, layer: 1.5, type: 'landscape', fileName: 'titleLogo', display: false },
     plan1B: { startX: -2, startY: 198, layer: 1.5, type: 'landscape', fileName: 'landscape/plan1B', display: true },
     moonolithTop: { startY: -10, startX: 0, layer: 1.5, type: 'side', fileName: 'moonolithTop', display: true },
     moonolithSide: { startY: 283, startX: 255, layer: 1.5, type: 'side', fileName: 'moonolithSide', display: true },
@@ -44,7 +44,6 @@ export function updateImageCatalog() {
             thisImage.x = thisImage.startX + Const.MARGIN_LEFT - viewPosX;
             if (introState) thisImage.y = thisImage.y + Const.MONOLITH_LINES - monolithDisplayHeightIntro;
         }
-        // console.log(image, thisImage.img.height);
     }
 }
 
@@ -94,9 +93,8 @@ export function loadImages() {
         thisImage.shakeX = 0;
         thisImage.parallax = Const.PARALLAX_LAYERS[thisImage.layer];
 
-        if (thisImage.type === 'cloud') {
-            translateImage(thisImage);
-        }
+        if (thisImage.type === 'cloud') translateImage(thisImage);
+        if (thisImage.fileName === 'titleLogo') thisImage.startY = renderHeight + thisImage.img.height;
     }
     console.log('imageCatalog', imageCatalog);
 }
