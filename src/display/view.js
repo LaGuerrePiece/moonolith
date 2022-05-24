@@ -42,6 +42,9 @@ function changeFAQViewPos(inputY) {
 }
 
 export function changeViewPosSmoothly(inputY, inverseSpeed) {
+    // https://stackoverflow.com/questions/30007853/simple-easing-function-in-javascript
+    // (cos(pi*x) + 1) / 2
+    // const pi = Math.PI;
     const sign = inputY > 0 ? 1 : -1;
     for (let i = 0; i < Math.abs(inputY); i++) {
         setTimeout(() => {

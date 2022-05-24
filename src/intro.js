@@ -73,14 +73,7 @@ export async function launchIntro() {
     setTimeout(async () => {
         if (!introState) return;
         console.log('Intro Finished');
-        unlockControls();
-        displayPanneau();
-        toggleMusic();
-        displayPalette();
-        GUICatalog.skipIntro.display = false;
-        GUICatalog.faqButton.display = true;
-        imageCatalog.TibonomEmporte.display = false;
-        imageCatalog.titleLogo.display = false;
+        finalSkip();
         launchAnim('postMonolith');
         await new Promise((resolve) => setTimeout(resolve, animCatalog.postMonolith.totalDelay));
         launchAnim('autourDuFeu');
@@ -99,18 +92,22 @@ export function skipIntro(force = false) {
     animCatalog.postMonolith.display = false;
     animCatalog.collision.display = false;
     imageCatalog.moon.display = false;
-    imageCatalog.TibonomEmporte.display = false;
-    imageCatalog.titleLogo.display = false;
-    GUICatalog.faqButton.display = true;
-    GUICatalog.skipIntro.display = false;
     unlockScroll();
     launchAnim('autourDuFeu');
-    displayPanneau();
-    unlockControls();
-    toggleMusic();
-    displayPalette();
     setInitialViewPos();
+    finalSkip();
     introState = false;
+}
+
+function finalSkip() {
+    GUICatalog.skipIntro.display = false;
+    GUICatalog.faqButton.display = true;
+    imageCatalog.TibonomEmporte.display = false;
+    imageCatalog.titleLogo.display = false;
+    toggleMusic();
+    unlockControls();
+    displayPanneau();
+    displayPalette();
 }
 
 function monolithGoUpDuringIntro() {
