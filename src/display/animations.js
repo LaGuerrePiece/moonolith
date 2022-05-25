@@ -1,5 +1,5 @@
 //prettier-ignore
-import { twitter, vent0, collision, panneauRainbow, runPlan0, arbre0, arbre1, vaisseau, introRunB, introRunC, introRunD, postMonolith, autourDuFeu } from '../assets/base64';
+import { twitter, vent0, collision, panneauRainbow, duck, runPlan0, arbre0, arbre1, vaisseau, introRunB, introRunC, introRunD, postMonolith, autourDuFeu } from '../assets/base64';
 import { renderHeight } from './displayLoop';
 import { viewPosX, viewPosY } from './view';
 import Const from '../constants';
@@ -19,6 +19,7 @@ export let animCatalog = {
     postMonolith: { type: 'intro', startX: 71, startY: -5, display: false, loop: false, layer: 1, base64: postMonolith },
     autourDuFeu: { type: 'intro', startX: 67, startY: -9, display: false, loop: true, layer: 1, base64: autourDuFeu },
     twitter: { fileName: 'twitter', startX: 121, startY: 83, display: true, loop: true, layer: 0, base64: twitter },
+    duck: { fileName: 'duck', startX: 0, startY: 750, display: true, loop: true, layer: 0, base64: duck },
 };
 
 function animFrameManager(anim) {
@@ -51,8 +52,6 @@ export function updateAnimCatalog() {
         if (anim === 'postMonolith' || anim === 'autourDuFeu') {
             thisAnim.y -= Const.MONOLITH_LINES + Const.MARGIN_BOTTOM;
             thisAnim.x += Const.MARGIN_LEFT;
-        } else if (anim === 'collision') {
-            thisAnim.y = Math.floor(renderHeight / 2) - 55;
         }
     }
 }
@@ -86,5 +85,6 @@ export function loadAnims() {
         if (thisAnim.type !== 'intro') {
             launchAnim(anim);
         }
+        if (anim === 'collision') thisAnim.startY = Math.floor(renderHeight / 2) - 140;
     }
 }
