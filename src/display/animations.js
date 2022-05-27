@@ -2,24 +2,25 @@
 import { twitter, vent0, collision, panneauRainbow, duck, runPlan0, arbre0, arbre1, vaisseau, introRunB, introRunC, introRunD, postMonolith, autourDuFeu, discordOn, discordOff, gitOn, gitOff, bookOn, bookOff} from '../assets/base64';
 import { renderHeight } from './displayLoop';
 import { viewPosX, viewPosY } from './view';
+import { introState } from '../intro';
 import Const from '../constants';
 
 //prettier-ignore
 export let animCatalog = {
-    panneauRainbow: { type: 'intro', startX: 292, startY: 178, display: false, loop: false, layer: 1, base64: panneauRainbow },
-    arbre0: { fileName: 'arbre0', startX: 25, startY: 0, display: true, loop: true, layer: 0, base64: arbre0 },
-    arbre1: { fileName: 'arbre1', startX: 0, startY: 82, display: true, loop: true, layer: 1, base64: arbre1 },
-    vent0: { fileName: 'vent0', startX: 0, startY: 0, display: true, loop: true, layer: 0, base64: vent0 },
-    vaisseau: { fileName: 'vaisseau', startX: 280, startY: 15, display: true, loop: true, layer: 0, base64: vaisseau },
+    panneauRainbow: { type: 'postIntro', startX: 292, startY: 178, display: false, loop: false, layer: 1, base64: panneauRainbow },
+    arbre0: { type: 'continual', startX: 25, startY: 0, display: true, loop: true, layer: 0, base64: arbre0 },
+    arbre1: { type: 'continual', startX: 0, startY: 82, display: true, loop: true, layer: 1, base64: arbre1 },
+    vent0: { type: 'continual', startX: 0, startY: 0, display: true, loop: true, layer: 0, base64: vent0 },
+    vaisseau: { type: 'intro', startX: 280, startY: 15, display: true, loop: true, layer: 0, base64: vaisseau },
     collision: { type: 'intro', startX: 0, startY: 0, display: false, loop: false, layer: 1, base64: collision },
     runPlan0: { type: 'intro', startX: 187, startY: 33, display: false, loop: false, layer: 0, base64: runPlan0 },
     introRunB: { type: 'intro', startX: 71, startY: 92, display: false, loop: false, layer: 1, base64: introRunB },
     introRunC: { type: 'intro', startX: -25, startY: 1, display: false, loop: false, layer: 1, base64: introRunC },
     introRunD: { type: 'intro', startX: -5, startY: 13, display: false, loop: false, layer: 1, base64: introRunD },
     postMonolith: { type: 'intro', startX: 71, startY: -5, display: false, loop: false, layer: 1, base64: postMonolith },
-    autourDuFeu: { type: 'intro', startX: 67, startY: -9, display: false, loop: true, layer: 1, base64: autourDuFeu },
-    twitter: { fileName: 'twitter', startX: 121, startY: 83, display: true, loop: true, layer: 0, base64: twitter },
-    duck: { fileName: 'duck', startX: 0, startY: 750, display: true, loop: true, layer: 0, base64: duck },
+    autourDuFeu: { type: 'postIntro', startX: 67, startY: -9, display: false, loop: true, layer: 1, base64: autourDuFeu },
+    twitter: { type: 'continual', startX: 121, startY: 83, display: true, loop: true, layer: 0, base64: twitter },
+    duck: { type: 'continual', startX: 0, startY: 750, display: true, loop: true, layer: 0, base64: duck },
     discordOn: { type: 'onMouse', startX: 38, startY: 46, display: false, loop: false, layer: -1, base64: discordOn },
     discordOff: { type: 'onMouse', startX: 38, startY: 46, display: false, loop: false, layer: -1, base64: discordOff },
     gitOn: { type: 'onMouse', startX: 41, startY: 7, display: false, loop: false, layer: -1, base64: gitOn },
@@ -30,6 +31,7 @@ export let animCatalog = {
 
 function animFrameManager(anim) {
     let thisAnim = animCatalog[anim];
+    if (thisAnim.type === 'intro' && !introState) thisAnim.display = false;
     let currentFrame = thisAnim.currentFrame;
     setTimeout(() => {
         if (thisAnim.currentFrame < thisAnim.frames.length - 1) {
@@ -46,8 +48,8 @@ function animFrameManager(anim) {
 }
 
 export function launchAnim(anim) {
-    animFrameManager(anim);
     animCatalog[anim].display = true;
+    animFrameManager(anim);
 }
 
 export function updateAnimCatalog() {
@@ -89,7 +91,7 @@ export function loadAnims() {
 
         thisAnim.parallax = Const.PARALLAX_LAYERS[thisAnim.layer];
         thisAnim.currentFrame = 0;
-        if (thisAnim.type !== 'intro' && thisAnim.type !== 'onMouse') {
+        if (thisAnim.type === 'continual') {
             launchAnim(anim);
         }
         if (anim === 'collision') thisAnim.startY = Math.floor(renderHeight / 2) - 140;

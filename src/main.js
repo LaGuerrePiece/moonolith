@@ -17,6 +17,7 @@ export let firstTime = false;
 
 async function initApp() {
     setRoute();
+    firstTime = true;
     if (firstTime && !Opensea) {
         await parseAPNG();
         launchIntro();
