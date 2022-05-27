@@ -52,8 +52,9 @@ export function updateImageCatalog() {
             if (introState) thisImage.y = thisImage.y + Const.MONOLITH_LINES - monolithDisplayHeightIntro;
         }
     }
+
+    // Logo Animations
     if (deviceType === 'mobile') return
-    
     if (isInCircle({ x: pointer.x, y: pointer.y }, 58, 116, 15, 'planLogos', 'imageCatalog')) {
         if (animCatalog.bookOff.display === false && imageCatalog.bookOnStatic.display === false) {
             launchAnim('bookOff')

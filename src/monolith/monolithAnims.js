@@ -99,7 +99,6 @@ function draw(pos, color) {
 }
 
 function endTransition(pos, color) {
-    // console.log('endTransition', pos, color);
     draw(pos, color);
     animatedPixels.delete(pos);
 }
@@ -117,13 +116,10 @@ export function animateRune(id) {
     if (!chunkStock[id] || chunkStock[id]?.alreadyRuned) return;
     chunkStock[id].alreadyRuned = true;
     const rune = chunkStock[id];
-    console.log('animateRune', id);
 
     // Display rune
     const runeData = chunksToAnimateInfo[id].data;
-    // console.log('runeData', runeData);
     runeData.forEach((pos) => {
-        // console.log('pos', pos, 'color', color);
         animatedPixels.set(pos[0], ['import', pos[1], 1]);
     });
     // White on Rune
@@ -135,7 +131,7 @@ export function animateRune(id) {
                 const x = i + rune.x;
                 const pos = (y * Const.MONOLITH_COLUMNS + x) * 4;
                 if (x < 0 || x >= Const.MONOLITH_COLUMNS || y < 0 || y >= Const.MONOLITH_LINES) continue;
-                if (!monolithIndexes[y]?.[x]) continue;
+                if (monolithIndexes[y]?.[x] !== id) continue;
                 if (animatedPixels.get(pos)) continue;
                 const color = [monolith[pos], monolith[pos + 1], monolith[pos + 2]];
                 if (j + i < limit / 5) animatedPixels.set(pos, ['whiteOnRune', color, 90]);
@@ -148,43 +144,11 @@ export function animateRune(id) {
         }
     }, 1600);
 
-    // runeCorners
-    // prettier-ignore
-    // const order = [[-1, -1], [1, -1], [1, 1], [-1, 1]];
-    // for (let a = 0; a < 4; a++) {
-    //     const direction = order[a];
-    //     const startY = direction[0] === -1 ? rune.y : rune.y + rune.height;
-    //     const startX = direction[1] === -1 ? rune.x : rune.x + rune.width;
-    //     for (let j = 0; j < runeCornerInfo.decoded.height; j++) {
-    //         for (let i = 0; i < runeCornerInfo.decoded.width; i++) {
-    //             const posInPng = (j * runeCornerInfo.decoded.width + i) * 4;
-    //             if (!runeCornerInfo.decoded.decodedYX[posInPng + 3]) continue;
-    //             const blue = runeCornerInfo.decoded.decodedYX[posInPng] === 38 ? 1 : 0;
-    //             const y = startY + (j - 12) * direction[0]; //25
-    //             const x = startX + (i - 6) * direction[1]; //12
-    //             animThisPixel(y, x, 'runeCornerOrSide' + blue);
-    //         }
-    //     }
-    // }
-
-    //runeSide
-    // for (let j = 0; j < runeSideInfo.decoded.height; j++) {
-    //     for (let i = 0; i < runeSideInfo.decoded.width; i++) {
-    //         const posInPng = (j * runeSideInfo.decoded.width + i) * 4;
-    //         if (!runeSideInfo.decoded.decodedYX[posInPng + 3]) continue;
-    //         const blue = runeSideInfo.decoded.decodedYX[posInPng] === 38 ? 1 : 0;
-    //         console.log('rune.y', rune.y, 'rune.x', rune.x, 'rune.height', rune.height, 'rune.width', rune.width);
-    //         const y = rune.y + Math.floor(rune.height / 2) + j - 6;
-    //         const x = rune.x + rune.width + i + 6; //5
-    //         animThisPixel(y, x, 'runeCornerOrSide' + blue);
-    //     }
-    // }
-
     // runeContour
     for (let j = rune.y; j < rune.height + rune.y; j++) {
         for (let i = rune.x; i < rune.width + rune.x; i++) {
             if (i < 0 || i >= Const.MONOLITH_COLUMNS || j < 0 || j >= Const.MONOLITH_LINES) continue;
-            if (!monolithIndexes[j]?.[i]) continue;
+            if (monolithIndexes[j]?.[i] !== id) continue;
             // i et j sont les coordonnées du pixel à dessiner
             for (let b = -1; b <= 1; b++) {
                 for (let a = -1; a <= 1; a++) {
