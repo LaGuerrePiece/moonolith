@@ -47,7 +47,7 @@ export let GUICatalog = {
     selectorA: { fileName: '/palette/selector1A', type: 'GUI', display: false },
     selectorB: { fileName: '/palette/selector1B', type: 'GUI', display: false },
     palette: { fileName: '/palette/palette1giga', type: 'palette', display: false },
-    quitFAQ: { fileName: 'quitFAQ', x: 318, y: 12, type: 'FAQ', display: false },
+    quitFAQ: { fileName: 'quitFAQ', x: 328, y: 3, type: 'FAQ', display: false },
     faqButton: { fileName: 'faqButton', x: 327, y: 3, type: 'FAQ', display: false },
 };
 
