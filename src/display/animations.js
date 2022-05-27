@@ -1,5 +1,5 @@
 //prettier-ignore
-import { twitter, vent0, collision, panneauRainbow, duck, runPlan0, arbre0, arbre1, vaisseau, introRunB, introRunC, introRunD, postMonolith, autourDuFeu } from '../assets/base64';
+import { twitter, vent0, collision, panneauRainbow, duck, runPlan0, arbre0, arbre1, vaisseau, introRunB, introRunC, introRunD, postMonolith, autourDuFeu, discordOn, discordOff, gitOn, gitOff, bookOn, bookOff} from '../assets/base64';
 import { renderHeight } from './displayLoop';
 import { viewPosX, viewPosY } from './view';
 import Const from '../constants';
@@ -20,6 +20,12 @@ export let animCatalog = {
     autourDuFeu: { type: 'intro', startX: 67, startY: -9, display: false, loop: true, layer: 1, base64: autourDuFeu },
     twitter: { fileName: 'twitter', startX: 121, startY: 83, display: true, loop: true, layer: 0, base64: twitter },
     duck: { fileName: 'duck', startX: 0, startY: 750, display: true, loop: true, layer: 0, base64: duck },
+    discordOn: { type: 'onMouse', startX: 38, startY: 46, display: false, loop: false, layer: -1, base64: discordOn },
+    discordOff: { type: 'onMouse', startX: 38, startY: 46, display: false, loop: false, layer: -1, base64: discordOff },
+    gitOn: { type: 'onMouse', startX: 41, startY: 7, display: false, loop: false, layer: -1, base64: gitOn },
+    gitOff: { type: 'onMouse', startX: 41, startY: 7, display: false, loop: false, layer: -1, base64: gitOff },
+    bookOn: { type: 'onMouse', startX: 74, startY: 29, display: false, loop: false, layer: -1, base64: bookOn },
+    bookOff: { type: 'onMouse', startX: 74, startY: 29, display: false, loop: false, layer: -1, base64: bookOff },
 };
 
 function animFrameManager(anim) {
@@ -33,6 +39,7 @@ function animFrameManager(anim) {
             thisAnim.currentFrame = 0;
             animFrameManager(anim);
         } else {
+            thisAnim.currentFrame = 0;
             thisAnim.display = false;
         }
     }, thisAnim.delay[currentFrame]);
@@ -82,7 +89,7 @@ export function loadAnims() {
 
         thisAnim.parallax = Const.PARALLAX_LAYERS[thisAnim.layer];
         thisAnim.currentFrame = 0;
-        if (thisAnim.type !== 'intro') {
+        if (thisAnim.type !== 'intro' && thisAnim.type !== 'onMouse') {
             launchAnim(anim);
         }
         if (anim === 'collision') thisAnim.startY = Math.floor(renderHeight / 2) - 140;

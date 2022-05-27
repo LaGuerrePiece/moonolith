@@ -34,11 +34,9 @@ export function changeViewPos(inputX, inputY) {
 
 function changeFAQViewPos(inputY) {
     const FAQHeight = FAQType === 'FAQ' ? imageCatalog.FAQ.img.height : imageCatalog.metamaskFAQ.img.height;
-    // console.log('inputY', inputY, 'FAQviewPosY', FAQviewPosY, 'renderHeight', renderHeight, 'FAQHeight', FAQHeight);
-    // console.log('renderHeight - FAQHeight', renderHeight - FAQHeight);
     FAQviewPosY += inputY;
-    if (FAQviewPosY > 0) FAQviewPosY = 0;
     if (FAQviewPosY < renderHeight - FAQHeight) FAQviewPosY = renderHeight - FAQHeight;
+    if (FAQviewPosY > 0) FAQviewPosY = 0;
 }
 
 export function changeViewPosSmoothly(inputY, inverseSpeed) {

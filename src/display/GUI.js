@@ -137,9 +137,8 @@ export function updateGUICatalog() {
         }
     }
     GUICatalog.panneau.display =
-        deviceType === 'mobile'
-            ? false
-            : isInSquare({ x: pointer.x, y: pointer.y }, 294, 306, 76, 84, 'plan1B', 'imageCatalog')
+        deviceType !== 'mobile' &&
+        isInSquare({ x: pointer.x, y: pointer.y }, 294, 306, 76, 84, 'plan1B', 'imageCatalog')
             ? true
             : false;
 }
