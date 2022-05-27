@@ -17,7 +17,6 @@ export let firstTime = false;
 
 async function initApp() {
     setRoute();
-    firstTime = true
     if (firstTime && !Opensea) {
         await parseAPNG();
         launchIntro();
@@ -40,7 +39,7 @@ setInterval(() => {
 
 function setRoute() {
     Opensea = document.URL.split('OS=')[1];
-    runeNumber = parseInt(document.URL.split('rune=')[1]);
+    runeNumber = parseInt(document.URL.split('mark=')[1]);
     if (Opensea) return;
     if (!document.cookie.includes('visited=true')) {
         console.log('First time visiting');

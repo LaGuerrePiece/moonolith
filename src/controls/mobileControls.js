@@ -71,18 +71,18 @@ function touchManager(e) {
             // prettier-ignore
             if (isInSquare(mousePos, 0, GUICatalog.mobileDraw.img.width, 0, GUICatalog.mobileDraw.img.height, 'mobileDraw', 'GUICatalog')) {
                 togglePanMode();
-                console.log('Clicked on togglePanMode');
             } else if (isInCircle(mousePos, 38, 74, 13, 'planLogos', 'imageCatalog')) {
-                console.log('Discord !');
-                window.open('https://discord.gg/QQQQQQQQ', '_blank');
+                window.open('https://discord.gg/RTeJgSwacN', '_blank');
             } else if (isInCircle(mousePos, 72, 72, 13, 'planLogos', 'imageCatalog')) {
-                console.log('GitHub !');
                 window.open('https://github.com/laguerrepiece/moonolith', '_blank');
             } else if (isInCircle(mousePos, 58, 116, 15, 'planLogos', 'imageCatalog')) {
-                console.log('FAQ !');
                 panMode = true;
                 displayFAQ('FAQ');
-                // window.open('https://medium.com/', '_blank');
+            } else if (isInCircle(mousePos, 21, 21, 18, 'faqButton', 'GUICatalog') && GUICatalog.faqButton.display) {
+                displayFAQ('FAQ')
+                panMode = true;
+            } else if (isInSquare(mousePos, 141, 150, 84, 91, 'plan0', 'imageCatalog')) {
+                window.open('https://twitter.com/', '_blank');
             } else if (!panMode) clickManager(e);
         }
     } else if (panMode) {

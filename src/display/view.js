@@ -4,7 +4,7 @@ import { introState } from '../intro';
 import { getChunk } from '../utils/web3';
 import { getWidthandHeight } from '../utils/imageManager';
 import { canvas, renderHeight, renderWidth } from '../display/displayLoop';
-import { FAQ } from '../display/FAQ';
+import { FAQ, FAQType } from '../display/FAQ';
 import { updatePalette } from './GUI';
 import { imageCatalog } from './images';
 
@@ -33,7 +33,7 @@ export function changeViewPos(inputX, inputY) {
 }
 
 function changeFAQViewPos(inputY) {
-    const FAQHeight = imageCatalog.FAQ.img.height;
+    const FAQHeight = FAQType === 'FAQ' ? imageCatalog.FAQ.img.height : imageCatalog.metamaskFAQ.img.height;
     // console.log('inputY', inputY, 'FAQviewPosY', FAQviewPosY, 'renderHeight', renderHeight, 'FAQHeight', FAQHeight);
     // console.log('renderHeight - FAQHeight', renderHeight - FAQHeight);
     FAQviewPosY += inputY;
@@ -76,7 +76,7 @@ export async function setInitialViewPos() {
                 });
             })
             .catch((err) => {
-                console.log('error : rune not found');
+                console.log('error : mark not found');
             });
     } else {
         // Else, look for a Y in the url

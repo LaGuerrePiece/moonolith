@@ -28,7 +28,10 @@ export const deviceType =
 //prettier-ignore
 document.addEventListener('contextmenu', (e) => { e.preventDefault(); }, false);
 document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && introState) skipIntro();
+    if (e.key === 'Escape') {
+        if (introState) skipIntro();
+        else if (FAQ) exitFAQ();
+    }
 });
 
 export function skipManager(e) {
@@ -122,13 +125,24 @@ export function clickManager(e) {
 
     if (FAQ) {
         if (isInSquare(mousePos, 0, GUICatalog.quitFAQ.img.width, 0, GUICatalog.quitFAQ.img.height, 'quitFAQ', 'GUICatalog')) {
-            console.log('isInSquare');
             exitFAQ()
-        } else if (isInSquare(mousePos, 70, 293, 380, 400, 'FAQ', 'FAQCatalog')){
-            window.open('https://metamask.io/download/', '_blank');
-        } else if (isInSquare(mousePos, 61, 312, 785, 802, 'FAQ', 'FAQCatalog')){
-            window.open('https://faucets.chain.link/', '_blank');
         }
+
+        if (FAQType === 'FAQ') {
+            if (isInSquare(mousePos, 131, 194, 220, 232, 'FAQ', 'FAQCatalog')){
+                displayFAQ('metamaskFAQ')
+            }
+        } else {
+            if (isInSquare(mousePos, 74, 298, 141, 155, 'FAQ', 'FAQCatalog')){
+                window.open('https://metamask.io/download/', '_blank');
+            }
+            if (isInSquare(mousePos, 22, 66, 332, 343, 'FAQ', 'FAQCatalog')) {
+                displayFAQ('FAQ')
+            } else if (isInSquare(mousePos, 262, 349, 332, 343, 'FAQ', 'FAQCatalog')) {
+                exitFAQ()
+            }
+        }
+
     } else if (GUICatalog.share.display) {
         if (!isInSquare(mousePos, 0, GUICatalog.share.img.width, 0, GUICatalog.share.img.height, 'share', 'GUICatalog')) {
             GUICatalog.share.display = false;
@@ -157,15 +171,15 @@ export function clickManager(e) {
         else if (isInCircle(mousePos, info.bigY, info.bigX1, info.bigRadius, 'palette', 'GUICatalog')) brushSwitch();
 
     } else if (isInCircle(mousePos, 38, 74, 13, 'planLogos', 'imageCatalog')) {
-        console.log('Discord !');
-        window.open('https://discord.gg/QQQQQQQQ', '_blank');
+        window.open('https://discord.gg/RTeJgSwacN', '_blank');
     } else if (isInCircle(mousePos, 72, 72, 13, 'planLogos', 'imageCatalog')) {
-        console.log('GitHub !');
         window.open('https://github.com/laguerrepiece/moonolith', '_blank');
     } else if (isInCircle(mousePos, 58, 116, 15, 'planLogos', 'imageCatalog')) {
-        console.log('FAQ !');
         displayFAQ('FAQ')
-        // window.open('https://medium.com/', '_blank');
+    } else if (isInCircle(mousePos, 21, 21, 18, 'faqButton', 'GUICatalog') && GUICatalog.faqButton.display) {
+        displayFAQ('FAQ')
+    } else if (isInSquare(mousePos, 141, 150, 84, 91, 'plan0', 'imageCatalog')) {
+        window.open('https://twitter.com/', '_blank');
     } else if (convertToMonolithPos(mousePos)) {
         // clicked on monolith
         console.log('monolithPos', mousePos);
@@ -187,22 +201,26 @@ let scrollInformation = {
 };
 
 function scrollManager(e) {
-    if (e.ctrlKey == true || e.metaKey == true) { // si ctrl + molette on zoom 
+    if (e.ctrlKey == true || e.metaKey == true) {
+        // si ctrl + molette on zoom
         e.preventDefault();
         if (e.deltaY < 0) increaseZoom();
         else if (e.deltaY > 0) decreaseZoom();
         return;
     }
     let now = Date.now();
-    if (e.deltaY > 0) { // scroll vers le bas
+    if (e.deltaY > 0) {
+        // scroll vers le bas
         // console.log(now - scrollInformation.lastAccDown)
-        if (now - scrollInformation.lastScrollDown < 500) { // si on a scroll dans la derniere demie sec
-            if(now - scrollInformation.lastAccDown > 10){ // limite pour les trackpad
+        if (now - scrollInformation.lastScrollDown < 500) {
+            // si on a scroll dans la derniere demie sec
+            if (now - scrollInformation.lastAccDown > 10) {
+                // limite pour les trackpad
                 scrollInformation.consecutiveDown++; // on compte le nombre de scrolls consécutifs
                 scrollInformation.downInertia++; // on applique de l'inertie
                 scrollInformation.lastAccDown = now;
             }
-             // console.log("acc")
+            // console.log("acc")
         } else {
             scrollInformation.consecutiveDown = 0; // sinon reset du compteurs
         }
@@ -212,16 +230,17 @@ function scrollManager(e) {
             clearInertia();
             scrollInformation.lastDirUp = false;
         }
-    } else { // scroll vers le haut
-            if (now - scrollInformation.lastScrollUp < 500) {
-                if(now - scrollInformation.lastAccUp > 10){
-                    scrollInformation.consecutiveUp++;
-                    scrollInformation.upInertia++;
-                    scrollInformation.lastAccUp = now;
-                }
-            } else {
-                scrollInformation.consecutiveUp = 0;
+    } else {
+        // scroll vers le haut
+        if (now - scrollInformation.lastScrollUp < 500) {
+            if (now - scrollInformation.lastAccUp > 10) {
+                scrollInformation.consecutiveUp++;
+                scrollInformation.upInertia++;
+                scrollInformation.lastAccUp = now;
             }
+        } else {
+            scrollInformation.consecutiveUp = 0;
+        }
         scrollInformation.lastScrollUp = now;
         changeViewPos(0, 6 + parseInt(scrollInformation.consecutiveUp / 5) * 2);
         if (!scrollInformation.lastDirUp) {

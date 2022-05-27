@@ -1,4 +1,4 @@
-import { chunkImport, setMonoHeightAndBuildIt, Opensea } from './main';
+import { chunkImport, setMonoHeightAndBuildIt, Opensea, firstTime } from './main';
 import { changeViewPos, changeViewPosSmoothly, viewPosY, setInitialViewPos } from './display/view';
 import { displayPalette, GUICatalog } from './display/GUI';
 import { canvas, initDisplay } from './display/displayLoop';
@@ -101,7 +101,7 @@ export function skipIntro(force = false) {
 
 function finalSkip() {
     GUICatalog.skipIntro.display = false;
-    GUICatalog.faqButton.display = true;
+    if (firstTime) GUICatalog.faqButton.display = true;
     imageCatalog.TibonomEmporte.display = false;
     imageCatalog.titleLogo.display = false;
     toggleMusic();

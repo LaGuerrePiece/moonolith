@@ -24,24 +24,24 @@ if (window.ethereum) {
 
 export const chunkCreator = async (res) => {
     // if (window.ethereum.chainId == '0x4') {
-        await metamaskProvider.send('eth_requestAccounts', []);
-        let p = await getPrice();
-        let overrides = {
-            value: p.mul(res.nbPix),
-        };
-        // console.log('Minting: ', res.position, res.ymax, res.nbPix, res.imgURI);
-        let tx = metamaskContract.draw2438054C(res.position, res.ymax, res.nbPix, res.imgURI, overrides);
-        tx.then((tx) => {
-            tx.wait().then(() => {
-                chunkImport(false);
-                getMetaData().then((meta) => {
-                    sentChunk = meta.nbChunks;
-                    setTimeout(() => {
-                        displayShareScreen();
-                    }, 3000);
-                });
+    await metamaskProvider.send('eth_requestAccounts', []);
+    let p = await getPrice();
+    let overrides = {
+        value: p.mul(res.nbPix),
+    };
+    // console.log('Minting: ', res.position, res.ymax, res.nbPix, res.imgURI);
+    let tx = metamaskContract.draw2438054C(res.position, res.ymax, res.nbPix, res.imgURI, overrides);
+    tx.then((tx) => {
+        tx.wait().then(() => {
+            chunkImport(false);
+            getMetaData().then((meta) => {
+                sentChunk = meta.nbChunks;
+                setTimeout(() => {
+                    displayShareScreen();
+                }, 3000);
             });
         });
+    });
     // } else {
     //     alert("Mets le testnet l'ami");
     // }
@@ -93,7 +93,8 @@ export function openLink(type) {
         window.open('https://testnets.opensea.io/assets/' + contractAddress + '/' + sentChunk, '_blank');
     } else if (type === 'twitter') {
         window.open(
-            'https://twitter.com/intent/tweet?text=My%20rune%20%3A&url=beta.moonolith.io/rune=' + sentChunk,
+            'https://twitter.com/intent/tweet?text=My%20mark%20on%20the%20moonolith%20%3A&url=moonolith.io/?mark=' +
+                sentChunk,
             '_blank'
         );
     }

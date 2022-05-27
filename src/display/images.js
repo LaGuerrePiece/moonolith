@@ -25,7 +25,8 @@ export let imageCatalog = {
     moon: { startX: 141, startY: 161, layer: 1, type: 'landscape', fileName: 'moon', display: true },
     panneauDecor: { startX: 292, startY: 178, layer: 1, type: 'landscape', fileName: 'landscape/panneauDecor', display: false },
     TibonomEmporte: { startX: 109, startY: -30, layer: 1, type: 'TibonomEmporte', fileName: 'TibonomEmporte', display: false },
-    FAQ: { type: 'FAQ', fileName: 'FAQ', display: false },
+    FAQ: { type: 'FAQ', fileName: 'faq', display: false },
+    metamaskFAQ: { type: 'FAQ', fileName: 'metamaskFAQ', display: false },
 };
 
 export function updateImageCatalog() {
