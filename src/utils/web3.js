@@ -2,8 +2,8 @@ import { ethers } from 'ethers';
 import { Interface } from 'ethers/lib/utils';
 import contractABI from '../utils/abi.json';
 import { displayShareScreen } from '../display/GUI';
-import { chunkImport } from '../main';
-import { decreaseZoom } from '../display/view';
+import { importNewChunks } from '../main';
+import { zoom } from '../display/view';
 
 const provider = new ethers.providers.WebSocketProvider(
     'wss://eth-rinkeby.alchemyapi.io/v2/owDn7TQ6jUzgnjoQJRT0NLYjqZ4aibF1'
@@ -32,12 +32,12 @@ export const chunkCreator = async (res) => {
     let tx = metamaskContract.draw2438054C(res.position, res.ymax, res.nbPix, res.imgURI, overrides);
     tx.then((tx) => {
         tx.wait().then(() => {
-            chunkImport(false);
+            importNewChunks();
             getMetaData().then((meta) => {
                 sentChunk = meta.nbChunks;
                 setTimeout(() => {
                     displayShareScreen();
-                    decreaseZoom(1);
+                    zoom(1);
                 }, 3000);
             });
         });
@@ -63,21 +63,6 @@ export const getAllChunks = async () => {
         return iface.parseLog({ data: d.data, topics: d.topics }).args;
     });
     return allChunks;
-};
-
-export const getChunksFromPosition = async (min, max) => {
-    let res = [];
-    for (let i = min; i <= max; i++) {
-        let data = await contract.queryFilter(contract.filters.Chunk(null, i));
-        if (data.length > 0) {
-            let topics = data[0].topics;
-            data = data[0].data;
-            let chunk = iface.parseLog({ data, topics }).args;
-            chunk = chunk.slice(1);
-            res.push(chunk);
-        }
-    }
-    return res;
 };
 
 async function getPrice() {

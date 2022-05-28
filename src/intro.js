@@ -20,7 +20,7 @@ export async function launchIntro() {
     initDisplay();
     // Ask for metadata and build monolith
     // Ask for chunks but only display when monolith is built
-    chunkImport(true, monoHeightSet);
+    chunkImport(monoHeightSet);
     canvas.onmousedown = skipManager;
 
     launchAnim('collision');
