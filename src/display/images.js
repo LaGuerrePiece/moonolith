@@ -1,6 +1,9 @@
 import { renderHeight } from './displayLoop';
+import { animCatalog, launchAnim } from './animations';
 import { viewPosY, viewPosX } from './view';
+import { isInCircle } from '../utils/conversions';
 import { monolithDisplayHeightIntro, introState } from '../intro';
+import { pointer, deviceType } from '../controls/controls';
 import Const from '../constants';
 
 // prettier-ignore
@@ -22,12 +25,16 @@ export let imageCatalog = {
     plan0B: { startX: -2, startY: 5, layer: 0.5, type: 'landscape', fileName: 'landscape/plan0B', display: true },
     plan0: { startX: -2, startY: -75, layer: 0, type: 'landscape', fileName: 'landscape/plan0', display: true },
     planLogos: { startX: -25, startY: -45, layer: -1, type: 'landscape', fileName: 'landscape/planLogos', display: true },
+    bookOnStatic: { startX: 74, startY: 29, layer: -1, type: 'landscape', fileName: 'bookOnStatic', display: false },
+    discordOnStatic: { startX: 38, startY: 46, layer: -1, type: 'landscape', fileName: 'discordOnStatic', display: false },
+    gitOnStatic: { startX: 41, startY: 7, layer: -1, type: 'landscape', fileName: 'gitOnStatic', display: false },
     moon: { startX: 141, startY: 161, layer: 1, type: 'landscape', fileName: 'moon', display: true },
     panneauDecor: { startX: 292, startY: 178, layer: 1, type: 'landscape', fileName: 'landscape/panneauDecor', display: false },
     TibonomEmporte: { startX: 109, startY: -30, layer: 1, type: 'TibonomEmporte', fileName: 'TibonomEmporte', display: false },
-    FAQ: { type: 'FAQ', fileName: 'FAQ', display: false },
+    FAQ: { type: 'FAQ', fileName: 'faq', display: false },
+    metamaskFAQ: { type: 'FAQ', fileName: 'metamaskFAQ', display: false },
 };
-
+// prettier-ignore
 export function updateImageCatalog() {
     for (let image in imageCatalog) {
         const thisImage = imageCatalog[image];
@@ -44,6 +51,38 @@ export function updateImageCatalog() {
             thisImage.x = thisImage.startX + Const.MARGIN_LEFT - viewPosX;
             if (introState) thisImage.y = thisImage.y + Const.MONOLITH_LINES - monolithDisplayHeightIntro;
         }
+    }
+
+    // Logo Animations
+    if (deviceType === 'mobile') return
+    if (isInCircle({ x: pointer.x, y: pointer.y }, 58, 116, 15, 'planLogos', 'imageCatalog')) {
+        if (animCatalog.bookOff.display === false && imageCatalog.bookOnStatic.display === false) {
+            launchAnim('bookOff')
+        }
+        imageCatalog.bookOnStatic.display = true
+    } else {
+        if (imageCatalog.bookOnStatic.display === true) launchAnim('bookOn')
+        imageCatalog.bookOnStatic.display = false
+    }
+
+    if (isInCircle({ x: pointer.x, y: pointer.y }, 72, 72, 13, 'planLogos', 'imageCatalog')) {
+        if (animCatalog.gitOff.display === false && imageCatalog.gitOnStatic.display === false) {
+            launchAnim('gitOff')
+        }
+        imageCatalog.gitOnStatic.display = true
+    } else {
+        if (imageCatalog.gitOnStatic.display === true) launchAnim('gitOn')
+        imageCatalog.gitOnStatic.display = false
+    }
+
+    if (isInCircle({ x: pointer.x, y: pointer.y }, 38, 74, 13, 'planLogos', 'imageCatalog')) {
+        if (animCatalog.discordOff.display === false && imageCatalog.discordOnStatic.display === false) {
+            launchAnim('discordOff')
+        }
+        imageCatalog.discordOnStatic.display = true
+    } else {
+        if (imageCatalog.discordOnStatic.display === true) launchAnim('discordOn')
+        imageCatalog.discordOnStatic.display = false
     }
 }
 

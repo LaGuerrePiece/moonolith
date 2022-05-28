@@ -16,7 +16,7 @@ function saveToEthernity() {
             chunkCreator(data);
         });
     } else {
-        displayFAQ('MetamaskFAQ');
+        displayFAQ('metamaskFAQ');
         decreaseZoom(1);
     }
 }
