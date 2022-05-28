@@ -78,7 +78,7 @@ function touchManager(e) {
             } else if (isInCircle(mousePos, 21, 21, 18, 'faqButtonOpen', 'GUICatalog') && GUICatalog.faqButtonOpen.display) {
                 displayFAQ('FAQ')
             } else if (isInSquare(mousePos, 141, 150, 84, 91, 'plan0', 'imageCatalog')) {
-                window.open('https://twitter.com/', '_blank');
+                window.open('https://twitter.com/moonolith_eth');
             } else if (!panMode) clickManager(e);
         }
     } else if (panMode) {
