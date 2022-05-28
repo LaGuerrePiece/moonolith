@@ -55,6 +55,7 @@ export function updateImageCatalog() {
 
     // Logo Animations
     if (deviceType === 'mobile') return
+    
     if (isInCircle({ x: pointer.x, y: pointer.y }, 58, 116, 15, 'planLogos', 'imageCatalog')) {
         if (animCatalog.bookOff.display === false && imageCatalog.bookOnStatic.display === false) {
             launchAnim('bookOff')
@@ -92,7 +93,6 @@ export function displayImage(name) {
 
 export function initClouds() {
     let nbClouds = Math.floor(Const.MONOLITH_LINES / 10);
-    console.log(nbClouds);
     let nbDifferentAssets = 12;
     let currentAsset = 0;
     for (let i = 0; i < nbClouds; i++) {
@@ -135,7 +135,6 @@ export function loadImages() {
         if (thisImage.type === 'cloud') translateImage(thisImage);
         if (thisImage.fileName === 'titleLogo') thisImage.startY = renderHeight + thisImage.img.height;
     }
-    console.log('imageCatalog', imageCatalog);
 }
 
 export function drawImages(ctx, layer) {

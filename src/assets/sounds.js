@@ -31,7 +31,6 @@ export function toggleMusic() {
 
 export function stopSound(name) {
     const audio = new Audio('/audio/' + name + '.mp3');
-    console.log('stopSound', name);
     audio.pause();
 }
 

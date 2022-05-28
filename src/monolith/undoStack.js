@@ -25,7 +25,6 @@ const addToCurrentEvent = (x, y, oldColor, oldZIndex) => {
 };
 
 const undo = () => {
-    console.log('undo');
     if (eventStack.length === 0) return;
     if (currentEvent.length > 0) return;
 
@@ -51,7 +50,6 @@ const undo = () => {
 };
 
 const redo = () => {
-    console.log('redo');
     if (inverseEventStack.length === 0) return;
     if (currentEvent.length > 0) return;
 

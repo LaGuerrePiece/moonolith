@@ -14,11 +14,12 @@ export let colorNumber2 = 16;
 
 let button;
 
-//prettier-ignore
-
 export function startUsingTool(e, mousePos) {
-    //prettier-ignore
-    if (e.button == 1) {colorPicker(mousePos); e.preventDefault(); return;}
+    if (e.button == 1) {
+        colorPicker(mousePos);
+        e.preventDefault();
+        return;
+    }
     button = e.button;
     useTool(e);
     canvas.onmousemove = useTool;
@@ -110,7 +111,6 @@ function colorPicker(mousePos) {
             color[1] === Const.GUI_PALETTE[i][1] &&
             color[2] === Const.GUI_PALETTE[i][2]
         ) {
-            console.log('colorPicked1', color, i);
             colorSwitch({ button: 0 }, i + 1);
             return;
         }

@@ -2,14 +2,12 @@ import { ethers } from 'ethers';
 import { Interface } from 'ethers/lib/utils';
 import contractABI from '../utils/abi.json';
 import { displayShareScreen } from '../display/GUI';
-import { chunkImport, importedChunks } from '../main';
+import { chunkImport } from '../main';
+import { decreaseZoom } from '../display/view';
 
 const provider = new ethers.providers.WebSocketProvider("wss://eth-rinkeby.alchemyapi.io/v2/owDn7TQ6jUzgnjoQJRT0NLYjqZ4aibF1");
 const iface = new Interface(contractABI);
 const contractAddress = '0xC57696A73b4f14a20273018D7f58C95B8c527810';
-// const contractAddress = '0xde02A804Dd2eFe93F353ea7365A9972513B9ae2E'; //CONTRAT VIERGE
-// const contractAddress = '0xB1F21b3799DA0eEC6765cBF38f0c7278a0EaF51E'; //CONTRAT VIERGE
-// const contractAddress = '0x1593f13eC77e01Ec93B8c51846613Fe567b2258a'; //CONTRAT VIERGE AVEC PLUS DE PLACE
 const contract = new ethers.Contract(contractAddress, contractABI, provider);
 let metamaskProvider;
 var metamaskContract;
@@ -23,7 +21,6 @@ if (window.ethereum) {
 }
 
 export const chunkCreator = async (res) => {
-    // if (window.ethereum.chainId == '0x4') {
     await metamaskProvider.send('eth_requestAccounts', []);
     let p = await getPrice();
     let overrides = {
@@ -38,13 +35,11 @@ export const chunkCreator = async (res) => {
                 sentChunk = meta.nbChunks;
                 setTimeout(() => {
                     displayShareScreen();
+                    decreaseZoom(1);
                 }, 3000);
             });
         });
     });
-    // } else {
-    //     alert("Mets le testnet l'ami");
-    // }
 };
 
 /**
@@ -83,12 +78,10 @@ export const getChunksFromPosition = async (min, max) => {
             let topics = data[0].topics;
             data = data[0].data;
             let chunk = iface.parseLog({ data, topics }).args;
-            console.log(chunk);
             chunk = chunk.slice(1);
             res.push(chunk);
         }
     }
-    //console.log(res);
     return res;
 };
 

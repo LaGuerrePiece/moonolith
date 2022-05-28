@@ -7,7 +7,7 @@ import { toggleRumble } from '../assets/sounds';
 import { addPointer } from './pointer';
 import { loadImages, imageCatalog, updateImageCatalog, drawImages } from './images';
 import { loadAnims, updateAnimCatalog, drawAnimations } from './animations';
-import { loadGUI, updateGUICatalog, drawGUI, GUICatalog } from './GUI';
+import { loadGUI, updateGUICatalog, drawGUI } from './GUI';
 import { monolithDisplayHeightIntro, introState } from '../intro';
 import { FAQ, drawFAQ } from './FAQ';
 
@@ -103,11 +103,11 @@ export function shake(newRows, launchedDuringIntro = false) {
                 let direction = Math.floor(Math.random() * 2) * 2 - 1; //-1 or 1
                 switch (offset) {
                     case 0:
-                        thisLayer.shakeX = -2 + direction;
+                        thisLayer.shakeX = -direction;
                         break;
                     case 1:
                     case 2:
-                        thisLayer.shakeX = -2;
+                        thisLayer.shakeX = 0;
                         break;
                 }
             }
@@ -126,7 +126,7 @@ export function shake(newRows, launchedDuringIntro = false) {
         for (let layer in imageCatalog) {
             const thisLayer = imageCatalog[layer];
             if (thisLayer.type === 'landscape') {
-                thisLayer.shakeX = -2;
+                thisLayer.shakeX = 0;
             }
         }
         toggleRumble();
@@ -151,7 +151,6 @@ function resizeManager() {
     windowWidth = window.innerWidth;
     pixelSize = windowWidth / renderWidth;
     renderHeight = Math.ceil((windowHeight * renderWidth) / windowWidth);
-
     canvas.width = renderWidth;
     canvas.height = renderHeight;
 }

@@ -16,7 +16,6 @@ export function buildMonolith() {
         monolith[i + 2] = 60;
         monolith[i + 3] = 255;
     }
-    // console.log('monolith', monolith);
 
     monolithIndexes = new Array(Const.MONOLITH_LINES);
     for (let y = 0; y < Const.MONOLITH_LINES; y++) {
@@ -71,7 +70,6 @@ function same(x, y, monolithPos, zIndex, color) {
 
 export function getColor(x, y) {
     const pos = (y * Const.MONOLITH_COLUMNS + x) * 4;
-    console.log('pos', pos, 'x', x, 'y', y);
     return [monolith[pos], monolith[pos + 1], monolith[pos + 2]];
 }
 

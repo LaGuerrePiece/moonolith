@@ -32,7 +32,7 @@ export function drawFAQ(ctx) {
 
         ctx.drawImage(imageCatalog[thisLayer.name].img, thisLayer.x, thisLayer.y);
     }
-
+ 
     ctx.drawImage(GUICatalog.quitFAQ.img, GUICatalog.quitFAQ.x, GUICatalog.quitFAQ.y);
 }
 
@@ -48,7 +48,6 @@ function drawClouds(ctx) {
         if (thisImage.type !== 'cloud') continue;
         const parallaxOffset = Math.floor(0.15 * FAQviewPosY);
         const y = thisImage.y + FAQviewPosY + parallaxOffset + 600;
-        // console.log(y);
         ctx.drawImage(thisImage.img, thisImage.x, y);
     }
 }

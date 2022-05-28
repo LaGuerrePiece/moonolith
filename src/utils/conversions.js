@@ -7,13 +7,11 @@ import { FAQCatalog } from '../display/FAQ';
 
 export function isInCircle(mousePos, y, x, radius, plan, catalog) {
     mousePos = convertToLayer(mousePos, plan, catalog);
-    // console.log('convertedmousePos', mousePos);
     return Math.ceil(mousePos.x - x) ** 2 + Math.ceil(mousePos.y - y) ** 2 <= radius ** 2;
 }
 
 export function isInSquare(mousePos, xmin, xmax, ymin, ymax, plan, catalog) {
     mousePos = convertToLayer(mousePos, plan, catalog);
-    // console.log('convertedmousePos', mousePos);
     if (mousePos.x >= xmin && mousePos.x <= xmax && mousePos.y >= ymin && mousePos.y <= ymax) {
         return true;
     }
