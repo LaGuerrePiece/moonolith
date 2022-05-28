@@ -74,11 +74,9 @@ function touchManager(e) {
             } else if (isInCircle(mousePos, 72, 72, 13, 'planLogos', 'imageCatalog')) {
                 window.open('https://github.com/laguerrepiece/moonolith', '_blank');
             } else if (isInCircle(mousePos, 58, 116, 15, 'planLogos', 'imageCatalog')) {
-                panMode = true;
                 displayFAQ('FAQ');
             } else if (isInCircle(mousePos, 21, 21, 18, 'faqButton', 'GUICatalog') && GUICatalog.faqButton.display) {
                 displayFAQ('FAQ')
-                panMode = true;
             } else if (isInSquare(mousePos, 141, 150, 84, 91, 'plan0', 'imageCatalog')) {
                 window.open('https://twitter.com/', '_blank');
             } else if (!panMode) clickManager(e);
@@ -118,4 +116,9 @@ function touchManager(e) {
             prevTouchX = null;
         }
     }
+}
+
+export function setPanMode(mode) {
+    if (mode === panMode) return;
+    else togglePanMode();
 }

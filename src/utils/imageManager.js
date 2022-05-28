@@ -17,7 +17,6 @@ function saveToEthernity() {
         });
     } else {
         displayFAQ('metamaskFAQ');
-        decreaseZoom(1);
     }
 }
 

@@ -110,7 +110,9 @@ function setInitialOpenseaZoom(width, height) {
     zoom(min);
 }
 
-function zoom(factor) {
+export function zoom(factor) {
+    if (FAQ) return;
+
     const limit = 6.6;
     if (factor < 1) factor = 1;
     if (factor > limit) factor = limit;
@@ -125,6 +127,6 @@ function zoom(factor) {
 
     canvas.style.transform = `scale(${factor})`;
     scaleFactor = factor;
-    // console.log('scaleFactor', scaleFactor);
+
     updatePalette();
 }

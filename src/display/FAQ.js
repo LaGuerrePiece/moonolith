@@ -1,7 +1,9 @@
 import { FAQviewPosY } from './view';
 import { imageCatalog } from './images';
 import { GUICatalog } from './GUI';
-import { changeViewPos } from './view';
+import { changeViewPos, zoom } from './view';
+import { setPanMode } from '../controls/mobileControls';
+import { deviceType } from '../controls/controls';
 
 export let FAQ = false;
 export let FAQType;
@@ -15,8 +17,10 @@ export let FAQCatalog = {
 };
 
 export function displayFAQ(type) {
+    zoom(1);
     FAQ = true;
     FAQType = type;
+    if (deviceType === 'mobile') setPanMode(true);
     FAQCatalog.FAQ.name = type;
     changeViewPos(0, 99999);
     GUICatalog.faqButton.display = false;
@@ -32,7 +36,7 @@ export function drawFAQ(ctx) {
 
         ctx.drawImage(imageCatalog[thisLayer.name].img, thisLayer.x, thisLayer.y);
     }
- 
+
     ctx.drawImage(GUICatalog.quitFAQ.img, GUICatalog.quitFAQ.x, GUICatalog.quitFAQ.y);
 }
 
