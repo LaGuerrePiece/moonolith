@@ -23,7 +23,7 @@ export function displayFAQ(type) {
     if (deviceType === 'mobile') setPanMode(true);
     FAQCatalog.FAQ.name = type;
     changeViewPos(0, 99999);
-    GUICatalog.faqButton.display = false;
+    GUICatalog.faqButtonOpen.display = false;
 }
 
 export function drawFAQ(ctx) {

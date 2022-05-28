@@ -44,11 +44,11 @@ export let GUICatalog = {
     mobileMove: { fileName: 'mobile/move1', type: 'toggleMode', display: false },
     panneau: { fileName: 'panneauAZERTY', type: 'popup', display: false },
     share: { fileName: 'share', type: 'popup', display: false },
-    selectorA: { fileName: '/palette/selector1A', type: 'GUI', display: false },
-    selectorB: { fileName: '/palette/selector1B', type: 'GUI', display: false },
-    palette: { fileName: '/palette/palette1giga', type: 'palette', display: false },
-    quitFAQ: { fileName: 'quitFAQ', x: 328, y: 3, type: 'FAQ', display: false },
-    faqButton: { fileName: 'faqButton', x: 327, y: 3, type: 'FAQ', display: false },
+    selectorA: { fileName: 'palette/selector1A', type: 'GUI', display: false },
+    selectorB: { fileName: 'palette/selector1B', type: 'GUI', display: false },
+    palette: { fileName: 'palette/palette1giga', type: 'palette', display: false },
+    faqButtonClose: { fileName: 'faq/faqButtonClose', x: 328, y: 3, type: 'FAQ', display: false },
+    faqButtonOpen: { fileName: 'faq/faqButtonOpen', x: 327, y: 3, type: 'FAQ', display: false },
 };
 
 export function displayShareScreen() {

@@ -125,9 +125,7 @@ export function shake(newRows, launchedDuringIntro = false) {
         clearInterval(shakeViewPos);
         for (let layer in imageCatalog) {
             const thisLayer = imageCatalog[layer];
-            if (thisLayer.type === 'landscape') {
-                thisLayer.shakeX = 0;
-            }
+            if (thisLayer.type === 'landscape') thisLayer.shakeX = 0;
         }
         toggleRumble();
     }, 2000 + 500 * Math.log(newRows));

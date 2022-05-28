@@ -99,7 +99,7 @@ export function skipIntro(force = false) {
 
 function finalSkip() {
     GUICatalog.skipIntro.display = false;
-    if (firstTime) GUICatalog.faqButton.display = true;
+    if (firstTime) GUICatalog.faqButtonOpen.display = true;
     imageCatalog.TibonomEmporte.display = false;
     imageCatalog.titleLogo.display = false;
     toggleMusic();

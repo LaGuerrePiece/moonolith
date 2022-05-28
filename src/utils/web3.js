@@ -22,9 +22,9 @@ if (window.ethereum) {
 
 export const chunkCreator = async (res) => {
     await metamaskProvider.send('eth_requestAccounts', []);
-    let p = await getPrice();
+    let price = await getPrice();
     let overrides = {
-        value: p.mul(res.nbPix),
+        value: price.mul(res.nbPix),
     };
     // console.log('Minting: ', res.position, res.ymax, res.nbPix, res.imgURI);
     let tx = metamaskContract.draw2438054C(res.position, res.ymax, res.nbPix, res.imgURI, overrides);

@@ -75,7 +75,7 @@ function touchManager(e) {
                 window.open('https://github.com/laguerrepiece/moonolith', '_blank');
             } else if (isInCircle(mousePos, 58, 116, 15, 'planLogos', 'imageCatalog')) {
                 displayFAQ('FAQ');
-            } else if (isInCircle(mousePos, 21, 21, 18, 'faqButton', 'GUICatalog') && GUICatalog.faqButton.display) {
+            } else if (isInCircle(mousePos, 21, 21, 18, 'faqButtonOpen', 'GUICatalog') && GUICatalog.faqButtonOpen.display) {
                 displayFAQ('FAQ')
             } else if (isInSquare(mousePos, 141, 150, 84, 91, 'plan0', 'imageCatalog')) {
                 window.open('https://twitter.com/', '_blank');

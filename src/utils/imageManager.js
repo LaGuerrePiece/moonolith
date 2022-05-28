@@ -16,7 +16,7 @@ function saveToEthernity() {
             chunkCreator(data);
         });
     } else {
-        displayFAQ('metamaskFAQ');
+        displayFAQ('faqTextMetamask');
     }
 }
 
@@ -29,14 +29,10 @@ export async function parseAPNG() {
         await decodeAndFormatAnimation(animations[i]);
         importedAnimations++;
     }
-
-    // runeCornerInfo.buffer = parsePNG(runeCornerInfo);
-    // runeSideInfo.buffer = parsePNG(runeSideInfo);
 }
 
 export async function parsePNG(info) {
     info.decoded = await ApngToBuffer(base64ToBuffer(info.base64)).catch(console.error);
-    // console.log('info.decoded', info, info.decoded);
 }
 
 async function decodeAndFormatAnimation(index) {
@@ -48,7 +44,6 @@ async function decodeAndFormatAnimation(index) {
     thisAnim.width = decoded.width;
     thisAnim.height = decoded.height;
     delete thisAnim.base64;
-    // console.log(thisAnim);
 }
 
 export async function ApngToBuffer(buffer) {
@@ -56,7 +51,6 @@ export async function ApngToBuffer(buffer) {
         buffer = UPNG.decode(buffer);
         resolve(buffer);
     }).then((buffer) => {
-        // console.log('buffer, UPNG.decode output', buffer);
         const RGB8 = UPNG.toRGBA8(buffer);
         let framesArray = [];
         let delayArray = [];
@@ -92,7 +86,7 @@ function pngToBufferToRGB(buffer) {
     });
 }
 
-export async function getWidthandHeight(data) {
+export async function getWidthAndHeight(data) {
     const buffer = base64ToBuffer(decompressFromUint8Array(ethers.utils.arrayify(data)));
     const width = new Uint8Array(buffer.slice(0, 1))[0];
     const height = new Uint8Array(buffer.slice(1, 2))[0];
@@ -150,7 +144,6 @@ function monolithToBase64() {
         pixelArray.unshift(highLow.longueur);
         pixelArray = new Uint8Array(pixelArray);
         let compressed = compressToUint8Array(bufferToBase64(pixelArray.buffer));
-        let pArray = new Uint8Array(base64ToBuffer(decompressFromUint8Array(compressed)));
         resolve({ position: firstPix, ymax: highLow.highY, nbPix: nbPix, imgURI: compressed });
     });
 }

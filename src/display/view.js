@@ -2,7 +2,7 @@ import Const from '../constants';
 import { Opensea, runeNumber } from '../main';
 import { introState } from '../intro';
 import { getChunk } from '../utils/web3';
-import { getWidthandHeight } from '../utils/imageManager';
+import { getWidthAndHeight } from '../utils/imageManager';
 import { canvas, renderHeight, renderWidth } from '../display/displayLoop';
 import { FAQ, FAQType } from '../display/FAQ';
 import { updatePalette } from './GUI';
@@ -33,7 +33,7 @@ export function changeViewPos(inputX, inputY) {
 }
 
 function changeFAQViewPos(inputY) {
-    const FAQHeight = FAQType === 'FAQ' ? imageCatalog.FAQ.img.height : imageCatalog.metamaskFAQ.img.height;
+    const FAQHeight = FAQType === 'FAQ' ? imageCatalog.FAQ.img.height : imageCatalog.faqTextMetamask.img.height;
     FAQviewPosY += inputY;
     if (FAQviewPosY < renderHeight - FAQHeight) FAQviewPosY = renderHeight - FAQHeight;
     if (FAQviewPosY > 0) FAQviewPosY = 0;
@@ -58,7 +58,7 @@ export async function setInitialViewPos() {
         await getChunk(runeNumber)
             .then((res) => {
                 const y = Math.floor(res[0].toNumber() / Const.MONOLITH_COLUMNS);
-                getWidthandHeight(res[4]).then(([width, height]) => {
+                getWidthAndHeight(res[4]).then(([width, height]) => {
                     const viewY = Math.floor(
                         Const.MARGIN_BOTTOM + Const.MONOLITH_LINES - y - height / 2 - renderHeight / 2
                     );

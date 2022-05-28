@@ -3,7 +3,6 @@ import { addToCurrentEvent, closeCurrentEvent } from './undoStack';
 import { playSound } from '../assets/sounds';
 import { shake } from '../display/displayLoop';
 import { animatedPixels, chunksToAnimateInfo } from './monolithAnims';
-import { importedChunks, runeNumber } from '../main';
 
 export let monolith;
 export let monolithIndexes;
