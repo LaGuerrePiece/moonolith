@@ -101,11 +101,6 @@ export async function getWidthandHeight(data) {
 }
 
 export async function bufferOnMonolith(data) {
-    //console.log(LZString.decompressFromUTF16(data.buffer));
-    // console.log(data)
-    // console.log(data.buffer)
-    // console.log(ethers.utils.arrayify(data.buffer))
-    // console.log(decompressFromUint8Array(ethers.utils.arrayify(data.buffer)))
     let buffer = base64ToBuffer(decompressFromUint8Array(ethers.utils.arrayify(data.buffer)));
     const width = new Uint8Array(buffer.slice(0, 1))[0];
     const height = new Uint8Array(buffer.slice(1, 2))[0];
@@ -129,7 +124,6 @@ export async function bufferOnMonolith(data) {
     // Si le chunk est digne d'être animé, l'envoie dans chunkToAnimateInfo
     if ((data.zIndex === importedChunks && !runeNumber) || data.zIndex === runeNumber) {
         chunksToAnimateInfo[data.zIndex] = { trigger: data.y + height / 2, data: [] };
-        // console.log('rune digne dêtre animée :', data.zIndex, chunkStock[data.zIndex]);
     }
 
     let pixelDrawn = 0;
@@ -156,16 +150,8 @@ function monolithToBase64() {
         pixelArray.unshift(highLow.largeur);
         pixelArray.unshift(highLow.longueur);
         pixelArray = new Uint8Array(pixelArray);
-        // saveLocally(
-        //     bufferToBase64(UPNG.encode([new Uint8Array(pixelArray24bits).buffer], highLow.longueur, highLow.largeur, 0))
-        // );
-        // console.log(pixelArray)
-        // console.log(pixelArray.buffer)
-        // console.log(bufferToBase64(pixelArray.buffer))
         let compressed = compressToUint8Array(bufferToBase64(pixelArray.buffer));
-        // console.log(compressed)
         let pArray = new Uint8Array(base64ToBuffer(decompressFromUint8Array(compressed)));
-        // console.log(pArray)
         resolve({ position: firstPix, ymax: highLow.highY, nbPix: nbPix, imgURI: compressed });
     });
 }
@@ -243,7 +229,6 @@ function getHighLow() {
 }
 
 function rgbaToColorArray(array) {
-    // [r, g, b, a, r, g, b, a] => [colordId, colorId]
     let converted = [];
     for (let i = 0; i < array.length; i += 4) {
         let rgb = [array[i], array[i + 1], array[i + 2]];
@@ -285,7 +270,6 @@ function decode4bitsArray(array) {
         decoded.push((array[i] - (array[i] % 16)) / 16);
         decoded.push(array[i] % 16);
     }
-    // console.log(decoded);
     return decoded;
 }
 
