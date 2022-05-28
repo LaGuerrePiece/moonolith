@@ -103,11 +103,11 @@ export function shake(newRows, launchedDuringIntro = false) {
                 let direction = Math.floor(Math.random() * 2) * 2 - 1; //-1 or 1
                 switch (offset) {
                     case 0:
-                        thisLayer.shakeX = -2 + direction;
+                        thisLayer.shakeX = -direction;
                         break;
                     case 1:
                     case 2:
-                        thisLayer.shakeX = -2;
+                        thisLayer.shakeX = 0;
                         break;
                 }
             }
