@@ -36,8 +36,8 @@ export const chunkCreator = async (res) => {
             getMetaData().then((meta) => {
                 sentChunk = meta.nbChunks;
                 setTimeout(() => {
-                    displayShareScreen();
                     zoom(1);
+                    displayShareScreen();
                 }, 3000);
             });
         });
@@ -80,7 +80,7 @@ export function openLink(type) {
         window.open('https://testnets.opensea.io/assets/' + contractAddress + '/' + sentChunk, '_blank');
     } else if (type === 'twitter') {
         window.open(
-            'https://twitter.com/intent/tweet?text=My%20mark%20on%20the%20moonolith%20%3A&url=moonolith.io/?mark=' +
+            'https://twitter.com/intent/tweet?text=My%20mark%20on%20the%20@moonolith_eth%20%3A%0A&url=moonolith.io/?mark=' +
                 sentChunk,
             '_blank'
         );
