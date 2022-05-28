@@ -50,7 +50,6 @@ function togglePanMode() {
     GUICatalog.selectorA.display = !GUICatalog.selectorA.display;
     GUICatalog.mobileDraw.display = !GUICatalog.mobileDraw.display;
     GUICatalog.mobileMove.display = !GUICatalog.mobileMove.display;
-    console.log('Pan mode', panMode);
 }
 
 function touchManager(e) {
@@ -62,7 +61,6 @@ function touchManager(e) {
             type: 'touch',
             button: 0,
         };
-        console.log('tap', e);
         const mousePos = mousePosInGrid(e);
 
         if (FAQ) {

@@ -38,7 +38,6 @@ export function skipManager(e) {
     if (!introState) return;
     if (isInSquare(mousePosInGrid(e), 0, 81, 0, 47, 'skipIntro', 'GUICatalog')) {
         skipIntro();
-        console.log('Clicked on skipIntro');
     }
 }
 
@@ -67,14 +66,14 @@ function keyManager(e){
     if ((e.metaKey || e.ctrlKey) && e.key === 'z') {undo(); return}
     if ((e.metaKey || e.ctrlKey ) && (e.key === 'Z' || e.key === 'y')) {redo(); return}
     if (e.key === 'x') eraseAllPixel();
-    if (e.key === 'c') console.log('Total H', Const.COLUMNS, 'Total W', Const.LINES, 'render W', renderWidth, 'render H', renderHeight, 'viewPosX', viewPosX, 'viewPosY', viewPosY, '\nE : Brush Switch \nX : Erase All \nI : Import \nL : Mute \nK : Pause music \nP : Grow Monolith \nR : GIGA tool \nT : Go to top');
     if (e.key === 'e') brushSwitch();
-    if (e.key === 'i') importImage();
     if (e.key === 'r') { selectBrush('giga'); playSound('kick', 50); }
-    if (e.key === 'p') { increaseMonolithHeight(1100); }
-    if (e.key === 't') { changeViewPos(0, 999999); }
     if (e.key === '+') increaseZoom();
     if (e.key === '-') decreaseZoom();
+    // if (e.key === 'i') importImage();
+    // if (e.key === 'c') console.log('Total H', Const.COLUMNS, 'Total W', Const.LINES, 'render W', renderWidth, 'render H', renderHeight, 'viewPosX', viewPosX, 'viewPosY', viewPosY, '\nE : Brush Switch \nX : Erase All \nI : Import \nL : Mute \nK : Pause music \nP : Grow Monolith \nR : GIGA tool \nT : Go to top');
+    // if (e.key === 'p') { increaseMonolithHeight(1100); }
+    // if (e.key === 't') { changeViewPos(0, 999999); }
 
     switch (e.code || e.key || e.keyCode) {
         case 'KeyW':
@@ -121,7 +120,6 @@ function keyManager(e){
 //prettier-ignore
 export function clickManager(e) {
     let mousePos = mousePosInGrid(e);
-    console.log('Click', mousePos);
 
     if (FAQ) {
         if (isInSquare(mousePos, 0, GUICatalog.quitFAQ.img.width, 0, GUICatalog.quitFAQ.img.height, 'quitFAQ', 'GUICatalog')) {
@@ -147,17 +145,13 @@ export function clickManager(e) {
         if (!isInSquare(mousePos, 0, GUICatalog.share.img.width, 0, GUICatalog.share.img.height, 'share', 'GUICatalog')) {
             GUICatalog.share.display = false;
         } else {
-            // console.log('img', GUICatalog.share.x, GUICatalog.share.y);
             if (isInSquare(mousePos, 15, 115, 30, 146, 'share', 'GUICatalog')) {
-                console.log('Clicked on OpenSea');
                 openLink('opensea');
             } else if (isInSquare(mousePos, 122, 215, 30, 144, 'share', 'GUICatalog')) {
-                console.log('Clicked on Share');
                 openLink('twitter');
             }
         }
     } else if (isInSquare(mousePos, 0, GUICatalog.palette.img.width, 0, GUICatalog.palette.img.height, 'palette', 'GUICatalog')) {
-        console.log('Clicked on the GUI');
         // get palette info
         const info = GUICatalog.palette.info;
         // check for each circle if the click is in
@@ -182,7 +176,6 @@ export function clickManager(e) {
         window.open('https://twitter.com/', '_blank');
     } else if (convertToMonolithPos(mousePos)) {
         // clicked on monolith
-        console.log('monolithPos', mousePos);
         startUsingTool(e, mousePos);
     }
 }

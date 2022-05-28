@@ -69,12 +69,10 @@ export const getChunksFromPosition = async (min, max) => {
             let topics = data[0].topics;
             data = data[0].data;
             let chunk = iface.parseLog({ data, topics }).args;
-            console.log(chunk);
             chunk = chunk.slice(1);
             res.push(chunk);
         }
     }
-    //console.log(res);
     return res;
 };
 

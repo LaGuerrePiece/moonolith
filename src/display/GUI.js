@@ -98,7 +98,6 @@ export function updateGUICatalog() {
             thisLayer.x = Math.floor((Const.COLUMNS - GUICatalog.panneau.img.width) / 2);
             thisLayer.y = Math.floor((renderHeight - GUICatalog.panneau.img.height) / 2 - 6);
         } else if (thisLayer.type === 'toggleMode') {
-            // thisLayer.y = Math.floor((renderHeight - GUICatalog.mobileMove.img.height) / 20);
             thisLayer.y = Math.floor(-boundingClientRect.y / (pixelSize * scaleFactor) + 3 / scaleFactor);
             thisLayer.x = Math.floor(Const.COLUMNS - GUICatalog.mobileMove.img.width) / 2;
         } else if (thisLayer.fileName == 'skipIntro') {
@@ -162,7 +161,6 @@ export function loadGUI() {
 export function drawGUI(ctx) {
     for (let GUILayer in GUICatalog) {
         const thisLayer = GUICatalog[GUILayer];
-        // if (!thisLayer.loaded) GUILayer.log(`${thisLayer.fileName} not loaded`);
         if (thisLayer.display && thisLayer.loaded) ctx.drawImage(thisLayer.img, thisLayer.x, thisLayer.y);
     }
 }

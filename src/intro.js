@@ -72,7 +72,6 @@ export async function launchIntro() {
     // When monolith is built :
     setTimeout(async () => {
         if (!introState) return;
-        console.log('Intro Finished');
         finalSkip();
         launchAnim('postMonolith');
         await new Promise((resolve) => setTimeout(resolve, animCatalog.postMonolith.totalDelay));
@@ -83,7 +82,6 @@ export async function launchIntro() {
 
 export function skipIntro(force = false) {
     if (!introState && !force) return;
-    console.log('Intro Skipped');
     displayImage('terreRetournee');
     animCatalog.runPlan0.display = false;
     animCatalog.introRunB.display = false;

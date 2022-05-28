@@ -17,12 +17,11 @@ export let firstTime = false;
 
 async function initApp() {
     setRoute();
-    firstTime = true;
+    // firstTime = true;
     if (firstTime && !Opensea) {
         await parseAPNG();
         launchIntro();
     } else {
-        console.log('route : not first time, no intro');
         await parseAPNG();
         let monoHeightSet = setMonoHeightAndBuildIt();
         changeViewPos(0, 2000);
@@ -43,7 +42,6 @@ function setRoute() {
     runeNumber = parseInt(document.URL.split('mark=')[1]);
     if (Opensea) return;
     if (!document.cookie.includes('visited=true')) {
-        console.log('First time visiting');
         const date = new Date();
         date.setTime(date.getTime() + 7 * 24 * 60 * 60 * 1000);
         let expires = 'expires=' + date.toUTCString();
@@ -55,11 +53,9 @@ function setRoute() {
 export async function chunkImport(first, monoHeightSet) {
     let meta = await getMetaData();
     if (monoHeightSet) await monoHeightSet;
-    // console.log(meta);
     if (importedChunks !== meta.nbChunks || importedChunks == 1) {
         for (let i = importedChunks + 1; i <= meta.nbChunks; i++) {
             getChunk(i).then((res) => {
-                // console.log(res);
                 bufferOnMonolith({
                     buffer: res[4],
                     x: res[0].toNumber() % Const.MONOLITH_COLUMNS,

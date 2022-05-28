@@ -7,7 +7,7 @@ import { toggleRumble } from '../assets/sounds';
 import { addPointer } from './pointer';
 import { loadImages, imageCatalog, updateImageCatalog, drawImages } from './images';
 import { loadAnims, updateAnimCatalog, drawAnimations } from './animations';
-import { loadGUI, updateGUICatalog, drawGUI, GUICatalog } from './GUI';
+import { loadGUI, updateGUICatalog, drawGUI } from './GUI';
 import { monolithDisplayHeightIntro, introState } from '../intro';
 import { FAQ, drawFAQ } from './FAQ';
 
@@ -126,7 +126,7 @@ export function shake(newRows, launchedDuringIntro = false) {
         for (let layer in imageCatalog) {
             const thisLayer = imageCatalog[layer];
             if (thisLayer.type === 'landscape') {
-                thisLayer.shakeX = -2;
+                thisLayer.shakeX = 0;
             }
         }
         toggleRumble();
@@ -151,7 +151,6 @@ function resizeManager() {
     windowWidth = window.innerWidth;
     pixelSize = windowWidth / renderWidth;
     renderHeight = Math.ceil((windowHeight * renderWidth) / windowWidth);
-
     canvas.width = renderWidth;
     canvas.height = renderHeight;
 }

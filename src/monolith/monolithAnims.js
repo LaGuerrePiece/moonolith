@@ -1,14 +1,10 @@
 import Const from '../constants';
 import { monolith, monolithIndexes } from './monolith';
-import { runeCorner, runeSide } from '../assets/base64';
 import { renderHeight } from '../display/displayLoop';
 import { viewPosY } from '../display/view';
 
 export let chunkStock = [];
 export let chunksToAnimateInfo = {};
-
-export let runeCornerInfo = { base64: runeCorner };
-export let runeSideInfo = { base64: runeSide };
 
 export let animatedPixels = new Map();
 
