@@ -55,27 +55,23 @@ export function changeViewPosSmoothly(inputY, inverseSpeed) {
 export async function setInitialViewPos() {
     if (runeNumber) {
         // If runeNumber given, change viewPos to it
-        await getChunk(runeNumber)
-            .then((res) => {
-                const y = Math.floor(res[0].toNumber() / Const.MONOLITH_COLUMNS);
-                getWidthAndHeight(res[4]).then(([width, height]) => {
-                    const viewY = Math.floor(
-                        Const.MARGIN_BOTTOM + Const.MONOLITH_LINES - y - height / 2 - renderHeight / 2
-                    );
-                    viewPosY = viewY;
-                    if (Opensea) {
-                        setInitialOpenseaZoom(width, height);
-                        const x = res[0].toNumber() % Const.MONOLITH_COLUMNS;
-                        const viewX = Math.floor(Const.MARGIN_LEFT + x + width / 2 - renderWidth / 2);
-                        changeViewPos(viewX, 0);
-                    } else {
-                        changeViewPos(0, 0);
-                    }
-                });
-            })
-            .catch((err) => {
-                console.log('error : mark not found');
+        await getChunk(runeNumber).then((chunk) => {
+            const y = Math.floor(chunk.position.toNumber() / Const.MONOLITH_COLUMNS);
+            getWidthAndHeight(chunk.image).then(([width, height]) => {
+                const viewY = Math.floor(
+                    Const.MARGIN_BOTTOM + Const.MONOLITH_LINES - y - height / 2 - renderHeight / 2
+                );
+                viewPosY = viewY;
+                if (Opensea) {
+                    setInitialOpenseaZoom(width, height);
+                    const x = chunk.position.toNumber() % Const.MONOLITH_COLUMNS;
+                    const viewX = Math.floor(Const.MARGIN_LEFT + x + width / 2 - renderWidth / 2);
+                    changeViewPos(viewX, 0);
+                } else {
+                    changeViewPos(0, 0);
+                }
             });
+        });
     } else {
         // Else, look for a Y in the url
         const providedY = parseInt(document.URL.split('y=')[1]);

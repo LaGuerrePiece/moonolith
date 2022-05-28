@@ -53,7 +53,6 @@ function setRoute() {
 export async function chunkImport(monoHeightSet) {
     if (monoHeightSet) await monoHeightSet;
     getAllChunks().then((res) => {
-        console.log('res', res.length);
         res.forEach((chunk) => {
             bufferOnMonolith({
                 buffer: chunk.image,
