@@ -1,6 +1,6 @@
 // prettier-ignore
 import Const from './constants';
-import { getChunk, getMetaData } from './utils/web3';
+import { getChunk, getMetaData, getAllChunks } from './utils/web3';
 import { initDisplay } from './display/displayLoop';
 import { changeViewPos } from './display/view';
 import { buildMonolith, increaseMonolithHeight } from './monolith/monolith';
@@ -26,7 +26,7 @@ async function initApp() {
         let monoHeightSet = setMonoHeightAndBuildIt();
         changeViewPos(0, 2000);
         initDisplay();
-        await chunkImport(true, monoHeightSet);
+        await chunkImport(monoHeightSet);
         skipIntro(true);
     }
 }
@@ -34,7 +34,7 @@ async function initApp() {
 initApp();
 
 setInterval(() => {
-    chunkImport(false);
+    importNewChunks();
 }, 30000);
 
 function setRoute() {
@@ -50,35 +50,50 @@ function setRoute() {
     }
 }
 
-export async function chunkImport(first, monoHeightSet) {
-    let meta = await getMetaData();
+export async function chunkImport(monoHeightSet) {
     if (monoHeightSet) await monoHeightSet;
-    // console.log(meta);
-    // if (importedChunks !== meta.nbChunks || importedChunks == 1) {
-    //     for (let i = importedChunks + 1; i <= meta.nbChunks; i++) {
-    //         getChunk(i).then((res) => {
-    //             // console.log(res);
-    //             bufferOnMonolith({
-    //                 buffer: res[4],
-    //                 x: res[0].toNumber() % Const.MONOLITH_COLUMNS,
-    //                 y: Math.floor(res[0].toNumber() / Const.MONOLITH_COLUMNS),
-    //                 paid: res[3].toNumber(),
-    //                 yMaxLegal: res[2].toNumber() / 1000000,
-    //                 zIndex: i,
-    //             });
-    //         });
-    //     }
-    // }
-    const newMonolithHeight = Math.floor(192 + (meta.nbKlon * meta.threshold) / (1000000 * Const.COLUMNS));
-    if (importedChunks - meta.nbChunks !== 0 && !first)
-        increaseMonolithHeight(newMonolithHeight - Const.MONOLITH_LINES);
+    getAllChunks().then((res) => {
+        console.log('res', res.length);
+        res.forEach((chunk) => {
+            bufferOnMonolith({
+                buffer: chunk.image,
+                x: chunk.position.toNumber() % Const.MONOLITH_COLUMNS,
+                y: Math.floor(chunk.position.toNumber() / Const.MONOLITH_COLUMNS),
+                paid: chunk.nbpix.toNumber(),
+                yMaxLegal: chunk.ymaxLegal.toNumber() / 1000000,
+                zIndex: chunk.id.toNumber(),
+            });
+        });
+    });
+    let meta = await getMetaData();
+    importedChunks = meta.nbChunks;
+}
+
+export async function importNewChunks() {
+    let meta = await getMetaData();
+    if (importedChunks !== meta.nbChunks || importedChunks == 1) {
+        for (let i = importedChunks + 1; i <= meta.nbChunks; i++) {
+            getChunk(i).then((chunk) => {
+                bufferOnMonolith({
+                    buffer: chunk.image,
+                    x: chunk.position.toNumber() % Const.MONOLITH_COLUMNS,
+                    y: Math.floor(chunk.position.toNumber() / Const.MONOLITH_COLUMNS),
+                    paid: chunk.nbpix.toNumber(),
+                    yMaxLegal: chunk.ymaxLegal.toNumber() / 1000000,
+                    zIndex: chunk.id.toNumber(),
+                });
+            });
+        }
+    }
+    const newMonolithHeight = Math.floor(192 + (meta.nbKlon * meta.threshold) / 1000000);
+    if (importedChunks - meta.nbChunks !== 0) increaseMonolithHeight(newMonolithHeight - Const.MONOLITH_LINES);
     importedChunks = meta.nbChunks;
     addSideMonolith(newMonolithHeight);
 }
 
 export async function setMonoHeightAndBuildIt() {
     let meta = await getMetaData();
-    const monolithHeight = Math.floor(192 + (meta.nbKlon * meta.threshold) / (1000000 * Const.COLUMNS));
+    const monolithHeight = Math.floor(192 + (meta.nbKlon * meta.threshold) / 1000000);
     Const.setMonolithHeight(monolithHeight);
     buildMonolith();
     initClouds();

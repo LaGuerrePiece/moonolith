@@ -5,9 +5,11 @@ import { displayShareScreen } from '../display/GUI';
 import { chunkImport } from '../main';
 import { decreaseZoom } from '../display/view';
 
-const provider = new ethers.providers.WebSocketProvider("wss://eth-rinkeby.alchemyapi.io/v2/owDn7TQ6jUzgnjoQJRT0NLYjqZ4aibF1");
+const provider = new ethers.providers.WebSocketProvider(
+    'wss://eth-rinkeby.alchemyapi.io/v2/owDn7TQ6jUzgnjoQJRT0NLYjqZ4aibF1'
+);
 const iface = new Interface(contractABI);
-const contractAddress = '0xC57696A73b4f14a20273018D7f58C95B8c527810';
+const contractAddress = '0xD0b4037A2f7c8F05bd94b45bC4A801476B2F9794';
 const contract = new ethers.Contract(contractAddress, contractABI, provider);
 let metamaskProvider;
 var metamaskContract;
@@ -52,23 +54,16 @@ export const getChunk = async (id) => {
     let topics = data[0].topics;
     data = data[0].data;
     let res = iface.parseLog({ data, topics }).args;
-    res = res.slice(1);
     return res;
 };
 
 export const getAllChunks = async () => {
     let data = await contract.queryFilter(contract.filters.Chunk());
-    let allChunks = [];
-    data.forEach(d => {
-        let data = d.data;
-        let topics = d.topics;
-        let chunk = iface.parseLog({ data, topics }).args;
-        allChunks.push(chunk);
+    let allChunks = data.map((d) => {
+        return iface.parseLog({ data: d.data, topics: d.topics }).args;
     });
-    console.log(allChunks);
     return allChunks;
 };
- await getAllChunks();
 
 export const getChunksFromPosition = async (min, max) => {
     let res = [];

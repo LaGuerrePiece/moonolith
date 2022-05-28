@@ -97,9 +97,9 @@ export async function bufferOnMonolith(data) {
     let buffer = base64ToBuffer(decompressFromUint8Array(ethers.utils.arrayify(data.buffer)));
     const width = new Uint8Array(buffer.slice(0, 1))[0];
     const height = new Uint8Array(buffer.slice(1, 2))[0];
-    let pixArray = new Uint8Array(buffer.slice(2, buffer.length));
-
+    let pixArray = new Uint8Array(buffer.slice(2));
     pixArray = decode4bitsArray(pixArray);
+
     while (pixArray[pixArray.length - 1] === 0) {
         // virer les 0 de la fin
         pixArray.pop();
