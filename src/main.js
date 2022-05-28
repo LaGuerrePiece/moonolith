@@ -53,20 +53,22 @@ function setRoute() {
 export async function chunkImport(first, monoHeightSet) {
     let meta = await getMetaData();
     if (monoHeightSet) await monoHeightSet;
-    if (importedChunks !== meta.nbChunks || importedChunks == 1) {
-        for (let i = importedChunks + 1; i <= meta.nbChunks; i++) {
-            getChunk(i).then((res) => {
-                bufferOnMonolith({
-                    buffer: res[4],
-                    x: res[0].toNumber() % Const.MONOLITH_COLUMNS,
-                    y: Math.floor(res[0].toNumber() / Const.MONOLITH_COLUMNS),
-                    paid: res[3].toNumber(),
-                    yMaxLegal: res[2].toNumber() / 1000000,
-                    zIndex: i,
-                });
-            });
-        }
-    }
+    // console.log(meta);
+    // if (importedChunks !== meta.nbChunks || importedChunks == 1) {
+    //     for (let i = importedChunks + 1; i <= meta.nbChunks; i++) {
+    //         getChunk(i).then((res) => {
+    //             // console.log(res);
+    //             bufferOnMonolith({
+    //                 buffer: res[4],
+    //                 x: res[0].toNumber() % Const.MONOLITH_COLUMNS,
+    //                 y: Math.floor(res[0].toNumber() / Const.MONOLITH_COLUMNS),
+    //                 paid: res[3].toNumber(),
+    //                 yMaxLegal: res[2].toNumber() / 1000000,
+    //                 zIndex: i,
+    //             });
+    //         });
+    //     }
+    // }
     const newMonolithHeight = Math.floor(192 + (meta.nbKlon * meta.threshold) / (1000000 * Const.COLUMNS));
     if (importedChunks - meta.nbChunks !== 0 && !first)
         increaseMonolithHeight(newMonolithHeight - Const.MONOLITH_LINES);

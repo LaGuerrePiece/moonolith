@@ -31,6 +31,7 @@ document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
         if (introState) skipIntro();
         else if (FAQ) exitFAQ();
+        GUICatalog.share.display = false;
     }
 });
 
