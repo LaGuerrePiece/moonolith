@@ -37,7 +37,7 @@ export function drawFAQ(ctx) {
         ctx.drawImage(imageCatalog[thisLayer.name].img, thisLayer.x, thisLayer.y);
     }
 
-    ctx.drawImage(GUICatalog.quitFAQ.img, GUICatalog.quitFAQ.x, GUICatalog.quitFAQ.y);
+    ctx.drawImage(GUICatalog.faqButtonClose.img, GUICatalog.faqButtonClose.x, GUICatalog.faqButtonClose.y);
 }
 
 export function exitFAQ() {
