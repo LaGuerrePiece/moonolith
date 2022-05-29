@@ -2,14 +2,12 @@ import { ethers } from 'ethers';
 import { Interface } from 'ethers/lib/utils';
 import contractABI from '../utils/abi.json';
 import { displayShareScreen } from '../display/GUI';
-import { importNewChunks } from '../main';
-import { zoom } from '../display/view';
+import { chunkImport } from '../main';
+import { decreaseZoom } from '../display/view';
 
-const provider = new ethers.providers.WebSocketProvider(
-    'wss://eth-rinkeby.alchemyapi.io/v2/owDn7TQ6jUzgnjoQJRT0NLYjqZ4aibF1'
-);
+const provider = new ethers.providers.InfuraProvider("mainnet");
 const iface = new Interface(contractABI);
-const contractAddress = '0xD0b4037A2f7c8F05bd94b45bC4A801476B2F9794';
+const contractAddress = '0xC3891fc8375901F78fCc2743922B237C960C3147';
 const contract = new ethers.Contract(contractAddress, contractABI, provider);
 let metamaskProvider;
 var metamaskContract;
@@ -24,20 +22,20 @@ if (window.ethereum) {
 
 export const chunkCreator = async (res) => {
     await metamaskProvider.send('eth_requestAccounts', []);
-    let price = await getPrice();
+    let p = await getPrice();
     let overrides = {
-        value: price.mul(res.nbPix),
+        value: p.mul(res.nbPix),
     };
     // console.log('Minting: ', res.position, res.ymax, res.nbPix, res.imgURI);
     let tx = metamaskContract.draw2438054C(res.position, res.ymax, res.nbPix, res.imgURI, overrides);
     tx.then((tx) => {
         tx.wait().then(() => {
-            importNewChunks();
+            chunkImport(false);
             getMetaData().then((meta) => {
                 sentChunk = meta.nbChunks;
                 setTimeout(() => {
-                    zoom(1);
                     displayShareScreen();
+                    decreaseZoom(1);
                 }, 3000);
             });
         });
@@ -54,15 +52,36 @@ export const getChunk = async (id) => {
     let topics = data[0].topics;
     data = data[0].data;
     let res = iface.parseLog({ data, topics }).args;
+    res = res.slice(1);
     return res;
 };
 
 export const getAllChunks = async () => {
     let data = await contract.queryFilter(contract.filters.Chunk());
-    let allChunks = data.map((d) => {
-        return iface.parseLog({ data: d.data, topics: d.topics }).args;
+    let allChunks = [];
+    data.forEach(d => {
+        let data = d.data;
+        let topics = d.topics;
+        let chunk = iface.parseLog({ data, topics }).args;
+        allChunks.push(chunk);
     });
+    console.log(allChunks);
     return allChunks;
+};
+
+export const getChunksFromPosition = async (min, max) => {
+    let res = [];
+    for (let i = min; i <= max; i++) {
+        let data = await contract.queryFilter(contract.filters.Chunk(null, i));
+        if (data.length > 0) {
+            let topics = data[0].topics;
+            data = data[0].data;
+            let chunk = iface.parseLog({ data, topics }).args;
+            chunk = chunk.slice(1);
+            res.push(chunk);
+        }
+    }
+    return res;
 };
 
 async function getPrice() {
@@ -80,7 +99,7 @@ export function openLink(type) {
         window.open('https://testnets.opensea.io/assets/' + contractAddress + '/' + sentChunk, '_blank');
     } else if (type === 'twitter') {
         window.open(
-            'https://twitter.com/intent/tweet?text=My%20mark%20on%20the%20@moonolith_eth%20%3A%0A&url=moonolith.io/?mark=' +
+            'https://twitter.com/intent/tweet?text=My%20mark%20on%20the%20moonolith%20%3A&url=moonolith.io/?mark=' +
                 sentChunk,
             '_blank'
         );

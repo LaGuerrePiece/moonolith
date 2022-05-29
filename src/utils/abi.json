@@ -5,7 +5,7 @@
 			{
 				"indexed": true,
 				"internalType": "address",
-				"name": "account",
+				"name": "owner",
 				"type": "address"
 			},
 			{
@@ -116,7 +116,7 @@
 			{
 				"indexed": false,
 				"internalType": "uint256[]",
-				"name": "values",
+				"name": "amounts",
 				"type": "uint256[]"
 			}
 		],
@@ -153,7 +153,7 @@
 			{
 				"indexed": false,
 				"internalType": "uint256",
-				"name": "value",
+				"name": "amount",
 				"type": "uint256"
 			}
 		],
@@ -178,19 +178,6 @@
 		],
 		"name": "URI",
 		"type": "event"
-	},
-	{
-		"inputs": [],
-		"name": "MAX_SUPPLY",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
 	},
 	{
 		"inputs": [],
@@ -248,7 +235,7 @@
 		"inputs": [
 			{
 				"internalType": "address",
-				"name": "account",
+				"name": "owner",
 				"type": "address"
 			},
 			{
@@ -261,7 +248,7 @@
 		"outputs": [
 			{
 				"internalType": "uint256",
-				"name": "",
+				"name": "balance",
 				"type": "uint256"
 			}
 		],
@@ -272,7 +259,7 @@
 		"inputs": [
 			{
 				"internalType": "address[]",
-				"name": "accounts",
+				"name": "owners",
 				"type": "address[]"
 			},
 			{
@@ -285,8 +272,60 @@
 		"outputs": [
 			{
 				"internalType": "uint256[]",
-				"name": "",
+				"name": "balances",
 				"type": "uint256[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "creator1Address",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "creator2Address",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "creator3Address",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "creator4Address",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
 			}
 		],
 		"stateMutability": "view",
@@ -321,25 +360,6 @@
 		"type": "function"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_address",
-				"type": "address"
-			}
-		],
-		"name": "getERC721BalanceOffChain",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
 		"inputs": [],
 		"name": "getMonolithInfo",
 		"outputs": [
@@ -350,7 +370,7 @@
 			},
 			{
 				"internalType": "uint256",
-				"name": "currenThreshold",
+				"name": "threshold",
 				"type": "uint256"
 			},
 			{
@@ -362,19 +382,6 @@
 				"internalType": "uint256",
 				"name": "price",
 				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "getOwnershipRecordOffChain",
-		"outputs": [
-			{
-				"internalType": "address[5000]",
-				"name": "",
-				"type": "address[5000]"
 			}
 		],
 		"stateMutability": "view",
@@ -438,7 +445,7 @@
 				"type": "uint256"
 			}
 		],
-		"name": "ownerOfERC721Like",
+		"name": "ownerOf",
 		"outputs": [
 			{
 				"internalType": "address",
@@ -650,7 +657,7 @@
 				"type": "bool"
 			}
 		],
-		"stateMutability": "view",
+		"stateMutability": "pure",
 		"type": "function"
 	},
 	{
@@ -713,9 +720,9 @@
 	},
 	{
 		"inputs": [],
-		"name": "withraw",
+		"name": "withdraw",
 		"outputs": [],
-		"stateMutability": "payable",
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -726,7 +733,7 @@
 				"type": "address"
 			}
 		],
-		"name": "withrawERC20",
+		"name": "withdrawERC20",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
