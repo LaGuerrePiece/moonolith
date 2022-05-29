@@ -71,6 +71,7 @@ function keyManager(e){
     if (e.key === 'r') { selectBrush('giga'); playSound('kick', 50); }
     if (e.key === '+') increaseZoom();
     if (e.key === '-') decreaseZoom();
+    if (e.key === 'm') toggleMute();
     // if (e.key === 'i') importImage();
     // if (e.key === 'c') console.log('Total H', Const.COLUMNS, 'Total W', Const.LINES, 'render W', renderWidth, 'render H', renderHeight, 'viewPosX', viewPosX, 'viewPosY', viewPosY, '\nE : Brush Switch \nX : Erase All \nI : Import \nL : Mute \nK : Pause music \nP : Grow Monolith \nR : GIGA tool \nT : Go to top');
     // if (e.key === 'p') { increaseMonolithHeight(1100); }
@@ -110,11 +111,6 @@ function keyManager(e){
         toggleZoom();
         playSound('click6');
         break;
-
-        case 'KeyM':
-            toggleMute();
-            break;
-    
       }
 }
 
