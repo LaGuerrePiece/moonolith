@@ -65,7 +65,6 @@ export const getAllChunks = async () => {
         let chunk = iface.parseLog({ data, topics }).args;
         allChunks.push(chunk);
     });
-    console.log(allChunks);
     return allChunks;
 };
 
