@@ -5,7 +5,7 @@ import { displayShareScreen } from '../display/GUI';
 import { chunkImport } from '../main';
 import { decreaseZoom } from '../display/view';
 
-const provider = new ethers.providers.InfuraProvider("mainnet");
+const provider = new ethers.providers.InfuraProvider('mainnet');
 const iface = new Interface(contractABI);
 const contractAddress = '0xC3891fc8375901F78fCc2743922B237C960C3147';
 const contract = new ethers.Contract(contractAddress, contractABI, provider);
@@ -59,7 +59,7 @@ export const getChunk = async (id) => {
 export const getAllChunks = async () => {
     let data = await contract.queryFilter(contract.filters.Chunk());
     let allChunks = [];
-    data.forEach(d => {
+    data.forEach((d) => {
         let data = d.data;
         let topics = d.topics;
         let chunk = iface.parseLog({ data, topics }).args;
@@ -114,9 +114,7 @@ export function getBrowserLocales(options = {}) {
         ...options,
     };
     const browserLocales = navigator.languages === undefined ? [navigator.language] : navigator.languages;
-    if (!browserLocales) {
-        return undefined;
-    }
+    if (!browserLocales) return undefined;
     return browserLocales.map((locale) => {
         const trimmedLocale = locale.trim();
         return opt.languageCodeOnly ? trimmedLocale.split(/-|_/)[0] : trimmedLocale;

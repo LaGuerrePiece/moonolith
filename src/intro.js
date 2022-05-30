@@ -121,12 +121,12 @@ function monolithGoUpDuringIntro() {
 
 export async function displayPanneau() {
     if (deviceType === 'mobile') return;
-    await new Promise((resolve) => setTimeout(resolve, animCatalog.panneauRainbow.autourDuFeu));
-    launchAnim('panneauRainbow');
-    await new Promise((resolve) => setTimeout(resolve, animCatalog.panneauRainbow.totalDelay));
     let lang = getBrowserLocales()[0];
     if (lang !== 'fr') {
         GUICatalog.panneau.img.src = '/images/panneauQWERTY.png';
     }
+    await new Promise((resolve) => setTimeout(resolve, animCatalog.panneauRainbow.autourDuFeu));
+    launchAnim('panneauRainbow');
+    await new Promise((resolve) => setTimeout(resolve, animCatalog.panneauRainbow.totalDelay));
     displayImage('panneauDecor');
 }
