@@ -5,10 +5,10 @@ import { displayShareScreen } from '../display/GUI';
 import { chunkImport } from '../main';
 import { decreaseZoom } from '../display/view';
 
-const provider = new ethers.providers.InfuraProvider('mainnet');  
+const provider = new ethers.providers.InfuraProvider('mainnet');
 //const provider = new ethers.providers.InfuraProvider('rinkeby');
 const iface = new Interface(contractABI);
-const contractAddress = '0xC3891fc8375901F78fCc2743922B237C960C3147';  // Ethereum Contract
+const contractAddress = '0xC3891fc8375901F78fCc2743922B237C960C3147'; // Ethereum Contract
 // const contractAddress = '0x59a72E06F7E5b56d53F2C381043C3dEAc4916804';  // Rinkeby Contract
 const contract = new ethers.Contract(contractAddress, contractABI, provider);
 let metamaskProvider;
@@ -97,7 +97,7 @@ export async function getMetaData() {
 
 export function openLink(type) {
     if (type === 'opensea') {
-        window.open('https://testnets.opensea.io/assets/' + contractAddress + '/' + sentChunk, '_blank');
+        window.open('https://opensea.io/assets/' + contractAddress + '/' + sentChunk, '_blank');
     } else if (type === 'twitter') {
         window.open(
             'https://twitter.com/intent/tweet?text=My%20mark%20on%20the%20moonolith%20%3A&url=moonolith.io/?mark=' +
