@@ -8,7 +8,7 @@ import { mobileEventListener } from './mobileControls';
 import { openLink } from '../utils/web3';
 import { saveToEthernity, importImage } from '../utils/imageManager';
 import { convertToMonolithPos, mousePosInGrid, isInCircle, isInSquare } from '../utils/conversions';
-import { playSound, toggleMute } from '../assets/sounds';
+import { playSound, toggleMute, playMusic } from '../assets/sounds';
 import { eraseAllPixel, increaseMonolithHeight } from '../monolith/monolith';
 import { undo, redo } from '../monolith/undoStack';
 import { brushSwitch, startUsingTool, colorSwitch, selectBrush } from '../monolith/tools';
@@ -62,8 +62,10 @@ export function unlockScroll() {
     );
 }
 
+let firstInteraction = true;
 //prettier-ignore
 function keyManager(e){
+    if (firstInteraction) { playMusic(), firstInteraction = false }
     if ((e.metaKey || e.ctrlKey) && e.key === 'z') {undo(); return}
     if ((e.metaKey || e.ctrlKey ) && (e.key === 'Z' || e.key === 'y')) {redo(); return}
     if (e.key === 'x') eraseAllPixel();
@@ -117,6 +119,7 @@ function keyManager(e){
 //prettier-ignore
 export function clickManager(e) {
     let mousePos = mousePosInGrid(e);
+    if (firstInteraction) { playMusic(), firstInteraction = false }
 
     if (FAQ) {
         if (isInSquare(mousePos, 0, GUICatalog.faqButtonClose.img.width, 0, GUICatalog.faqButtonClose.img.height, 'faqButtonClose', 'GUICatalog')) {

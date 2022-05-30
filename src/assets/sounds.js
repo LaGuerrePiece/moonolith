@@ -29,6 +29,10 @@ export function toggleMusic() {
     return music.paused ? music.play() : music.pause();
 }
 
+export function playMusic() {
+    music.play();
+}
+
 export function stopSound(name) {
     const audio = new Audio('/audio/' + name + '.mp3');
     audio.pause();
