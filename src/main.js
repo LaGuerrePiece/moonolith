@@ -70,16 +70,16 @@ export async function chunkImport(monoHeightSet) {
 
 export async function importNewChunks() {
     let meta = await getMetaData();
-    if (importedChunks !== meta.nbChunks || importedChunks == 1) {
+    if (importedChunks !== meta.nbChunks) {
         for (let i = importedChunks + 1; i <= meta.nbChunks; i++) {
             getChunk(i).then((chunk) => {
                 bufferOnMonolith({
-                    buffer: chunk.image,
-                    x: chunk.position.toNumber() % Const.MONOLITH_COLUMNS,
-                    y: Math.floor(chunk.position.toNumber() / Const.MONOLITH_COLUMNS),
-                    paid: chunk.nbpix.toNumber(),
-                    yMaxLegal: chunk.ymaxLegal.toNumber() / 1000000,
-                    zIndex: chunk.id.toNumber(),
+                    buffer: chunk[4],
+                    x: chunk[0].toNumber() % Const.MONOLITH_COLUMNS,
+                    y: Math.floor(chunk[0].toNumber() / Const.MONOLITH_COLUMNS),
+                    paid: chunk[3].toNumber(),
+                    yMaxLegal: chunk[2].toNumber() / 1000000,
+                    zIndex: i,
                 });
             });
         }
