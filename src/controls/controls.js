@@ -134,9 +134,9 @@ export function clickManager(e) {
             if (isInSquare(mousePos, 74, 298, 141, 155, 'FAQ', 'FAQCatalog')){
                 window.open('https://metamask.io/download/', '_blank');
             }
-            if (isInSquare(mousePos, 22, 66, 332, 343, 'FAQ', 'FAQCatalog')) {
+            if (isInSquare(mousePos, 22, 66, 336, 353, 'FAQ', 'FAQCatalog')) {
                 displayFAQ('FAQ')
-            } else if (isInSquare(mousePos, 262, 349, 332, 343, 'FAQ', 'FAQCatalog')) {
+            } else if (isInSquare(mousePos, 262, 349, 336, 353, 'FAQ', 'FAQCatalog')) {
                 exitFAQ()
             }
         }
