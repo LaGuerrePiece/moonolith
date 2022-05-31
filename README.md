@@ -8,7 +8,7 @@ https://moonolith.io
 
 To install locally, clone, and run
 
-`npm run i`
+`npm i`
 
 `npm run dev`
 
