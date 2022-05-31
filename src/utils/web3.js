@@ -17,6 +17,7 @@ let metamaskContract;
 let sentChunk;
 
 if (window.ethereum) {
+    ethereum.on('chainChanged', handleChainChanged);
     metamaskProvider = new ethers.providers.Web3Provider(window.ethereum);
     checkChain()
     const signer = metamaskProvider.getSigner();
@@ -130,7 +131,6 @@ export function isMetamaskHere() {
     else return false;
 }
 
-ethereum.on('chainChanged', handleChainChanged);
 
 function handleChainChanged(_chainId) {
   // We recommend reloading the page, unless you must do otherwise
