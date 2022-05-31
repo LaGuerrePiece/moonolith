@@ -18,11 +18,13 @@ let sentChunk;
 
 if (window.ethereum) {
     metamaskProvider = new ethers.providers.Web3Provider(window.ethereum);
+    checkChain()
     const signer = metamaskProvider.getSigner();
     metamaskContract = new ethers.Contract(contractAddress, contractABI, signer);
 }
 
 export const chunkCreator = async (res) => {
+    checkChain()
     await metamaskProvider.send('eth_requestAccounts', []);
     let p = await getPrice();
     let overrides = {
@@ -126,4 +128,23 @@ export function getBrowserLocales(options = {}) {
 export function isMetamaskHere() {
     if (window.ethereum) return true;
     else return false;
+}
+
+ethereum.on('chainChanged', handleChainChanged);
+
+function handleChainChanged(_chainId) {
+  // We recommend reloading the page, unless you must do otherwise
+  window.location.reload();
+}
+async function checkChain(){
+    const { chainId } = await metamaskProvider.getNetwork()
+    if(chainId != 1)
+    {
+        window.ethereum.request({
+            method: "wallet_switchEthereumChain",
+            params: [{
+                chainId: "0x1"    
+            }]
+        });
+    }
 }
