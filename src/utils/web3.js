@@ -46,9 +46,11 @@ export const chunkCreator = async (res) => {
             });
         });
     }).catch((err) => {
-        window.alert(
-            'Transaction failed : insufficient funds.\nMake sure you are connected to the ethereum network and have enough eth\n(0.000025 eth per pixel + gas)'
-        );
+        if (err.code == 'INSUFFICIENT_FUNDS' || err.code == -32000) {
+            window.alert(
+                'Transaction failed \nMake sure you are connected to the ethereum network and have enough eth\n(0.000025 eth per pixel + gas)'
+            );
+        }
     });
 };
 
