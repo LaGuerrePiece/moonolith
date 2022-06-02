@@ -19,21 +19,22 @@ let sentChunk;
 if (window.ethereum) {
     ethereum.on('chainChanged', handleChainChanged);
     metamaskProvider = new ethers.providers.Web3Provider(window.ethereum);
-    checkChain()
+    checkChain();
     const signer = metamaskProvider.getSigner();
     metamaskContract = new ethers.Contract(contractAddress, contractABI, signer);
 }
 
 export const chunkCreator = async (res) => {
-    checkChain()
+    checkChain();
     await metamaskProvider.send('eth_requestAccounts', []);
     let p = await getPrice();
     let overrides = {
         value: p.mul(res.nbPix),
     };
-    // console.log('Minting: ', res.position, res.ymax, res.nbPix, res.imgURI);
+
     let tx = metamaskContract.draw2438054C(res.position, res.ymax, res.nbPix, res.imgURI, overrides);
     tx.then((tx) => {
+        console.log('Minting: ', res.position, res.ymax, res.nbPix, res.imgURI);
         tx.wait().then(() => {
             chunkImport(false);
             getMetaData().then((meta) => {
@@ -44,6 +45,10 @@ export const chunkCreator = async (res) => {
                 }, 3000);
             });
         });
+    }).catch((err) => {
+        window.alert(
+            'Transaction failed : insufficient funds.\nMake sure you are connected to the ethereum network and have enough eth\n(0.000025 eth per pixel + gas)'
+        );
     });
 };
 
@@ -131,20 +136,20 @@ export function isMetamaskHere() {
     else return false;
 }
 
-
 function handleChainChanged(_chainId) {
-  // We recommend reloading the page, unless you must do otherwise
-  window.location.reload();
+    // We recommend reloading the page, unless you must do otherwise
+    window.location.reload();
 }
-async function checkChain(){
-    const { chainId } = await metamaskProvider.getNetwork()
-    if(chainId != 1)
-    {
+async function checkChain() {
+    const { chainId } = await metamaskProvider.getNetwork();
+    if (chainId != 1) {
         window.ethereum.request({
-            method: "wallet_switchEthereumChain",
-            params: [{
-                chainId: "0x1"    
-            }]
+            method: 'wallet_switchEthereumChain',
+            params: [
+                {
+                    chainId: '0x1',
+                },
+            ],
         });
     }
 }
