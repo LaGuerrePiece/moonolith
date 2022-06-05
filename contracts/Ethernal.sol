@@ -25,9 +25,9 @@ contract Moonolith is ERC1155U, IERC2981, Ownable {
     using SafeMath for uint256;
     uint256 _currentTokenId = 1;
 
-    bool private _gaslessTrading = true;
-    uint256 private _royaltyPartsPerMillion = 50_000;
     uint256 public _pricePerPix = 25000 gwei;
+    uint24 private _royaltyPartsPerMillion = 50_000;
+    bool private _gaslessTrading = true;
 
     string public constant name = 'Moonolith';
     string public constant symbol = 'MOON';
@@ -72,7 +72,7 @@ contract Moonolith is ERC1155U, IERC2981, Ownable {
         return (totalSupply(), _threshold, _klonSum, _pricePerPix);
     }
 
-    function uri(uint256 _tokenId) public view virtual override returns (string memory) {
+    function uri(uint256 _tokenId) public view override returns (string memory) {
 		require(_tokenId <= _currentTokenId, "URI query for nonexistent token");
 
 		bytes memory baseURI = (abi.encodePacked(
@@ -91,7 +91,7 @@ contract Moonolith is ERC1155U, IERC2981, Ownable {
 			
 	}
 
-    function supportsInterface(bytes4 interfaceId) public pure virtual override returns (bool) {
+    function supportsInterface(bytes4 interfaceId) public pure override returns (bool) {
         return interfaceId == type(IERC2981).interfaceId || super.supportsInterface(interfaceId);
     }
 
@@ -142,7 +142,7 @@ contract Moonolith is ERC1155U, IERC2981, Ownable {
     }
 
     function _withdraw(address _address, uint256 _amount) private {
-        (bool success, ) = _address.call{value: _amount}("");
+        (bool success, ) = payable(_address).call{value: _amount}("");
         require(success, "Transfer failed.");
     }
 
