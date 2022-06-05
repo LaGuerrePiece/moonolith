@@ -25,9 +25,9 @@ contract Moonolith is ERC1155U, IERC2981, Ownable {
     using SafeMath for uint256;
     uint256 _currentTokenId = 1;
 
-    bool private _gaslessTrading = true;
-    uint256 private _royaltyPartsPerMillion = 50_000;
     uint256 public _pricePerPix = 25000 gwei;
+    uint24 private _royaltyPartsPerMillion = 50_000;
+    bool private _gaslessTrading = true;
 
     string public constant name = 'Moonolith';
     string public constant symbol = 'MOON';
