@@ -72,7 +72,7 @@ contract Moonolith is ERC1155U, IERC2981, Ownable {
         return (totalSupply(), _threshold, _klonSum, _pricePerPix);
     }
 
-    function uri(uint256 _tokenId) public view virtual override returns (string memory) {
+    function uri(uint256 _tokenId) public view override returns (string memory) {
 		require(_tokenId <= _currentTokenId, "URI query for nonexistent token");
 
 		bytes memory baseURI = (abi.encodePacked(
@@ -91,7 +91,7 @@ contract Moonolith is ERC1155U, IERC2981, Ownable {
 			
 	}
 
-    function supportsInterface(bytes4 interfaceId) public pure virtual override returns (bool) {
+    function supportsInterface(bytes4 interfaceId) public pure override returns (bool) {
         return interfaceId == type(IERC2981).interfaceId || super.supportsInterface(interfaceId);
     }
 
