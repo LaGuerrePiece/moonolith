@@ -142,7 +142,7 @@ contract Moonolith is ERC1155U, IERC2981, Ownable {
     }
 
     function _withdraw(address _address, uint256 _amount) private {
-        (bool success, ) = _address.call{value: _amount}("");
+        (bool success, ) = payable(_address).call{value: _amount}("");
         require(success, "Transfer failed.");
     }
 
